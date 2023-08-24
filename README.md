@@ -1,2 +1,2 @@
-# starhire-frontend-client
+# starhire-frontend-admin
 Frontend client
