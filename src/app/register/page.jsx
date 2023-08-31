@@ -15,13 +15,13 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const name = e.target[0].value;
+    const username = e.target[0].value;
     const email = e.target[1].value;
     const password = e.target[2].value;
 
     const hashedPassword = await hashing(password);
     const data = {
-      name: name,
+      username: username,
       email: email,
       password: hashedPassword,
     }
