@@ -20,7 +20,7 @@ const Dashboard = () => {
     }
 
     if (session.status === "authenticated") {
-        return <h1>Welcome back {session.data.user.email}</h1>
+        return <h1>Welcome back {session.data.user.name}, {session.data.user.email}</h1>
     }
 }
 
