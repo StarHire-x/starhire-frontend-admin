@@ -19,10 +19,9 @@ const Login = () => {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
     const email = e.target[0].value;
     const password = e.target[1].value;
+    alert(`Email: ${email}, Password: ${password}`);
 
     signIn("credentials", { email, password });
   };
