@@ -31,6 +31,8 @@ const Register = () => {
         router.push("/login?success=Account has been created");
       } else {
         console.error("Failed to create account");
+        alert(`Error: Failed to create account`);
+        setErr(true);
       }
     } catch (err) {
       console.error("Fetch error:", err);
