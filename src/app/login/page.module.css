@@ -33,3 +33,16 @@
      color: #eee;
      font-weight: bold;
  }
+
+ .radio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px; /* Adjust the spacing between the radio button and label */
+}
+
+.radio input[type="radio"] {
+  /* Optional: Adjust the radio button styles */
+  margin-right: 4px; /* Adjust the spacing between the radio button and label text */
+}
+
