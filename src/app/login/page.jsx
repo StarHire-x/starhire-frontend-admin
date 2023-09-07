@@ -121,7 +121,7 @@ const Login = () => {
               checked={formData.role === "Administrator"}
               onChange={handleInputChange}
             />
-            Job Seeker
+            Administrator
           </label>
           <label>
             <input
