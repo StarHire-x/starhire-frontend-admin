@@ -65,8 +65,7 @@ const Register = () => {
         alert(errorData.message);
         throw new Error(errorData.message);
       }
-
-      // Handle success (e.g., redirect to a success page)
+      alert("Account has been created!")
       router.push("/login?success=Account has been created");
     } catch (err) {
       // Handle errors more gracefully (e.g., display an error message to the user)
@@ -134,7 +133,7 @@ const Register = () => {
               checked={formData.role === "Administrator"}
               onChange={handleInputChange}
             />
-            Job Seeker
+            Administrator
           </label>
           <label>
             <input
