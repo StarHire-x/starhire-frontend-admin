@@ -10,92 +10,76 @@ const handler = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
-    // CredentialsProvider({
-    //   id: "credentials",
-    //   name: "Credentials",
-    //   async authorize(credentials) {
-    //     console.log(credentials.email);
-    //     try {
-    //       const res = await fetch(
-    //         `http://localhost:8080/users/?email=${credentials.email}`,
-    //         {
-    //           cache: "no-store",
-    //         }
-    //       );
-
-    //       if (!res.ok) {
-    //         return notFound();
-    //       }
-
-    //       const responseBody = await res.json(); // Read the response body once
-
-    //       const isPasswordCorrect = await bcrypt.compare(
-    //         credentials.password,
-    //         responseBody.password
-    //       );
-
-    //       if (isPasswordCorrect) {
-    //         return responseBody;
-    //       } else {
-    //         throw new Error("Wrong Credentials!");
-    //       }
-    //     } catch (err) {
-    //       throw new Error(err);
-    //     }
-    //   },
-    // }),
     CredentialsProvider({
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-        role: { label: "Role", type: "radio" },
+        email: "email",
+        password: "password",
+        role: "role",
       },
-      authorize: async (credentials) => {
-        try {
-          const { email, password, role } = credentials;
-          const res = await fetch(
-            `http://localhost:8080/users?email=${email}&role=${role}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              cache: "no-store",
-            }
-          );
-          if (res.status === 200) {
-            const userData = await res.json();
-            const hashedPasswordFromDB = userData.password; // Replace 'password' with the actual field name in your database
-            const passwordsMatch = await bcrypt.compare(
-              password,
-              hashedPasswordFromDB
-            );
-
-            if (passwordsMatch) {
-              // If the passwords match, return the user object
-              return Promise.resolve({
-                id: userData.userId,
-                name: userData.userName,
-                email: userData.email,
-                role: userData.role,
-              });
-            } else {
-              throw new Error("Wrong Credentials!"); // Authentication failed
-            }
-          } else if (res.status === 404) {
-            return notFound(); // User not found
-          } else {
-            return notFound(); // Error fetching user
+      async authorize(credentials) {
+        const { email, password, role } = credentials;
+        const res = await fetch(
+          `http://localhost:8080/users?email=${email}&role=${role}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            cache: "no-store",
           }
-        } catch (err) {
-          throw new Error(err);
+        );
+        if (!res.ok) {
+          return notFound();
+        }
+        const responseBody = await res.json();
+        const isPasswordCorrect = await bcrypt.compare(
+          password,
+          responseBody.password
+        );
+        if (isPasswordCorrect) {
+          return {
+            userId: responseBody.userId,
+            name: responseBody.userName,
+            email: responseBody.email,
+            role: responseBody.role,
+
+          };
+        } else {
+          throw new Error("Wrong Credentials!");
         }
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user, session }) {
+      console.log("jwt callback", { token, user, session });
+      if (user) {
+        token.userId = user.userId;
+        token.name = user.name;
+        token.email = user.email;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token, user }) {
+      console.log("session callback", { session, token, user });
+      session.user = {
+        ...session.user,
+        userId: token.userId,
+        name: token.name,
+        email: token.email,
+        role: token.role,
+      };
+      return session;
+    },
+  }, 
+  session: {
+    strategy: "jwt"
+  },
   pages: {
     error: "/login",
   },
+
 });
 
 export { handler as GET, handler as POST };
