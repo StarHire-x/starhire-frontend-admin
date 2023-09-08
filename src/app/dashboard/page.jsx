@@ -12,15 +12,19 @@ const Dashboard = () => {
     console.log(session);
 
     if (session.status === "loading") {
-        return <p>Loading...</p>;
-      }
+      return <p>Loading...</p>;
+    }
     
     if (session.status === "unauthenticated") {
-        router?.push("/login");
+      router?.push("/login");
     }
 
     if (session.status === "authenticated") {
-        return <h1>Welcome back {session.data.user.name}, {session.data.user.email}</h1>
+      return (
+        <h1>
+          Welcome back {session.data.user.name}, {session.data.user.email}, {session.data.user.image}, {session.data.user.role}
+        </h1>
+      );
     }
 }
 
