@@ -19,7 +19,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         const { email, password, role } = credentials;
         const res = await fetch(
-          `http://localhost:8080/users?email=${email}&role=${role}`,
+          `http://localhost:8080/users/login/?email=${email}&role=${role}`,
           {
             method: "GET",
             headers: {
