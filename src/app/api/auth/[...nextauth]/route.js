@@ -28,11 +28,13 @@ const handler = NextAuth({
             cache: "no-store",
           }
         );
-        if (!res.ok) {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "An error occurred");
-        }
+
         const responseBody = await res.json();
+
+        if (responseBody.statusCode === 404) {
+          throw new Error(responseBody.message || "An error occurred");
+        }
+        
         const isPasswordCorrect = await bcrypt.compare(
           password,
           responseBody.data.password
