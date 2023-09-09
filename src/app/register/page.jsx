@@ -150,6 +150,7 @@ const Register = () => {
         {err && "Something went wrong!"}
       </form>
       <Link href="/login">Login with an existing account</Link>
+      <Link href="/forgetPassword">Forget Password</Link>
     </div>
   );
 };

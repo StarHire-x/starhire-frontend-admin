@@ -29,20 +29,21 @@ const handler = NextAuth({
           }
         );
         if (!res.ok) {
-          return notFound();
+          const errorData = await res.json();
+          throw new Error(errorData.message || "An error occurred");
         }
         const responseBody = await res.json();
         const isPasswordCorrect = await bcrypt.compare(
           password,
-          responseBody.password
+          responseBody.data.password
         );
+
         if (isPasswordCorrect) {
           return {
-            userId: responseBody.userId,
-            name: responseBody.userName,
-            email: responseBody.email,
-            role: responseBody.role,
-
+            userId: responseBody.data.userId,
+            name: responseBody.data.userName,
+            email: responseBody.data.email,
+            role: responseBody.data.role,
           };
         } else {
           throw new Error("Wrong Credentials!");
