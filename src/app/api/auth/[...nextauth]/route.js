@@ -19,7 +19,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         const { email, password, role } = credentials;
         const res = await fetch(
-          `http://localhost:8080/users?email=${email}&role=${role}`,
+          `http://localhost:8080/users/login/?email=${email}&role=${role}`,
           {
             method: "GET",
             headers: {
@@ -28,21 +28,24 @@ const handler = NextAuth({
             cache: "no-store",
           }
         );
-        if (!res.ok) {
-          return notFound();
-        }
+
         const responseBody = await res.json();
+
+        if (responseBody.statusCode === 404) {
+          throw new Error(responseBody.message || "An error occurred");
+        }
+        
         const isPasswordCorrect = await bcrypt.compare(
           password,
-          responseBody.password
+          responseBody.data.password
         );
+
         if (isPasswordCorrect) {
           return {
-            userId: responseBody.userId,
-            name: responseBody.userName,
-            email: responseBody.email,
-            role: responseBody.role,
-
+            userId: responseBody.data.userId,
+            name: responseBody.data.userName,
+            email: responseBody.data.email,
+            role: responseBody.data.role,
           };
         } else {
           throw new Error("Wrong Credentials!");

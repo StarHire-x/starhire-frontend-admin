@@ -108,7 +108,7 @@ const Login = () => {
         <button className={styles.button}>Login</button>
       </form>
       <Link href="/register">I don't have an account </Link>
-      <button onClick={() => signIn("google")}>Login with Google</button>
+      <Link href="/forgetPassword">Forget Password</Link>
     </div>
   );
 }
