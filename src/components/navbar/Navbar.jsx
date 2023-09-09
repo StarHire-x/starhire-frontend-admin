@@ -18,8 +18,8 @@ const links = [
   },
   {
     id: 3,
-    title: "Blog",
-    url: "/blog",
+    title: "User Management",
+    url: "/userManagement",
   },
   {
     id: 4,
@@ -37,6 +37,14 @@ const links = [
     url: "/dashboard",
   },
 ];
+
+const adminLinks = [
+  {
+    id: 1,
+    title: "User Management",
+    url: "/userManagement"
+  },
+]
 
 const Navbar = () => {
   const session = useSession();

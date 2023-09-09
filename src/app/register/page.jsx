@@ -52,25 +52,11 @@ const Register = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:8080/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        alert(errorData.message);
-        throw new Error(errorData.message);
-      }
-      alert("Account has been created!")
+      await registerUser(data);
+      alert("Account has been created!");
       router.push("/login?success=Account has been created");
-    } catch (err) {
-      // Handle errors more gracefully (e.g., display an error message to the user)
-      console.error("Fetch error:", err);
-      alert(err);
+    } catch (error) {
+      alert(error);
       setErr(true);
     }
   };

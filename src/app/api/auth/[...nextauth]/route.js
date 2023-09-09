@@ -19,7 +19,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         const { email, password, role } = credentials;
         const res = await fetch(
-          `http://localhost:8080/users/login/?email=${email}&role=${role}`,
+          `http://localhost:8080/users/login?email=${email}&role=${role}`,
           {
             method: "GET",
             headers: {
@@ -46,6 +46,7 @@ const handler = NextAuth({
             name: responseBody.data.userName,
             email: responseBody.data.email,
             role: responseBody.data.role,
+            status: responseBody.data.status,
           };
         } else {
           throw new Error("Wrong Credentials!");
@@ -61,6 +62,7 @@ const handler = NextAuth({
         token.name = user.name;
         token.email = user.email;
         token.role = user.role;
+        token.status = user.status;
       }
       return token;
     },
@@ -72,6 +74,7 @@ const handler = NextAuth({
         name: token.name,
         email: token.email,
         role: token.role,
+        status: token.status,
       };
       return session;
     },
