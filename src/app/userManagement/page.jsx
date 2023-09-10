@@ -13,7 +13,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { changeUserStatus, getUsers } from "../api/auth/user/route";
+import { updateUser, getUsers } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -125,7 +125,7 @@ export default function AccountManagement() {
         status: toggledStatus,
       };
       console.log(request);
-      const response = await changeUserStatus(request, selectedRowData.userId);
+      const response = await updateUser(request, selectedRowData.userId);
       console.log("Status changed successfully:", response);
       setRefreshData((prev) => !prev);
     } catch (error) {

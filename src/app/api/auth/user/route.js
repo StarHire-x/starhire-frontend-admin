@@ -21,7 +21,7 @@ export const getUsers = async () => {
     }
 }
 
-export const changeUserStatus = async (request, id) => {
+export const updateUser = async (request, id) => {
     try {
       const res = await fetch(`http://localhost:8080/users/${id}`, 
       {
@@ -31,8 +31,11 @@ export const changeUserStatus = async (request, id) => {
         },
         body: JSON.stringify(request)
       });
-      if (!res.ok) {
-        const errorData = await res.json();
+
+      console.log(res);
+      if (res.ok) {
+        return;
+      } else {
         throw new Error(errorData.message || "An error occurred");
       }
       return await res.json();
