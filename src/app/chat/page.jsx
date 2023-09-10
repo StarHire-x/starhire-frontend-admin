@@ -7,10 +7,6 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import {
   MainContainer,
-  Sidebar,
-  Search,
-  ConversationList,
-  Conversation,
   Avatar,
   ChatContainer,
   ConversationHeader,
@@ -23,106 +19,90 @@ import {
   MessageInput,
   EllipsisButton,
 } from "@chatscope/chat-ui-kit-react";
+import ChatSidebar from "./ChatSidebar";
+import ChatHeader from "./ChatHeader";
+import { getAllUserChats } from "../api/auth/chat/route";
 
 const Chat = () => {
-  const socket = io("http://localhost:8080");
-  const session = useSession();
-
-  const router = useRouter();
-
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
-  }
-  // Set initial message input value to an empty string
+  const currentUserId = 1; // should get from session
+  // const session = useSession();
+  // const router = useRouter();
+  // if (session.status === "unauthenticated") {
+  //   router?.push("/login");
+  // }
   const [messageInputValue, setMessageInputValue] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);
+  const [currentChat, setCurrentChat] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [otherUser, setOtherUser] = useState(null); // user object
+  const [allChats, setAllChats] = useState([]);
 
-  function sendMessage(message) {
+  // WebSocket functions
+  const socket = io("http://localhost:8080");
+
+  const sendMessage = (message) => {
     socket.emit("sendMessage", message);
+  };
+
+  const receiveMessage = (message) => {
+    setChatMessages([...chatMessages, message]);
+  };
+
+  socket.on(currentChat ? currentChat.chatId : null, (message) => {
+    receiveMessage(message);
+  });
+
+  const handleSendMessage = (content) => {
+    sendMessage({
+      userId: currentUserId,
+      chatId: currentChat ? currentChat.chatId : null,
+      message: content,
+      isImportant: false,
+    });
+    setMessageInputValue("");
+  };
+
+  async function getUserChats() {
+    const chats = await getAllUserChats(currentUserId);
+    setAllChats(chats);
   }
+
+  const selectCurrentChat = async (index) => {
+    if (index < allChats.length) {
+      await getUserChats(); // not sure if this is a good implementation to handle clicking between chats
+      setCurrentChat(allChats[index]);
+    }
+  };
 
   useEffect(() => {
-    sendMessage({ email: "helloworld@gmail.com", text: "hello" });
+    getUserChats();
   }, []);
+
+  useEffect(() => {
+    if (currentChat) {
+      const chatMessages = currentChat.chatMessages;
+      chatMessages.sort(
+        (message1, message2) => message1.timestamp < message2.timestamp
+      );
+      setChatMessages(chatMessages);
+    }
+
+    if (currentChat) {
+      setCurrentUser(currentChat.recruiter);
+      setOtherUser(currentChat.jobSeeker || currentChat.corporate);
+    }
+  }, [currentChat]);
 
   return (
     <MainContainer responsive>
-      <Sidebar position="left" scrollable={false}>
-        <Search placeholder="Search..." />
-        <ConversationList>
-          <Conversation
-            name="Lilly"
-            lastSenderName="Lilly"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Lilly" status="available" />
-          </Conversation>
-
-          <Conversation
-            name="Joe"
-            lastSenderName="Joe"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Joe" status="dnd" />
-          </Conversation>
-
-          <Conversation
-            name="Emily"
-            lastSenderName="Emily"
-            info="Yes i can do it for you"
-            unreadCnt={3}
-          >
-            <Avatar src="" name="Emily" status="available" />
-          </Conversation>
-
-          <Conversation
-            name="Kai"
-            lastSenderName="Kai"
-            info="Yes i can do it for you"
-            unreadDot
-          >
-            <Avatar src="" name="Kai" status="unavailable" />
-          </Conversation>
-
-          <Conversation
-            name="Akane"
-            lastSenderName="Akane"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Akane" status="eager" />
-          </Conversation>
-
-          <Conversation
-            name="Eliot"
-            lastSenderName="Eliot"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Eliot" status="away" />
-          </Conversation>
-
-          <Conversation
-            name="Zoe"
-            lastSenderName="Zoe"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Zoe" status="dnd" />
-          </Conversation>
-
-          <Conversation
-            name="Patrik"
-            lastSenderName="Patrik"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Patrik" status="invisible" />
-          </Conversation>
-        </ConversationList>
-      </Sidebar>
+      <ChatSidebar userChats={allChats} selectCurrentChat={selectCurrentChat} />
 
       <ChatContainer>
         <ConversationHeader>
           <ConversationHeader.Back />
-          <Avatar src="" name="Zoe" />
+          <Avatar src="" name={otherUser ? otherUser.userName : ""} />
           <ConversationHeader.Content
-            userName="Zoe"
+            userName={otherUser ? otherUser.userName : ""}
             info="Active 10 mins ago"
           />
           <ConversationHeader.Actions>
@@ -131,135 +111,47 @@ const Chat = () => {
             <EllipsisButton orientation="vertical" />
           </ConversationHeader.Actions>
         </ConversationHeader>
+        <ChatHeader />
         <MessageList
-          typingIndicator={<TypingIndicator content="Zoe is typing" />}
+          typingIndicator={
+            <TypingIndicator
+              content={`${otherUser ? otherUser.userName : ""} is typing`}
+            />
+          }
         >
           <MessageSeparator content="Saturday, 30 November 2019" />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "single",
-            }}
-          >
-            <Avatar src="" name="Zoe" />
-          </Message>
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "single",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "first",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "normal",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "normal",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "last",
-            }}
-          >
-            <Avatar src="" name="Zoe" />
-          </Message>
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "first",
-            }}
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "normal",
-            }}
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "normal",
-            }}
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "last",
-            }}
-          />
-
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "first",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "last",
-            }}
-          >
-            <Avatar src="" name="Zoe" />
-          </Message>
+          {chatMessages.length > 0 &&
+            chatMessages.map((value, index) => (
+              <Message
+                index={index}
+                model={{
+                  message: value.message,
+                  sentTime: "15 mins ago",
+                  sender:
+                    value.userId == currentUserId
+                      ? currentUser.userId
+                      : otherUser.userId,
+                  direction:
+                    value.userId == currentUserId ? "outgoing" : "incoming",
+                  position: "single",
+                }}
+              >
+                <Avatar
+                  src=""
+                  name={
+                    value.userId == currentUserId
+                      ? currentUser.userName
+                      : otherUser.userName
+                  }
+                />
+              </Message>
+            ))}
         </MessageList>
         <MessageInput
           placeholder="Type message here"
           value={messageInputValue}
           onChange={(val) => setMessageInputValue(val)}
+          onSend={(textContent) => handleSendMessage(textContent)}
         />
       </ChatContainer>
     </MainContainer>
