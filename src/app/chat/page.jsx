@@ -7,10 +7,6 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import {
   MainContainer,
-  Sidebar,
-  Search,
-  ConversationList,
-  Conversation,
   Avatar,
   ChatContainer,
   ConversationHeader,
@@ -23,17 +19,42 @@ import {
   MessageInput,
   EllipsisButton,
 } from "@chatscope/chat-ui-kit-react";
+import ChatSidebar from "./ChatSidebar";
 
 const Chat = () => {
+  // const session = useSession();
+  // const router = useRouter();
+  // if (session.status === "unauthenticated") {
+  //   router?.push("/login");
+  // }
   const socket = io("http://localhost:8080");
-  const session = useSession();
+  const [chatMessages, setChatMessages] = useState([]);
+  const [currentChat, setCurrentChat] = useState({
+    chatId: 1,
+    sender: { userName: "Samantha" }, // in future API should only return the sender's details
+    chatMessages: [
+      { chatMessageId: 1, message: "hi there", isImportant: false, userId: 1 },
+      {
+        chatMessageId: 2,
+        message: "hello noob",
+        isImportant: false,
+        userId: 2,
+      },
+      { chatMessageId: 3, message: "you suck", isImportant: false, userId: 1 },
+      {
+        chatMessageId: 4,
+        message: "you suck 2",
+        isImportant: false,
+        userId: 2,
+      },
+    ],
+  });
+  const [allChats, setAllChats] = useState([
+    { chatId: 2 },
+    { chatId: 3 },
+    { chatId: 4 },
+  ]);
 
-  const router = useRouter();
-
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
-  }
-  // Set initial message input value to an empty string
   const [messageInputValue, setMessageInputValue] = useState("");
 
   function sendMessage(message) {
@@ -41,81 +62,13 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    sendMessage({ email: "helloworld@gmail.com", text: "hello" });
-  }, []);
+    // sendMessage({ email: "helloworld@gmail.com", text: "hello" });
+    setChatMessages(currentChat.chatMessages);
+  }, [currentChat]);
 
   return (
     <MainContainer responsive>
-      <Sidebar position="left" scrollable={false}>
-        <Search placeholder="Search..." />
-        <ConversationList>
-          <Conversation
-            name="Lilly"
-            lastSenderName="Lilly"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Lilly" status="available" />
-          </Conversation>
-
-          <Conversation
-            name="Joe"
-            lastSenderName="Joe"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Joe" status="dnd" />
-          </Conversation>
-
-          <Conversation
-            name="Emily"
-            lastSenderName="Emily"
-            info="Yes i can do it for you"
-            unreadCnt={3}
-          >
-            <Avatar src="" name="Emily" status="available" />
-          </Conversation>
-
-          <Conversation
-            name="Kai"
-            lastSenderName="Kai"
-            info="Yes i can do it for you"
-            unreadDot
-          >
-            <Avatar src="" name="Kai" status="unavailable" />
-          </Conversation>
-
-          <Conversation
-            name="Akane"
-            lastSenderName="Akane"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Akane" status="eager" />
-          </Conversation>
-
-          <Conversation
-            name="Eliot"
-            lastSenderName="Eliot"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Eliot" status="away" />
-          </Conversation>
-
-          <Conversation
-            name="Zoe"
-            lastSenderName="Zoe"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Zoe" status="dnd" />
-          </Conversation>
-
-          <Conversation
-            name="Patrik"
-            lastSenderName="Patrik"
-            info="Yes i can do it for you"
-          >
-            <Avatar src="" name="Patrik" status="invisible" />
-          </Conversation>
-        </ConversationList>
-      </Sidebar>
+      <ChatSidebar userChats={allChats} />
 
       <ChatContainer>
         <ConversationHeader>
