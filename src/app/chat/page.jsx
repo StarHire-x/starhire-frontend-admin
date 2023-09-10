@@ -20,8 +20,10 @@ import {
   EllipsisButton,
 } from "@chatscope/chat-ui-kit-react";
 import ChatSidebar from "./ChatSidebar";
+import ChatHeader from "./ChatHeader";
 
 const Chat = () => {
+  const currUserId = 1; // should get from session
   // const session = useSession();
   // const router = useRouter();
   // if (session.status === "unauthenticated") {
@@ -31,7 +33,8 @@ const Chat = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [currentChat, setCurrentChat] = useState({
     chatId: 1,
-    sender: { userName: "Samantha" }, // in future API should only return the sender's details
+    jobSeeker: { userId: 1, userName: "Samantha" }, // in future API should only return both user's details
+    recruiter: { userId: 2, userName: "Joe" },
     chatMessages: [
       { chatMessageId: 1, message: "hi there", isImportant: false, userId: 1 },
       {
@@ -49,6 +52,8 @@ const Chat = () => {
       },
     ],
   });
+  const [currUser, setCurrUser] = useState();
+  const [otherUser, setOtherUser] = useState(); // user object
   const [allChats, setAllChats] = useState([
     { chatId: 2 },
     { chatId: 3 },
@@ -64,6 +69,16 @@ const Chat = () => {
   useEffect(() => {
     // sendMessage({ email: "helloworld@gmail.com", text: "hello" });
     setChatMessages(currentChat.chatMessages);
+    if (
+      currentChat.jobSeeker.userId == currUserId ||
+      currentChat.corporate.userId == currUserId
+    ) {
+      setCurrUser(currentChat.jobSeeker || currentChat.corporate);
+      setOtherUser(currentChat.recruiter);
+    } else {
+      setCurrUser(currentChat.recruiter);
+      setOtherUser(currentChat.jobSeeker || currentChat.corporate);
+    }
   }, [currentChat]);
 
   return (
@@ -84,130 +99,37 @@ const Chat = () => {
             <EllipsisButton orientation="vertical" />
           </ConversationHeader.Actions>
         </ConversationHeader>
+        <ChatHeader />
         <MessageList
           typingIndicator={<TypingIndicator content="Zoe is typing" />}
         >
           <MessageSeparator content="Saturday, 30 November 2019" />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "single",
-            }}
-          >
-            <Avatar src="" name="Zoe" />
-          </Message>
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "single",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "first",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "normal",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "normal",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "last",
-            }}
-          >
-            <Avatar src="" name="Zoe" />
-          </Message>
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "first",
-            }}
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "normal",
-            }}
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "normal",
-            }}
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Patrik",
-              direction: "outgoing",
-              position: "last",
-            }}
-          />
-
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "first",
-            }}
-            avatarSpacer
-          />
-          <Message
-            model={{
-              message: "Hello my friend",
-              sentTime: "15 mins ago",
-              sender: "Zoe",
-              direction: "incoming",
-              position: "last",
-            }}
-          >
-            <Avatar src="" name="Zoe" />
-          </Message>
+          {chatMessages.length > 0 &&
+            chatMessages.map((value, index) => (
+              <Message
+                index={index}
+                model={{
+                  message: value.message,
+                  sentTime: "15 mins ago",
+                  sender:
+                    value.userId == currUserId
+                      ? currUser.userName
+                      : otherUser.userName,
+                  direction:
+                    value.userId == currUserId ? "outgoing" : "incoming",
+                  position: "single",
+                }}
+              >
+                <Avatar
+                  src=""
+                  name={
+                    value.userId == currUserId
+                      ? currUser.userName
+                      : otherUser.userName
+                  }
+                />
+              </Message>
+            ))}
         </MessageList>
         <MessageInput
           placeholder="Type message here"

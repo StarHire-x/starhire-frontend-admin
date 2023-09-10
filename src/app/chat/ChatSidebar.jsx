@@ -5,17 +5,16 @@ import {
   Avatar,
   Conversation,
 } from "@chatscope/chat-ui-kit-react";
-import { useEffect, useState } from "react";
 
 const ChatSidebar = ({ userChats }) => {
   return (
     <Sidebar position="left" scrollable={false}>
       <Search placeholder="Search..." />
-
       <ConversationList>
-        {userChats.length >= 0 ? (
+        {userChats.length > 0 ? (
           userChats.map((value, index) => (
             <Conversation
+              index={index}
               name="Lilly"
               lastSenderName="Lilly"
               info="Yes i can do it for you"
