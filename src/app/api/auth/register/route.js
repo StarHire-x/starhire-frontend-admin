@@ -14,14 +14,13 @@ export const registerUser = async (request) => {
       },
       body: JSON.stringify(request),
     });
-    alert(res);
-    if (res.status === 201) {
-      return res;
-    } else if (!res.ok) {
+    if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message);
     }
-  } catch (err) {
-    return new NextResponse("Failed to create user", { status: 500 });
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the users", error);
+    throw error;
   }
 };
