@@ -30,52 +30,81 @@ const Chat = () => {
   //   router?.push("/login");
   // }
   const socket = io("http://localhost:8080");
+  const [messageInputValue, setMessageInputValue] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
-  const [currentChat, setCurrentChat] = useState({
-    chatId: 1,
-    jobSeeker: { userId: 1, userName: "Samantha" }, // in future API should only return both user's details
-    recruiter: { userId: 2, userName: "Joe" },
-    chatMessages: [
-      { chatMessageId: 1, message: "hi there", isImportant: false, userId: 1 },
-      {
-        chatMessageId: 2,
-        message: "hello noob",
-        isImportant: false,
-        userId: 2,
-      },
-      { chatMessageId: 3, message: "you suck", isImportant: false, userId: 1 },
-      {
-        chatMessageId: 4,
-        message: "you suck 2",
-        isImportant: false,
-        userId: 2,
-      },
-    ],
-  });
-  const [currUser, setCurrUser] = useState();
-  const [otherUser, setOtherUser] = useState(); // user object
+  const [currentChat, setCurrentChat] = useState(null);
+  const [currUser, setCurrUser] = useState(null);
+  const [otherUser, setOtherUser] = useState(null); // user object
   const [allChats, setAllChats] = useState([
-    { chatId: 2 },
-    { chatId: 3 },
-    { chatId: 4 },
+    {
+      chatId: 1,
+      jobSeeker: { userId: 2, userName: "Joe" }, // in future API should only return both user's details
+      recruiter: { userId: 1, userName: "Samantha" },
+      chatMessages: [
+        {
+          chatMessageId: 1,
+          message: "hi there",
+          isImportant: false,
+          userId: 1,
+        },
+        {
+          chatMessageId: 2,
+          message: "hello noob",
+          isImportant: false,
+          userId: 2,
+        },
+        {
+          chatMessageId: 3,
+          message: "you suck",
+          isImportant: false,
+          userId: 1,
+        },
+        {
+          chatMessageId: 4,
+          message: "you suck 2",
+          isImportant: false,
+          userId: 2,
+        },
+      ],
+    },
+    {
+      chatId: 2,
+      corporate: { userId: 3, userName: "Bool" }, // in future API should only return both user's details
+      recruiter: { userId: 1, userName: "Samantha" },
+      chatMessages: [],
+    },
+    {
+      chatId: 3,
+      corporate: { chatId: 4, userName: "Lool" },
+      recruiter: { userId: 1, userName: "Samantha" },
+      chatMessages: [],
+    },
+    {
+      chatId: 4,
+      corporate: { chatId: 5, userName: "Hahag" },
+      recruiter: { userId: 1, userName: "Samantha" },
+      chatMessages: [],
+    },
   ]);
 
-  const [messageInputValue, setMessageInputValue] = useState("");
-
-  function sendMessage(message) {
+  const sendMessage = (message) => {
     socket.emit("sendMessage", message);
-  }
+  };
+
+  const handleSendMessage = (content) => {
+    sendMessage({ userId: currUserId, text: content });
+    setMessageInputValue("");
+  };
+
+  const selectCurrentChat = (index) => {
+    if (index < allChats.length) {
+      setCurrentChat(allChats[index]);
+    }
+  };
 
   useEffect(() => {
-    // sendMessage({ email: "helloworld@gmail.com", text: "hello" });
-    setChatMessages(currentChat.chatMessages);
-    if (
-      currentChat.jobSeeker.userId == currUserId ||
-      currentChat.corporate.userId == currUserId
-    ) {
-      setCurrUser(currentChat.jobSeeker || currentChat.corporate);
-      setOtherUser(currentChat.recruiter);
-    } else {
+    setChatMessages(currentChat ? currentChat.chatMessages : []);
+    if (currentChat) {
       setCurrUser(currentChat.recruiter);
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
     }
@@ -83,14 +112,18 @@ const Chat = () => {
 
   return (
     <MainContainer responsive>
-      <ChatSidebar userChats={allChats} />
+      <ChatSidebar
+        userChats={allChats}
+        selectCurrentChat={selectCurrentChat}
+        currUserId={currUserId}
+      />
 
       <ChatContainer>
         <ConversationHeader>
           <ConversationHeader.Back />
-          <Avatar src="" name="Zoe" />
+          <Avatar src="" name={otherUser ? otherUser.userName : ""} />
           <ConversationHeader.Content
-            userName="Zoe"
+            userName={otherUser ? otherUser.userName : ""}
             info="Active 10 mins ago"
           />
           <ConversationHeader.Actions>
@@ -101,7 +134,11 @@ const Chat = () => {
         </ConversationHeader>
         <ChatHeader />
         <MessageList
-          typingIndicator={<TypingIndicator content="Zoe is typing" />}
+          typingIndicator={
+            <TypingIndicator
+              content={`${otherUser ? otherUser.userName : ""} is typing`}
+            />
+          }
         >
           <MessageSeparator content="Saturday, 30 November 2019" />
           {chatMessages.length > 0 &&
@@ -113,8 +150,8 @@ const Chat = () => {
                   sentTime: "15 mins ago",
                   sender:
                     value.userId == currUserId
-                      ? currUser.userName
-                      : otherUser.userName,
+                      ? currUser.userId
+                      : otherUser.userId,
                   direction:
                     value.userId == currUserId ? "outgoing" : "incoming",
                   position: "single",
@@ -135,6 +172,7 @@ const Chat = () => {
           placeholder="Type message here"
           value={messageInputValue}
           onChange={(val) => setMessageInputValue(val)}
+          onSend={(textContent) => handleSendMessage(textContent)}
         />
       </ChatContainer>
     </MainContainer>
