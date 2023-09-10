@@ -21,19 +21,19 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
+import { getAllUserChats } from "../api/auth/chat/route";
 
 const Chat = () => {
-  const currUserId = 1; // should get from session
+  const currentUserId = 1; // should get from session
   // const session = useSession();
   // const router = useRouter();
   // if (session.status === "unauthenticated") {
   //   router?.push("/login");
   // }
-  const socket = io("http://localhost:8080");
   const [messageInputValue, setMessageInputValue] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
-  const [currUser, setCurrUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [otherUser, setOtherUser] = useState(null); // user object
   const [allChats, setAllChats] = useState([
     {
@@ -87,12 +87,28 @@ const Chat = () => {
     },
   ]);
 
+  // WebSocket functions
+  const socket = io("http://localhost:8080");
+
   const sendMessage = (message) => {
     socket.emit("sendMessage", message);
   };
 
+  const receiveMessage = (message) => {
+    setChatMessages([...chatMessages, message]);
+  };
+
+  socket.on(currentChat ? currentChat.chatId : null, (message) => {
+    receiveMessage(message);
+  });
+
   const handleSendMessage = (content) => {
-    sendMessage({ userId: currUserId, text: content });
+    sendMessage({
+      userId: currentUserId,
+      chatId: currentChat ? currentChat.chatId : null,
+      message: content,
+      isImportant: false,
+    });
     setMessageInputValue("");
   };
 
@@ -103,20 +119,23 @@ const Chat = () => {
   };
 
   useEffect(() => {
+    async function getUserChats() {
+      const chats = await getAllUserChats(currentUserId);
+      setAllChats(chats);
+    }
+    getUserChats();
+  }, []);
+  useEffect(() => {
     setChatMessages(currentChat ? currentChat.chatMessages : []);
     if (currentChat) {
-      setCurrUser(currentChat.recruiter);
+      setCurrentUser(currentChat.recruiter);
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
     }
   }, [currentChat]);
 
   return (
     <MainContainer responsive>
-      <ChatSidebar
-        userChats={allChats}
-        selectCurrentChat={selectCurrentChat}
-        currUserId={currUserId}
-      />
+      <ChatSidebar userChats={allChats} selectCurrentChat={selectCurrentChat} />
 
       <ChatContainer>
         <ConversationHeader>
@@ -149,19 +168,19 @@ const Chat = () => {
                   message: value.message,
                   sentTime: "15 mins ago",
                   sender:
-                    value.userId == currUserId
-                      ? currUser.userId
+                    value.userId == currentUserId
+                      ? currentUser.userId
                       : otherUser.userId,
                   direction:
-                    value.userId == currUserId ? "outgoing" : "incoming",
+                    value.userId == currentUserId ? "outgoing" : "incoming",
                   position: "single",
                 }}
               >
                 <Avatar
                   src=""
                   name={
-                    value.userId == currUserId
-                      ? currUser.userName
+                    value.userId == currentUserId
+                      ? currentUser.userName
                       : otherUser.userName
                   }
                 />

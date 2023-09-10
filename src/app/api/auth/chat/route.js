@@ -1,19 +1,20 @@
-export const getUserChats = async (userId) => {
+export const getAllUserChats = async (userId) => {
   try {
-    const res = await fetch("http://localhost:8080/chat", {
+    const res = await fetch(`http://localhost:8080/chat/user-chats/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(request),
+      cache: "no-store",
     });
     if (!res.ok) {
       const errorData = await res.json();
+      console.log(errorData);
       throw new Error(errorData.message);
     }
     return await res.json();
   } catch (error) {
-    console.log("There was a problem fetching the users", error);
+    console.log("There was a problem fetching the chats", error);
     throw error;
   }
 };

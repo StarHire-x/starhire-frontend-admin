@@ -6,7 +6,7 @@ import {
   Conversation,
 } from "@chatscope/chat-ui-kit-react";
 
-const ChatSidebar = ({ userChats, selectCurrentChat, currUserId }) => {
+const ChatSidebar = ({ userChats, selectCurrentChat }) => {
   return (
     <Sidebar position="left" scrollable={false}>
       <Search placeholder="Search..." />
@@ -25,7 +25,13 @@ const ChatSidebar = ({ userChats, selectCurrentChat, currUserId }) => {
                   ? value.jobSeeker.userName
                   : value.corporate.userName
               }
-              info="Sample message"
+              info={
+                value.chatMessages
+                  ? value.chatMessages.length > 0
+                    ? value.chatMessages.slice(-1)[0].message
+                    : ""
+                  : ""
+              }
               onClick={() => selectCurrentChat(index)}
             >
               <Avatar
