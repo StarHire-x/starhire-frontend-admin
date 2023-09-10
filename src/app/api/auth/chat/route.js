@@ -9,7 +9,6 @@ export const getAllUserChats = async (userId) => {
     });
     if (!res.ok) {
       const errorData = await res.json();
-      console.log(errorData);
       throw new Error(errorData.message);
     }
     return await res.json();

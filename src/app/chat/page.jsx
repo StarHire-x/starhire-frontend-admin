@@ -35,57 +35,7 @@ const Chat = () => {
   const [currentChat, setCurrentChat] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [otherUser, setOtherUser] = useState(null); // user object
-  const [allChats, setAllChats] = useState([
-    {
-      chatId: 1,
-      jobSeeker: { userId: 2, userName: "Joe" }, // in future API should only return both user's details
-      recruiter: { userId: 1, userName: "Samantha" },
-      chatMessages: [
-        {
-          chatMessageId: 1,
-          message: "hi there",
-          isImportant: false,
-          userId: 1,
-        },
-        {
-          chatMessageId: 2,
-          message: "hello noob",
-          isImportant: false,
-          userId: 2,
-        },
-        {
-          chatMessageId: 3,
-          message: "you suck",
-          isImportant: false,
-          userId: 1,
-        },
-        {
-          chatMessageId: 4,
-          message: "you suck 2",
-          isImportant: false,
-          userId: 2,
-        },
-      ],
-    },
-    {
-      chatId: 2,
-      corporate: { userId: 3, userName: "Bool" }, // in future API should only return both user's details
-      recruiter: { userId: 1, userName: "Samantha" },
-      chatMessages: [],
-    },
-    {
-      chatId: 3,
-      corporate: { chatId: 4, userName: "Lool" },
-      recruiter: { userId: 1, userName: "Samantha" },
-      chatMessages: [],
-    },
-    {
-      chatId: 4,
-      corporate: { chatId: 5, userName: "Hahag" },
-      recruiter: { userId: 1, userName: "Samantha" },
-      chatMessages: [],
-    },
-  ]);
+  const [allChats, setAllChats] = useState([]);
 
   // WebSocket functions
   const socket = io("http://localhost:8080");
@@ -112,21 +62,31 @@ const Chat = () => {
     setMessageInputValue("");
   };
 
-  const selectCurrentChat = (index) => {
+  async function getUserChats() {
+    const chats = await getAllUserChats(currentUserId);
+    setAllChats(chats);
+  }
+
+  const selectCurrentChat = async (index) => {
     if (index < allChats.length) {
+      await getUserChats(); // not sure if this is a good implementation to handle clicking between chats
       setCurrentChat(allChats[index]);
     }
   };
 
   useEffect(() => {
-    async function getUserChats() {
-      const chats = await getAllUserChats(currentUserId);
-      setAllChats(chats);
-    }
     getUserChats();
   }, []);
+
   useEffect(() => {
-    setChatMessages(currentChat ? currentChat.chatMessages : []);
+    if (currentChat) {
+      const chatMessages = currentChat.chatMessages;
+      chatMessages.sort(
+        (message1, message2) => message1.timestamp < message2.timestamp
+      );
+      setChatMessages(chatMessages);
+    }
+
     if (currentChat) {
       setCurrentUser(currentChat.recruiter);
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
