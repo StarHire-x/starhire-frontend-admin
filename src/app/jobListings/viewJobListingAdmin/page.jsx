@@ -1,21 +1,93 @@
-"use client"
+"use client";
 
-import React from 'react';
-import { Card } from 'primereact/card';
-        
+import React, { useEffect, useState } from "react";
+import { Card } from "primereact/card";
+import { Button } from 'primereact/button';
+import './styles.css';
+import { Jolly_Lodger } from "next/font/google";
 
-export default function viewJobListingAdmin() {
-    
+export default function ViewJobListingAdmin() {
+  const [jobListing, setJobListing] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
-    return (
-        <div className="card">
-            <Card title="Job Details">
-                <p className="m-0">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae 
-                    numquam deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque quas!
-                </p>
-            </Card>
+  useEffect(() => {
+    fetch(`http://localhost:8080/job-listing/5`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setJobListing(data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  const header = (
+    <img
+      alt="Card"
+      src="https://primefaces.org/cdn/primereact/images/usercard.png"
+    />
+  );
+
+  const footer = (
+    <div className="flex flex-wrap justify-content-end gap-2">
+      <Button label="Approve" icon="pi pi-check" className="approve-button p-button-outlined p-button-secondary"/>
+      <Button
+        label="Reject"
+        icon="pi pi-times"
+        className="reject-button p-button-outlined p-button-secondary"
+      />
+    </div>
+  );
+
+  return (
+    <div>
+      {isLoading ? (
+        <div className="loading-animation">
+          <div className="spinner"></div>
         </div>
-    )
+      ) : (
+        <div>
+          <Card title={jobListing.title} footer={footer} header={header}>
+            <div className="p-grid">
+              <div className="p-col">
+                <strong>Description:</strong>
+                <p>{jobListing.description}</p>
+              </div>
+              <div className="p-col">
+                <strong>Job Location:</strong>
+                <p>{jobListing.jobLocation}</p>
+              </div>
+              <div className="p-col">
+                <strong>Listing Date:</strong>
+                <p>{new Date(jobListing.listingDate).toLocaleDateString()}</p>
+              </div>
+              <div className="p-col">
+                <strong>Average Salary:</strong>
+                <p>{jobListing.averageSalary}</p>
+              </div>
+              <div className="p-col">
+                <strong>Job Start Date:</strong>
+                <p>{new Date(jobListing.jobStartDate).toLocaleDateString()}</p>
+              </div>
+              <div className="p-col">
+                <strong>Job Listing Status:</strong>
+                <p>{jobListing.jobListingStatus}</p>
+              </div>
+              <div className="p-col">
+                <strong>Corporate:</strong>
+                <p>{jobListing.corporate.userName}</p>
+              </div>
+            </div>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
 }
-        
