@@ -17,8 +17,10 @@ import {
   MessageInput,
   EllipsisButton,
 } from "@chatscope/chat-ui-kit-react";
+import CreateChat from "./CreateChat";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
+
 import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 
 const Chat = () => {
@@ -96,9 +98,13 @@ const Chat = () => {
   }, [currentChat]);
 
   return (
+    <>
+    <h2>Start Chat</h2>
+    <CreateChat/>
+    <h2 style={{ marginTop: 10}}>Manage Chats</h2>
     <MainContainer responsive>
       <ChatSidebar userChats={allChats} selectCurrentChat={selectCurrentChat} />
-
+      
       <ChatContainer>
         <ConversationHeader>
           <ConversationHeader.Back />
@@ -155,6 +161,7 @@ const Chat = () => {
         />
       </ChatContainer>
     </MainContainer>
+    </>
   );
 };
 
