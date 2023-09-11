@@ -87,7 +87,6 @@ export default function JobListingsTable({ jobListings, router }) {
           body={(rowData) => (
             <Button
               label="View More Details"
-              onClick={() => handleViewDetails(rowData.corporate.userName)}
             />
             /*
             <Link href="/dashboard">

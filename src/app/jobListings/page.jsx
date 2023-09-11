@@ -101,13 +101,11 @@ export default function JobListings() {
     return (
       <React.Fragment>
         <Button
-          icon="pi pi-pencil"
+          label="View More Details"
           rounded
-          outlined
           className="mr-2"
           onClick={() => {
             setSelectedRowData(rowData);
-            //console.log("Selected Row Data:", selectedRowData);
             showUserDialog(rowData.title);
           }}
         />
@@ -121,7 +119,7 @@ export default function JobListings() {
 
   const saveStatusChange = async () => {
     try {
-      router.push('/jobListings/TEST'); 
+      router.push('/jobListings/viewJobListing'); 
     } catch (error) {
       console.error("Error changing status:", error);
     }
