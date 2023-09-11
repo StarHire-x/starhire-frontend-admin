@@ -1,5 +1,3 @@
-"use client"
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
@@ -15,11 +13,11 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
+import { updateUser, getUsers } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function JobListings() {
-
+export default function AccountManagement() {
   const session = useSession();
 
   const router = useRouter();
@@ -31,11 +29,10 @@ export default function JobListings() {
   }
 
   const [refreshData, setRefreshData] = useState(false);
-  //const [user, setUser] = useState(null);
-  const [jobListings, setJobListings] = useState([]);
+  const [user, setUser] = useState(null);
   const [userDialog, setUserDialog] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
-
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -47,7 +44,6 @@ export default function JobListings() {
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
   });
-
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [statuses] = useState(["Active", "Inactive"]);
 
@@ -108,7 +104,7 @@ export default function JobListings() {
           onClick={() => {
             setSelectedRowData(rowData);
             //console.log("Selected Row Data:", selectedRowData);
-            showUserDialog(rowData.title);
+            showUserDialog(rowData);
           }}
         />
       </React.Fragment>
@@ -120,12 +116,22 @@ export default function JobListings() {
   };
 
   const saveStatusChange = async () => {
+    console.log(selectedRowData);
     try {
-      router.push('/jobListings/TEST'); 
+      const toggledStatus =
+        selectedRowData.status === "Active" ? "Inactive" : "Active";
+      const request = {
+        role: selectedRowData.role,
+        status: toggledStatus,
+      };
+      console.log(request);
+      const response = await updateUser(request, selectedRowData.userId);
+      console.log("Status changed successfully:", response);
+      setRefreshData((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
     }
-    setSelectedRowData(null);
+    setSelectedRowData();
     setUserDialog(false);
   };
 
@@ -139,6 +145,7 @@ export default function JobListings() {
   const renderHeader = () => {
     return (
       <div className="flex gap-2 justify-content-between align-items-center">
+        <h4 className="m-0">Users</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -151,27 +158,13 @@ export default function JobListings() {
     );
   };
 
-   // Function to format date in "day-month-year" format
-   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
   useEffect(() => {
-    fetch(`http://localhost:8080/job-listing`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setJobListings(data);
-      })
+    getUsers()
+      .then((user) => setUser(user.data))
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching user:", error);
       });
-  }, []);
+  }, [refreshData]);
 
   const header = renderHeader();
 
@@ -183,13 +176,12 @@ export default function JobListings() {
   }
 
   if (
-    session.status === "authenticated" &&
-    session.data.user.role === "Administrator"
+    session.status === "authenticated" && session.data.user.role === "Administrator"
   ) {
     return (
       <div className="card">
         <DataTable
-          value={jobListings}
+          value={user}
           paginator
           header={header}
           rows={10}
@@ -197,98 +189,53 @@ export default function JobListings() {
           rowsPerPageOptions={[10, 25, 50]}
           dataKey="id"
           selectionMode="checkbox"
+          selection={selectedUsers}
+          onSelectionChange={(e) => setSelectedUsers(e.value)}
           filters={filters}
           filterDisplay="menu"
           globalFilterFields={[
-            "jobListingId",
-            "title",
-            "corporate.userName",
-            "jobLocation",
-            "listingDate",
-            "jobListingStatus",
+            "userId",
+            "userName",
+            "email",
+            "contactNo",
+            "status",
+            "role",
           ]}
           emptyMessage="No users found."
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         >
-          <Column field="jobListingId" header="Listing ID"></Column>
-          <Column field="title" header="Title"></Column>
-          <Column field="corporate.userName" header="Corporate Name" />
-          <Column field="jobLocation" header="Job Location"></Column>
+          <Column field="userId" header="User Id" sortable></Column>
+          <Column field="userName" header="User Name" sortable></Column>
+          <Column field="email" header="Email" sortable></Column>
+          <Column field="contactNo" header="Contact No" sortable></Column>
           <Column
-            field="listingDate"
-            header="List Date"
-            body={(rowData) => formatDate(rowData.listingDate)}
+            field="status"
+            header="Status"
+            sortable
+            body={statusBodyTemplate}
+            filter
+            filterElement={statusFilterTemplate}
           ></Column>
-
+          <Column field="role" header="Role" sortable></Column>
           <Column
-            field="jobListingStatus"
-            header="Job Listing Status"
-            body={(rowData) => (
-              <span
-                style={{
-                  color:
-                    rowData.jobListingStatus === "Active" ? "green" : "red",
-                }}
-              >
-                {rowData.jobListingStatus}
-              </span>
-            )}
+            body={actionBodyTemplate}
+            exportable={false}
+            style={{ minWidth: "12rem" }}
           ></Column>
-
-          <Column body={actionBodyTemplate} />
         </DataTable>
 
         <Dialog
           visible={userDialog}
           style={{ width: "32rem" }}
           breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="View More details?"
+          header="Change Status"
           className="p-fluid"
           footer={userDialogFooter}
           onHide={hideDialog}
         >
+          <h1>{selectedRowData && selectedRowData.userName}</h1>
         </Dialog>
       </div>
     );
   }
 }
-
-
-
-//OLD CODE
-/*
-import React, { useState, useEffect } from 'react';
-import JobListingsDataScroller from '@/components/JobListingsDataScroller/jobListingsDataScroller';
-import JobListingsTable from '@/components/JobListingsTable/jobListingsTable';
-import { useRouter } from "next/router";
-        
-
-export default function JobListings() {
-    //const router = useRouter();
-    const [jobListings, setJobListings] = useState([]);
-
-
-    useEffect(() => {
-        fetch(`http://localhost:8080/job-listing`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setJobListings(data);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-            });
-    }, []);
-
-    return (
-        <div className="card">
-            <JobListingsTable jobListings={jobListings} /> 
-        </div>
-
-    );
-}
-*/

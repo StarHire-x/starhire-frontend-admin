@@ -36,6 +36,11 @@ const links = [
     title: "Dashboard",
     url: "/dashboard",
   },
+  {
+    id: 7,
+    title: "Job Listings",
+    url: "/jobListings",
+  },
 ];
 
 const adminLinks = [
@@ -44,10 +49,17 @@ const adminLinks = [
     title: "User Management",
     url: "/userManagement"
   },
+  {
+    id: 2,
+    title: "Job Listings",
+    url: "/jobListings"
+  },
 ]
+
 
 const Navbar = () => {
   const session = useSession();
+//console.log(session.role);
 
   return (
     <div className={styles.container}>
