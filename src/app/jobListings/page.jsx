@@ -118,10 +118,19 @@ export default function JobListings() {
   };
 
   const saveStatusChange = async () => {
-    try {
-      router.push('/jobListings/viewJobListing'); 
-    } catch (error) {
-      console.error("Error changing status:", error);
+    if (session.data.user.role === "Administrator") {
+      try {
+        router.push("/jobListings/viewJobListingAdmin");
+      } catch (error) {
+        console.error("Error changing status:", error);
+      }
+    } else {
+      try {
+        router.push("/jobListings/viewJobListingRecruiter");
+      } catch (error) {
+        console.error("Error changing status:", error);
+      }
+
     }
     setSelectedRowData(null);
     setUserDialog(false);
