@@ -44,3 +44,26 @@ export const updateUser = async (request, id) => {
       throw error;
     }
 }
+
+export const deleteUser = async (request, id) => {
+  try {
+    const res = await fetch(`http://localhost:8080/users/${id}?role=${request}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store"
+    });
+
+    console.log(res);
+    if (res.ok) {
+      return;
+    } else {
+      throw new Error(errorData.message || "An error occurred");
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the users", error);
+    throw error;
+  }
+};

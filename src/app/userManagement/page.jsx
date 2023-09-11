@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -13,7 +13,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { updateUser, getUsers } from "../api/auth/user/route";
+import { updateUser, getUsers, deleteUser } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -24,13 +24,14 @@ export default function AccountManagement() {
 
   console.log(session);
 
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
-  }
+  // if (session.status === "unauthenticated") {
+  //   router?.push("/login");
+  // }
 
   const [refreshData, setRefreshData] = useState(false);
   const [user, setUser] = useState(null);
   const [userDialog, setUserDialog] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [filters, setFilters] = useState({
@@ -46,6 +47,7 @@ export default function AccountManagement() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [statuses] = useState(["Active", "Inactive"]);
+  const dt = useRef(null);
 
   const getStatus = (status) => {
     switch (status) {
@@ -69,6 +71,11 @@ export default function AccountManagement() {
   const showUserDialog = (rowData) => {
     setUserDialog(true);
   };
+
+  const showDeleteDialog = (rowData) => {
+    setDeleteDialog(true);
+  }
+
 
   const statusBodyTemplate = (rowData) => {
     return <Tag value={rowData.status} severity={getStatus(rowData.status)} />;
@@ -107,6 +114,17 @@ export default function AccountManagement() {
             showUserDialog(rowData);
           }}
         />
+        <Button
+          icon="pi pi-trash"
+          rounded
+          outlined
+          className="mr-2"
+          onClick={() => {
+            setSelectedRowData(rowData);
+            //console.log("Selected Row Data:", selectedRowData);
+            showDeleteDialog(rowData);
+          }}
+        />
       </React.Fragment>
     );
   };
@@ -114,6 +132,10 @@ export default function AccountManagement() {
   const hideDialog = () => {
     setUserDialog(false);
   };
+
+  const hideDeleteDialog = () => {
+    setDeleteDialog(false);
+  }
 
   const saveStatusChange = async () => {
     console.log(selectedRowData);
@@ -135,12 +157,45 @@ export default function AccountManagement() {
     setUserDialog(false);
   };
 
+  const deleteUserFromRow = async () => {
+    console.log(selectedRowData);
+    try {
+      const request = {
+        role: selectedRowData.role,
+      }
+      console.log(request);
+      const response = await deleteUser(selectedRowData.role, selectedRowData.userId);
+      console.log("User is deleted", response)
+      setRefreshData((prev) => !prev);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+    setSelectedRowData();
+    setDeleteDialog(false);
+  }
+
   const userDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
       <Button label="Yes" icon="pi pi-check" onClick={saveStatusChange} />
     </React.Fragment>
   );
+
+  const deleteUserDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        outlined
+        onClick={hideDeleteDialog}
+      />
+      <Button label="Yes" icon="pi pi-check" onClick={deleteUserFromRow} />
+    </React.Fragment>
+  );
+
+  const exportCSV = () => {
+    dt.current.exportCSV();
+  };
 
   const renderHeader = () => {
     return (
@@ -154,6 +209,12 @@ export default function AccountManagement() {
             placeholder="Keyword Search"
           />
         </span>
+        <Button
+          label="Export CSV"
+          icon="pi pi-upload"
+          className="p-button-help"
+          onClick={exportCSV}
+        />
       </div>
     );
   };
@@ -168,21 +229,23 @@ export default function AccountManagement() {
 
   const header = renderHeader();
 
-  if (
-    session.status === "authenticated" &&
-    session.data.user.role !== "Administrator"
-  ) {
-    router?.push("/dashboard");
-  }
+  // if (
+  //   session.status === "authenticated" &&
+  //   session.data.user.role !== "Administrator"
+  // ) {
+  //   router?.push("/dashboard");
+  // }
 
   if (
-    session.status === "authenticated" && session.data.user.role === "Administrator"
+    // session.status === "authenticated" && session.data.user.role === "Administrator"
+    true
   ) {
     return (
       <div className="card">
         <DataTable
           value={user}
           paginator
+          ref={dt}
           header={header}
           rows={10}
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -222,6 +285,7 @@ export default function AccountManagement() {
             exportable={false}
             style={{ minWidth: "12rem" }}
           ></Column>
+          <Column field="createdAt" header="Created Date" sortable></Column>
         </DataTable>
 
         <Dialog
@@ -232,6 +296,18 @@ export default function AccountManagement() {
           className="p-fluid"
           footer={userDialogFooter}
           onHide={hideDialog}
+        >
+          <h1>{selectedRowData && selectedRowData.userName}</h1>
+        </Dialog>
+
+        <Dialog
+          visible={deleteDialog}
+          style={{ width: "32rem" }}
+          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+          header="Delete user"
+          className="p-fluid"
+          footer={deleteUserDialogFooter}
+          onHide={hideDeleteDialog}
         >
           <h1>{selectedRowData && selectedRowData.userName}</h1>
         </Dialog>
