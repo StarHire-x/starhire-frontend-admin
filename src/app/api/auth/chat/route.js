@@ -34,8 +34,29 @@ export const getOneUserChat = async (chatId) => {
     }
     return await res.json();
   } catch (error) {
-    console.log("SEHHH: ");
     console.log("There was a problem fetching chat messages for this chat", error);
+    throw error;
+  }
+};
+
+export const createNewChatByRecruiter = async (newChat) => {
+  try {
+    const res = await fetch(`http://localhost:8080/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newChat),
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem creating this chat", error);
     throw error;
   }
 };
