@@ -5,13 +5,24 @@ import { Card } from "primereact/card";
 import { Button } from 'primereact/button';
 import './styles.css';
 import { Jolly_Lodger } from "next/font/google";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from 'next/navigation'
 
 export default function ViewJobListingAdmin() {
+
+  const router = useRouter();
+
+  const params = useSearchParams();
+  params.get("query-parameter-name");
+  console.log("TEst" + params.get("query-parameter-name"));
+
   const [jobListing, setJobListing] = useState({});
+
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
-    fetch(`http://localhost:8080/job-listing/5`)
+    fetch(`http://localhost:8080/job-listing/${10}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -82,7 +93,7 @@ export default function ViewJobListingAdmin() {
               </div>
               <div className="p-col">
                 <strong>Corporate:</strong>
-                <p>{jobListing.corporate.userName}</p>
+                <p>{jobListing.description}</p>
               </div>
             </div>
           </Card>

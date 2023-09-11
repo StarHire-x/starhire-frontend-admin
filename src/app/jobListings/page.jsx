@@ -1,5 +1,3 @@
-"use client"
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
@@ -17,14 +15,14 @@ import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from 'next/link'
+
 
 export default function JobListings() {
 
   const session = useSession();
 
   const router = useRouter();
-
-  console.log(session);
 
   if (session.status === "unauthenticated") {
     router?.push("/login");
@@ -117,10 +115,17 @@ export default function JobListings() {
     setUserDialog(false);
   };
 
+  const createLink = () => {
+    console.log("STOP");
+  }
+
   const saveStatusChange = async () => {
     if (session.data.user.role === "Administrator") {
       try {
-        router.push("/jobListings/viewJobListingAdmin");
+        // Use router.push to navigate to another page with a query parameter
+        createLink();
+        //router?.push('/jobListings/viewJobListingAdmin?value=${role}');
+        //router.push(`/jobListings/viewJobListingAdmin`);
       } catch (error) {
         console.error("Error changing status:", error);
       }
@@ -130,11 +135,9 @@ export default function JobListings() {
       } catch (error) {
         console.error("Error changing status:", error);
       }
-
     }
-    setSelectedRowData(null);
-    setUserDialog(false);
-  };
+  }
+  
 
   const userDialogFooter = (
     <React.Fragment>
