@@ -26,9 +26,9 @@ export default function CreateChat() {
 
   console.log(session);
 
-//   if (session.status === "unauthenticated") {
-//     router?.push("/login");
-//   }
+  //   if (session.status === "unauthenticated") {
+  //     router?.push("/login");
+  //   }
 
   const [refreshData, setRefreshData] = useState(false);
   const [user, setUser] = useState(null);
@@ -38,8 +38,10 @@ export default function CreateChat() {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
       operator: FilterOperator.OR,
-      constraints: [{ value: "Job_Seeker", matchMode: FilterMatchMode.EQUALS },
-                    { value: "Corporate", matchMode: FilterMatchMode.EQUALS },],
+      constraints: [
+        { value: "Job_Seeker", matchMode: FilterMatchMode.EQUALS },
+        { value: "Corporate", matchMode: FilterMatchMode.EQUALS },
+      ],
     },
     status: {
       operator: FilterOperator.OR,
@@ -90,49 +92,75 @@ export default function CreateChat() {
     return <Tag value={option} severity={getStatus(option)} />;
   };
 
-   // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION ----------------------------- 
-   const createNewChat = async () => {
+  // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
+  const createNewChat = async (selectedUser) => {
     console.log("HELLOOO");
-    console.log(selectedRowData);
+    console.log(selectedUser);
+    // console.log(selectedRowData);
     let request = {};
     try {
-        if (selectedRowData.role === "Job_Seeker") {
-            request = {
-                recruiterId: session.user.data.id,
-                jobSeekerId: selectedRowData.id,
-                lastUpdated: new Date()
-            };
-        } else if (selectedRowData.role === "Corporate") {
-            request = {
-                recruiterId: session.user.data.id,
-                corporateId: selectedRowData.id,
-                lastUpdated: new Date()
-            };
-        }
+      if (selectedUser.role === "Job_Seeker") {
+        request = {
+          recruiterId: 4, // retrieve it from session next time
+          jobSeekerId: selectedUser.userId,
+          lastUpdated: new Date(),
+        };
+      } else if (selectedUser.role === "Corporate") {
+        request = {
+          recruiterId: 4, // retrieve it from session next time
+          corporateId: selectedUser.userId,
+          lastUpdated: new Date(),
+        };
+      }
 
-      const response = await createNewChatByRecruiter(request, selectedRowData.userId);
+      const response = await createNewChatByRecruiter(
+        request,
+        selectedUser.userId
+      );
       console.log("Chat has been created successfully!" + response);
       setRefreshData((prev) => !prev);
-
     } catch (error) {
       console.error("Error changing status:", error);
     }
     setSelectedRowData();
   };
-  // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION ----------------------------- 
+  // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
+
+  const hasChattedWithUser =  (selectedUser) => {
+    console.log("chats length");
+    // console.log(selectedUser);
+    const chats = selectedUser.chats;
+    if (chats.length > 0) {
+      for (let i = 0; i < chats.length; i++) {
+        if (chats[i].recruiter.userId === 4) {
+          if (selectedUser.role === "Job_Seeker" && chats[i].jobSeeker.userId === selectedUser.userId) {
+            return true;
+          } else if (selectedUser.role === "Corporate" && chats[i].corporate.userId === selectedUser.userId) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  };
+
+  
 
   const actionBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
+    // alert("Row Data:" + rowData);
+
     return (
       <React.Fragment>
         <Button
           icon="pi pi-comments"
           rounded
           outlined
+          disabled={hasChattedWithUser(rowData)}
           className="mr-2"
           onClick={() => {
-            setSelectedRowData(rowData);
-            createNewChat();
+            createNewChat(rowData);
+            // createNewChat();
           }}
         />
       </React.Fragment>
@@ -165,62 +193,61 @@ export default function CreateChat() {
 
   const header = renderHeader();
 
-//   if (
-//     session.status === "authenticated" &&
-//     session.data.user.role !== "Recruiter"
-//   ) {
-//     router?.push("/");
-//   }
+  //   if (
+  //     session.status === "authenticated" &&
+  //     session.data.user.role !== "Recruiter"
+  //   ) {
+  //     router?.push("/");
+  //   }
 
-//   if (
-//     session.status === "authenticated" && session.data.user.role === "Recruiter"
-//   ) {
-    return (
-      <div className="card">
-        <DataTable
-          value={user}
-          paginator
-          header={header}
-          rows={10}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          rowsPerPageOptions={[10, 25, 50]}
-          dataKey="id"
-          selectionMode="checkbox"
-          selection={selectedUsers}
-          onSelectionChange={(e) => setSelectedUsers(e.value)}
-          filters={filters}
-          filterDisplay="menu"
-          globalFilterFields={[
-            "userId",
-            "userName",
-            "email",
-            "contactNo",
-            "status",
-            "role",
-          ]}
-          emptyMessage="No users found."
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        >
-          <Column field="userId" header="User Id" sortable></Column>
-          <Column field="userName" header="User Name" sortable></Column>
-          <Column field="email" header="Email" sortable></Column>
-          <Column field="contactNo" header="Contact No" sortable></Column>
-          <Column
-            field="status"
-            header="Status"
-            sortable
-            body={statusBodyTemplate}
-            filter
-            filterElement={statusFilterTemplate}
-          ></Column>
-          <Column field="role" header="Role" sortable></Column>
-          <Column
-            body={actionBodyTemplate}
-            exportable={false}
-            style={{ minWidth: "12rem" }}
-          ></Column>
-        </DataTable>
-      </div>
-    );
-  
+  //   if (
+  //     session.status === "authenticated" && session.data.user.role === "Recruiter"
+  //   ) {
+  return (
+    <div className="card">
+      <DataTable
+        value={user}
+        paginator
+        header={header}
+        rows={10}
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+        rowsPerPageOptions={[10, 25, 50]}
+        dataKey="id"
+        selectionMode="checkbox"
+        selection={selectedUsers}
+        onSelectionChange={(e) => setSelectedUsers(e.value)}
+        filters={filters}
+        filterDisplay="menu"
+        globalFilterFields={[
+          "userId",
+          "userName",
+          "email",
+          "contactNo",
+          "status",
+          "role",
+        ]}
+        emptyMessage="No users found."
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      >
+        <Column field="userId" header="User Id" sortable></Column>
+        <Column field="userName" header="User Name" sortable></Column>
+        <Column field="email" header="Email" sortable></Column>
+        <Column field="contactNo" header="Contact No" sortable></Column>
+        <Column
+          field="status"
+          header="Status"
+          sortable
+          body={statusBodyTemplate}
+          filter
+          filterElement={statusFilterTemplate}
+        ></Column>
+        <Column field="role" header="Role" sortable></Column>
+        <Column
+          body={actionBodyTemplate}
+          exportable={false}
+          style={{ minWidth: "12rem" }}
+        ></Column>
+      </DataTable>
+    </div>
+  );
 }
