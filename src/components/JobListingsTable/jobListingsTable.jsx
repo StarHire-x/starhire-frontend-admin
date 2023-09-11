@@ -33,10 +33,9 @@ export default function JobListingsTable({ jobListings, router }) {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Navigate to another page when the button is clicked
+  
   const handleViewDetails = (rowData) => {
     alert(rowData);
-    router.push(`/dashboard`); 
   };
 
   return (
@@ -46,21 +45,26 @@ export default function JobListingsTable({ jobListings, router }) {
         style={dataTableStyles}
         headerStyle={headerStyles}
       >
-        <Column field="jobListingId" header="Job Listing ID"></Column>
+        <Column field="jobListingId" header="Listing ID"></Column>
         <Column field="title" header="Title"></Column>
-        <Column field="description" header="Description"></Column>
+        <Column
+          field="corporate.userName" 
+          header="Corporate Name"
+        />
         <Column field="jobLocation" header="Job Location"></Column>
         <Column
           field="listingDate"
-          header="Listing Date"
+          header="List Date"
           body={(rowData) => formatDate(rowData.listingDate)} // Format the date
         ></Column>
-        <Column field="averageSalary" header="Average Salary"></Column>
+
+        {/*}
         <Column
           field="jobStartDate"
-          header="Listing Date"
+          header="Job Start Date"
           body={(rowData) => formatDate(rowData.listingDate)} // Format the date
         ></Column>
+        */}
 
         <Column
           field="jobListingStatus"
@@ -78,12 +82,18 @@ export default function JobListingsTable({ jobListings, router }) {
 
         <Column
           body={(rowData) => (
+            <Button
+              label="View More Details"
+              onClick={() => handleViewDetails(rowData.corporate.userName)}
+            />
+            /*
             <Link href="/dashboard">
               <Button
                 label="View More Details"
-                onClick={() => handleViewDetails(rowData.jobListingId)}
+                onClick={() => handleViewDetails(rowData.corporate.userName)}
               />
             </Link>
+            */
           )}
         ></Column>
       </DataTable>
