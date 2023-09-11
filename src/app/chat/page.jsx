@@ -24,12 +24,14 @@ import ChatHeader from "./ChatHeader";
 import { getAllUserChats } from "../api/auth/chat/route";
 
 const Chat = () => {
-  const currentUserId = 1; // should get from session
+  const currentUserId = 4; //recruiteryj user
+  // should get from session
   // const session = useSession();
   // const router = useRouter();
   // if (session.status === "unauthenticated") {
   //   router?.push("/login");
   // }
+
   const [messageInputValue, setMessageInputValue] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -82,7 +84,7 @@ const Chat = () => {
     if (currentChat) {
       const chatMessages = currentChat.chatMessages;
       chatMessages.sort(
-        (message1, message2) => message1.timestamp < message2.timestamp
+        (message1, message2) => message1.timestamp > message2.timestamp
       );
       setChatMessages(chatMessages);
     }
@@ -106,8 +108,6 @@ const Chat = () => {
             info="Active 10 mins ago"
           />
           <ConversationHeader.Actions>
-            <VoiceCallButton />
-            <VideoCallButton />
             <EllipsisButton orientation="vertical" />
           </ConversationHeader.Actions>
         </ConversationHeader>
