@@ -35,18 +35,16 @@ const ForgetPassword = () => {
       const role = formData.role;
       alert(`Email: ${email}, Role: ${role}`);
 
-      const result = await forgetPassword({
-        email: email,
-        role: role,
-      })
+      try {
+        const result = await forgetPassword({
+          email: email,
+          role: role,
+        });
 
-      if (!result.error) {
-        const sendEmail = await sendEmail(result)
-        alert("Success");
-        router.push("/dashboard");
-      } else {
-        // Handle the error result.error
-        alert(result.error);
+        alert(result.message);
+        router.push("/resetPassword");
+      } catch (error) {
+        alert(error);
       }
     };
 
