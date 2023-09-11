@@ -1,17 +1,26 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import DataScrollerCom from '@/components/DataScrollerCom/DataScrollerCom';
+import JobListingsDataScroller from '@/components/JobListingsDataScroller/jobListingsDataScroller';
+import JobListingsTable from '@/components/JobListingsTable/jobListingsTable';
+import { useRouter } from "next/router";
+        
 
 export default function JobListings() {
+    //const router = useRouter();
     const [jobListings, setJobListings] = useState([]);
+
 
     useEffect(() => {
         fetch(`http://localhost:8080/job-listing`)
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then((data) => {
-                setJobListings(data); 
-                console.log(data);
+                setJobListings(data);
             })
             .catch((error) => {
                 console.error('Error fetching data:', error);
@@ -20,7 +29,8 @@ export default function JobListings() {
 
     return (
         <div className="card">
-            <DataScrollerCom jobListings={jobListings} /> 
+            <JobListingsTable jobListings={jobListings} /> 
         </div>
+
     );
 }
