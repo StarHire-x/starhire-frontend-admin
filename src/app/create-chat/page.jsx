@@ -222,7 +222,7 @@ const CreateChat = () => {
   //   ) {
   return (
     <>
-    <h2>Create Chat</h2>
+    <h2 style={{marginTop: 20, marginBottom: 20}}>New Chat</h2>
     <div className="card">
       <DataTable
         value={user}
