@@ -103,7 +103,7 @@ export default function JobListings() {
           rounded
           className="mr-2"
           onClick={() => {
-            setSelectedRowData(rowData);
+            setSelectedRowData(rowData.jobListingId);
             showUserDialog(rowData.title);
           }}
         />
@@ -115,17 +115,17 @@ export default function JobListings() {
     setUserDialog(false);
   };
 
-  const createLink = () => {
-    console.log("STOP");
+  const createLink = (id) => {
+    const link = `/jobListings/viewJobListingAdmin?id=${id}`;
+    return link;
   }
 
-  const saveStatusChange = async () => {
+  const saveStatusChange = async (id) => {
     if (session.data.user.role === "Administrator") {
       try {
         // Use router.push to navigate to another page with a query parameter
-        createLink();
-        //router?.push('/jobListings/viewJobListingAdmin?value=${role}');
-        //router.push(`/jobListings/viewJobListingAdmin`);
+        let link = createLink(selectedRowData);
+        router.push(link);
       } catch (error) {
         console.error("Error changing status:", error);
       }

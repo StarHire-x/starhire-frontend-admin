@@ -13,8 +13,7 @@ export default function ViewJobListingAdmin() {
   const router = useRouter();
 
   const params = useSearchParams();
-  params.get("query-parameter-name");
-  console.log("TEst" + params.get("query-parameter-name"));
+  const id = params.get("id");
 
   const [jobListing, setJobListing] = useState({});
 
@@ -22,7 +21,7 @@ export default function ViewJobListingAdmin() {
 
 
   useEffect(() => {
-    fetch(`http://localhost:8080/job-listing/${10}`)
+    fetch(`http://localhost:8080/job-listing/${id}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
