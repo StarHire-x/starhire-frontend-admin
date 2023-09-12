@@ -74,7 +74,10 @@ const Chat = () => {
   const selectCurrentChat = async (index) => {
     if (index < allChats.length) {
       // get current chat id
-      const currentChatId = allChats[index].chatId;
+      const currentChatId = allChats[index].chatId; 
+      //problem when the chat is filtered because it gets the index from allChats. it should retrieve from filteredChats
+      //from ChatSideBar.
+
       const chatMessagesByCurrentChatId = await getOneUserChat(currentChatId);
       setCurrentChat(chatMessagesByCurrentChatId);
     }
