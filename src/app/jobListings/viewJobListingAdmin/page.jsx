@@ -7,8 +7,12 @@ import './styles.css';
 import { Jolly_Lodger } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from 'next/navigation'
+import { Dialog } from "primereact/dialog";
+import { useSession } from "next-auth/react";
 
 export default function ViewJobListingAdmin() {
+
+  const session = useSession();
 
   const router = useRouter();
 
@@ -18,6 +22,10 @@ export default function ViewJobListingAdmin() {
   const [jobListing, setJobListing] = useState({});
 
   const [isLoading, setIsLoading] = useState(true);
+
+  const [userDialog, setUserDialog] = useState(false);
+
+  const [selectedRowData, setSelectedRowData] = useState(null);
 
 
   useEffect(() => {
@@ -45,21 +53,74 @@ export default function ViewJobListingAdmin() {
     />
   );
 
+  const handleRefresh = () => {
+    router.push(`/jobListings`); // This will refresh the current page
+  };
+
+
+  //API call
+  const updateJobListingStatusAPICall = async (request, id) => {
+    try {
+      const res = await fetch(`http://localhost:8080/job-listing/${id}`, 
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request)
+      });
+
+      console.log(res);
+      if (res.ok) {
+        handleRefresh();
+        //return;
+      } else {
+        throw new Error(errorData.message || "An error occurred");
+      }
+    } catch (error) {
+      console.log("There was a problem", error);
+      throw error;
+    }
+}
+
+  const updateJobListingStatus = async (newStatus) => {
+    try {
+      const request = {
+        jobListingStatus: newStatus
+      };
+      const response = await updateJobListingStatusAPICall(
+        request,
+        id
+      );
+      console.log("Status changed successfully:", response);
+    } catch (error) {
+      console.error("Error changing status:", error);
+    }
+  };
+
   const footer = (
     <div className="flex flex-wrap justify-content-end gap-2">
-      <Button label="Approve" icon="pi pi-check" className="approve-button p-button-outlined p-button-secondary"/>
+      <Button
+        label="Approve"
+        icon="pi pi-check"
+        className="approve-button p-button-outlined p-button-secondary"
+        onClick={() => updateJobListingStatus("Active")}
+      />
       <Button
         label="Reject"
         icon="pi pi-times"
         className="reject-button p-button-outlined p-button-secondary"
+        onClick={() => updateJobListingStatus("Inactive")}
       />
       <Button
         label="Archive"
         icon="pi pi-times"
         className="archive-button p-button-outlined p-button-secondary"
+        onClick={() => updateJobListingStatus("Unverifie1d")}
       />
     </div>
   );
+
 
   return (
     <div>
@@ -100,6 +161,7 @@ export default function ViewJobListingAdmin() {
                 <p>{jobListing.corporate.companyName}</p>
               </div>
             </div>
+
           </Card>
         </div>
       )}
