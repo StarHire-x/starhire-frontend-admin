@@ -13,7 +13,7 @@
 .links {
     display: flex;
     align-items: center;
-    gap: 50px;
+    gap: 20px;
 }
 
 .logout {
@@ -73,7 +73,6 @@
     flex-direction: column; /* Display links in a column */
     gap: 2px; /* Add some spacing between links */
     padding: 10px; /* Add padding to the dropdown container */
-    /* position: absolute; */
     left: 0;
     top: 100%; /* Position it below the link */
 }
