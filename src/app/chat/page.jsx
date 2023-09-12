@@ -18,7 +18,7 @@ import {
   MessageInput,
   EllipsisButton,
 } from "@chatscope/chat-ui-kit-react";
-import CreateChat from "./CreateChat";
+import CreateChat from "../create-chat/page";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
 import HumanIcon from "../../../public/icon.png";
@@ -101,9 +101,7 @@ const Chat = () => {
 
   return (
     <>
-      <h2 style={{ marginTop: 10, marginBottom: 10 }}>Start Chat</h2>
-      <CreateChat />
-      <h2 style={{ marginTop: 10, marginBottom: 10 }}>Manage Chats</h2>
+      <h2>Manage Chats</h2>
       <MainContainer responsive>
         <ChatSidebar
           userChats={allChats}

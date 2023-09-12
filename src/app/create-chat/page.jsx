@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { createNewChatByRecruiter } from "../api/auth/chat/route";
 import ResponseCache from "next/dist/server/response-cache";
 
-export default function CreateChat() {
+const CreateChat = () => {
   const session = useSession();
 
   const router = useRouter();
@@ -221,6 +221,8 @@ export default function CreateChat() {
   //     session.status === "authenticated" && session.data.user.role === "Recruiter"
   //   ) {
   return (
+    <>
+    <h2>Create Chat</h2>
     <div className="card">
       <DataTable
         value={user}
@@ -278,5 +280,8 @@ export default function CreateChat() {
         <h3>Do you wish to create a new chat with {selectedRowData && selectedRowData.userName}? </h3>
       </Dialog>
     </div>
+    </>
   );
 }
+
+export default CreateChat;
