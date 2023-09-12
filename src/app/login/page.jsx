@@ -40,7 +40,7 @@ const Login = () => {
     const email = formData.email;
     const password = formData.password;
     const role = formData.role;
-    alert(`Email: ${email}, Password: ${password}, Role: ${role}`);
+    //alert(`Email: ${email}, Password: ${password}, Role: ${role}`);
 
   
     const result = await signIn('credentials', {
@@ -52,7 +52,7 @@ const Login = () => {
 
     if (!result.error) {
       // User signed in successfully
-      alert("Success")
+      //alert("Success")
       router.push("/dashboard");
     } else {
       // Handle the error result.error
