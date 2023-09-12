@@ -5,6 +5,8 @@ import {
   Avatar,
   Conversation,
 } from "@chatscope/chat-ui-kit-react";
+import Image from 'next/image'
+import HumanIcon from "../../../public/icon.png";
 
 const ChatSidebar = ({ userChats, selectCurrentChat }) => {
   return (
@@ -34,15 +36,17 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
               }
               onClick={() => selectCurrentChat(index)}
             >
-              <Avatar
-                src=""
-                name={
-                  value.jobSeeker
-                    ? value.jobSeeker.userName
-                    : value.corporate.userName
-                }
-                status="available"
+            <Avatar>
+              <Image src={HumanIcon} 
+              alt="Profile Picture"
+              name={
+                value.jobSeeker
+                  ? value.jobSeeker.userName
+                  : value.corporate.userName
+              }
+              status="available"
               />
+            </Avatar>
             </Conversation>
           ))
         ) : (
