@@ -15,7 +15,7 @@ import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from 'next/link'
+import './styles.css';
 
 
 export default function JobListings() {
@@ -33,6 +33,7 @@ export default function JobListings() {
   const [jobListings, setJobListings] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -177,9 +178,11 @@ export default function JobListings() {
       })
       .then((data) => {
         setJobListings(data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
+        setIsLoading(false);
       });
   }, []);
 
@@ -192,76 +195,85 @@ export default function JobListings() {
     router?.push("/dashboard");
   }
 
-  if (
-    session.status === "authenticated" &&
-    session.data.user.role === "Administrator"
-  ) {
+  if (session.status === "authenticated" && session.data.user.role === "Administrator") {
     return (
       <div className="card">
-        <DataTable
-          value={jobListings}
-          paginator
-          header={header}
-          rows={10}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          rowsPerPageOptions={[10, 25, 50]}
-          dataKey="id"
-          selectionMode="checkbox"
-          filters={filters}
-          filterDisplay="menu"
-          globalFilterFields={[
-            "jobListingId",
-            "title",
-            "corporate.companyName",
-            "jobLocation",
-            "listingDate",
-            "jobListingStatus",
-          ]}
-          emptyMessage="No users found."
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        >
-          <Column field="jobListingId" header="Listing ID"></Column>
-          <Column field="title" header="Title"></Column>
-          <Column field="corporate.companyName" header="Company Name" />
-          <Column field="jobLocation" header="Job Location"></Column>
-          <Column
-            field="listingDate"
-            header="List Date"
-            body={(rowData) => formatDate(rowData.listingDate)}
-          ></Column>
+        {isLoading ? (
+          <div className="loading-animation">
+            <div className="spinner"></div>
+          </div>
+        ) : (
+          <>
+            <DataTable
+              value={jobListings}
+              paginator
+              header={header}
+              rows={10}
+              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+              rowsPerPageOptions={[10, 25, 50]}
+              dataKey="id"
+              selectionMode="checkbox"
+              filters={filters}
+              filterDisplay="menu"
+              globalFilterFields={[
+                "jobListingId",
+                "title",
+                "corporate.companyName",
+                "jobLocation",
+                "listingDate",
+                "jobListingStatus",
+              ]}
+              emptyMessage="No users found."
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            >
+              <Column field="jobListingId" header="Listing ID"></Column>
+              <Column field="title" header="Title"></Column>
+              <Column field="corporate.companyName" header="Company Name" />
+              <Column field="jobLocation" header="Job Location"></Column>
+              <Column
+                field="listingDate"
+                header="List Date"
+                body={(rowData) => formatDate(rowData.listingDate)}
+              ></Column>
 
-          <Column
-            field="jobListingStatus"
-            header="Job Listing Status"
-            body={(rowData) => (
-              <span
-                style={{
-                  color:
-                    rowData.jobListingStatus === "Active" ? "green" : "red",
-                }}
-              >
-                {rowData.jobListingStatus}
-              </span>
-            )}
-          ></Column>
+              <Column
+                field="jobListingStatus"
+                header="Job Listing Status"
+                body={(rowData) => (
+                  <span
+                    style={{
+                      color:
+                        rowData.jobListingStatus === "Active" ? "green" : "red",
+                    }}
+                  >
+                    {rowData.jobListingStatus}
+                  </span>
+                )}
+              ></Column>
 
-          <Column body={actionBodyTemplate} />
-        </DataTable>
+              <Column body={actionBodyTemplate} />
+            </DataTable>
 
-        <Dialog
-          visible={userDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="View More details?"
-          className="p-fluid"
-          footer={userDialogFooter}
-          onHide={hideDialog}
-        >
-        </Dialog>
+            <Dialog
+              visible={userDialog}
+              style={{ width: "32rem" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              header="View More details?"
+              className="p-fluid"
+              footer={userDialogFooter}
+              onHide={hideDialog}
+            >
+              
+            </Dialog>
+          </>
+        )}
       </div>
     );
   }
 }
+  
+
+  
 
 
 
