@@ -18,8 +18,16 @@
   }
 
 .my-card {
-    padding: 16px;
-  }
+  padding: 16px;
+}
+
+.my-card .p-card-title {
+  margin-bottom: 0;
+}
+
+.my-card .p-card-content {
+  padding-top: 0.5rem;
+}
   
   .loading-animation {
     display: flex;
