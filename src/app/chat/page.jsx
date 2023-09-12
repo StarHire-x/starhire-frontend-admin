@@ -81,8 +81,9 @@ const Chat = () => {
     }
     if (chatMessagesByDate.length > 0) {
       if (
-        getDateStringByTimestamp(chatMessagesByDate.slice(-1)[0].timestamp) ==
-        getDateStringByTimestamp(message.timestamp)
+        getDateStringByTimestamp(
+          chatMessagesByDate.slice(-1)[0][0].timestamp
+        ) == getDateStringByTimestamp(message.timestamp)
       ) {
         let newChatMessagesByDate = chatMessagesByDate;
         const lastElement = [
@@ -146,7 +147,6 @@ const Chat = () => {
       chatMessages.sort(
         (message1, message2) => message1.timestamp > message2.timestamp
       );
-      console.log(chatMessages);
       // console.log(splitMessagesByDate(chatMessages));
       setChatMessagesByDate(splitMessagesByDate(chatMessages));
     }
