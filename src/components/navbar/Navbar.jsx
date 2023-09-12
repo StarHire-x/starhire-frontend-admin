@@ -14,8 +14,8 @@ const links = [
   },
   {
     id: 2,
-    title: "Portfolio",
-    url: "/portfolio",
+    title: "About",
+    url: "/about",
   },
   {
     id: 3,
@@ -24,21 +24,16 @@ const links = [
   },
   {
     id: 4,
-    title: "About",
-    url: "/about",
-  },
-  {
-    id: 5,
     title: "Contact",
     url: "/contact",
   },
   {
-    id: 6,
+    id: 5,
     title: "Dashboard",
     url: "/dashboard",
   },
   {
-    id: 7,
+    id: 6,
     title: "Chat",
     url: "/chat",
     submenu: [
