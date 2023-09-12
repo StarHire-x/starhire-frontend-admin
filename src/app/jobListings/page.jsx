@@ -212,7 +212,7 @@ export default function JobListings() {
           globalFilterFields={[
             "jobListingId",
             "title",
-            "corporate.userName",
+            "corporate.companyName",
             "jobLocation",
             "listingDate",
             "jobListingStatus",
@@ -222,7 +222,7 @@ export default function JobListings() {
         >
           <Column field="jobListingId" header="Listing ID"></Column>
           <Column field="title" header="Title"></Column>
-          <Column field="corporate.userName" header="Corporate Name" />
+          <Column field="corporate.companyName" header="Company Name" />
           <Column field="jobLocation" header="Job Location"></Column>
           <Column
             field="listingDate"

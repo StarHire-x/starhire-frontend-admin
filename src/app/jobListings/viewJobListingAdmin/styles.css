@@ -11,6 +11,12 @@
     border: none !important;
   }
 
+  .archive-button {
+    background-color: blue !important;
+    color: white !important;
+    border: none !important;
+  }
+
 .my-card {
     padding: 16px;
   }

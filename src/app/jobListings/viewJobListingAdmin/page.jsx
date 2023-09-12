@@ -53,6 +53,11 @@ export default function ViewJobListingAdmin() {
         icon="pi pi-times"
         className="reject-button p-button-outlined p-button-secondary"
       />
+      <Button
+        label="Archive"
+        icon="pi pi-times"
+        className="archive-button p-button-outlined p-button-secondary"
+      />
     </div>
   );
 
@@ -92,7 +97,7 @@ export default function ViewJobListingAdmin() {
               </div>
               <div className="p-col">
                 <strong>Corporate:</strong>
-                <p>{jobListing.description}</p>
+                <p>{jobListing.corporate.companyName}</p>
               </div>
             </div>
           </Card>
