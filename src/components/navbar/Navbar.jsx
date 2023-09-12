@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import React from "react";
-import styles from "./navbar.module.css";
+import styles from "./Navbar.module.css";
 import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 import { signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 
 const links = [
   {
@@ -40,6 +41,18 @@ const links = [
     id: 7,
     title: "Chat",
     url: "/chat",
+    submenu: [
+      {
+        id: 1,
+        title: "New Chat",
+        url: "/",
+      },
+      {
+        id: 2,
+        title: "View Chat",
+        url: "/",
+      },
+    ],
   },
 ];
 
@@ -52,7 +65,16 @@ const adminLinks = [
 ]
 
 const Navbar = () => {
-  const session = useSession();
+  const session = useSession();  
+  const [showDropdown, setShowDropdown] = useState(null);
+
+  const handleLinkMouseEnter = (linkId) => {
+    setShowDropdown(linkId);
+  };
+
+  const handleLinkMouseLeave = () => {
+    setShowDropdown(null);
+  };
 
   return (
     <div className={styles.container}>
@@ -62,9 +84,29 @@ const Navbar = () => {
       <div className={styles.links}>
         <DarkModeToggle />
         {links.map((link) => (
-          <Link key={link.id} href={link.url} className={styles.link}>
-            {link.title}
-          </Link>
+          <div
+            key={link.id}
+            className={styles.linkContainer}
+            onMouseEnter={() => handleLinkMouseEnter(link.id)}
+            onMouseLeave={handleLinkMouseLeave}
+          > 
+          <Link href={link.url} className={styles.link}>
+              {link.title}
+            </Link>
+            {link.submenu && showDropdown === link.id && (
+              <div className={styles.dropdown}>
+                {link.submenu.map((submenuItem) => (
+                  <Link
+                    key={submenuItem.id}
+                    href={submenuItem.url}
+                    className={styles.submenuItem}
+                  >
+                    {submenuItem.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         ))}
         {session.status === "authenticated" && (
           <button className={styles.logout} onClick={signOut}>
