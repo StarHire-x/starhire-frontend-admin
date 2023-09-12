@@ -159,7 +159,7 @@ export default function ViewJobListingAdmin() {
         label="Archive"
         icon="pi pi-times"
         className="archive-button p-button-outlined p-button-secondary"
-        onClick={() => showUserDialog("Unverified")}
+        onClick={() => showUserDialog("Inactive")}
       />
     </div>
   );
