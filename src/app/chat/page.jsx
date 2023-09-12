@@ -132,7 +132,7 @@ const Chat = () => {
             </ConversationHeader>
             <ChatHeader />
             <MessageList>
-              <MessageSeparator content="Saturday, 30 November 2019" />
+              <MessageSeparator content="This message separator should be dynamic"/>
               {chatMessages.length > 0 &&
                 chatMessages.map((value, index) => (
                   <Message
