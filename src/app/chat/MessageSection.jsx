@@ -2,7 +2,7 @@ import {} from "@chatscope/chat-ui-kit-react";
 
 const MessageSection = ({}) => {
   return (
-    <MessageList typingIndicator={<TypingIndicator content="Zoe is typing" />}>
+    <MessageList>
       <MessageSeparator content="Saturday, 30 November 2019" />
       <Message
         model={{

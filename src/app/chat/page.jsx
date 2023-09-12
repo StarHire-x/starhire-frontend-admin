@@ -128,13 +128,7 @@ const Chat = () => {
             </ConversationHeader.Actions>
           </ConversationHeader>
           <ChatHeader />
-          <MessageList
-            typingIndicator={
-              <TypingIndicator
-                content={`${otherUser ? otherUser.userName : ""} is typing`}
-              />
-            }
-          >
+          <MessageList>
             <MessageSeparator content="Saturday, 30 November 2019" />
             {chatMessages.length > 0 &&
               chatMessages.map((value, index) => (
