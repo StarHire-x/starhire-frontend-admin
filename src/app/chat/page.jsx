@@ -28,11 +28,18 @@ import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 const Chat = () => {
   const currentUserId = 4; //recruiteryj user
   // should get from session
-  // const session = useSession();
-  // const router = useRouter();
+  const session = useSession();
+  const router = useRouter();
   // if (session.status === "unauthenticated") {
   //   router?.push("/login");
   // }
+  const accessToken =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.accessToken;
+  console.log(accessToken);
+  // const currentUserId =
+  //   session.status === "authenticated" && session.data.user.userId;
 
   const [messageInputValue, setMessageInputValue] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
@@ -67,18 +74,21 @@ const Chat = () => {
   };
 
   async function getUserChats() {
-    const chats = await getAllUserChats(currentUserId);
+    const chats = await getAllUserChats(currentUserId, accessToken);
     setAllChats(chats);
   }
 
   const selectCurrentChat = async (index) => {
     if (index < allChats.length) {
       // get current chat id
-      const currentChatId = allChats[index].chatId; 
+      const currentChatId = allChats[index].chatId;
       //problem when the chat is filtered because it gets the index from allChats. it should retrieve from filteredChats
       //from ChatSideBar.
 
-      const chatMessagesByCurrentChatId = await getOneUserChat(currentChatId);
+      const chatMessagesByCurrentChatId = await getOneUserChat(
+        currentChatId,
+        accessToken
+      );
       setCurrentChat(chatMessagesByCurrentChatId);
     }
   };
@@ -135,7 +145,7 @@ const Chat = () => {
             </ConversationHeader>
             <ChatHeader />
             <MessageList>
-              <MessageSeparator content="This message separator should be dynamic"/>
+              <MessageSeparator content="This message separator should be dynamic" />
               {chatMessages.length > 0 &&
                 chatMessages.map((value, index) => (
                   <Message
