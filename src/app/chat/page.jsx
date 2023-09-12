@@ -28,14 +28,20 @@ import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 const Chat = () => {
   const currentUserId = 4; //recruiteryj user
   // should get from session
-  // const session = useSession();
-  // const router = useRouter();
+  const session = useSession();
+  const router = useRouter();
   // if (session.status === "unauthenticated") {
   //   router?.push("/login");
   // }
+  const accessToken =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.accessToken;
+  // const currentUserId =
+  //   session.status === "authenticated" && session.data.user.userId;
 
   const [messageInputValue, setMessageInputValue] = useState("");
-  const [chatMessages, setChatMessages] = useState([]);
+  const [chatMessagesByDate, setChatMessagesByDate] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [otherUser, setOtherUser] = useState(null); // user object
@@ -44,12 +50,56 @@ const Chat = () => {
   // WebSocket functions
   const socket = io("http://localhost:8080");
 
+  // returns list of lists
+  const getDateStringByTimestamp = (timestamp) => {
+    return new Date(timestamp).toLocaleDateString("en-SG");
+  };
+  const splitMessagesByDate = (chatMessages) => {
+    let dateMessageMap = {};
+
+    for (let message of chatMessages) {
+      if (!message.timestamp) {
+        continue;
+      }
+      const date = getDateStringByTimestamp(message.timestamp);
+      if (dateMessageMap[date] === undefined) {
+        dateMessageMap[date] = [message];
+      } else {
+        dateMessageMap[date].push(message);
+      }
+    }
+    return Object.values(dateMessageMap);
+  };
+
   const sendMessage = (message) => {
     socket.emit("sendMessage", message);
   };
 
   const receiveMessage = (message) => {
-    setChatMessages([...chatMessages, message]);
+    if (!message.timestamp) {
+      return;
+    }
+    if (chatMessagesByDate.length > 0) {
+      if (
+        getDateStringByTimestamp(
+          chatMessagesByDate.slice(-1)[0][0].timestamp
+        ) == getDateStringByTimestamp(message.timestamp)
+      ) {
+        let newChatMessagesByDate = chatMessagesByDate;
+        const lastElement = [
+          ...newChatMessagesByDate[newChatMessagesByDate.length - 1],
+          message,
+        ];
+        setChatMessagesByDate([
+          ...newChatMessagesByDate.slice(0, -1),
+          lastElement,
+        ]);
+      } else {
+        setChatMessagesByDate([...chatMessagesByDate, [message]]);
+      }
+    } else {
+      setChatMessagesByDate([[message]]);
+    }
   };
 
   socket.on(currentChat ? currentChat.chatId : null, (message) => {
@@ -62,23 +112,27 @@ const Chat = () => {
       chatId: currentChat ? currentChat.chatId : null,
       message: content,
       isImportant: false,
+      timestamp: new Date(),
     });
     setMessageInputValue("");
   };
 
   async function getUserChats() {
-    const chats = await getAllUserChats(currentUserId);
+    const chats = await getAllUserChats(currentUserId, accessToken);
     setAllChats(chats);
   }
 
   const selectCurrentChat = async (index) => {
     if (index < allChats.length) {
       // get current chat id
-      const currentChatId = allChats[index].chatId; 
+      const currentChatId = allChats[index].chatId;
       //problem when the chat is filtered because it gets the index from allChats. it should retrieve from filteredChats
       //from ChatSideBar.
 
-      const chatMessagesByCurrentChatId = await getOneUserChat(currentChatId);
+      const chatMessagesByCurrentChatId = await getOneUserChat(
+        currentChatId,
+        accessToken
+      );
       setCurrentChat(chatMessagesByCurrentChatId);
     }
   };
@@ -93,7 +147,8 @@ const Chat = () => {
       chatMessages.sort(
         (message1, message2) => message1.timestamp > message2.timestamp
       );
-      setChatMessages(chatMessages);
+      // console.log(splitMessagesByDate(chatMessages));
+      setChatMessagesByDate(splitMessagesByDate(chatMessages));
     }
 
     if (currentChat) {
@@ -135,35 +190,49 @@ const Chat = () => {
             </ConversationHeader>
             <ChatHeader />
             <MessageList>
-              <MessageSeparator content="This message separator should be dynamic"/>
-              {chatMessages.length > 0 &&
-                chatMessages.map((value, index) => (
-                  <Message
-                    index={index}
-                    model={{
-                      message: value.message,
-                      sentTime: value.timestamp,
-                      sender:
-                        value.userId == currentUserId
-                          ? currentUser.userId
-                          : otherUser.userId,
-                      direction:
-                        value.userId == currentUserId ? "outgoing" : "incoming",
-                      position: "single",
-                    }}
-                  >
-                    <Avatar>
-                      <Image
-                        src={HumanIcon}
-                        alt="Profile Picture"
-                        name={
-                          value.userId == currentUserId
-                            ? currentUser.userName
-                            : otherUser.userName
-                        }
-                      />
-                    </Avatar>
-                  </Message>
+              {chatMessagesByDate.length > 0 &&
+                chatMessagesByDate.map((chatMessages, index) => (
+                  <>
+                    <MessageSeparator
+                      content={
+                        chatMessages.length > 0
+                          ? `${getDateStringByTimestamp(
+                              chatMessages[0].timestamp
+                            )}`
+                          : ""
+                      }
+                    />
+                    {chatMessages.map((value, index) => (
+                      <Message
+                        index={index}
+                        model={{
+                          message: value.message,
+                          sentTime: value.timestamp,
+                          sender:
+                            value.userId == currentUserId
+                              ? currentUser.userId
+                              : otherUser.userId,
+                          direction:
+                            value.userId == currentUserId
+                              ? "outgoing"
+                              : "incoming",
+                          position: "single",
+                        }}
+                      >
+                        <Avatar>
+                          <Image
+                            src={HumanIcon}
+                            alt="Profile Picture"
+                            name={
+                              value.userId == currentUserId
+                                ? currentUser.userName
+                                : otherUser.userName
+                            }
+                          />
+                        </Avatar>
+                      </Message>
+                    ))}
+                  </>
                 ))}
             </MessageList>
             <MessageInput
