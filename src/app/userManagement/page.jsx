@@ -233,7 +233,7 @@ export default function AccountManagement() {
           footer={userDialogFooter}
           onHide={hideDialog}
         >
-          <h1>{selectedRowData && selectedRowData.userName}</h1>
+          <h3>{selectedRowData && selectedRowData.userName}</h3>
         </Dialog>
       </div>
     );

@@ -34,6 +34,7 @@ export default function CreateChat() {
   const [user, setUser] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [userDialog, setUserDialog] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -93,29 +94,27 @@ export default function CreateChat() {
   };
 
   // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
-  const createNewChat = async (selectedUser) => {
-    console.log("HELLOOO");
-    console.log(selectedUser);
-    // console.log(selectedRowData);
+  const createNewChat = async () => {
+    console.log(selectedRowData);
     let request = {};
     try {
-      if (selectedUser.role === "Job_Seeker") {
+      if (selectedRowData.role === "Job_Seeker") {
         request = {
           recruiterId: 4, // retrieve it from session next time
-          jobSeekerId: selectedUser.userId,
+          jobSeekerId: selectedRowData.userId,
           lastUpdated: new Date(),
         };
-      } else if (selectedUser.role === "Corporate") {
+      } else if (selectedRowData.role === "Corporate") {
         request = {
           recruiterId: 4, // retrieve it from session next time
-          corporateId: selectedUser.userId,
+          corporateId: selectedRowData.userId,
           lastUpdated: new Date(),
         };
       }
 
       const response = await createNewChatByRecruiter(
         request,
-        selectedUser.userId
+        selectedRowData.userId
       );
       console.log("Chat has been created successfully!" + response);
       setRefreshData((prev) => !prev);
@@ -123,19 +122,25 @@ export default function CreateChat() {
       console.error("Error changing status:", error);
     }
     setSelectedRowData();
+    setUserDialog(false);
   };
   // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
 
-  const hasChattedWithUser =  (selectedUser) => {
+  const hasChattedWithUser = (selectedUser) => {
     console.log("chats length");
-    // console.log(selectedUser);
     const chats = selectedUser.chats;
     if (chats.length > 0) {
       for (let i = 0; i < chats.length; i++) {
         if (chats[i].recruiter.userId === 4) {
-          if (selectedUser.role === "Job_Seeker" && chats[i].jobSeeker.userId === selectedUser.userId) {
+          if (
+            selectedUser.role === "Job_Seeker" &&
+            chats[i].jobSeeker.userId === selectedUser.userId
+          ) {
             return true;
-          } else if (selectedUser.role === "Corporate" && chats[i].corporate.userId === selectedUser.userId) {
+          } else if (
+            selectedUser.role === "Corporate" &&
+            chats[i].corporate.userId === selectedUser.userId
+          ) {
             return true;
           }
         }
@@ -144,12 +149,8 @@ export default function CreateChat() {
     return false;
   };
 
-  
-
   const actionBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
-    // alert("Row Data:" + rowData);
-
     return (
       <React.Fragment>
         <Button
@@ -159,13 +160,29 @@ export default function CreateChat() {
           disabled={hasChattedWithUser(rowData)}
           className="mr-2"
           onClick={() => {
-            createNewChat(rowData);
-            // createNewChat();
+            // createNewChat(rowData);
+            setSelectedRowData(rowData);
+            showUserDialog(rowData)
           }}
         />
       </React.Fragment>
     );
   };
+
+  const showUserDialog = (rowData) => {
+    setUserDialog(true);
+  };
+
+  const hideDialog = () => {
+    setUserDialog(false);
+  };
+
+  const userDialogFooter = (
+    <React.Fragment>
+      <Button label="No" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="Yes" icon="pi pi-check" onClick={createNewChat} />
+    </React.Fragment>
+  );
 
   const renderHeader = () => {
     return (
@@ -248,6 +265,18 @@ export default function CreateChat() {
           style={{ minWidth: "12rem" }}
         ></Column>
       </DataTable>
+
+      <Dialog
+        visible={userDialog}
+        style={{ width: "32rem" }}
+        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+        header="Create Chat"
+        className="p-fluid"
+        footer={userDialogFooter}
+        onHide={hideDialog}
+      >
+        <h3>Do you wish to create a new chat with {selectedRowData && selectedRowData.userName}? </h3>
+      </Dialog>
     </div>
   );
 }
