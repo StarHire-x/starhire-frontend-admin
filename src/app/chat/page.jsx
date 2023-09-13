@@ -152,10 +152,14 @@ const Chat = () => {
     }
   }, [currentChat]);
 
+  useEffect(() => {
+    console.log(window.innerHeight);
+  }, [window.innerHeight]);
+
   if (session.status === "authenticated") {
     return (
       <>
-        <MainContainer responsive style={{ height: 800 }}>
+        <MainContainer responsive style={{ height: "75vh" }}>
           <ChatSidebar
             userChats={allChats}
             selectCurrentChat={(index) => {
