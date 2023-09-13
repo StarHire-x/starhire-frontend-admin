@@ -15,6 +15,14 @@ export default function ViewJobListingAdmin() {
 
   const router = useRouter();
 
+  const accessToken =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.accessToken;
+
+  const currentUserId =
+    session.status === "authenticated" && session.data.user.userId;
+
   const params = useSearchParams();
   const id = params.get("id");
 
@@ -27,7 +35,13 @@ export default function ViewJobListingAdmin() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/job-listing/${id}`)
+    fetch(`http://localhost:8080/job-listing/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store",
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -42,7 +56,7 @@ export default function ViewJobListingAdmin() {
         console.error("Error fetching data:", error);
         setIsLoading(false);
       });
-  }, []);
+  }, [accessToken]);
 
   /*
   const header = (
@@ -71,6 +85,7 @@ export default function ViewJobListingAdmin() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(request),
       });

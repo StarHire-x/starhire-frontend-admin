@@ -15,14 +15,20 @@ import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import './styles.css';
-
+import "./styles.css";
 
 export default function JobListings() {
-
   const session = useSession();
 
   const router = useRouter();
+
+  const accessToken =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.accessToken;
+
+  const currentUserId =
+    session.status === "authenticated" && session.data.user.userId;
 
   if (session.status === "unauthenticated") {
     router?.push("/login");
@@ -119,7 +125,7 @@ export default function JobListings() {
   const createLink = (id) => {
     const link = `/jobListings/viewJobListingAdmin?id=${id}`;
     return link;
-  }
+  };
 
   const saveStatusChange = async (id) => {
     if (session.data.user.role === "Administrator") {
@@ -137,8 +143,7 @@ export default function JobListings() {
         console.error("Error changing status:", error);
       }
     }
-  }
-  
+  };
 
   const userDialogFooter = (
     <React.Fragment>
@@ -162,14 +167,20 @@ export default function JobListings() {
     );
   };
 
-   // Function to format date in "day-month-year" format
-   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+  // Function to format date in "day-month-year" format
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   useEffect(() => {
-    fetch(`http://localhost:8080/job-listing`)
+    fetch(`http://localhost:8080/job-listing`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store",
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -184,7 +195,7 @@ export default function JobListings() {
         console.error("Error fetching data:", error);
         setIsLoading(false);
       });
-  }, []);
+  }, [accessToken]);
 
   const header = renderHeader();
 
@@ -195,7 +206,10 @@ export default function JobListings() {
     router?.push("/dashboard");
   }
 
-  if (session.status === "authenticated" && session.data.user.role === "Administrator") {
+  if (
+    session.status === "authenticated" &&
+    session.data.user.role === "Administrator"
+  ) {
     return (
       <div className="card">
         {isLoading ? (
@@ -262,20 +276,13 @@ export default function JobListings() {
               className="p-fluid"
               footer={userDialogFooter}
               onHide={hideDialog}
-            >
-              
-            </Dialog>
+            ></Dialog>
           </>
         )}
       </div>
     );
   }
 }
-  
-
-  
-
-
 
 //OLD CODE
 /*
