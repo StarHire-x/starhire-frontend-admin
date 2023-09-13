@@ -30,10 +30,9 @@ const CreateChat = () => {
     session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
-  
+
   const currentUserId =
     session.status === "authenticated" && session.data.user.userId;
-
 
   const [refreshData, setRefreshData] = useState(false);
   const [user, setUser] = useState(null);
@@ -117,12 +116,9 @@ const CreateChat = () => {
         };
       }
 
-      const response = await createNewChatByRecruiter(
-        request,
-        accessToken
-      );
+      const response = await createNewChatByRecruiter(request, accessToken);
       console.log("Chat has been created successfully!" + response);
-      setRefreshData((prev) => !prev); 
+      setRefreshData((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
     }
@@ -167,7 +163,7 @@ const CreateChat = () => {
           onClick={() => {
             // createNewChat(rowData);
             setSelectedRowData(rowData);
-            showUserDialog(rowData)
+            showUserDialog(rowData);
           }}
         />
       </React.Fragment>
@@ -191,7 +187,7 @@ const CreateChat = () => {
 
   const renderHeader = () => {
     return (
-      <div className="flex gap-2 justify-content-between align-items-center">
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h4 className="m-0">Users</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
@@ -227,65 +223,71 @@ const CreateChat = () => {
   //   ) {
   return (
     <>
-    <div className="card">
-      <DataTable
-        value={user}
-        paginator
-        header={header}
-        rows={10}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        rowsPerPageOptions={[10, 25, 50]}
-        dataKey="id"
-        selectionMode="checkbox"
-        selection={selectedUsers}
-        onSelectionChange={(e) => setSelectedUsers(e.value)}
-        filters={filters}
-        filterDisplay="menu"
-        globalFilterFields={[
-          "userId",
-          "userName",
-          "email",
-          "contactNo",
-          "status",
-          "role",
-        ]}
-        emptyMessage="No users found."
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      >
-        <Column field="userId" header="User Id" sortable></Column>
-        <Column field="userName" header="User Name" sortable></Column>
-        <Column field="email" header="Email" sortable></Column>
-        <Column field="contactNo" header="Contact No" sortable></Column>
-        <Column
-          field="status"
-          header="Status"
-          sortable
-          body={statusBodyTemplate}
-          filter
-          filterElement={statusFilterTemplate}
-        ></Column>
-        <Column field="role" header="Role" sortable></Column>
-        <Column
-          body={actionBodyTemplate}
-          exportable={false}
-          style={{ minWidth: "12rem" }}
-        ></Column>
-      </DataTable>
+      <div className="card">
+        <DataTable
+          scrollable
+          scrollHeight="400px"
+          style={{ minHeight: "100%" }}
+          value={user}
+          paginator
+          header={header}
+          rows={10}
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          rowsPerPageOptions={[10, 25, 50]}
+          dataKey="id"
+          selectionMode="checkbox"
+          selection={selectedUsers}
+          onSelectionChange={(e) => setSelectedUsers(e.value)}
+          filters={filters}
+          filterDisplay="menu"
+          globalFilterFields={[
+            "userId",
+            "userName",
+            "email",
+            "contactNo",
+            "status",
+            "role",
+          ]}
+          emptyMessage="No users found."
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        >
+          <Column field="userId" header="User Id" sortable></Column>
+          <Column field="userName" header="User Name" sortable></Column>
+          <Column field="email" header="Email" sortable></Column>
+          <Column field="contactNo" header="Contact No" sortable></Column>
+          <Column
+            field="status"
+            header="Status"
+            sortable
+            body={statusBodyTemplate}
+            filter
+            filterElement={statusFilterTemplate}
+          ></Column>
+          <Column field="role" header="Role" sortable></Column>
+          <Column
+            body={actionBodyTemplate}
+            exportable={false}
+            style={{ minWidth: "12rem" }}
+          ></Column>
+        </DataTable>
 
-      <Dialog
-        visible={userDialog}
-        style={{ width: "32rem" }}
-        breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-        header="Create Chat"
-        className="p-fluid"
-        footer={userDialogFooter}
-        onHide={hideDialog}
-      >
-        <h3>Do you wish to create a new chat with {selectedRowData && selectedRowData.userName}? </h3>
-      </Dialog>
-    </div>
+        <Dialog
+          visible={userDialog}
+          style={{ width: "32rem" }}
+          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+          header="Create Chat"
+          className="p-fluid"
+          footer={userDialogFooter}
+          onHide={hideDialog}
+        >
+          <h3>
+            Do you wish to create a new chat with{" "}
+            {selectedRowData && selectedRowData.userName}?{" "}
+          </h3>
+        </Dialog>
+      </div>
     </>
   );
-}
+};
 
 export default CreateChat;

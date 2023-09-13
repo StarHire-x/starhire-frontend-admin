@@ -33,7 +33,7 @@ const Chat = () => {
     session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
-    
+
   const currentUserId =
     session.status === "authenticated" && session.data.user.userId;
 
@@ -77,10 +77,10 @@ const Chat = () => {
     receiveMessage(message);
   });
 
-  const formatRawDate= (rawDate) => {
-    const formattedDate = moment(rawDate).format("MMMM D, YYYY, h:mm A")
+  const formatRawDate = (rawDate) => {
+    const formattedDate = moment(rawDate).format("MMMM D, YYYY, h:mm A");
     return formattedDate;
-  }
+  };
   const receiveMessage = (message) => {
     if (!message.timestamp) {
       return;
@@ -125,12 +125,12 @@ const Chat = () => {
   }
 
   const selectCurrentChat = async (chat) => {
-      const currentChatId = chat.chatId;
-      const chatMessagesByCurrentChatId = await getOneUserChat(
-        currentChatId,
-        accessToken
-      );
-      setCurrentChat(chatMessagesByCurrentChatId);
+    const currentChatId = chat.chatId;
+    const chatMessagesByCurrentChatId = await getOneUserChat(
+      currentChatId,
+      accessToken
+    );
+    setCurrentChat(chatMessagesByCurrentChatId);
   };
 
   useEffect(() => {
@@ -177,8 +177,7 @@ const Chat = () => {
                 <ConversationHeader.Content
                   userName={otherUser ? otherUser.userName : ""}
                 />
-                <ConversationHeader.Actions>
-                </ConversationHeader.Actions>
+                <ConversationHeader.Actions></ConversationHeader.Actions>
               </ConversationHeader>
               <ChatHeader />
               <MessageList>
@@ -186,6 +185,7 @@ const Chat = () => {
                   chatMessagesByDate.map((chatMessages, index) => (
                     <>
                       <MessageSeparator
+                        key={index}
                         content={
                           chatMessages.length > 0
                             ? `${getDateStringByTimestamp(
