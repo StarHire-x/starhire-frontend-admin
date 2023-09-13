@@ -12,12 +12,10 @@ import {
   ChatContainer,
   ConversationHeader,
   MessageList,
-  TypingIndicator,
   MessageSeparator,
   Message,
   MessageInput,
 } from "@chatscope/chat-ui-kit-react";
-import CreateChat from "../create-chat/page";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
 import HumanIcon from "../../../public/icon.png";
@@ -139,7 +137,6 @@ const Chat = () => {
       chatMessages.sort(
         (message1, message2) => message1.timestamp > message2.timestamp
       );
-      // console.log(splitMessagesByDate(chatMessages));
       setChatMessagesByDate(splitMessagesByDate(chatMessages));
     }
 
@@ -150,9 +147,6 @@ const Chat = () => {
   }, [currentChat]);
 
   const [selectedConversation, setSelectedConversation] = useState(null);
-
-  console.log("SELECTED CONVERSATION");
-  console.log(selectedConversation);
 
   if (session.status === "authenticated") {
     return (
