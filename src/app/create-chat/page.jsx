@@ -226,8 +226,8 @@ const CreateChat = () => {
       <div className="card">
         <DataTable
           scrollable
-          scrollHeight="400px"
-          style={{ minHeight: "100%" }}
+          scrollHeight="60vh"
+          style={{ minHeight: "95vh" }}
           value={user}
           paginator
           header={header}
