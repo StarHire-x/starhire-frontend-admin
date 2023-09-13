@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import io from "socket.io-client";
+import moment from "moment";
 import {
   MainContainer,
   Avatar,
@@ -42,6 +43,7 @@ const Chat = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [otherUser, setOtherUser] = useState(null); // user object
   const [allChats, setAllChats] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
 
   // WebSocket functions
   const socket = io("http://localhost:8080");
@@ -71,6 +73,14 @@ const Chat = () => {
     socket.emit("sendMessage", message);
   };
 
+  socket.on(currentChat ? currentChat.chatId : null, (message) => {
+    receiveMessage(message);
+  });
+
+  const formatRawDate= (rawDate) => {
+    const formattedDate = moment(rawDate).format("MMMM D, YYYY, h:mm A")
+    return formattedDate;
+  }
   const receiveMessage = (message) => {
     if (!message.timestamp) {
       return;
@@ -97,10 +107,6 @@ const Chat = () => {
       setChatMessagesByDate([[message]]);
     }
   };
-
-  socket.on(currentChat ? currentChat.chatId : null, (message) => {
-    receiveMessage(message);
-  });
 
   const handleSendMessage = (content) => {
     sendMessage({
@@ -145,8 +151,6 @@ const Chat = () => {
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
     }
   }, [currentChat]);
-
-  const [selectedConversation, setSelectedConversation] = useState(null);
 
   if (session.status === "authenticated") {
     return (
@@ -218,6 +222,9 @@ const Chat = () => {
                               }
                             />
                           </Avatar>
+                          <Message.Footer>
+                            {formatRawDate(value.timestamp)}
+                          </Message.Footer>
                         </Message>
                       ))}
                     </>
