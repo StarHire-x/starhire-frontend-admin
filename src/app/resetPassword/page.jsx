@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { hashing } from "@/app/api/auth/register/route";
 import { useSession } from "next-auth/react";
-import { updateUser } from "../api/auth/user/route";
+import { updateUserPassword } from "../api/auth/forgetPassword/route";
 
 
 const ResetPassword = () => {
@@ -99,13 +99,12 @@ const ResetPassword = () => {
     }
 
     const hashedPassword = await hashing(formData.password);
-    console.log("Hiiii");
     const resetPassword = {
         role: inputRole,
         password: hashedPassword
     }
     try {
-        const response = await updateUser(resetPassword, storedUserId);
+        const response = await updateUserPassword(resetPassword, storedUserId);
         alert("Password changed successfully");
         localStorage.removeItem("passwordResetToken");
         localStorage.removeItem("passwordResetExpire");
