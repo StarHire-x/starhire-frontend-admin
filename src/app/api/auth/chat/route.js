@@ -4,7 +4,7 @@ export const getAllUserChats = async (userId, accessToken) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
       },
       cache: "no-store",
     });
@@ -26,7 +26,7 @@ export const getOneUserChat = async (chatId, accessToken) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
       },
       cache: "no-store",
     });
@@ -51,7 +51,7 @@ export const createNewChatByRecruiter = async (newChat, accessToken) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        "Authorization": `Bearer ${accessToken}`,
       },
       body: JSON.stringify(newChat),
       cache: "no-store",
