@@ -21,8 +21,9 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
     return userName.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  console.log("HELLLLOO");
-  console.log(filteredChats)
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
 
   return (
     <Sidebar position="left" scrollable={false}>
@@ -30,6 +31,7 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
       placeholder="Search..."
       value={searchQuery}
       onChange={query => setSearchQuery(query)} 
+      onClearClick={handleClearSearch}
       />
       
       <ConversationList>
