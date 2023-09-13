@@ -122,19 +122,13 @@ const Chat = () => {
     setAllChats(chats);
   }
 
-  const selectCurrentChat = async (index) => {
-    if (index < allChats.length) {
-      // get current chat id
-      const currentChatId = allChats[index].chatId;
-      //problem when the chat is filtered because it gets the index from allChats. it should retrieve from filteredChats
-      //from ChatSideBar.
-
+  const selectCurrentChat = async (chat) => {
+      const currentChatId = chat.chatId;
       const chatMessagesByCurrentChatId = await getOneUserChat(
         currentChatId,
         accessToken
       );
       setCurrentChat(chatMessagesByCurrentChatId);
-    }
   };
 
   useEffect(() => {
@@ -158,6 +152,10 @@ const Chat = () => {
   }, [currentChat]);
 
   const [selectedConversation, setSelectedConversation] = useState(null);
+
+  console.log("SELECTED CONVERSATION");
+  console.log(selectedConversation);
+
   if (session.status === "authenticated") {
     return (
       <>
