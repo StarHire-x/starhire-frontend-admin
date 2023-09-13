@@ -22,6 +22,7 @@ export default function AccountManagement() {
 
   const router = useRouter();
 
+  const accessToken = session.status === "authenticated" && session.data && session.data.user.accessToken;
   console.log(session);
 
   if (session.status === "unauthenticated") {
@@ -125,7 +126,7 @@ export default function AccountManagement() {
         status: toggledStatus,
       };
       console.log(request);
-      const response = await updateUser(request, selectedRowData.userId);
+      const response = await updateUser(request, selectedRowData.userId, accessToken);
       console.log("Status changed successfully:", response);
       setRefreshData((prev) => !prev);
     } catch (error) {
@@ -158,13 +159,15 @@ export default function AccountManagement() {
     );
   };
 
+  
+
   useEffect(() => {
-    getUsers()
+    getUsers(accessToken)
       .then((user) => setUser(user.data))
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [refreshData]);
+  }, [refreshData, accessToken]);
 
   const header = renderHeader();
 

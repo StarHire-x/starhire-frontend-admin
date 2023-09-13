@@ -17,8 +17,13 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
     const userName = value.jobSeeker
       ? value.jobSeeker.userName
       : value.corporate.userName;
+    
     return userName.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
 
   return (
     <Sidebar position="left" scrollable={false}>
@@ -26,26 +31,29 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
       placeholder="Search..."
       value={searchQuery}
       onChange={query => setSearchQuery(query)} 
+      onClearClick={handleClearSearch}
       />
+      
       <ConversationList>
         {filteredChats.length > 0 ? (
-          filteredChats.map((value, index) => (
+          filteredChats.map((chat, index) => (
             <Conversation
+              key={chat.chatId}
               index={index}
               name={
-                value.jobSeeker
-                  ? value.jobSeeker.userName
-                  : value.corporate.userName
+                chat.jobSeeker
+                  ? chat.jobSeeker.userName
+                  : chat.corporate.userName
               }
-              onClick={() => selectCurrentChat(index)}
+              onClick={() => selectCurrentChat(chat)}
             >
             <Avatar>
               <Image src={HumanIcon} 
               alt="Profile Picture"
               name={
-                value.jobSeeker
-                  ? value.jobSeeker.userName
-                  : value.corporate.userName
+                chat.jobSeeker
+                  ? chat.jobSeeker.userName
+                  : chat.corporate.userName
               }
               status="available"
               />
@@ -53,7 +61,17 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
             </Conversation>
           ))
         ) : (
-          <h2>No chat history</h2>
+          <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                paddingTop: 200,
+                height: "100%",
+              }}
+            >
+              <p>No Chat History</p>
+            </div>
         )}
       </ConversationList>
     </Sidebar>
