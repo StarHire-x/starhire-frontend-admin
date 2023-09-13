@@ -7,6 +7,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { headers } from '../../../next.config';
 import bcrypt from "bcryptjs";
+import { hashing } from '../api/auth/register/route';
 
 const Login = () => {
 
@@ -40,9 +41,9 @@ const Login = () => {
     const email = formData.email;
     const password = formData.password;
     const role = formData.role;
-    //alert(`Email: ${email}, Password: ${password}, Role: ${role}`);
+    // alert(`Email: ${email}, Password: ${password}, Role: ${role}`);
 
-  
+    // const hashedPassword = await hashing(password); 
     const result = await signIn('credentials', {
         redirect: false,
         email: email,
@@ -52,7 +53,7 @@ const Login = () => {
 
     if (!result.error) {
       // User signed in successfully
-      //alert("Success")
+      alert("Success")
       router.push("/dashboard");
     } else {
       // Handle the error result.error

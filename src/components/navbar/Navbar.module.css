@@ -52,6 +52,7 @@
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid black; /* Add a border for the dropdown box */
+    z-index: 9999;
 }
 
 /* Style for the dropdown links */
@@ -64,17 +65,7 @@
 }
 
 .submenuItem:hover {
-    background-color: #f0f0f0;
-}
-  
-/* Style for the dropdown container (column layout) */
-.dropdown-column {
-    display: flex;
-    flex-direction: column; /* Display links in a column */
-    gap: 2px; /* Add some spacing between links */
-    padding: 10px; /* Add padding to the dropdown container */
-    left: 0;
-    top: 100%; /* Position it below the link */
+    background-color: #53c28b;
 }
 
 /* Mobile Responsive Styles */

@@ -1,6 +1,5 @@
 import {
   ConversationHeader,
-  EllipsisButton,
   Avatar,
 } from "@chatscope/chat-ui-kit-react";
 import Image from 'next/image'
@@ -16,9 +15,8 @@ const ChatHeader = () => {
         name="Zoe"
         />
       </Avatar>
-      <ConversationHeader.Content userName="Zoe" info="Active 10 mins ago" />
+      <ConversationHeader.Content userName="Zoe"/>
       <ConversationHeader.Actions>
-        <EllipsisButton orientation="vertical" />
       </ConversationHeader.Actions>
     </ConversationHeader>
   );

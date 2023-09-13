@@ -1,4 +1,4 @@
-export const getUsers = async () => {
+export const getUsers = async (accessToken) => {
     try {
         const res = await fetch(
           `http://localhost:8080/users/all`,
@@ -6,6 +6,7 @@ export const getUsers = async () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              "Authorization": `Bearer ${accessToken}`
             },
             cache: "no-store",
           }
@@ -21,13 +22,14 @@ export const getUsers = async () => {
     }
 }
 
-export const updateUser = async (request, id) => {
+export const updateUser = async (request, id, accessToken) => {
     try {
       const res = await fetch(`http://localhost:8080/users/${id}`, 
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
         },
         body: JSON.stringify(request)
       });
