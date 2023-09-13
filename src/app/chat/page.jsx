@@ -16,7 +16,6 @@ import {
   MessageSeparator,
   Message,
   MessageInput,
-  EllipsisButton,
 } from "@chatscope/chat-ui-kit-react";
 import CreateChat from "../create-chat/page";
 import ChatSidebar from "./ChatSidebar";
@@ -26,17 +25,16 @@ import HumanIcon from "../../../public/icon.png";
 import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 
 const Chat = () => {
-  // const currentUserId = 4; //recruiteryj user
-  // should get from session
   const session = useSession();
   const router = useRouter();
-  // if (session.status === "unauthenticated") {
-  //   router?.push("/login");
-  // }
+  if (session.status === "unauthenticated") {
+    router?.push("/login");
+  }
   const accessToken =
     session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
+    
   const currentUserId =
     session.status === "authenticated" && session.data.user.userId;
 
@@ -183,7 +181,6 @@ const Chat = () => {
                   userName={otherUser ? otherUser.userName : ""}
                 />
                 <ConversationHeader.Actions>
-                  <EllipsisButton orientation="vertical" />
                 </ConversationHeader.Actions>
               </ConversationHeader>
               <ChatHeader />
