@@ -151,8 +151,7 @@ const Chat = () => {
   if (session.status === "authenticated") {
     return (
       <>
-        <h2>Manage Chats</h2>
-        <MainContainer responsive style={{ height: 500 }}>
+        <MainContainer responsive style={{ height: 800 }}>
           <ChatSidebar
             userChats={allChats}
             selectCurrentChat={(index) => {
