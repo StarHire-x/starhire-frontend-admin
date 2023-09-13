@@ -41,6 +41,7 @@ const handler = NextAuth({
         );
 
         if (isPasswordCorrect) {
+          // call api end to generate jwt access token
           return {
             userId: responseBody.data.userId,
             name: responseBody.data.userName,

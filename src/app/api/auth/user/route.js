@@ -32,7 +32,6 @@ export const updateUser = async (request, id) => {
         body: JSON.stringify(request)
       });
 
-      console.log(res);
       if (res.ok) {
         return;
       } else {
@@ -62,6 +61,30 @@ export const deleteUser = async (request, id) => {
       throw new Error(errorData.message || "An error occurred");
     }
     return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the users", error);
+    throw error;
+  }
+};
+
+export const getUser = async (email, role) => {
+  try {
+    const res = await fetch(
+      `http://localhost:8080/users/login?email=${email}&role=${role}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    const responseBody = await res.json();
+
+    if (responseBody.statusCode === 404) {
+      throw new Error(responseBody.message || "An error occurred");
+    }
+    return await responseBody;
   } catch (error) {
     console.log("There was a problem fetching the users", error);
     throw error;

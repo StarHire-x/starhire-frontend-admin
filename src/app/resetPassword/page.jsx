@@ -99,7 +99,6 @@ const ResetPassword = () => {
     }
 
     const hashedPassword = await hashing(formData.password);
-    console.log("Hiiii");
     const resetPassword = {
         role: inputRole,
         password: hashedPassword

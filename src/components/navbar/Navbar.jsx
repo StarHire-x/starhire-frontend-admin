@@ -24,8 +24,8 @@ const links = [
   },
   {
     id: 4,
-    title: "Contact",
-    url: "/contact",
+    title: "Account Management",
+    url: "/accountManagement",
   },
   {
     id: 5,
