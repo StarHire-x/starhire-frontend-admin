@@ -167,7 +167,7 @@ export default function AccountManagement() {
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [refreshData]);
+  }, [refreshData, accessToken]);
 
   const header = renderHeader();
 

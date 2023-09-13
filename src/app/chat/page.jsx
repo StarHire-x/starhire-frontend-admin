@@ -26,7 +26,7 @@ import HumanIcon from "../../../public/icon.png";
 import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 
 const Chat = () => {
-  const currentUserId = 4; //recruiteryj user
+  // const currentUserId = 4; //recruiteryj user
   // should get from session
   const session = useSession();
   const router = useRouter();
@@ -37,8 +37,8 @@ const Chat = () => {
     session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
-  // const currentUserId =
-  //   session.status === "authenticated" && session.data.user.userId;
+  const currentUserId =
+    session.status === "authenticated" && session.data.user.userId;
 
   const [messageInputValue, setMessageInputValue] = useState("");
   const [chatMessagesByDate, setChatMessagesByDate] = useState([]);
@@ -139,7 +139,7 @@ const Chat = () => {
 
   useEffect(() => {
     getUserChats();
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     if (currentChat) {
@@ -158,106 +158,107 @@ const Chat = () => {
   }, [currentChat]);
 
   const [selectedConversation, setSelectedConversation] = useState(null);
-
-  return (
-    <>
-      <h2>Manage Chats</h2>
-      <MainContainer responsive style={{ height: 500 }}>
-        <ChatSidebar
-          userChats={allChats}
-          selectCurrentChat={(index) => {
-            selectCurrentChat(index);
-            setSelectedConversation(index);
-          }}
-        />
-        {selectedConversation !== null ? (
-          <ChatContainer>
-            <ConversationHeader>
-              <ConversationHeader.Back />
-              <Avatar>
-                <Image
-                  src={HumanIcon}
-                  alt="Profile Picture"
-                  name={otherUser ? otherUser.userName : ""}
-                />
-              </Avatar>
-              <ConversationHeader.Content
-                userName={otherUser ? otherUser.userName : ""}
-              />
-              <ConversationHeader.Actions>
-                <EllipsisButton orientation="vertical" />
-              </ConversationHeader.Actions>
-            </ConversationHeader>
-            <ChatHeader />
-            <MessageList>
-              {chatMessagesByDate.length > 0 &&
-                chatMessagesByDate.map((chatMessages, index) => (
-                  <>
-                    <MessageSeparator
-                      content={
-                        chatMessages.length > 0
-                          ? `${getDateStringByTimestamp(
-                              chatMessages[0].timestamp
-                            )}`
-                          : ""
-                      }
-                    />
-                    {chatMessages.map((value, index) => (
-                      <Message
-                        index={index}
-                        model={{
-                          message: value.message,
-                          sentTime: value.timestamp,
-                          sender:
-                            value.userId == currentUserId
-                              ? currentUser.userId
-                              : otherUser.userId,
-                          direction:
-                            value.userId == currentUserId
-                              ? "outgoing"
-                              : "incoming",
-                          position: "single",
-                        }}
-                      >
-                        <Avatar>
-                          <Image
-                            src={HumanIcon}
-                            alt="Profile Picture"
-                            name={
-                              value.userId == currentUserId
-                                ? currentUser.userName
-                                : otherUser.userName
-                            }
-                          />
-                        </Avatar>
-                      </Message>
-                    ))}
-                  </>
-                ))}
-            </MessageList>
-            <MessageInput
-              placeholder="Type message here"
-              value={messageInputValue}
-              onChange={(val) => setMessageInputValue(val)}
-              onSend={(textContent) => handleSendMessage(textContent)}
-            />
-          </ChatContainer>
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingLeft: 300,
-              height: "100%",
+  if (session.status === "authenticated") {
+    return (
+      <>
+        <h2>Manage Chats</h2>
+        <MainContainer responsive style={{ height: 500 }}>
+          <ChatSidebar
+            userChats={allChats}
+            selectCurrentChat={(index) => {
+              selectCurrentChat(index);
+              setSelectedConversation(index);
             }}
-          >
-            <p>Select a conversation to start chatting.</p>
-          </div>
-        )}
-      </MainContainer>
-    </>
-  );
+          />
+          {selectedConversation !== null ? (
+            <ChatContainer>
+              <ConversationHeader>
+                <ConversationHeader.Back />
+                <Avatar>
+                  <Image
+                    src={HumanIcon}
+                    alt="Profile Picture"
+                    name={otherUser ? otherUser.userName : ""}
+                  />
+                </Avatar>
+                <ConversationHeader.Content
+                  userName={otherUser ? otherUser.userName : ""}
+                />
+                <ConversationHeader.Actions>
+                  <EllipsisButton orientation="vertical" />
+                </ConversationHeader.Actions>
+              </ConversationHeader>
+              <ChatHeader />
+              <MessageList>
+                {chatMessagesByDate.length > 0 &&
+                  chatMessagesByDate.map((chatMessages, index) => (
+                    <>
+                      <MessageSeparator
+                        content={
+                          chatMessages.length > 0
+                            ? `${getDateStringByTimestamp(
+                                chatMessages[0].timestamp
+                              )}`
+                            : ""
+                        }
+                      />
+                      {chatMessages.map((value, index) => (
+                        <Message
+                          index={index}
+                          model={{
+                            message: value.message,
+                            sentTime: value.timestamp,
+                            sender:
+                              value.userId == currentUserId
+                                ? currentUser.userId
+                                : otherUser.userId,
+                            direction:
+                              value.userId == currentUserId
+                                ? "outgoing"
+                                : "incoming",
+                            position: "single",
+                          }}
+                        >
+                          <Avatar>
+                            <Image
+                              src={HumanIcon}
+                              alt="Profile Picture"
+                              name={
+                                value.userId == currentUserId
+                                  ? currentUser.userName
+                                  : otherUser.userName
+                              }
+                            />
+                          </Avatar>
+                        </Message>
+                      ))}
+                    </>
+                  ))}
+              </MessageList>
+              <MessageInput
+                placeholder="Type message here"
+                value={messageInputValue}
+                onChange={(val) => setMessageInputValue(val)}
+                onSend={(textContent) => handleSendMessage(textContent)}
+              />
+            </ChatContainer>
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                paddingLeft: 300,
+                height: "100%",
+              }}
+            >
+              <p>Select a conversation to start chatting.</p>
+            </div>
+          )}
+        </MainContainer>
+      </>
+    );
+  }
 };
 
 export default Chat;

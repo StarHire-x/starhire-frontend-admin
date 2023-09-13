@@ -136,7 +136,7 @@ const CreateChat = () => {
     const chats = selectedUser.chats;
     if (chats.length > 0) {
       for (let i = 0; i < chats.length; i++) {
-        if (chats[i].recruiter.userId === 4) {
+        if (chats[i].recruiter.userId === currentUserId) {
           if (
             selectedUser.role === "Job_Seeker" &&
             chats[i].jobSeeker.userId === selectedUser.userId
@@ -211,7 +211,7 @@ const CreateChat = () => {
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [refreshData]);
+  }, [refreshData, accessToken]);
 
   const header = renderHeader();
 
