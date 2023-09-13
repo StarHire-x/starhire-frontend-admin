@@ -69,10 +69,10 @@ export const deleteUser = async (request, id) => {
   }
 };
 
-export const getUser = async (email, role) => {
+export const getUserByEmailRole = async (email, role) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/users/login?email=${email}&role=${role}`,
+      `http://localhost:8080/users/find?email=${email}&role=${role}`,
       {
         method: "GET",
         headers: {

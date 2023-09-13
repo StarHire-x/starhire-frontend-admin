@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
-import { forgetPassword, sendEmail } from '../api/auth/forgetPassword/route';
+import { forgetPassword } from '../api/auth/forgetPassword/route';
 
 const ForgetPassword = () => {
 
@@ -36,10 +36,7 @@ const ForgetPassword = () => {
       alert(`Email: ${email}, Role: ${role}`);
 
       try {
-        const result = await forgetPassword({
-          email: email,
-          role: role,
-        });
+        const result = await forgetPassword(email,role);
 
         alert(result.message);
         router.push("/resetPassword");

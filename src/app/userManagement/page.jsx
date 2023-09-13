@@ -25,9 +25,9 @@ export default function AccountManagement() {
   const accessToken = session.status === "authenticated" && session.data && session.data.user.accessToken;
   console.log(session);
 
-  // if (session.status === "unauthenticated") {
-  //   router?.push("/login");
-  // }
+  if (session.status === "unauthenticated") {
+    router?.push("/login");
+  }
 
   const [refreshData, setRefreshData] = useState(false);
   const [user, setUser] = useState(null);
@@ -232,16 +232,15 @@ export default function AccountManagement() {
 
   const header = renderHeader();
 
-  // if (
-  //   session.status === "authenticated" &&
-  //   session.data.user.role !== "Administrator"
-  // ) {
-  //   router?.push("/dashboard");
-  // }
+  if (
+    session.status === "authenticated" &&
+    session.data.user.role !== "Administrator"
+  ) {
+    router?.push("/dashboard");
+  }
 
   if (
-    // session.status === "authenticated" && session.data.user.role === "Administrator"
-    true
+    session.status === "authenticated" && session.data.user.role === "Administrator"
   ) {
     return (
       <div className="card">

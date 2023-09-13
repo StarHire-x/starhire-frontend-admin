@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { getUser } from "../api/auth/user/route";
+import { getUserByEmailRole } from "../api/auth/user/route";
 import { uploadFile } from "../api/auth/upload/route";
 import { updateUser } from "../api/auth/user/route";
 import styles from "./page.module.css";
@@ -20,18 +20,19 @@ const AccountManagement = () => {
     status: "",
   });
 
-  let emailRef, roleRef;
+  let emailRef, roleRef, sessionTokenRef
 
   if (session && session.data && session.data.user) {
     emailRef = session.data.user.email;
     roleRef = session.data.user.role;
+    sessionTokenRef = session.data.user.accessToken;
   }
 
   useEffect(() => {
     if (session.status === "unauthenticated") {
       router.push("/login");
     } else if (session.status !== "loading") {
-      getUser(emailRef, roleRef)
+      getUserByEmailRole(emailRef, roleRef)
         .then((user) => setFormData(user.data))
         .catch((error) => {
           console.error("Error fetching user:", error);
@@ -78,7 +79,11 @@ const AccountManagement = () => {
     try {
       console.log(userId)
       console.log(updateUserDetails)
-      const response = await updateUser(updateUserDetails, userId);
+      const response = await updateUser(
+        updateUserDetails,
+        userId,
+        sessionTokenRef
+      );
       console.log("Status changed successfully:", response);
       alert("Status changed successfully!");
     } catch {
@@ -92,7 +97,7 @@ const AccountManagement = () => {
         <h1 className={styles.title}>My Account Details</h1>
         <form className={styles.form} onSubmit={saveChanges}>
           <div className={styles.avatarContainer}>
-            {formData.profilePictureUrl && (
+            {formData?.profilePictureUrl && (
               <img
                 src={formData.profilePictureUrl}
                 alt="User Profile"
