@@ -35,17 +35,17 @@ const links = [
   {
     id: 6,
     title: "Chat",
-    url: "/chat",
+    url: "",
     submenu: [
       {
         id: 1,
         title: "New Chat",
-        url: "/",
+        url: "/create-chat",
       },
       {
         id: 2,
-        title: "View Chat",
-        url: "/",
+        title: "Manage Chats",
+        url: "/chat",
       },
     ],
   },

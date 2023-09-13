@@ -7,42 +7,53 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import Image from 'next/image'
 import HumanIcon from "../../../public/icon.png";
+import { useState } from "react";
 
 const ChatSidebar = ({ userChats, selectCurrentChat }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Create a new array called filteredChats that include those userNames where it match the search query.
+  const filteredChats = userChats.filter((value) => {
+    const userName = value.jobSeeker
+      ? value.jobSeeker.userName
+      : value.corporate.userName;
+    
+    return userName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
   return (
     <Sidebar position="left" scrollable={false}>
-      <Search placeholder="Search..." />
+      <Search 
+      placeholder="Search..."
+      value={searchQuery}
+      onChange={query => setSearchQuery(query)} 
+      onClearClick={handleClearSearch}
+      />
+      
       <ConversationList>
-        {userChats.length > 0 ? (
-          userChats.map((value, index) => (
+        {filteredChats.length > 0 ? (
+          filteredChats.map((chat, index) => (
             <Conversation
+              key={chat.chatId}
               index={index}
               name={
-                value.jobSeeker
-                  ? value.jobSeeker.userName
-                  : value.corporate.userName
+                chat.jobSeeker
+                  ? chat.jobSeeker.userName
+                  : chat.corporate.userName
               }
-              lastSenderName={
-                value.jobSeeker
-                  ? value.jobSeeker.userName
-                  : value.corporate.userName
-              }
-              info={
-                value.chatMessages
-                  ? value.chatMessages.length > 0
-                    ? value.chatMessages.slice(-1)[0].message
-                    : ""
-                  : ""
-              }
-              onClick={() => selectCurrentChat(index)}
+              onClick={() => selectCurrentChat(chat)}
             >
             <Avatar>
               <Image src={HumanIcon} 
               alt="Profile Picture"
               name={
-                value.jobSeeker
-                  ? value.jobSeeker.userName
-                  : value.corporate.userName
+                chat.jobSeeker
+                  ? chat.jobSeeker.userName
+                  : chat.corporate.userName
               }
               status="available"
               />
@@ -50,7 +61,17 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
             </Conversation>
           ))
         ) : (
-          <h2>No chat history</h2>
+          <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                paddingTop: 200,
+                height: "100%",
+              }}
+            >
+              <p>No Chat History</p>
+            </div>
         )}
       </ConversationList>
     </Sidebar>

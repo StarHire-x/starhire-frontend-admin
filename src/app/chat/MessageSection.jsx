@@ -1,4 +1,6 @@
 import {} from "@chatscope/chat-ui-kit-react";
+import Image from "next/image";
+import {HumanIcon} from "../../../public/icon.png";
 
 const MessageSection = ({}) => {
   return (
@@ -13,7 +15,12 @@ const MessageSection = ({}) => {
           position: "single",
         }}
       >
-        <Avatar src="" name="Zoe" />
+        <Avatar>
+            <Image src={HumanIcon} 
+            alt="Profile Picture"
+            name="Zoe"
+            />
+        </Avatar>
       </Message>
       <Message
         model={{
@@ -64,7 +71,12 @@ const MessageSection = ({}) => {
           position: "last",
         }}
       >
-        <Avatar src="" name="Zoe" />
+        <Avatar>
+            <Image src={HumanIcon} 
+            alt="Profile Picture"
+            name="Zoe"
+            />
+        </Avatar>
       </Message>
       <Message
         model={{
@@ -122,7 +134,12 @@ const MessageSection = ({}) => {
           position: "last",
         }}
       >
-        <Avatar src="" name="Zoe" />
+        <Avatar>
+            <Image src={HumanIcon} 
+            alt="Profile Picture"
+            name="Zoe"
+            />
+        </Avatar>
       </Message>
     </MessageList>
   );
