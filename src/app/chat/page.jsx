@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import styles from "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,7 @@ import ChatHeader from "./ChatHeader";
 import HumanIcon from "../../../public/icon.png";
 
 import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
+import { uploadFile } from "../api/auth/upload/route";
 
 const Chat = () => {
   const session = useSession();
@@ -37,6 +38,7 @@ const Chat = () => {
   const currentUserId =
     session.status === "authenticated" && session.data.user.userId;
 
+  const fileInputRef = useRef(null);
   const [messageInputValue, setMessageInputValue] = useState("");
   const [chatMessagesByDate, setChatMessagesByDate] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -44,6 +46,8 @@ const Chat = () => {
   const [otherUser, setOtherUser] = useState(null); // user object
   const [allChats, setAllChats] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
+  const [attachedFile, setAttachedFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   // WebSocket functions
   const socket = io("http://localhost:8080");
@@ -108,15 +112,39 @@ const Chat = () => {
     }
   };
 
-  const handleSendMessage = (content) => {
+  const handleSendMessage = async (content) => {
+    setLoading(true);
+    // get fileURL here
+    let fileURL = "";
+    if (attachedFile) {
+      try {
+        fileURL = await uploadFile(attachedFile, accessToken);
+      } catch (error) {
+        console.error("There was an error uploading the file", error);
+      }
+    }
     sendMessage({
       userId: currentUserId,
       chatId: currentChat ? currentChat.chatId : null,
       message: content,
       isImportant: false,
       timestamp: new Date(),
+      fileURL: fileURL ? fileURL.url : "",
     });
     setMessageInputValue("");
+    setAttachedFile(null);
+    setLoading(false);
+  };
+
+  const handleAttachClick = () => {
+    fileInputRef.current.value = "";
+    fileInputRef.current.click();
+    console.log("hello");
+  };
+
+  const handleFileInputChange = (event) => {
+    const selectedFile = event.target.files[0]; // Get the selected file
+    setAttachedFile(selectedFile);
   };
 
   async function getUserChats() {
@@ -159,6 +187,12 @@ const Chat = () => {
   if (session.status === "authenticated") {
     return (
       <>
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileInputChange}
+        />
         <MainContainer responsive style={{ height: "75vh" }}>
           <ChatSidebar
             userChats={allChats}
@@ -184,7 +218,7 @@ const Chat = () => {
                 <ConversationHeader.Actions></ConversationHeader.Actions>
               </ConversationHeader>
               <ChatHeader />
-              <MessageList>
+              <MessageList loadingMore={loading} loadingMorePosition="bottom">
                 {chatMessagesByDate.length > 0 &&
                   chatMessagesByDate.map((chatMessages, index) => (
                     <>
@@ -202,7 +236,6 @@ const Chat = () => {
                         <Message
                           index={index}
                           model={{
-                            message: value.message,
                             sentTime: value.timestamp,
                             sender:
                               value.userId == currentUserId
@@ -226,6 +259,21 @@ const Chat = () => {
                               }
                             />
                           </Avatar>
+                          <Message.CustomContent>
+                            {value.fileURL != "" ? (
+                              <>
+                                <b style={{ color: "#00008B" }}>
+                                  <a href={`${value.fileURL}`} target="_blank">
+                                    Download Attachment
+                                  </a>
+                                </b>
+                                <br />
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                            {value.message}
+                          </Message.CustomContent>
                           <Message.Footer>
                             {formatRawDate(value.timestamp)}
                           </Message.Footer>
@@ -235,11 +283,16 @@ const Chat = () => {
                   ))}
               </MessageList>
               <MessageInput
-                placeholder="Type message here"
+                placeholder={
+                  attachedFile
+                    ? `File attached: ${attachedFile.name}`
+                    : "Type message here"
+                }
                 value={messageInputValue}
                 onChange={(val) => setMessageInputValue(val)}
                 onSend={(textContent) => handleSendMessage(textContent)}
-              />
+                onAttachClick={handleAttachClick}
+              ></MessageInput>
             </ChatContainer>
           ) : (
             <div
