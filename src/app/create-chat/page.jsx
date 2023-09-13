@@ -21,14 +21,19 @@ import ResponseCache from "next/dist/server/response-cache";
 
 const CreateChat = () => {
   const session = useSession();
-
   const router = useRouter();
+  if (session.status === "unauthenticated") {
+    router?.push("/login");
+  }
 
-  console.log(session);
+  const accessToken =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.accessToken;
+  
+  const currentUserId =
+    session.status === "authenticated" && session.data.user.userId;
 
-  //   if (session.status === "unauthenticated") {
-  //     router?.push("/login");
-  //   }
 
   const [refreshData, setRefreshData] = useState(false);
   const [user, setUser] = useState(null);
@@ -100,13 +105,13 @@ const CreateChat = () => {
     try {
       if (selectedRowData.role === "Job_Seeker") {
         request = {
-          recruiterId: 4, // retrieve it from session next time
+          recruiterId: currentUserId, // retrieve it from session next time
           jobSeekerId: selectedRowData.userId,
           lastUpdated: new Date(),
         };
       } else if (selectedRowData.role === "Corporate") {
         request = {
-          recruiterId: 4, // retrieve it from session next time
+          recruiterId: currentUserId, // retrieve it from session next time
           corporateId: selectedRowData.userId,
           lastUpdated: new Date(),
         };
@@ -114,10 +119,10 @@ const CreateChat = () => {
 
       const response = await createNewChatByRecruiter(
         request,
-        selectedRowData.userId
+        accessToken
       );
       console.log("Chat has been created successfully!" + response);
-      setRefreshData((prev) => !prev);
+      setRefreshData((prev) => !prev); 
     } catch (error) {
       console.error("Error changing status:", error);
     }
@@ -201,7 +206,7 @@ const CreateChat = () => {
   };
 
   useEffect(() => {
-    getUsers()
+    getUsers(accessToken)
       .then((user) => setUser(user.data))
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -222,7 +227,7 @@ const CreateChat = () => {
   //   ) {
   return (
     <>
-    <h2>Create Chat</h2>
+    <h2 style={{marginTop: 20, marginBottom: 20}}>New Chat</h2>
     <div className="card">
       <DataTable
         value={user}
