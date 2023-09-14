@@ -180,9 +180,9 @@ const Chat = () => {
     }
   }, [currentChat]);
 
-  useEffect(() => {
-    console.log(window.innerHeight);
-  }, [window.innerHeight]);
+  // useEffect(() => {
+  //   console.log(window.innerHeight);
+  // }, [window.innerHeight]);
 
   if (session.status === "authenticated") {
     return (
@@ -267,12 +267,12 @@ const Chat = () => {
                                     Download Attachment
                                   </a>
                                 </b>
-                                <br />
+                                <br/>
                               </>
                             ) : (
-                              <></>
+                             <></> 
                             )}
-                            {value.message}
+                           {value.message}
                           </Message.CustomContent>
                           <Message.Footer>
                             {formatRawDate(value.timestamp)}
