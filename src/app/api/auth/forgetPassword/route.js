@@ -1,9 +1,7 @@
-export const forgetPassword = async (request) => {
+export const forgetPassword = async (email, role) => {
   try {
-    const { email, role } = request;
-    console.log(request);
     const res = await fetch(
-      `http://localhost:8080/users/login?email=${email}&role=${role}`,
+      `http://localhost:8080/users/find?email=${email}&role=${role}`,
       {
         method: "GET",
         headers: {
@@ -12,13 +10,9 @@ export const forgetPassword = async (request) => {
         cache: "no-store",
       }
     );
-    if (!res.ok) {
-      return new Error("User is not found");
-    }
-
+    
     const responseBody = await res.json();
-    if(responseBody.statusCode !== 404) {
-      
+    if(responseBody.statusCode === 200) {
       const token = Math.random().toString(36).substring(2, 15);
       localStorage.setItem("passwordResetToken", token);
       const passwordResetExpire = Date.now() + 3600000;
@@ -41,7 +35,7 @@ export const forgetPassword = async (request) => {
       throw new Error("No such user present!");
     }
   } catch (err) {
-    throw new Error("No such user present");
+    throw new Error("No such user present!!!");
   }
 };
 
@@ -64,5 +58,28 @@ export const sendEmail = async (request) => {
     }
   } catch (err) {
     throw new Error(`Error in sending email: ${err.message}`);
+  }
+};
+
+
+export const updateUserPassword = async (request, id) => {
+  try {
+    const res = await fetch(`http://localhost:8080/users/reset/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (res.ok) {
+      return;
+    } else {
+      throw new Error(errorData.message || "An error occurred");
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the users", error);
+    throw error;
   }
 };
