@@ -16,14 +16,22 @@ import { Tag } from "primereact/tag";
 import { updateUser, getUsers, deleteUser } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "./page.module.css"
+import styles from "./page.module.css";
 
 export default function AccountManagement() {
   const session = useSession();
 
   const router = useRouter();
 
-  const accessToken = session.status === "authenticated" && session.data && session.data.user.accessToken;
+  const userIdRef =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.userId;
+
+  const accessToken =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.accessToken;
   console.log(session);
 
   if (session.status === "unauthenticated") {
@@ -77,12 +85,11 @@ export default function AccountManagement() {
 
   const showDeleteDialog = (rowData) => {
     setDeleteDialog(true);
-  }
+  };
 
   const showViewUserDialog = (rowData) => {
     setViewUserDialog(true);
-  }
-
+  };
 
   const statusBodyTemplate = (rowData) => {
     return <Tag value={rowData.status} severity={getStatus(rowData.status)} />;
@@ -108,43 +115,59 @@ export default function AccountManagement() {
 
   const actionBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
-    return (
-      <React.Fragment>
-        <Button
-          icon="pi pi-pencil"
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => {
-            setSelectedRowData(rowData);
-            //console.log("Selected Row Data:", selectedRowData);
-            showUserDialog(rowData);
-          }}
-        />
-        <Button
-          icon="pi pi-trash"
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => {
-            setSelectedRowData(rowData);
-            //console.log("Selected Row Data:", selectedRowData);
-            showDeleteDialog(rowData);
-          }}
-        />
-        <Button
-          icon="pi pi-search"
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => {
-            setSelectedRowData(rowData);
-            //console.log("Selected Row Data:", selectedRowData);
-            showViewUserDialog(rowData);
-          }}
-        />
-      </React.Fragment>
-    );
+
+    // If session.status.user.userId matches rowData.userId, return null or an empty fragment.
+    if (userIdRef === rowData.userId) {
+      return (
+        <React.Fragment>
+          <Button
+            icon="pi pi-search"
+            rounded
+            outlined
+            className="mr-2"
+            onClick={() => {
+              setSelectedRowData(rowData);
+              showViewUserDialog(rowData);
+            }}
+          />
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          <Button
+            icon="pi pi-pencil"
+            rounded
+            outlined
+            className="mr-2"
+            onClick={() => {
+              setSelectedRowData(rowData);
+              showUserDialog(rowData);
+            }}
+          />
+          <Button
+            icon="pi pi-trash"
+            rounded
+            outlined
+            className="mr-2"
+            onClick={() => {
+              setSelectedRowData(rowData);
+              showDeleteDialog(rowData);
+            }}
+          />
+          <Button
+            icon="pi pi-search"
+            rounded
+            outlined
+            className="mr-2"
+            onClick={() => {
+              setSelectedRowData(rowData);
+              showViewUserDialog(rowData);
+            }}
+          />
+        </React.Fragment>
+      );
+    }
   };
 
   const hideDialog = () => {
@@ -153,11 +176,11 @@ export default function AccountManagement() {
 
   const hideDeleteDialog = () => {
     setDeleteDialog(false);
-  }
+  };
 
   const hideViewDialog = () => {
     setViewUserDialog(false);
-  }
+  };
 
   const saveStatusChange = async () => {
     console.log(selectedRowData);
@@ -169,7 +192,11 @@ export default function AccountManagement() {
         status: toggledStatus,
       };
       console.log(request);
-      const response = await updateUser(request, selectedRowData.userId, accessToken);
+      const response = await updateUser(
+        request,
+        selectedRowData.userId,
+        accessToken
+      );
       console.log("Status changed successfully:", response);
       setRefreshData((prev) => !prev);
     } catch (error) {
@@ -184,17 +211,20 @@ export default function AccountManagement() {
     try {
       const request = {
         role: selectedRowData.role,
-      }
+      };
       console.log(request);
-      const response = await deleteUser(selectedRowData.role, selectedRowData.userId);
-      console.log("User is deleted", response)
+      const response = await deleteUser(
+        selectedRowData.role,
+        selectedRowData.userId
+      );
+      console.log("User is deleted", response);
       setRefreshData((prev) => !prev);
     } catch (error) {
       console.error("Error deleting user:", error);
     }
     setSelectedRowData();
     setDeleteDialog(false);
-  }
+  };
 
   const userDialogFooter = (
     <React.Fragment>
@@ -241,8 +271,6 @@ export default function AccountManagement() {
     );
   };
 
-  
-
   useEffect(() => {
     getUsers(accessToken)
       .then((user) => setUser(user.data))
@@ -261,7 +289,8 @@ export default function AccountManagement() {
   }
 
   if (
-    session.status === "authenticated" && session.data.user.role === "Administrator"
+    session.status === "authenticated" &&
+    session.data.user.role === "Administrator"
   ) {
     return (
       <div className="card">
