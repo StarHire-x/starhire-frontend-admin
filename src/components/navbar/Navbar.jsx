@@ -14,8 +14,8 @@ const links = [
   },
   {
     id: 2,
-    title: "About",
-    url: "/about",
+    title: "Job Listings",
+    url: "/jobListings",
   },
   {
     id: 3,

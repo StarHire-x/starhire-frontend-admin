@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -13,25 +13,15 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { updateUser, getUsers, deleteUser } from "../api/auth/user/route";
+import { updateUser, getUsers } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "./page.module.css";
 
 export default function AccountManagement() {
   const session = useSession();
 
   const router = useRouter();
 
-  const userIdRef =
-    session.status === "authenticated" &&
-    session.data &&
-    session.data.user.userId;
-
-  const accessToken =
-    session.status === "authenticated" &&
-    session.data &&
-    session.data.user.accessToken;
   console.log(session);
 
   if (session.status === "unauthenticated") {
@@ -41,8 +31,6 @@ export default function AccountManagement() {
   const [refreshData, setRefreshData] = useState(false);
   const [user, setUser] = useState(null);
   const [userDialog, setUserDialog] = useState(false);
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [viewUserDialog, setViewUserDialog] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [filters, setFilters] = useState({
@@ -58,7 +46,6 @@ export default function AccountManagement() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [statuses] = useState(["Active", "Inactive"]);
-  const dt = useRef(null);
 
   const getStatus = (status) => {
     switch (status) {
@@ -81,14 +68,6 @@ export default function AccountManagement() {
 
   const showUserDialog = (rowData) => {
     setUserDialog(true);
-  };
-
-  const showDeleteDialog = (rowData) => {
-    setDeleteDialog(true);
-  };
-
-  const showViewUserDialog = (rowData) => {
-    setViewUserDialog(true);
   };
 
   const statusBodyTemplate = (rowData) => {
@@ -115,71 +94,25 @@ export default function AccountManagement() {
 
   const actionBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
-
-    // If session.status.user.userId matches rowData.userId, return null or an empty fragment.
-    if (userIdRef === rowData.userId) {
-      return (
-        <React.Fragment>
-          <Button
-            icon="pi pi-search"
-            rounded
-            outlined
-            className="mr-2"
-            onClick={() => {
-              setSelectedRowData(rowData);
-              showViewUserDialog(rowData);
-            }}
-          />
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <Button
-            icon="pi pi-pencil"
-            rounded
-            outlined
-            className="mr-2"
-            onClick={() => {
-              setSelectedRowData(rowData);
-              showUserDialog(rowData);
-            }}
-          />
-          <Button
-            icon="pi pi-trash"
-            rounded
-            outlined
-            className="mr-2"
-            onClick={() => {
-              setSelectedRowData(rowData);
-              showDeleteDialog(rowData);
-            }}
-          />
-          <Button
-            icon="pi pi-search"
-            rounded
-            outlined
-            className="mr-2"
-            onClick={() => {
-              setSelectedRowData(rowData);
-              showViewUserDialog(rowData);
-            }}
-          />
-        </React.Fragment>
-      );
-    }
+    return (
+      <React.Fragment>
+        <Button
+          icon="pi pi-pencil"
+          rounded
+          outlined
+          className="mr-2"
+          onClick={() => {
+            setSelectedRowData(rowData);
+            //console.log("Selected Row Data:", selectedRowData);
+            showUserDialog(rowData);
+          }}
+        />
+      </React.Fragment>
+    );
   };
 
   const hideDialog = () => {
     setUserDialog(false);
-  };
-
-  const hideDeleteDialog = () => {
-    setDeleteDialog(false);
-  };
-
-  const hideViewDialog = () => {
-    setViewUserDialog(false);
   };
 
   const saveStatusChange = async () => {
@@ -192,11 +125,7 @@ export default function AccountManagement() {
         status: toggledStatus,
       };
       console.log(request);
-      const response = await updateUser(
-        request,
-        selectedRowData.userId,
-        accessToken
-      );
+      const response = await updateUser(request, selectedRowData.userId);
       console.log("Status changed successfully:", response);
       setRefreshData((prev) => !prev);
     } catch (error) {
@@ -206,48 +135,12 @@ export default function AccountManagement() {
     setUserDialog(false);
   };
 
-  const deleteUserFromRow = async () => {
-    console.log(selectedRowData);
-    try {
-      const request = {
-        role: selectedRowData.role,
-      };
-      console.log(request);
-      const response = await deleteUser(
-        selectedRowData.role,
-        selectedRowData.userId
-      );
-      console.log("User is deleted", response);
-      setRefreshData((prev) => !prev);
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-    setSelectedRowData();
-    setDeleteDialog(false);
-  };
-
   const userDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
       <Button label="Yes" icon="pi pi-check" onClick={saveStatusChange} />
     </React.Fragment>
   );
-
-  const deleteUserDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteDialog}
-      />
-      <Button label="Yes" icon="pi pi-check" onClick={deleteUserFromRow} />
-    </React.Fragment>
-  );
-
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
 
   const renderHeader = () => {
     return (
@@ -261,23 +154,17 @@ export default function AccountManagement() {
             placeholder="Keyword Search"
           />
         </span>
-        <Button
-          label="Export CSV"
-          icon="pi pi-upload"
-          className="p-button-help"
-          onClick={exportCSV}
-        />
       </div>
     );
   };
 
   useEffect(() => {
-    getUsers(accessToken)
+    getUsers()
       .then((user) => setUser(user.data))
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [refreshData, accessToken]);
+  }, [refreshData]);
 
   const header = renderHeader();
 
@@ -289,15 +176,13 @@ export default function AccountManagement() {
   }
 
   if (
-    session.status === "authenticated" &&
-    session.data.user.role === "Administrator"
+    session.status === "authenticated" && session.data.user.role === "Administrator"
   ) {
     return (
       <div className="card">
         <DataTable
           value={user}
           paginator
-          ref={dt}
           header={header}
           rows={10}
           paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -309,6 +194,7 @@ export default function AccountManagement() {
           filters={filters}
           filterDisplay="menu"
           globalFilterFields={[
+            "userId",
             "userName",
             "email",
             "contactNo",
@@ -318,6 +204,7 @@ export default function AccountManagement() {
           emptyMessage="No users found."
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         >
+          <Column field="userId" header="User Id" sortable></Column>
           <Column field="userName" header="User Name" sortable></Column>
           <Column field="email" header="Email" sortable></Column>
           <Column field="contactNo" header="Contact No" sortable></Column>
@@ -335,7 +222,6 @@ export default function AccountManagement() {
             exportable={false}
             style={{ minWidth: "12rem" }}
           ></Column>
-          <Column field="createdAt" header="Created Date" sortable></Column>
         </DataTable>
 
         <Dialog
@@ -347,51 +233,7 @@ export default function AccountManagement() {
           footer={userDialogFooter}
           onHide={hideDialog}
         >
-          <h3>{selectedRowData && selectedRowData.userName}</h3>
-        </Dialog>
-
-        <Dialog
-          visible={deleteDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Delete user"
-          className="p-fluid"
-          footer={deleteUserDialogFooter}
-          onHide={hideDeleteDialog}
-        >
           <h1>{selectedRowData && selectedRowData.userName}</h1>
-        </Dialog>
-
-        <Dialog
-          visible={viewUserDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="User Details"
-          modal
-          className="p-fluid"
-          onHide={hideViewDialog}
-        >
-          <div className={styles.centerContent}>
-            {selectedRowData?.profilePictureUrl && (
-              <img
-                src={selectedRowData.profilePictureUrl}
-                alt="User Profile"
-                className={styles.avatar}
-              />
-            )}
-            <div className={styles.inlineField}>
-              <label htmlFor="userId" className="font-bold">
-                User Id:
-              </label>
-              <p>{selectedRowData?.userId}</p>
-            </div>
-            <div className={styles.inlineField}>
-              <label htmlFor="userName" className="font-bold">
-                Username:
-              </label>
-              <p>{selectedRowData?.userName}</p>
-            </div>
-          </div>
         </Dialog>
       </div>
     );
