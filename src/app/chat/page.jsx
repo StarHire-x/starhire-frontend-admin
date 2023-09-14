@@ -298,13 +298,12 @@ const Chat = () => {
             <div
               style={{
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                paddingLeft: 300,
-                height: "100%",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
               }}
             >
-              <p>Select a conversation to start chatting.</p>
+              <p>Select a conversation to start chatting</p>
             </div>
           )}
         </MainContainer>

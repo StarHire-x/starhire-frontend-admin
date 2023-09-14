@@ -65,10 +65,9 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              paddingTop: 200,
-              height: "100%",
+              position: "absolute",
+              top: "40%",
+              left: "30%",
             }}
           >
             <p>No Chat History</p>
