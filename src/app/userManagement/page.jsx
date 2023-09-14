@@ -16,6 +16,7 @@ import { Tag } from "primereact/tag";
 import { updateUser, getUsers, deleteUser } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import styles from "./page.module.css"
 
 export default function AccountManagement() {
   const session = useSession();
@@ -33,6 +34,7 @@ export default function AccountManagement() {
   const [user, setUser] = useState(null);
   const [userDialog, setUserDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
+  const [viewUserDialog, setViewUserDialog] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [filters, setFilters] = useState({
@@ -75,6 +77,10 @@ export default function AccountManagement() {
 
   const showDeleteDialog = (rowData) => {
     setDeleteDialog(true);
+  }
+
+  const showViewUserDialog = (rowData) => {
+    setViewUserDialog(true);
   }
 
 
@@ -126,6 +132,17 @@ export default function AccountManagement() {
             showDeleteDialog(rowData);
           }}
         />
+        <Button
+          icon="pi pi-search"
+          rounded
+          outlined
+          className="mr-2"
+          onClick={() => {
+            setSelectedRowData(rowData);
+            //console.log("Selected Row Data:", selectedRowData);
+            showViewUserDialog(rowData);
+          }}
+        />
       </React.Fragment>
     );
   };
@@ -136,6 +153,10 @@ export default function AccountManagement() {
 
   const hideDeleteDialog = () => {
     setDeleteDialog(false);
+  }
+
+  const hideViewDialog = () => {
+    setViewUserDialog(false);
   }
 
   const saveStatusChange = async () => {
@@ -259,7 +280,6 @@ export default function AccountManagement() {
           filters={filters}
           filterDisplay="menu"
           globalFilterFields={[
-            "userId",
             "userName",
             "email",
             "contactNo",
@@ -269,7 +289,6 @@ export default function AccountManagement() {
           emptyMessage="No users found."
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         >
-          <Column field="userId" header="User Id" sortable></Column>
           <Column field="userName" header="User Name" sortable></Column>
           <Column field="email" header="Email" sortable></Column>
           <Column field="contactNo" header="Contact No" sortable></Column>
@@ -312,6 +331,38 @@ export default function AccountManagement() {
           onHide={hideDeleteDialog}
         >
           <h1>{selectedRowData && selectedRowData.userName}</h1>
+        </Dialog>
+
+        <Dialog
+          visible={viewUserDialog}
+          style={{ width: "32rem" }}
+          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+          header="User Details"
+          modal
+          className="p-fluid"
+          onHide={hideViewDialog}
+        >
+          <div className={styles.centerContent}>
+            {selectedRowData?.profilePictureUrl && (
+              <img
+                src={selectedRowData.profilePictureUrl}
+                alt="User Profile"
+                className={styles.avatar}
+              />
+            )}
+            <div className={styles.inlineField}>
+              <label htmlFor="userId" className="font-bold">
+                User Id:
+              </label>
+              <p>{selectedRowData?.userId}</p>
+            </div>
+            <div className={styles.inlineField}>
+              <label htmlFor="userName" className="font-bold">
+                Username:
+              </label>
+              <p>{selectedRowData?.userName}</p>
+            </div>
+          </div>
         </Dialog>
       </div>
     );
