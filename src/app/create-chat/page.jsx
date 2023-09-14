@@ -119,6 +119,7 @@ const CreateChat = () => {
       const response = await createNewChatByRecruiter(request, accessToken);
       console.log("Chat has been created successfully!" + response);
       setRefreshData((prev) => !prev);
+      router?.push("/chat");
     } catch (error) {
       console.error("Error changing status:", error);
     }
