@@ -379,18 +379,131 @@ export default function AccountManagement() {
                 className={styles.avatar}
               />
             )}
-            <div className={styles.inlineField}>
-              <label htmlFor="userId" className="font-bold">
-                User Id:
-              </label>
-              <p>{selectedRowData?.userId}</p>
-            </div>
-            <div className={styles.inlineField}>
-              <label htmlFor="userName" className="font-bold">
-                Username:
-              </label>
-              <p>{selectedRowData?.userName}</p>
-            </div>
+            {/* For Corporate */}
+            {selectedRowData?.corporatePicture && (
+              <img
+                src={selectedRowData.corporatePicture}
+                alt="Corporate Picture"
+                className={styles.avatar}
+              />
+            )}
+            {selectedRowData?.userId && (
+              <div className={styles.inlineField}>
+                <label htmlFor="userId" className="font-bold">
+                  User Id:
+                </label>
+                <p>{selectedRowData?.userId}</p>
+              </div>
+            )}
+            {selectedRowData?.userName && (
+              <div className={styles.inlineField}>
+                <label htmlFor="userName" className="font-bold">
+                  Username:
+                </label>
+                <p>{selectedRowData?.userName}</p>
+              </div>
+            )}
+            {selectedRowData?.email && (
+              <div className={styles.inlineField}>
+                <label htmlFor="email" className="font-bold">
+                  Email:
+                </label>
+                <p>{selectedRowData?.email}</p>
+              </div>
+            )}
+            {selectedRowData?.fullName && (
+              <div className={styles.inlineField}>
+                <label htmlFor="fullName" className="font-bold">
+                  Full Name:
+                </label>
+                <p>{selectedRowData?.fullName}</p>
+              </div>
+            )}
+            
+            {/* Corporate specific stuff */}
+            {selectedRowData?.companyName && (
+              <div className={styles.inlineField}>
+                <label htmlFor="companyName" className="font-bold">
+                  Company Name:
+                </label>
+                <p>{selectedRowData?.companyName}</p>
+              </div>
+            )}
+            {selectedRowData?.companyRegistrationId && (
+              <div className={styles.inlineField}>
+                <label htmlFor="companyRegistrationId" className="font-bold">
+                  Company Registration Id:
+                </label>
+                <p>{selectedRowData?.companyRegistrationId}</p>
+              </div>
+            )}
+            {selectedRowData?.companyAddress && (
+              <div className={styles.inlineField}>
+                <label htmlFor="companyAddress" className="font-bold">
+                  Company Address:
+                </label>
+                <p>{selectedRowData?.companyAddress}</p>
+              </div>
+            )}
+
+            {/* Job seeker specific stuff */}
+            {selectedRowData?.dateOfBirth && (
+              <div className={styles.inlineField}>
+                <label htmlFor="dateOfBirth" className="font-bold">
+                  Date of Birth:
+                </label>
+                <p>{selectedRowData?.dateOfBirth}</p>
+              </div>
+            )}
+            {selectedRowData?.homeAddress && (
+              <div className={styles.inlineField}>
+                <label htmlFor="homeAddress" className="font-bold">
+                  Home Address:
+                </label>
+                <p>{selectedRowData?.homeAddress}</p>
+              </div>
+            )}
+
+            {selectedRowData?.contactNo && (
+              <div className={styles.inlineField}>
+                <label htmlFor="contactNo" className="font-bold">
+                  Contact No:
+                </label>
+                <p>{selectedRowData?.contactNo}</p>
+              </div>
+            )}
+            {selectedRowData?.status && (
+              <div className={styles.inlineField}>
+                <label htmlFor="status" className="font-bold">
+                  Status:
+                </label>
+                <p>{selectedRowData?.status}</p>
+              </div>
+            )}
+            {selectedRowData?.status && (
+              <div className={styles.inlineField}>
+                <label htmlFor="notificationMode" className="font-bold">
+                  Notification Mode:
+                </label>
+                <p>{selectedRowData?.notificationMode}</p>
+              </div>
+            )}
+            {selectedRowData?.role && (
+              <div className={styles.inlineField}>
+                <label htmlFor="role" className="font-bold">
+                  Role:
+                </label>
+                <p>{selectedRowData?.role}</p>
+              </div>
+            )}
+            {selectedRowData?.createdAt && (
+              <div className={styles.inlineField}>
+                <label htmlFor="createdAt" className="font-bold">
+                  Created At:
+                </label>
+                <p>{selectedRowData?.createdAt}</p>
+              </div>
+            )}
           </div>
         </Dialog>
       </div>
