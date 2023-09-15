@@ -289,8 +289,8 @@ const Chat = () => {
                     : "Type message here"
                 }
                 value={messageInputValue}
-                onChange={(val) => setMessageInputValue(val)}
-                onSend={(textContent) => handleSendMessage(textContent)}
+                onChange={(innerHtml, textContent, innerText) => setMessageInputValue(innerText)}
+                onSend={(innerHtml, textContent, innerText) => handleSendMessage(textContent)}
                 onAttachClick={handleAttachClick}
               ></MessageInput>
             </ChatContainer>
