@@ -52,8 +52,8 @@ const AccountManagement = () => {
     const file = e.target.files[0];
     if (!file) return;
     try {
-      const response = await uploadFile(file);
-      // const response = await uploadFile(file, session.data.user.accessToken); uploadFile should have accessToken for authentication
+      // const response = await uploadFile(file);
+      const response = await uploadFile(file, sessionTokenRef); 
       setFormData((prevState) => ({
         ...prevState,
         profilePictureUrl: response.url,
