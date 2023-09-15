@@ -43,6 +43,10 @@ const Register = () => {
     }
 
     // const hashedPassword = await hashing(formData.password);
+    if (!formData.userName || !formData.email || !formData.contactNumber || !formData.role) {
+      alert("Please ensure you have filled all the fields, especially your role.");
+      return;
+    }
     const data = {
       userName: formData.userName,
       email: formData.email,
