@@ -147,7 +147,7 @@ const Chat = () => {
     setAttachedFile(selectedFile);
   };
 
-  async function getUserChats() {
+  async function getUserChats(currentUserId, accessToken) {
     const chats = await getAllUserChats(currentUserId, accessToken);
     setAllChats(chats);
   }
@@ -162,8 +162,10 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    getUserChats();
-  }, [accessToken]);
+    if (session.status === "authenticated") {
+        getUserChats(currentUserId, accessToken);
+    }
+  }, [session.status, currentUserId, accessToken]);
 
   useEffect(() => {
     if (currentChat) {
