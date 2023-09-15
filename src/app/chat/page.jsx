@@ -48,9 +48,19 @@ const Chat = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [attachedFile, setAttachedFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [socket, setSocket] = useState(io());
 
-  // WebSocket functions
-  const socket = io("http://localhost:8080");
+  useEffect(() => {
+    // WebSocket functions
+    const socket = io("http://localhost:8080");
+    setSocket(socket);
+
+    // Clean-up logic when the component unmounts (if needed)
+    return () => {
+      // Close the socket or remove event listeners, if necessary
+      socket.close(); // Close the socket when the component unmounts
+    };
+  }, []); // The empty dependency array [] means this effect runs once after the initial render
 
   // returns list of lists
   const getDateStringByTimestamp = (timestamp) => {
@@ -163,7 +173,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-        getUserChats(currentUserId, accessToken);
+      getUserChats(currentUserId, accessToken);
     }
   }, [session.status, currentUserId, accessToken]);
 
@@ -269,12 +279,12 @@ const Chat = () => {
                                     Download Attachment
                                   </a>
                                 </b>
-                                <br/>
+                                <br />
                               </>
                             ) : (
-                             <></> 
+                              <></>
                             )}
-                           {value.message}
+                            {value.message}
                           </Message.CustomContent>
                           <Message.Footer>
                             {formatRawDate(value.timestamp)}
@@ -291,8 +301,12 @@ const Chat = () => {
                     : "Type message here"
                 }
                 value={messageInputValue}
-                onChange={(innerHtml, textContent, innerText) => setMessageInputValue(innerText)}
-                onSend={(innerHtml, textContent, innerText) => handleSendMessage(textContent)}
+                onChange={(innerHtml, textContent, innerText) =>
+                  setMessageInputValue(innerText)
+                }
+                onSend={(innerHtml, textContent, innerText) =>
+                  handleSendMessage(textContent)
+                }
                 onAttachClick={handleAttachClick}
               ></MessageInput>
             </ChatContainer>
