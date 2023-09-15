@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { getUserByEmailRole } from "../api/auth/user/route";
+import { getUserByEmailRole, getUserByUserId } from "../api/auth/user/route";
 import { uploadFile } from "../api/auth/upload/route";
 import { updateUser } from "../api/auth/user/route";
 import styles from "./page.module.css";
@@ -20,10 +20,10 @@ const AccountManagement = () => {
     status: "",
   });
 
-  let emailRef, roleRef, sessionTokenRef;
+  let roleRef, sessionTokenRef, userIdRef;
 
   if (session && session.data && session.data.user) {
-    emailRef = session.data.user.email;
+    userIdRef = session.data.user.userId;
     roleRef = session.data.user.role;
     sessionTokenRef = session.data.user.accessToken;
   }
@@ -32,13 +32,13 @@ const AccountManagement = () => {
     if (session.status === "unauthenticated") {
       router.push("/login");
     } else if (session.status !== "loading") {
-      getUserByEmailRole(emailRef, roleRef)
+      getUserByUserId(userIdRef, roleRef, sessionTokenRef)
         .then((user) => setFormData(user.data))
         .catch((error) => {
           console.error("Error fetching user:", error);
         });
     }
-  }, [session.status, emailRef, roleRef]);
+  }, [session.status, userIdRef, roleRef]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,7 +52,6 @@ const AccountManagement = () => {
     const file = e.target.files[0];
     if (!file) return;
     try {
-      // const response = await uploadFile(file);
       const response = await uploadFile(file, sessionTokenRef); 
       setFormData((prevState) => ({
         ...prevState,
@@ -66,12 +65,16 @@ const AccountManagement = () => {
   const saveChanges = async (e) => {
     e.preventDefault();
     const userId = formData.userId;
+    const email = formData.email;
+    const userName = formData.userName;
     const fullName = formData.fullName;
     const profilePictureUrl = formData.profilePictureUrl;
     const notificationMode = formData.notificationMode;
     const status = formData.status;
     const updateUserDetails = {
       role: roleRef,
+      email: email,
+      userName: userName,
       fullName: fullName,
       profilePictureUrl: profilePictureUrl,
       notificationMode: notificationMode,
@@ -129,7 +132,6 @@ const AccountManagement = () => {
               className={styles.input}
               value={formData.userName}
               onChange={handleInputChange}
-              readOnly
             />
           </div>
 
@@ -142,7 +144,6 @@ const AccountManagement = () => {
               className={styles.input}
               value={formData.email}
               onChange={handleInputChange}
-              readOnly
             />
           </div>
 
