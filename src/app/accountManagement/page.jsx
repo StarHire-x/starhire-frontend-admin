@@ -20,7 +20,7 @@ const AccountManagement = () => {
     status: "",
   });
 
-  let emailRef, roleRef, sessionTokenRef
+  let emailRef, roleRef, sessionTokenRef;
 
   if (session && session.data && session.data.user) {
     emailRef = session.data.user.email;
@@ -52,7 +52,8 @@ const AccountManagement = () => {
     const file = e.target.files[0];
     if (!file) return;
     try {
-      const response = await uploadFile(file);
+      // const response = await uploadFile(file);
+      const response = await uploadFile(file, sessionTokenRef); 
       setFormData((prevState) => ({
         ...prevState,
         profilePictureUrl: response.url,
@@ -68,17 +69,17 @@ const AccountManagement = () => {
     const fullName = formData.fullName;
     const profilePictureUrl = formData.profilePictureUrl;
     const notificationMode = formData.notificationMode;
-    const status = formData.status
+    const status = formData.status;
     const updateUserDetails = {
       role: roleRef,
       fullName: fullName,
       profilePictureUrl: profilePictureUrl,
       notificationMode: notificationMode,
-      status: status
+      status: status,
     };
     try {
-      console.log(userId)
-      console.log(updateUserDetails)
+      console.log(userId);
+      console.log(updateUserDetails);
       const response = await updateUser(
         updateUserDetails,
         userId,
