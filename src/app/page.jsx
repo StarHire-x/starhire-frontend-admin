@@ -9,7 +9,7 @@ export default function Home() {
       <div className={styles.item}>
         <h1 className={styles.title}>StarHire Administrator Portal</h1>
         <p className={styles.desc}>Explore our services and manage your operations with ease.</p>
-        <Button url="/portfolio" text="See Our Works"/>
+        <Button url="/login" text="Login"/>
       </div>
       <div className={styles.item}></div>
       <Image src={Hero} alt="" className={styles.img}/>

@@ -6,7 +6,7 @@ import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 
-const links = [
+const adminLinks = [
   {
     id: 1,
     title: "Home",
@@ -42,8 +42,26 @@ const links = [
     title: "Forum",
     url: "/forum",
   },
+];
+
+const recruiterLinks = [
   {
-    id: 8,
+    id: 1,
+    title: "Home",
+    url: "/",
+  },
+  {
+    id: 2,
+    title: "Account Management",
+    url: "/accountManagement",
+  },
+  {
+    id: 3,
+    title: "Dashboard",
+    url: "/dashboard",
+  },
+  {
+    id: 4,
     title: "Chat",
     url: "",
     submenu: [
@@ -59,16 +77,7 @@ const links = [
       },
     ],
   },
-  
 ];
-
-const adminLinks = [
-  {
-    id: 1,
-    title: "User Management",
-    url: "/userManagement"
-  },
-]
 
 const Navbar = () => {
   const session = useSession();  
@@ -89,7 +98,32 @@ const Navbar = () => {
       </Link>
       <div className={styles.links}>
         <DarkModeToggle />
-        {links.map((link) => (
+        {session.status === "authenticated" && session.data.user.role === "Administrator" && adminLinks.map((link) => (
+          <div
+            key={link.id}
+            className={styles.linkContainer}
+            onMouseEnter={() => handleLinkMouseEnter(link.id)}
+            onMouseLeave={handleLinkMouseLeave}
+          > 
+          <Link href={link.url} className={styles.link}>
+              {link.title}
+            </Link>
+            {link.submenu && showDropdown === link.id && (
+              <div className={styles.dropdown}>
+                {link.submenu.map((submenuItem) => (
+                  <Link
+                    key={submenuItem.id}
+                    href={submenuItem.url}
+                    className={styles.submenuItem}
+                  >
+                    {submenuItem.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+        {session.status === "authenticated" && session.data.user.role === "Recruiter" && recruiterLinks.map((link) => (
           <div
             key={link.id}
             className={styles.linkContainer}
