@@ -34,6 +34,16 @@ const links = [
   },
   {
     id: 6,
+    title: "Events",
+    url: "/events",
+  },
+  {
+    id: 7,
+    title: "Forum",
+    url: "/forum",
+  },
+  {
+    id: 8,
     title: "Chat",
     url: "",
     submenu: [
@@ -49,6 +59,7 @@ const links = [
       },
     ],
   },
+  
 ];
 
 const adminLinks = [
