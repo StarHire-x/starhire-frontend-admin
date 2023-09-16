@@ -212,83 +212,85 @@ const CreateChat = () => {
 
   const header = renderHeader();
 
-  //   if (
-  //     session.status === "authenticated" &&
-  //     session.data.user.role !== "Recruiter"
-  //   ) {
-  //     router?.push("/");
-  //   }
+  if (
+    session.status === "authenticated" &&
+    session.data.user.role !== "Recruiter"
+  ) {
+    router?.push("/dashboard");
+  }
 
-  //   if (
-  //     session.status === "authenticated" && session.data.user.role === "Recruiter"
-  //   ) {
-  return (
-    <>
-      <div className="card">
-        <DataTable
-          scrollable
-          scrollHeight="60vh"
-          style={{ minHeight: "95vh" }}
-          value={user}
-          paginator
-          header={header}
-          rows={10}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          rowsPerPageOptions={[10, 25, 50]}
-          dataKey="id"
-          selectionMode="checkbox"
-          selection={selectedUsers}
-          onSelectionChange={(e) => setSelectedUsers(e.value)}
-          filters={filters}
-          filterDisplay="menu"
-          globalFilterFields={[
-            "userId",
-            "userName",
-            "email",
-            "contactNo",
-            "status",
-            "role",
-          ]}
-          emptyMessage="No users found."
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        >
-          <Column field="userId" header="User Id" sortable></Column>
-          <Column field="userName" header="User Name" sortable></Column>
-          <Column field="email" header="Email" sortable></Column>
-          <Column field="contactNo" header="Contact No" sortable></Column>
-          <Column
-            field="status"
-            header="Status"
-            sortable
-            body={statusBodyTemplate}
-            filter
-            filterElement={statusFilterTemplate}
-          ></Column>
-          <Column field="role" header="Role" sortable></Column>
-          <Column
-            body={actionBodyTemplate}
-            exportable={false}
-            style={{ minWidth: "12rem" }}
-          ></Column>
-        </DataTable>
+  if (
+    session.status === "authenticated" &&
+    session.data.user.role === "Recruiter"
+  ) {
+    return (
+      <>
+        <div className="card">
+          <DataTable
+            scrollable
+            scrollHeight="60vh"
+            style={{ minHeight: "95vh" }}
+            value={user}
+            paginator
+            header={header}
+            rows={10}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            rowsPerPageOptions={[10, 25, 50]}
+            dataKey="id"
+            selectionMode="checkbox"
+            selection={selectedUsers}
+            onSelectionChange={(e) => setSelectedUsers(e.value)}
+            filters={filters}
+            filterDisplay="menu"
+            globalFilterFields={[
+              "userId",
+              "userName",
+              "email",
+              "contactNo",
+              "status",
+              "role",
+            ]}
+            emptyMessage="No users found."
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          >
+            <Column field="userId" header="User Id" sortable></Column>
+            <Column field="userName" header="User Name" sortable></Column>
+            <Column field="email" header="Email" sortable></Column>
+            <Column field="contactNo" header="Contact No" sortable></Column>
+            <Column
+              field="status"
+              header="Status"
+              sortable
+              body={statusBodyTemplate}
+              filter
+              filterElement={statusFilterTemplate}
+            ></Column>
+            <Column field="role" header="Role" sortable></Column>
+            <Column
+              body={actionBodyTemplate}
+              exportable={false}
+              style={{ minWidth: "12rem" }}
+            ></Column>
+          </DataTable>
 
-        <Dialog
-          visible={userDialog}
-          style={{ width: "32rem" }}
-          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-          header="Create Chat"
-          className="p-fluid"
-          footer={userDialogFooter}
-          onHide={hideDialog}
-        >
-          <h3>
-            Do you wish to create a new chat with{" "}
-            {selectedRowData && selectedRowData.userName}?{" "}
-          </h3>
-        </Dialog>
-      </div>
-    </>
-  );
+          <Dialog
+            visible={userDialog}
+            style={{ width: "32rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header="Create Chat"
+            className="p-fluid"
+            footer={userDialogFooter}
+            onHide={hideDialog}
+          >
+            <h3>
+              Do you wish to create a new chat with{" "}
+              {selectedRowData && selectedRowData.userName}?{" "}
+            </h3>
+          </Dialog>
+        </div>
+      </>
+    );
+  }
 };
 
 export default CreateChat;

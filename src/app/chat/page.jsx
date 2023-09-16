@@ -16,6 +16,9 @@ import {
   MessageSeparator,
   Message,
   MessageInput,
+  InfoButton,
+  SendButton,
+  AttachmentButton,
 } from "@chatscope/chat-ui-kit-react";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
@@ -48,9 +51,20 @@ const Chat = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [attachedFile, setAttachedFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [isImportant, setIsImportant] = useState(false);
 
-  // WebSocket functions
-  const socket = io("http://localhost:8080");
+  useEffect(() => {
+    // WebSocket functions
+    const socket = io("http://localhost:8080");
+    setSocket(socket);
+
+    // Clean-up logic when the component unmounts (if needed)
+    return () => {
+      // Close the socket or remove event listeners, if necessary
+      socket.close(); // Close the socket when the component unmounts
+    };
+  }, []); // The empty dependency array [] means this effect runs once after the initial render
 
   // returns list of lists
   const getDateStringByTimestamp = (timestamp) => {
@@ -74,10 +88,10 @@ const Chat = () => {
   };
 
   const sendMessage = (message) => {
-    socket.emit("sendMessage", message);
+    socket?.emit("sendMessage", message);
   };
 
-  socket.on(currentChat ? currentChat.chatId : null, (message) => {
+  socket?.on(currentChat ? currentChat.chatId : null, (message) => {
     receiveMessage(message);
   });
 
@@ -126,8 +140,8 @@ const Chat = () => {
     sendMessage({
       userId: currentUserId,
       chatId: currentChat ? currentChat.chatId : null,
-      message: content,
-      isImportant: false,
+      message: messageInputValue,
+      isImportant: isImportant,
       timestamp: new Date(),
       fileURL: fileURL ? fileURL.url : "",
     });
@@ -139,7 +153,6 @@ const Chat = () => {
   const handleAttachClick = () => {
     fileInputRef.current.value = "";
     fileInputRef.current.click();
-    console.log("hello");
   };
 
   const handleFileInputChange = (event) => {
@@ -147,23 +160,28 @@ const Chat = () => {
     setAttachedFile(selectedFile);
   };
 
-  async function getUserChats() {
+  async function getUserChats(currentUserId, accessToken) {
     const chats = await getAllUserChats(currentUserId, accessToken);
     setAllChats(chats);
   }
 
-  const selectCurrentChat = async (chat) => {
-    const currentChatId = chat.chatId;
+  const selectCurrentChat = async (chatId) => {
+    socket.off(currentChat?.chatId);
+    socket.on(chatId, (message) => {
+      receiveMessage(message);
+    });
     const chatMessagesByCurrentChatId = await getOneUserChat(
-      currentChatId,
+      chatId,
       accessToken
     );
     setCurrentChat(chatMessagesByCurrentChatId);
   };
 
   useEffect(() => {
-    getUserChats();
-  }, [accessToken]);
+    if (session.status === "authenticated") {
+      getUserChats(currentUserId, accessToken);
+    }
+  }, [session.status, currentUserId, accessToken]);
 
   useEffect(() => {
     if (currentChat) {
@@ -179,12 +197,10 @@ const Chat = () => {
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
     }
   }, [currentChat]);
-
-  // useEffect(() => {
-  //   console.log(window.innerHeight);
-  // }, [window.innerHeight]);
-
-  if (session.status === "authenticated") {
+  if (
+    session.status === "authenticated" &&
+    session.data.user.role === "Recruiter"
+  ) {
     return (
       <>
         <input
@@ -196,12 +212,9 @@ const Chat = () => {
         <MainContainer responsive style={{ height: "75vh" }}>
           <ChatSidebar
             userChats={allChats}
-            selectCurrentChat={(index) => {
-              selectCurrentChat(index);
-              setSelectedConversation(index);
-            }}
+            selectCurrentChat={selectCurrentChat}
           />
-          {selectedConversation !== null ? (
+          {currentChat !== null ? (
             <ChatContainer>
               <ConversationHeader>
                 <ConversationHeader.Back />
@@ -260,6 +273,14 @@ const Chat = () => {
                             />
                           </Avatar>
                           <Message.CustomContent>
+                            {value.isImportant ? (
+                              <>
+                                <b>*Notification Sent*</b>
+                                <br />
+                              </>
+                            ) : (
+                              <></>
+                            )}
                             {value.fileURL != "" ? (
                               <>
                                 <b style={{ color: "#00008B" }}>
@@ -267,12 +288,12 @@ const Chat = () => {
                                     Download Attachment
                                   </a>
                                 </b>
-                                <br/>
+                                <br />
                               </>
                             ) : (
-                             <></> 
+                              <></>
                             )}
-                           {value.message}
+                            {value.message}
                           </Message.CustomContent>
                           <Message.Footer>
                             {formatRawDate(value.timestamp)}
@@ -282,17 +303,73 @@ const Chat = () => {
                     </>
                   ))}
               </MessageList>
-              <MessageInput
-                placeholder={
-                  attachedFile
-                    ? `File attached: ${attachedFile.name}`
-                    : "Type message here"
-                }
-                value={messageInputValue}
-                onChange={(val) => setMessageInputValue(val)}
-                onSend={(textContent) => handleSendMessage(textContent)}
-                onAttachClick={handleAttachClick}
-              ></MessageInput>
+              <div
+                as={MessageInput}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  borderTop: "1px dashed #d1dbe4",
+                }}
+              >
+                <AttachmentButton
+                  style={{
+                    fontSize: "1.2em",
+                    paddingLeft: "0.5em",
+                    paddingRight: "0.2em",
+                  }}
+                  onClick={handleAttachClick}
+                />
+                <MessageInput
+                  placeholder={
+                    attachedFile
+                      ? `File attached: ${attachedFile.name}`
+                      : "Type message here"
+                  }
+                  onChange={(innerHtml, textContent, innerText) =>
+                    setMessageInputValue(innerText)
+                  }
+                  value={messageInputValue}
+                  sendButton={false}
+                  attachButton={false}
+                  onSend={handleSendMessage}
+                  style={{
+                    flexGrow: 1,
+                    borderTop: 0,
+                    flexShrink: "initial",
+                    caretColor: "#000000",
+                  }}
+                />
+                {isImportant ? (
+                  <InfoButton
+                    onClick={() => setIsImportant(false)}
+                    border
+                    style={{
+                      fontSize: "1.2em",
+                      paddingLeft: "0.2em",
+                      paddingRight: "0.2em",
+                    }}
+                  />
+                ) : (
+                  <InfoButton
+                    onClick={() => setIsImportant(true)}
+                    style={{
+                      fontSize: "1.2em",
+                      paddingLeft: "0.2em",
+                      paddingRight: "0.2em",
+                    }}
+                  />
+                )}
+                <SendButton
+                  onClick={handleSendMessage}
+                  disabled={messageInputValue.length === 0}
+                  style={{
+                    fontSize: "1.2em",
+                    marginLeft: 0,
+                    paddingLeft: "0.2em",
+                    paddingRight: "1em",
+                  }}
+                />
+              </div>
             </ChatContainer>
           ) : (
             <div
@@ -309,6 +386,8 @@ const Chat = () => {
         </MainContainer>
       </>
     );
+  } else {
+    router?.push("/dashboard");
   }
 };
 

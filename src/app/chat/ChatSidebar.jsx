@@ -45,7 +45,7 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
                   ? chat.jobSeeker.userName
                   : chat.corporate.userName
               }
-              onClick={() => selectCurrentChat(chat)}
+              onClick={() => selectCurrentChat(chat.chatId)}
             >
               <Avatar>
                 <Image

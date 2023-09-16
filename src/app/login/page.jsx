@@ -43,7 +43,11 @@ const Login = () => {
     const role = formData.role;
     // alert(`Email: ${email}, Password: ${password}, Role: ${role}`);
 
-    // const hashedPassword = await hashing(password); 
+    if (!email || !password || !role) {
+      alert("Please fill in your email, password and your role!");
+      return;
+    } 
+
     const result = await signIn('credentials', {
         redirect: false,
         email: email,
@@ -53,11 +57,11 @@ const Login = () => {
 
     if (!result.error) {
       // User signed in successfully
-      alert("Success")
       router.push("/dashboard");
     } else {
       // Handle the error result.error
-      alert(result.error);
+      alert("Authentication failed! Please try again.");
+      console.error("Login error: " + result.error);
     }
 
   };
