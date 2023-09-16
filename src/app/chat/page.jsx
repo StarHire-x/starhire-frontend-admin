@@ -16,6 +16,9 @@ import {
   MessageSeparator,
   Message,
   MessageInput,
+  InfoButton,
+  SendButton,
+  AttachmentButton,
 } from "@chatscope/chat-ui-kit-react";
 import ChatSidebar from "./ChatSidebar";
 import ChatHeader from "./ChatHeader";
@@ -49,6 +52,7 @@ const Chat = () => {
   const [attachedFile, setAttachedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [socket, setSocket] = useState(null);
+  const [isImportant, setIsImportant] = useState(false);
 
   useEffect(() => {
     // WebSocket functions
@@ -140,8 +144,8 @@ const Chat = () => {
     sendMessage({
       userId: currentUserId,
       chatId: currentChat ? currentChat.chatId : null,
-      message: content,
-      isImportant: false,
+      message: messageInputValue,
+      isImportant: isImportant,
       timestamp: new Date(),
       fileURL: fileURL ? fileURL.url : "",
     });
@@ -153,7 +157,6 @@ const Chat = () => {
   const handleAttachClick = () => {
     fileInputRef.current.value = "";
     fileInputRef.current.click();
-    console.log("hello");
   };
 
   const handleFileInputChange = (event) => {
@@ -275,6 +278,14 @@ const Chat = () => {
                             />
                           </Avatar>
                           <Message.CustomContent>
+                            {value.isImportant ? (
+                              <>
+                                <b>*Notification Sent*</b>
+                                <br />
+                              </>
+                            ) : (
+                              <></>
+                            )}
                             {value.fileURL != "" ? (
                               <>
                                 <b style={{ color: "#00008B" }}>
@@ -297,23 +308,73 @@ const Chat = () => {
                     </>
                   ))}
               </MessageList>
-              <h3>HI</h3>
-              <MessageInput
-                placeholder={
-                  attachedFile
-                    ? `File attached: ${attachedFile.name}`
-                    : "Type message here"
-                }
-                value={messageInputValue}
-                onChange={(innerHtml, textContent, innerText) =>
-                  setMessageInputValue(innerText)
-                }
-                onSend={(innerHtml, textContent, innerText) =>
-                  handleSendMessage(textContent)
-                }
-                onAttachClick={handleAttachClick}
+              <div
+                as={MessageInput}
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  borderTop: "1px dashed #d1dbe4",
+                }}
               >
-              </MessageInput>
+                <AttachmentButton
+                  style={{
+                    fontSize: "1.2em",
+                    paddingLeft: "0.5em",
+                    paddingRight: "0.2em",
+                  }}
+                  onClick={handleAttachClick}
+                />
+                <MessageInput
+                  placeholder={
+                    attachedFile
+                      ? `File attached: ${attachedFile.name}`
+                      : "Type message here"
+                  }
+                  onChange={(innerHtml, textContent, innerText) =>
+                    setMessageInputValue(innerText)
+                  }
+                  value={messageInputValue}
+                  sendButton={false}
+                  attachButton={false}
+                  onSend={handleSendMessage}
+                  style={{
+                    flexGrow: 1,
+                    borderTop: 0,
+                    flexShrink: "initial",
+                    caretColor: "#000000",
+                  }}
+                />
+                {isImportant ? (
+                  <InfoButton
+                    onClick={() => setIsImportant(false)}
+                    border
+                    style={{
+                      fontSize: "1.2em",
+                      paddingLeft: "0.2em",
+                      paddingRight: "0.2em",
+                    }}
+                  />
+                ) : (
+                  <InfoButton
+                    onClick={() => setIsImportant(true)}
+                    style={{
+                      fontSize: "1.2em",
+                      paddingLeft: "0.2em",
+                      paddingRight: "0.2em",
+                    }}
+                  />
+                )}
+                <SendButton
+                  onClick={handleSendMessage}
+                  disabled={messageInputValue.length === 0}
+                  style={{
+                    fontSize: "1.2em",
+                    marginLeft: 0,
+                    paddingLeft: "0.2em",
+                    paddingRight: "1em",
+                  }}
+                />
+              </div>
             </ChatContainer>
           ) : (
             <div
