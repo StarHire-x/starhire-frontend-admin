@@ -91,13 +91,13 @@ const Chat = () => {
     socket?.emit("sendMessage", message);
   };
 
-  socket?.on(currentChat ? currentChat.chatId : null, (message) => {
-    console.log("CURRENT CHAT ID IS");
-    console.log(currentChat.chatId);
-    console.log("SELECTED CONVERSATION:");
-    console.log(selectedConversation.chatId);
-    receiveMessage(message);
-  });
+  // socket?.on(currentChat ? currentChat.chatId : null, (message) => {
+  //   console.log("CURRENT CHAT ID IS");
+  //   console.log(currentChat.chatId);
+  //   console.log("SELECTED CONVERSATION:");
+  //   console.log(selectedConversation.chatId);
+  //   receiveMessage(message);
+  // }); 
 
   const formatRawDate = (rawDate) => {
     const formattedDate = moment(rawDate).format("MMMM D, YYYY, h:mm A");
@@ -170,14 +170,12 @@ const Chat = () => {
   }
 
   const selectCurrentChat = async (chat) => {
-    // if (chat.chatId === selectedConversation.chatId) {
     const currentChatId = chat.chatId;
     const chatMessagesByCurrentChatId = await getOneUserChat(
       currentChatId,
       accessToken
     );
     setCurrentChat(chatMessagesByCurrentChatId);
-    // }
   };
 
   useEffect(() => {
@@ -201,7 +199,7 @@ const Chat = () => {
     }
   }, [currentChat]);
 
-  if (session.status === "authenticated") {
+  if (session.status === "authenticated" && session.data.user.role === "Recruiter") {
     return (
       <>
         <input
@@ -232,8 +230,7 @@ const Chat = () => {
                 <ConversationHeader.Content
                   userName={otherUser ? otherUser.userName : ""}
                 />
-                <ConversationHeader.Actions>
-                </ConversationHeader.Actions>
+                <ConversationHeader.Actions></ConversationHeader.Actions>
               </ConversationHeader>
               <ChatHeader />
               <MessageList loadingMore={loading} loadingMorePosition="bottom">
@@ -391,6 +388,8 @@ const Chat = () => {
         </MainContainer>
       </>
     );
+  } else {
+    router?.push("/dashboard");
   }
 };
 
