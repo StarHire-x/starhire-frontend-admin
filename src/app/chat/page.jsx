@@ -91,13 +91,9 @@ const Chat = () => {
     socket?.emit("sendMessage", message);
   };
 
-  // socket?.on(currentChat ? currentChat.chatId : null, (message) => {
-  //   console.log("CURRENT CHAT ID IS");
-  //   console.log(currentChat.chatId);
-  //   console.log("SELECTED CONVERSATION:");
-  //   console.log(selectedConversation.chatId);
-  //   receiveMessage(message);
-  // }); 
+  socket?.on(currentChat ? currentChat.chatId : null, (message) => {
+    receiveMessage(message);
+  });
 
   const formatRawDate = (rawDate) => {
     const formattedDate = moment(rawDate).format("MMMM D, YYYY, h:mm A");
@@ -169,10 +165,13 @@ const Chat = () => {
     setAllChats(chats);
   }
 
-  const selectCurrentChat = async (chat) => {
-    const currentChatId = chat.chatId;
+  const selectCurrentChat = async (chatId) => {
+    socket.off(currentChat?.chatId);
+    socket.on(chatId, (message) => {
+      receiveMessage(message);
+    });
     const chatMessagesByCurrentChatId = await getOneUserChat(
-      currentChatId,
+      chatId,
       accessToken
     );
     setCurrentChat(chatMessagesByCurrentChatId);
@@ -198,8 +197,10 @@ const Chat = () => {
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
     }
   }, [currentChat]);
-
-  if (session.status === "authenticated" && session.data.user.role === "Recruiter") {
+  if (
+    session.status === "authenticated" &&
+    session.data.user.role === "Recruiter"
+  ) {
     return (
       <>
         <input
@@ -211,12 +212,9 @@ const Chat = () => {
         <MainContainer responsive style={{ height: "75vh" }}>
           <ChatSidebar
             userChats={allChats}
-            selectCurrentChat={(chat) => {
-              selectCurrentChat(chat);
-              setSelectedConversation(chat);
-            }}
+            selectCurrentChat={selectCurrentChat}
           />
-          {selectedConversation !== null ? (
+          {currentChat !== null ? (
             <ChatContainer>
               <ConversationHeader>
                 <ConversationHeader.Back />
