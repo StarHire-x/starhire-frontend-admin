@@ -165,15 +165,16 @@ const Chat = () => {
     setAllChats(chats);
   }
 
-  const selectCurrentChat = async (chat) => {
-    // const currentChatId = chat.chatId;
-    console.log(currentChat);
+  const selectCurrentChat = async (chatId) => {
     socket.off(currentChat?.chatId);
-    const chatMessagesByCurrentChatId = await getOneUserChat(chat, accessToken);
-    setCurrentChat(chatMessagesByCurrentChatId);
-    socket.on(chat, (message) => {
+    socket.on(chatId, (message) => {
       receiveMessage(message);
     });
+    const chatMessagesByCurrentChatId = await getOneUserChat(
+      chatId,
+      accessToken
+    );
+    setCurrentChat(chatMessagesByCurrentChatId);
   };
 
   useEffect(() => {
