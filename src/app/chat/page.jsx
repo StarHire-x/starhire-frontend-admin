@@ -92,6 +92,10 @@ const Chat = () => {
   };
 
   socket?.on(currentChat ? currentChat.chatId : null, (message) => {
+    console.log("CURRENT CHAT ID IS");
+    console.log(currentChat.chatId);
+    console.log("SELECTED CONVERSATION:");
+    console.log(selectedConversation.chatId);
     receiveMessage(message);
   });
 
@@ -166,12 +170,14 @@ const Chat = () => {
   }
 
   const selectCurrentChat = async (chat) => {
+    // if (chat.chatId === selectedConversation.chatId) {
     const currentChatId = chat.chatId;
     const chatMessagesByCurrentChatId = await getOneUserChat(
       currentChatId,
       accessToken
     );
     setCurrentChat(chatMessagesByCurrentChatId);
+    // }
   };
 
   useEffect(() => {
@@ -207,9 +213,9 @@ const Chat = () => {
         <MainContainer responsive style={{ height: "75vh" }}>
           <ChatSidebar
             userChats={allChats}
-            selectCurrentChat={(index) => {
-              selectCurrentChat(index);
-              setSelectedConversation(index);
+            selectCurrentChat={(chat) => {
+              selectCurrentChat(chat);
+              setSelectedConversation(chat);
             }}
           />
           {selectedConversation !== null ? (
@@ -226,7 +232,8 @@ const Chat = () => {
                 <ConversationHeader.Content
                   userName={otherUser ? otherUser.userName : ""}
                 />
-                <ConversationHeader.Actions></ConversationHeader.Actions>
+                <ConversationHeader.Actions>
+                </ConversationHeader.Actions>
               </ConversationHeader>
               <ChatHeader />
               <MessageList loadingMore={loading} loadingMorePosition="bottom">
