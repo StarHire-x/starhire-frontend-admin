@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from 'next/navigation'
 import { Dialog } from "primereact/dialog";
 import { useSession } from "next-auth/react";
+import { viewOneJobListing } from "@/app/api/auth/jobListings/route";
 
 export default function ViewJobListingAdmin() {
   const session = useSession();
@@ -35,6 +36,21 @@ export default function ViewJobListingAdmin() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
+    if (accessToken) {
+      viewOneJobListing(id, accessToken)
+        .then((data) => {
+          setJobListing(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching job listings:', error);
+          setIsLoading(false);
+        });
+    }
+  }, [accessToken]);
+
+  /*
+  useEffect(() => {
     fetch(`http://localhost:8080/job-listing/${id}`, {
       method: "GET",
       headers: {
@@ -57,6 +73,7 @@ export default function ViewJobListingAdmin() {
         setIsLoading(false);
       });
   }, [accessToken]);
+  */
 
   /*
   const header = (
