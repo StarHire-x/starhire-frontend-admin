@@ -8,11 +8,6 @@ import { useState } from "react";
 
 const adminLinks = [
   {
-    id: 1,
-    title: "Home",
-    url: "/",
-  },
-  {
     id: 2,
     title: "Job Listings",
     url: "/jobListings",
@@ -96,6 +91,7 @@ const Navbar = () => {
       <Link href="/" className={styles.logo}>
         StarHire
       </Link>
+      
       <div className={styles.links}>
         <DarkModeToggle />
         {session.status === "authenticated" && session.data.user.role === "Administrator" && adminLinks.map((link) => (
