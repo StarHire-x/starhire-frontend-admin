@@ -59,6 +59,7 @@ const handler = NextAuth({
           email: responseBody.data.email,
           role: responseBody.data.role,
           status: responseBody.data.status,
+          image: responseBody.data.profilePictureUrl,
           jwtAccessToken: responseBody.jwtAccessToken,
         };
       },
@@ -74,6 +75,7 @@ const handler = NextAuth({
         token.email = user.email;
         token.role = user.role;
         token.status = user.status;
+        token.image = user.image;
         token.accessToken = user.jwtAccessToken;
       }
       return token;
@@ -87,6 +89,7 @@ const handler = NextAuth({
         email: token.email,
         role: token.role,
         status: token.status,
+        image: token.image,
         accessToken: token.accessToken
       };
       return session;

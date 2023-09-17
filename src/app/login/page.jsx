@@ -53,7 +53,7 @@ const Login = () => {
         email: email,
         password: password,
         role: role 
-    })
+    });
 
     if (!result.error) {
       // User signed in successfully
