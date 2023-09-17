@@ -84,18 +84,6 @@ const Navbar = () => {
     sessionTokenRef = session.data.user.accessToken;
   }
 
-  // useEffect(() => {
-  //   if (session.status === "authenticated") {
-  //     getUserByUserId(userIdRef, roleRef, sessionTokenRef)
-  //       .then((user) => {
-  //         setImageUrl(user.data.profilePictureUrl);
-  //         setUserName(user.data.userName);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching user:", error);
-  //       });
-  //   }
-  // }, [session.status, userIdRef, roleRef, sessionTokenRef]);
   useEffect(() => {
     if (session.status === "authenticated") {
       const fetchData = () => {
