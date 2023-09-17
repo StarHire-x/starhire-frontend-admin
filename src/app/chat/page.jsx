@@ -26,6 +26,7 @@ import HumanIcon from "../../../public/icon.png";
 
 import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 import { uploadFile } from "../api/auth/upload/route";
+// import { getUserByUserId } from "../api/auth/user/route";
 
 const Chat = () => {
   const session = useSession();
@@ -48,11 +49,11 @@ const Chat = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [otherUser, setOtherUser] = useState(null); // user object
   const [allChats, setAllChats] = useState([]);
-  const [selectedConversation, setSelectedConversation] = useState(null);
   const [attachedFile, setAttachedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [socket, setSocket] = useState(null);
   const [isImportant, setIsImportant] = useState(false);
+  // const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     // WebSocket functions
@@ -197,6 +198,21 @@ const Chat = () => {
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
     }
   }, [currentChat]);
+
+  //tried to fetch the user data but failed..
+  // async function getUserData(userId, role, accessToken) {
+  //   const user = await getUserByUserId(userId, role, accessToken);
+  //   setUserData(user);
+  //   console.log("USER DATA IS HERE!!!!!!!!!!!!!");
+  //   console.log(userData);
+  // }
+
+  // useEffect(() => {
+  //   if (session.status === "authenticated") {
+  //     getUserData(session.data.user.userId, "Recruiter", accessToken);
+  //   }
+  // }, []);
+
   if (
     session.status === "authenticated" &&
     session.data.user.role === "Recruiter"
