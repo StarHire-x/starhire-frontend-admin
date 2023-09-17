@@ -185,8 +185,8 @@ export default function JobListings() {
           setIsLoading(false);
         })
         .catch((error) => {
-          // Handle error if needed
           console.error('Error fetching job listings:', error);
+          setIsLoading(false);
         });
     }
   }, [accessToken]);
