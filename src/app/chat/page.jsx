@@ -26,7 +26,6 @@ import HumanIcon from "../../../public/icon.png";
 
 import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 import { uploadFile } from "../api/auth/upload/route";
-// import { getUserByUserId } from "../api/auth/user/route";
 
 const Chat = () => {
   const session = useSession();
@@ -53,7 +52,6 @@ const Chat = () => {
   const [loading, setLoading] = useState(false);
   const [socket, setSocket] = useState(null);
   const [isImportant, setIsImportant] = useState(false);
-  // const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     // WebSocket functions
@@ -198,20 +196,6 @@ const Chat = () => {
       setOtherUser(currentChat.jobSeeker || currentChat.corporate);
     }
   }, [currentChat]);
-
-  //tried to fetch the user data but failed..
-  // async function getUserData(userId, role, accessToken) {
-  //   const user = await getUserByUserId(userId, role, accessToken);
-  //   setUserData(user);
-  //   console.log("USER DATA IS HERE!!!!!!!!!!!!!");
-  //   console.log(userData);
-  // }
-
-  // useEffect(() => {
-  //   if (session.status === "authenticated") {
-  //     getUserData(session.data.user.userId, "Recruiter", accessToken);
-  //   }
-  // }, []);
 
   if (
     session.status === "authenticated" &&
