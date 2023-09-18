@@ -1,17 +1,16 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Card } from "primereact/card";
+import React, { useEffect, useState } from 'react';
+import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import './styles.css';
-import { Jolly_Lodger } from "next/font/google";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from 'next/navigation'
-import { Dialog } from "primereact/dialog";
-import { useSession } from "next-auth/react";
-import { viewOneJobListing } from "@/app/api/auth/jobListings/route";
-import { updateJobListing } from "@/app/api/auth/jobListings/route";
-
+import { Jolly_Lodger } from 'next/font/google';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { Dialog } from 'primereact/dialog';
+import { useSession } from 'next-auth/react';
+import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
+import { updateJobListing } from '@/app/api/auth/jobListings/route';
 
 export default function ViewJobListingAdmin() {
   const session = useSession();
@@ -19,15 +18,15 @@ export default function ViewJobListingAdmin() {
   const router = useRouter();
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === "authenticated" && session.data.user.userId;
+    session.status === 'authenticated' && session.data.user.userId;
 
   const params = useSearchParams();
-  const id = params.get("id");
+  const id = params.get('id');
 
   const [jobListing, setJobListing] = useState({});
 
@@ -135,11 +134,11 @@ export default function ViewJobListingAdmin() {
       if (response.statusCode === 200) {
         handleRefresh();
       } else {
-        alert("Something went wrong! ERROR CODE:" + response.statusCode);
+        alert('Something went wrong! ERROR CODE:' + response.statusCode);
       }
-      console.log("Status changed successfully:", response);
+      console.log('Status changed successfully:', response);
     } catch (error) {
-      console.error("Error changing status:", error);
+      console.error('Error changing status:', error);
     }
   };
 
@@ -167,20 +166,24 @@ export default function ViewJobListingAdmin() {
     </div>
   );
   */
- const hideDialog = () => {
+  const hideDialog = () => {
     setUserDialog(false);
   };
 
   const showUserDialog = (action) => {
     setUserDialog(true);
     setStatus(action);
-
   };
 
   const userDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Yes" icon="pi pi-check" outlined onClick={() => updateJobListingStatus(status)} />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        outlined
+        onClick={() => updateJobListingStatus(status)}
+      />
     </React.Fragment>
   );
 
@@ -190,26 +193,25 @@ export default function ViewJobListingAdmin() {
         label="Approve"
         icon="pi pi-check"
         className="approve-button p-button-outlined p-button-secondary"
-        onClick={() => showUserDialog("Active")}
+        onClick={() => showUserDialog('Active')}
       />
       <Button
         label="Reject"
         icon="pi pi-times"
         className="reject-button p-button-outlined p-button-secondary"
-        onClick={() => showUserDialog("Inactive")}
+        onClick={() => showUserDialog('Inactive')}
       />
       <Button
         label="Archive"
-        icon="pi pi-times"
+        icon="pi pi-folder"
         className="archive-button p-button-outlined p-button-secondary"
-        onClick={() => showUserDialog("Inactive")}
+        onClick={() => showUserDialog('Inactive')}
       />
     </div>
   );
 
-
   return (
-    <div>
+    <div className="container">
       {isLoading ? (
         <div className="loading-animation">
           <div className="spinner"></div>
@@ -217,28 +219,37 @@ export default function ViewJobListingAdmin() {
       ) : (
         <div>
           <Card
-            title={jobListing.title}
-            subTitle={jobListing.jobLocation}
+            title={jobListing.jobListingId}
+            subTitle={jobListing.title}
             footer={footer}
             className="my-card"
-            style={{ borderRadius: "0" }}
+            style={{ borderRadius: '0' }}
           >
             <div className="my-card.p-card-content">
+              <strong>Listing Date</strong>
+              <p>{jobListing.listingDate}</p>
               <strong>Job Desription</strong>
               <p>{jobListing.description}</p>
+              <strong>Job Location</strong>
+              <p>{jobListing.jobLocation}</p>
+              <strong>Average Salary</strong>
+              <p>{jobListing.averageSalary}</p>
+              <strong>Job Start Date</strong>
+              <p>{jobListing.jobStartDate}</p>
+              <strong>Current Status of Job</strong>
+              <p>{jobListing.jobListingStatus}</p>
             </div>
           </Card>
-          
+
           <Dialog
             visible={userDialog}
-            style={{ width: "32rem" }}
-            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            style={{ width: '32rem' }}
+            breakpoints={{ '960px': '75vw', '641px': '90vw' }}
             header="Confirm?"
             className="p-fluid"
             footer={userDialogFooter}
             onHide={hideDialog}
-          >
-          </Dialog>
+          ></Dialog>
         </div>
       )}
     </div>
