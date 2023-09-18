@@ -10,6 +10,8 @@ import { useSearchParams } from 'next/navigation'
 import { Dialog } from "primereact/dialog";
 import { useSession } from "next-auth/react";
 import { viewOneJobListing } from "@/app/api/auth/jobListings/route";
+import { updateJobListing } from "@/app/api/auth/jobListings/route";
+
 
 export default function ViewJobListingAdmin() {
   const session = useSession();
@@ -95,8 +97,9 @@ export default function ViewJobListingAdmin() {
     router.push(`/jobListings`); // This will refresh the current page
   };
 
-  //API call
-  const updateJobListingStatusAPICall = async (request, id) => {
+  //Old API call
+  /*
+  const updateJobListingStatusAPICall = async (accessToken, request, id) => {
     try {
       const res = await fetch(`http://localhost:8080/job-listing/${id}`, {
         method: "PUT",
@@ -119,13 +122,21 @@ export default function ViewJobListingAdmin() {
       throw error;
     }
   };
+  */
 
   const updateJobListingStatus = async (newStatus) => {
     try {
       const request = {
         jobListingStatus: newStatus,
       };
-      const response = await updateJobListingStatusAPICall(request, id);
+      //const response = await updateJobListingStatusAPICall(request, id);
+      const response = await updateJobListing(accessToken, request, id);
+
+      if (response.statusCode === 200) {
+        handleRefresh();
+      } else {
+        alert("Something went wrong! ERROR CODE:" + response.statusCode);
+      }
       console.log("Status changed successfully:", response);
     } catch (error) {
       console.error("Error changing status:", error);
