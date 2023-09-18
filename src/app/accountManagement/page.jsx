@@ -1,11 +1,12 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import { session, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { getUserByEmailRole, getUserByUserId } from "../api/auth/user/route";
 import { uploadFile } from "../api/auth/upload/route";
 import { updateUser } from "../api/auth/user/route";
 import styles from "./page.module.css";
+import { UserContext } from "@/context/UserContext";
 
 const AccountManagement = () => {
   const session = useSession();
@@ -20,6 +21,9 @@ const AccountManagement = () => {
     notificationMode: "",
     status: "",
   });
+
+  // this is to do a reload of userContext if it is updated in someway
+  const { userData, fetchUserData } = useContext(UserContext);
 
   let roleRef, sessionTokenRef, userIdRef;
 
@@ -91,6 +95,8 @@ const AccountManagement = () => {
       alert("Status changed successfully!");
 
       setRefreshData((prev) => !prev);
+      // this is to do a reload of userContext if it is updated so that navbar can change
+      fetchUserData();
     } catch {
       console.log("Failed to update user");
       alert("Failed to update user particulars");
