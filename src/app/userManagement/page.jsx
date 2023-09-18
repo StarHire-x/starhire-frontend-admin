@@ -32,7 +32,6 @@ export default function AccountManagement() {
     session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
-  console.log(session);
 
   if (session.status === "unauthenticated") {
     router?.push("/login");
@@ -249,6 +248,23 @@ export default function AccountManagement() {
     dt.current.exportCSV();
   };
 
+  const usernameBodyTemplate = (rowData) => {
+    const userName = rowData.userName;
+    const avatar = rowData.profilePictureUrl;
+
+    return (
+      <div className={styles.imageContainer}>
+        <img alt={avatar} src={avatar} className={styles.avatarImageContainer} />
+        <span>{userName}</span>
+      </div>
+    );
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   const renderHeader = () => {
     return (
       <div className="flex gap-2 justify-content-between align-items-center">
@@ -318,7 +334,12 @@ export default function AccountManagement() {
           emptyMessage="No users found."
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         >
-          <Column field="userName" header="User Name" sortable></Column>
+          <Column
+            field="userName"
+            header="User Name"
+            sortable
+            body={usernameBodyTemplate}
+          ></Column>
           <Column field="email" header="Email" sortable></Column>
           <Column field="contactNo" header="Contact No" sortable></Column>
           <Column
@@ -335,7 +356,12 @@ export default function AccountManagement() {
             exportable={false}
             style={{ minWidth: "12rem" }}
           ></Column>
-          <Column field="createdAt" header="Created Date" sortable></Column>
+          <Column
+            field="createdAt"
+            header="Created Date"
+            body={(rowData) => formatDate(rowData.createdAt)}
+            sortable
+          ></Column>
         </DataTable>
 
         <Dialog
@@ -379,14 +405,6 @@ export default function AccountManagement() {
                 className={styles.avatar}
               />
             )}
-            {/* For Corporate */}
-            {selectedRowData?.corporatePicture && (
-              <img
-                src={selectedRowData.corporatePicture}
-                alt="Corporate Picture"
-                className={styles.avatar}
-              />
-            )}
             {selectedRowData?.userId && (
               <div className={styles.inlineField}>
                 <label htmlFor="userId" className="font-bold">
@@ -419,7 +437,7 @@ export default function AccountManagement() {
                 <p>{selectedRowData?.fullName}</p>
               </div>
             )}
-            
+
             {/* Corporate specific stuff */}
             {selectedRowData?.companyName && (
               <div className={styles.inlineField}>
@@ -501,7 +519,7 @@ export default function AccountManagement() {
                 <label htmlFor="createdAt" className="font-bold">
                   Created At:
                 </label>
-                <p>{selectedRowData?.createdAt}</p>
+                <p>{formatDate(selectedRowData?.createdAt)}</p>
               </div>
             )}
           </div>
