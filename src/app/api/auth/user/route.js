@@ -34,8 +34,10 @@ export const updateUser = async (request, id, accessToken) => {
         body: JSON.stringify(request)
       });
 
-      if (res.ok) {
-        return;
+      const responseBody = await res.json();
+      
+      if(responseBody.statusCode === 200) {
+        return responseBody;
       } else {
         throw new Error(errorData.message || "An error occurred");
       }

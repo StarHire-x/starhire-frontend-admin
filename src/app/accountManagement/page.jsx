@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { session, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { getUserByEmailRole, getUserByUserId } from "../api/auth/user/route";
 import { uploadFile } from "../api/auth/upload/route";
@@ -10,6 +10,7 @@ import styles from "./page.module.css";
 const AccountManagement = () => {
   const session = useSession();
   const router = useRouter();
+  const [refreshData, setRefreshData] = useState(false);
   const [formData, setFormData] = useState({
     userId: "",
     userName: "",
@@ -38,7 +39,7 @@ const AccountManagement = () => {
           console.error("Error fetching user:", error);
         });
     }
-  }, [session.status, userIdRef, roleRef]);
+  }, [session.status, userIdRef, roleRef, refreshData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -81,8 +82,6 @@ const AccountManagement = () => {
       status: status,
     };
     try {
-      console.log(userId);
-      console.log(updateUserDetails);
       const response = await updateUser(
         updateUserDetails,
         userId,
@@ -90,8 +89,11 @@ const AccountManagement = () => {
       );
       console.log("Status changed successfully:", response);
       alert("Status changed successfully!");
+
+      setRefreshData((prev) => !prev);
     } catch {
-      console.log("Save changes to the backend");
+      console.log("Failed to update user");
+      alert("Failed to update user particulars");
     }
   };
 

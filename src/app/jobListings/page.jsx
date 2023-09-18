@@ -16,6 +16,8 @@ import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import "./styles.css";
+import { viewAllJobListings } from "@/app/api/auth/jobListings/route";
+import { getUserByUserId } from "../api/auth/user/route";
 
 export default function JobListings() {
   const session = useSession();
@@ -173,6 +175,24 @@ export default function JobListings() {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  //setJobListings[viewAllJobListings(accessToken)];
+  //console.log(viewAllJobListings(accessToken));
+
+  useEffect(() => {
+    if (accessToken) {
+      viewAllJobListings(accessToken)
+        .then((data) => {  
+          setJobListings(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching job listings:', error);
+          setIsLoading(false);
+        });
+    }
+  }, [accessToken]);
+  
+  /* Old implementation, dont delete for now
   useEffect(() => {
     fetch(`http://localhost:8080/job-listing`, {
       method: "GET",
@@ -196,6 +216,7 @@ export default function JobListings() {
         setIsLoading(false);
       });
   }, [accessToken]);
+  */
 
   const header = renderHeader();
 
@@ -232,7 +253,7 @@ export default function JobListings() {
               globalFilterFields={[
                 "jobListingId",
                 "title",
-                "corporate.companyName",
+                "corporate.userName",
                 "jobLocation",
                 "listingDate",
                 "jobListingStatus",
@@ -242,7 +263,7 @@ export default function JobListings() {
             >
               <Column field="jobListingId" header="Listing ID"></Column>
               <Column field="title" header="Title"></Column>
-              <Column field="corporate.companyName" header="Company Name" />
+              <Column field="corporate.userName" header="Company Name" />
               <Column field="jobLocation" header="Job Location"></Column>
               <Column
                 field="listingDate"

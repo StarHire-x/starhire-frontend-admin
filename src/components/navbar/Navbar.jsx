@@ -1,17 +1,15 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import styles from "./Navbar.module.css";
 import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getUserByUserId } from "@/app/api/auth/user/route";
+import  HumanIcon  from "../../../public/icon.png";
 
 const adminLinks = [
-  {
-    id: 1,
-    title: "Home",
-    url: "/",
-  },
   {
     id: 2,
     title: "Job Listings",
@@ -46,11 +44,6 @@ const adminLinks = [
 
 const recruiterLinks = [
   {
-    id: 1,
-    title: "Home",
-    url: "/",
-  },
-  {
     id: 2,
     title: "Account Management",
     url: "/accountManagement",
@@ -80,8 +73,39 @@ const recruiterLinks = [
 ];
 
 const Navbar = () => {
-  const session = useSession();  
+  const session = useSession();
   const [showDropdown, setShowDropdown] = useState(null);
+
+  const [imageUrl, setImageUrl] = useState(null);
+  const [userName, setUserName] = useState(null);
+  let roleRef, sessionTokenRef, userIdRef;
+
+  if (session && session.data && session.data.user) {
+    userIdRef = session.data.user.userId;
+    roleRef = session.data.user.role;
+    sessionTokenRef = session.data.user.accessToken;
+  }
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      const fetchData = () => {
+        getUserByUserId(userIdRef, roleRef, sessionTokenRef)
+          .then((user) => {
+            setImageUrl(user.data.profilePictureUrl);
+            setUserName(user.data.userName);
+          })
+          .catch((error) => {
+            console.error("Error fetching user:", error);
+          });
+      };
+
+      fetchData(); // Fetch immediately
+
+      const intervalId = setInterval(fetchData, 5000); // Poll every 5 seconds
+
+      return () => clearInterval(intervalId); // Cleanup on unmount
+    }
+  }, [session.status, userIdRef, roleRef, sessionTokenRef]);
 
   const handleLinkMouseEnter = (linkId) => {
     setShowDropdown(linkId);
@@ -96,65 +120,87 @@ const Navbar = () => {
       <Link href="/" className={styles.logo}>
         StarHire
       </Link>
+
       <div className={styles.links}>
         <DarkModeToggle />
-        {session.status === "authenticated" && session.data.user.role === "Administrator" && adminLinks.map((link) => (
-          <div
-            key={link.id}
-            className={styles.linkContainer}
-            onMouseEnter={() => handleLinkMouseEnter(link.id)}
-            onMouseLeave={handleLinkMouseLeave}
-          > 
-          <Link href={link.url} className={styles.link}>
-              {link.title}
-            </Link>
-            {link.submenu && showDropdown === link.id && (
-              <div className={styles.dropdown}>
-                {link.submenu.map((submenuItem) => (
-                  <Link
-                    key={submenuItem.id}
-                    href={submenuItem.url}
-                    className={styles.submenuItem}
-                  >
-                    {submenuItem.title}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-        {session.status === "authenticated" && session.data.user.role === "Recruiter" && recruiterLinks.map((link) => (
-          <div
-            key={link.id}
-            className={styles.linkContainer}
-            onMouseEnter={() => handleLinkMouseEnter(link.id)}
-            onMouseLeave={handleLinkMouseLeave}
-          > 
-          <Link href={link.url} className={styles.link}>
-              {link.title}
-            </Link>
-            {link.submenu && showDropdown === link.id && (
-              <div className={styles.dropdown}>
-                {link.submenu.map((submenuItem) => (
-                  <Link
-                    key={submenuItem.id}
-                    href={submenuItem.url}
-                    className={styles.submenuItem}
-                  >
-                    {submenuItem.title}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+        {session.status === "authenticated" &&
+          session.data.user.role === "Administrator" &&
+          adminLinks.map((link) => (
+            <div
+              key={link.id}
+              className={styles.linkContainer}
+              onMouseEnter={() => handleLinkMouseEnter(link.id)}
+              onMouseLeave={handleLinkMouseLeave}
+            >
+              <Link href={link.url} className={styles.link}>
+                {link.title}
+              </Link>
+              {link.submenu && showDropdown === link.id && (
+                <div className={styles.dropdown}>
+                  {link.submenu.map((submenuItem) => (
+                    <Link
+                      key={submenuItem.id}
+                      href={submenuItem.url}
+                      className={styles.submenuItem}
+                    >
+                      {submenuItem.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        {session.status === "authenticated" &&
+          session.data.user.role === "Recruiter" &&
+          recruiterLinks.map((link) => (
+            <div
+              key={link.id}
+              className={styles.linkContainer}
+              onMouseEnter={() => handleLinkMouseEnter(link.id)}
+              onMouseLeave={handleLinkMouseLeave}
+            >
+              <Link href={link.url} className={styles.link}>
+                {link.title}
+              </Link>
+              {link.submenu && showDropdown === link.id && (
+                <div className={styles.dropdown}>
+                  {link.submenu.map((submenuItem) => (
+                    <Link
+                      key={submenuItem.id}
+                      href={submenuItem.url}
+                      className={styles.submenuItem}
+                    >
+                      {submenuItem.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         {session.status === "authenticated" && (
-          <button className={styles.logout} onClick={signOut}>
-            Logout
-          </button>
+          <>
+            <div className={styles.imageContainer}>
+              {imageUrl ? (
+                 <img
+                 src={imageUrl}
+                 alt="User Profile"
+                 className={styles.avatar}
+               />
+              ) : (
+                <Image src={HumanIcon} alt="Profile Picture" className={styles.avatar} />
+              )}
+              <h6>{userName}</h6>
+            </div>
+            <button className={styles.logout} onClick={signOut}>
+              Logout
+            </button>
+          </>
         )}
         {session.status === "unauthenticated" && (
-          <button className={styles.login} onClick={() => window.location.href = "/login"}>
+          <button
+            className={styles.login}
+            onClick={() => (window.location.href = "/login")}
+          >
             Login
           </button>
         )}
