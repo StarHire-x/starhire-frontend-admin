@@ -236,6 +236,8 @@ export default function ViewJobListingAdmin() {
               <p>{jobListing.averageSalary}</p>
               <strong>Job Start Date</strong>
               <p>{jobListing.jobStartDate}</p>
+              <strong>Company Name</strong>
+              <p>{jobListing.corporate.userName}</p>
               <strong>Current Status of Job</strong>
               <p>{jobListing.jobListingStatus}</p>
             </div>
