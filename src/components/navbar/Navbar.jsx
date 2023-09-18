@@ -5,9 +5,10 @@ import React from "react";
 import styles from "./Navbar.module.css";
 import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 import { signOut, useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getUserByUserId } from "@/app/api/auth/user/route";
 import  HumanIcon  from "../../../public/icon.png";
+import { UserContext } from "@/context/UserContext";
 
 const adminLinks = [
   {
@@ -66,8 +67,11 @@ const Navbar = () => {
   const session = useSession();
   const [showDropdown, setShowDropdown] = useState(null);
 
-  const [imageUrl, setImageUrl] = useState(null);
-  const [userName, setUserName] = useState(null);
+  // utilising use context to get the latest information
+  const { userData } = useContext(UserContext);
+
+  // const [imageUrl, setImageUrl] = useState(null);
+  // const [userName, setUserName] = useState(null);
   let roleRef, sessionTokenRef, userIdRef;
 
   if (session && session.data && session.data.user) {
@@ -76,26 +80,26 @@ const Navbar = () => {
     sessionTokenRef = session.data.user.accessToken;
   }
 
-  useEffect(() => {
-    if (session.status === "authenticated") {
-      const fetchData = () => {
-        getUserByUserId(userIdRef, roleRef, sessionTokenRef)
-          .then((user) => {
-            setImageUrl(user.data.profilePictureUrl);
-            setUserName(user.data.userName);
-          })
-          .catch((error) => {
-            console.error("Error fetching user:", error);
-          });
-      };
+  // useEffect(() => {
+  //   if (session.status === "authenticated") {
+  //     const fetchData = () => {
+  //       getUserByUserId(userIdRef, roleRef, sessionTokenRef)
+  //         .then((user) => {
+  //           setImageUrl(user.data.profilePictureUrl);
+  //           setUserName(user.data.userName);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error fetching user:", error);
+  //         });
+  //     };
 
-      fetchData(); // Fetch immediately
+  //     fetchData(); // Fetch immediately
 
-      const intervalId = setInterval(fetchData, 5000); // Poll every 5 seconds
+  //     const intervalId = setInterval(fetchData, 5000); // Poll every 5 seconds
 
-      return () => clearInterval(intervalId); // Cleanup on unmount
-    }
-  }, [session.status, userIdRef, roleRef, sessionTokenRef]);
+  //     return () => clearInterval(intervalId); // Cleanup on unmount
+  //   }
+  // }, [session.status, userIdRef, roleRef, sessionTokenRef]);
 
   const handleLinkMouseEnter = (linkId) => {
     setShowDropdown(linkId);
@@ -170,20 +174,24 @@ const Navbar = () => {
         {session.status === "authenticated" && (
           <>
             <div className={styles.imageContainer}>
-              {imageUrl ? (
+              {userData?.profilePictureUrl ? (
                 <Link href="/accountManagement">
                   <img
-                  src={imageUrl}
-                  alt="User Profile"
-                  className={styles.avatar}
-                />
-               </Link>
+                    src={userData?.profilePictureUrl}
+                    alt="User Profile"
+                    className={styles.avatar}
+                  />
+                </Link>
               ) : (
                 <Link href="/accountManagement">
-                  <Image src={HumanIcon} alt="Profile Picture" className={styles.avatar} />
+                  <Image
+                    src={HumanIcon}
+                    alt="Profile Picture"
+                    className={styles.avatar}
+                  />
                 </Link>
               )}
-              <h6>{userName}</h6>
+              <h6>{userData?.userName}</h6>
             </div>
             <button className={styles.logout} onClick={signOut}>
               Logout
