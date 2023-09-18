@@ -11,32 +11,27 @@ import  HumanIcon  from "../../../public/icon.png";
 
 const adminLinks = [
   {
-    id: 2,
+    id: 1,
     title: "Job Listings",
     url: "/jobListings",
   },
   {
-    id: 3,
+    id: 2,
     title: "User Management",
     url: "/userManagement",
   },
   {
-    id: 4,
-    title: "Account Management",
-    url: "/accountManagement",
-  },
-  {
-    id: 5,
+    id: 3,
     title: "Dashboard",
     url: "/dashboard",
   },
   {
-    id: 6,
+    id: 4,
     title: "Events",
     url: "/events",
   },
   {
-    id: 7,
+    id: 5,
     title: "Forum",
     url: "/forum",
   },
@@ -44,17 +39,12 @@ const adminLinks = [
 
 const recruiterLinks = [
   {
-    id: 2,
-    title: "Account Management",
-    url: "/accountManagement",
-  },
-  {
-    id: 3,
+    id: 1,
     title: "Dashboard",
     url: "/dashboard",
   },
   {
-    id: 4,
+    id: 2,
     title: "Chat",
     url: "",
     submenu: [
@@ -181,13 +171,17 @@ const Navbar = () => {
           <>
             <div className={styles.imageContainer}>
               {imageUrl ? (
-                 <img
-                 src={imageUrl}
-                 alt="User Profile"
-                 className={styles.avatar}
-               />
+                <Link href="/accountManagement">
+                  <img
+                  src={imageUrl}
+                  alt="User Profile"
+                  className={styles.avatar}
+                />
+               </Link>
               ) : (
-                <Image src={HumanIcon} alt="Profile Picture" className={styles.avatar} />
+                <Link href="/accountManagement">
+                  <Image src={HumanIcon} alt="Profile Picture" className={styles.avatar} />
+                </Link>
               )}
               <h6>{userName}</h6>
             </div>
