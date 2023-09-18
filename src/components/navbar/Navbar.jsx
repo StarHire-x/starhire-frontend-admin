@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import styles from "./Navbar.module.css";
 import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 import { signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { getUserByUserId } from "@/app/api/auth/user/route";
+import  HumanIcon  from "../../../public/icon.png";
 
 const adminLinks = [
   {
@@ -178,11 +180,15 @@ const Navbar = () => {
         {session.status === "authenticated" && (
           <>
             <div className={styles.imageContainer}>
-              <img
-                src={imageUrl}
-                alt="User Profile"
-                className={styles.avatar}
-              />
+              {imageUrl ? (
+                 <img
+                 src={imageUrl}
+                 alt="User Profile"
+                 className={styles.avatar}
+               />
+              ) : (
+                <Image src={HumanIcon} alt="Profile Picture" className={styles.avatar} />
+              )}
               <h6>{userName}</h6>
             </div>
             <button className={styles.logout} onClick={signOut}>
