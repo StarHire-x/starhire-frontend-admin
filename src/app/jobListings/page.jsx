@@ -301,8 +301,9 @@ export default function JobListings() {
               ></Column>
 
               <Column body={actionBodyTemplate} />
+
             </DataTable>
-            
+
             <Dialog
               visible={userDialog}
               style={{ width: "32rem" }}
