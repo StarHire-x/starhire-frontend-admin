@@ -1,15 +1,16 @@
-"use client";
-import React from "react";
-import styles from "./page.module.css";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+"use client"
+import React from 'react'
+import styles from './page.module.css'
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useState } from "react";
 import Link from "next/link";
-import { headers } from "../../../next.config";
+import { headers } from '../../../next.config';
 import bcrypt from "bcryptjs";
-import { hashing } from "../api/auth/register/route";
+import { hashing } from '../api/auth/register/route';
 
 const Login = () => {
+
   const session = useSession();
   const router = useRouter();
 
@@ -18,7 +19,6 @@ const Login = () => {
     password: "",
     role: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,55 +28,47 @@ const Login = () => {
     });
   };
 
-  if (session.status === "loading") {
-    return <p>Loading ....</p>;
+  if(session.status === "loading") {
+    return <p>Loading ....</p>
   }
 
-  if (session.status === "authenticated") {
+  if(session.status === "authenticated") {
     router?.push("/dashboard");
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password, role } = formData;
+    const email = formData.email;
+    const password = formData.password;
+    const role = formData.role;
+    // alert(`Email: ${email}, Password: ${password}, Role: ${role}`);
 
-    if (!email) {
-      setErrorMessage("Please fill in your email!");
+    if (!email || !password || !role) {
+      alert("Please fill in your email, password and your role!");
       return;
-    } else if (!password) {
-      setErrorMessage("Please fill in your password!");
-      return;
-    } else if (!role) {
-      setErrorMessage("Please fill in your role!");
-      return;
+    } 
+
+    const result = await signIn('credentials', {
+        redirect: false,
+        email: email,
+        password: password,
+        role: role 
+    });
+
+    if (!result.error) {
+      // User signed in successfully
+      router.push("/dashboard");
     } else {
-      try {
-        const result = await signIn("credentials", {
-          redirect: false,
-          email,
-          password,
-          role,
-        });
-
-        if (!result.error) {
-          // User signed in successfully
-          router.push("/dashboard");
-        } else {
-          // Handle the error result.error
-          console.error(`Login error: ${result.error}`);
-          setErrorMessage(result.error);
-        }
-      } catch (error) {
-        console.error("An error occurred during authentication:", error);
-        setErrorMessage(error);
-      }
+      // Handle the error result.error
+      alert("Authentication failed! Please try again.");
+      console.error("Login error: " + result.error);
     }
-  };
 
+  };
+  
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Login</h1>
-      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
           type="email"
@@ -97,7 +89,6 @@ const Login = () => {
           required
         />
         <div className={styles.radio}>
-          <p>I am a...</p>
           <label>
             <input
               type="radio"
@@ -121,10 +112,10 @@ const Login = () => {
         </div>
         <button className={styles.button}>Login</button>
       </form>
-      <Link href="/register">I don&apos;t have an account</Link>
+      <Link href="/register">I don't have an account </Link>
       <Link href="/forgetPassword">Forget Password</Link>
     </div>
   );
-};
+}
 
 export default Login;
