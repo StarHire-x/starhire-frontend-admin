@@ -50,7 +50,7 @@ const CreateChat = () => {
     },
     status: {
       operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+      constraints: [{ value: "Active", matchMode: FilterMatchMode.EQUALS }], // only takes in Active users
     },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -99,7 +99,6 @@ const CreateChat = () => {
 
   // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
   const createNewChat = async () => {
-    console.log(selectedRowData);
     let request = {};
     try {
       if (selectedRowData.role === "Job_Seeker") {
@@ -129,7 +128,6 @@ const CreateChat = () => {
   // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
 
   const hasChattedWithUser = (selectedUser) => {
-    console.log("chats length");
     const chats = selectedUser.chats;
     if (chats.length > 0) {
       for (let i = 0; i < chats.length; i++) {
@@ -171,6 +169,10 @@ const CreateChat = () => {
     );
   };
 
+  const actionRoleTemplate = (rowData) => {
+    return rowData.role == "Job_Seeker" ? "Job Seeker" : rowData.role;
+  };
+
   const showUserDialog = (rowData) => {
     setUserDialog(true);
   };
@@ -204,7 +206,9 @@ const CreateChat = () => {
 
   useEffect(() => {
     getUsers(accessToken)
-      .then((user) => setUser(user.data))
+      .then((user) => {
+        setUser(user.data);
+      })
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
@@ -242,30 +246,19 @@ const CreateChat = () => {
             onSelectionChange={(e) => setSelectedUsers(e.value)}
             filters={filters}
             filterDisplay="menu"
-            globalFilterFields={[
-              "userId",
-              "userName",
-              "email",
-              "contactNo",
-              "status",
-              "role",
-            ]}
+            globalFilterFields={["userName", "email", "contactNo", "role"]}
             emptyMessage="No users found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >
-            <Column field="userId" header="User Id" sortable></Column>
             <Column field="userName" header="User Name" sortable></Column>
             <Column field="email" header="Email" sortable></Column>
             <Column field="contactNo" header="Contact No" sortable></Column>
             <Column
-              field="status"
-              header="Status"
+              field="role"
+              header="Role"
+              body={actionRoleTemplate}
               sortable
-              body={statusBodyTemplate}
-              filter
-              filterElement={statusFilterTemplate}
             ></Column>
-            <Column field="role" header="Role" sortable></Column>
             <Column
               body={actionBodyTemplate}
               exportable={false}
