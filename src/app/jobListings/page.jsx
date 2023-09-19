@@ -45,18 +45,18 @@ export default function JobListings() {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    role: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
-    status: {
+    // role: {
+    //   operator: FilterOperator.OR,
+    //   constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+    // },
+    jobListingStatus: {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
   });
 
   const [globalFilterValue, setGlobalFilterValue] = useState('');
-  const [statuses] = useState(['Active', 'Unverified', 'Inactive']);
+  const [jobListingStatuses] = useState(['Active', 'Unverified', 'Inactive']);
 
   const getStatus = (status) => {
     switch (status) {
@@ -96,7 +96,7 @@ export default function JobListings() {
     return (
       <Dropdown
         value={options.value}
-        options={statuses}
+        options={jobListingStatuses}
         onChange={(e) => options.filterCallback(e.value, options.index)}
         itemTemplate={statusItemTemplate}
         placeholder="Select One"
