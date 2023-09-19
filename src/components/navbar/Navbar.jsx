@@ -7,7 +7,7 @@ import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 import { signOut, useSession } from "next-auth/react";
 import { useState, useEffect, useContext } from "react";
 import { getUserByUserId } from "@/app/api/auth/user/route";
-import  HumanIcon  from "../../../public/icon.png";
+import HumanIcon from "../../../public/icon.png";
 import { UserContext } from "@/context/UserContext";
 
 const adminLinks = [
@@ -47,19 +47,19 @@ const recruiterLinks = [
   {
     id: 2,
     title: "Chat",
-    url: "",
-    submenu: [
-      {
-        id: 1,
-        title: "New Chat",
-        url: "/create-chat",
-      },
-      {
-        id: 2,
-        title: "Manage Chats",
-        url: "/chat",
-      },
-    ],
+    url: "/chat",
+    // submenu: [
+    //   {
+    //     id: 1,
+    //     title: "New Chat",
+    //     url: "/create-chat",
+    //   },
+    //   {
+    //     id: 2,
+    //     title: "Manage Chats",
+    //     url: "/chat",
+    //   },
+    // ],
   },
 ];
 
