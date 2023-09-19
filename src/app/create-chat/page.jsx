@@ -265,6 +265,7 @@ const CreateChat = () => {
               sortable
             ></Column>
             <Column
+              field="button"
               body={actionBodyTemplate}
               exportable={false}
               style={{ minWidth: "12rem" }}
