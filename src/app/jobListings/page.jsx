@@ -37,11 +37,11 @@ export default function JobListings() {
   }
 
   const [refreshData, setRefreshData] = useState(false);
-  //const [user, setUser] = useState(null);
   const [jobListings, setJobListings] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -182,8 +182,6 @@ export default function JobListings() {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  //setJobListings[viewAllJobListings(accessToken)];
-  //console.log(viewAllJobListings(accessToken));
 
   useEffect(() => {
     if (accessToken) {
@@ -255,17 +253,19 @@ export default function JobListings() {
               rowsPerPageOptions={[10, 25, 50]}
               dataKey="id"
               selectionMode="checkbox"
+              selection={selectedUsers}
+              onSelectionChange={(e) => setSelectedUsers(e.value)}
               filters={filters}
               filterDisplay="menu"
               globalFilterFields={[
-                'jobListingId',
-                'title',
-                'corporate.userName',
-                'jobLocation',
-                'listingDate',
-                'jobListingStatus',
+                "jobListingId",
+                "title",
+                "corporate.userName",
+                "jobLocation",
+                "listingDate",
+                "jobListingStatus",
               ]}
-              emptyMessage="No users found."
+              emptyMessage="No Job Listings found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
               <Column
@@ -295,11 +295,25 @@ export default function JobListings() {
                 field="jobListingStatus"
                 header="Job Listing Status"
                 body={statusBodyTemplate}
+                filter
+                filterElement={statusFilterTemplate}
                 sortable
               ></Column>
 
               <Column body={actionBodyTemplate} />
             </DataTable>
+            
+            <Dialog
+              visible={userDialog}
+              style={{ width: "32rem" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              header="Change Status"
+              className="p-fluid"
+              footer={userDialogFooter}
+              onHide={hideDialog}
+            >
+              <h3>{selectedRowData && selectedRowData.userName}</h3>
+            </Dialog>
           </>
         )}
       </div>
