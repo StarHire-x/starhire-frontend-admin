@@ -77,7 +77,6 @@ export const updateUserPassword = async (request, id) => {
     } else {
       throw new Error(errorData.message || "An error occurred");
     }
-    return await res.json();
   } catch (error) {
     console.log("There was a problem fetching the users", error);
     throw error;
