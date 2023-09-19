@@ -12,7 +12,7 @@ export default function Home() {
         <Button url="/login" text="Login"/>
       </div>
       <div className={styles.item}></div>
-      <Image src={Hero} alt="" className={styles.img}/>
+      <Image src={Hero} alt="AltPhoto" className={styles.img}/>
     </div>
   )
 }
