@@ -190,7 +190,13 @@ const CreateChat = () => {
 
   const renderHeader = () => {
     return (
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <h4 className="m-0">Users</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
@@ -241,9 +247,6 @@ const CreateChat = () => {
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             rowsPerPageOptions={[10, 25, 50]}
             dataKey="id"
-            selectionMode="checkbox"
-            selection={selectedUsers}
-            onSelectionChange={(e) => setSelectedUsers(e.value)}
             filters={filters}
             filterDisplay="menu"
             globalFilterFields={["userName", "email", "contactNo", "role"]}
