@@ -52,6 +52,10 @@ const CreateChat = () => {
       operator: FilterOperator.OR,
       constraints: [{ value: "Active", matchMode: FilterMatchMode.EQUALS }], // only takes in Active users
     },
+    button: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
+    },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [statuses] = useState(["Active", "Inactive"]);
@@ -151,7 +155,7 @@ const CreateChat = () => {
 
   const actionBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
-    return (
+    return !hasChattedWithUser(rowData) ? (
       <React.Fragment>
         <Button
           icon="pi pi-comments"
@@ -166,6 +170,8 @@ const CreateChat = () => {
           }}
         />
       </React.Fragment>
+    ) : (
+      "False"
     );
   };
 
@@ -211,14 +217,14 @@ const CreateChat = () => {
   };
 
   useEffect(() => {
-    getUsers(accessToken)
+    getUsers(currentUserId, accessToken)
       .then((user) => {
-        setUser(user.data);
+        setUser(user);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [refreshData, accessToken]);
+  }, [refreshData, accessToken, currentUserId]);
 
   const header = renderHeader();
 
@@ -249,7 +255,13 @@ const CreateChat = () => {
             dataKey="id"
             filters={filters}
             filterDisplay="menu"
-            globalFilterFields={["userName", "email", "contactNo", "role"]}
+            globalFilterFields={[
+              "userName",
+              "email",
+              "contactNo",
+              "role",
+              "button",
+            ]}
             emptyMessage="No users found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >
@@ -263,9 +275,11 @@ const CreateChat = () => {
               sortable
             ></Column>
             <Column
+              field="button"
               body={actionBodyTemplate}
               exportable={false}
               style={{ minWidth: "12rem" }}
+              sortable
             ></Column>
           </DataTable>
 
