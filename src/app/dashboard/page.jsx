@@ -1,31 +1,35 @@
-"use client"
-import React from 'react'
+"use client";
+import React from "react";
 import styles from "./page.module.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
-    const session = useSession();
+  const session = useSession();
 
-    const router = useRouter();
+  const router = useRouter();
 
-    console.log(session);
+  console.log(session);
 
-    if (session.status === "loading") {
-      return <p>Loading...</p>;
-    }
-    
-    if (session.status === "unauthenticated") {
-      router?.push("/login");
-    }
+  if (session.status === "loading") {
+    return <p>Loading...</p>;
+  }
 
-    if (session.status === "authenticated") {
-      return (
-        <h1>
-          Welcome back {session.data.user.name}, {session.data.user.email}, {session.data.user.image}, {session.data.user.role}, {session.data.user.userId}
-        </h1>
-      );
-    }
-}
+  if (session.status === "unauthenticated") {
+    router?.push("/login");
+  }
+
+  if (session.status === "authenticated") {
+    return (
+      <>
+        <div>
+          <h2 className={styles.header}>
+            Welcome Back {session.data.user.name}!
+          </h2>
+        </div>
+      </>
+    );
+  }
+};
 
 export default Dashboard;
