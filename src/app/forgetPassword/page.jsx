@@ -30,7 +30,6 @@ const ForgetPassword = () => {
   }
 
   const handleSubmit = async (e) => {
-    console.log("Hit 1");
     e.preventDefault();
     const email = formData.email;
     const role = formData.role;
