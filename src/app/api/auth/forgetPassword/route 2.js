@@ -1,43 +1,41 @@
-const fetchUserData = async (email, role) => {
-  const url = `http://localhost:8080/users/find?email=${email}&role=${role}`;
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    cache: "no-store",
-  });
-  const responseBody = await response.json();
-
-  if (responseBody.statusCode === 404) {
-    throw new Error(responseBody.message || "An error occurred");
-  }
-  return responseBody;
-};
-
 export const forgetPassword = async (email, role) => {
   try {
-    const userData = await fetchUserData(email, role);
+    const res = await fetch(
+      `http://localhost:8080/users/find?email=${email}&role=${role}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    );
+    
+    const responseBody = await res.json();
+    if(responseBody.statusCode === 200) {
+      const token = Math.random().toString(36).substring(2, 15);
+      localStorage.setItem("passwordResetToken", token);
+      const passwordResetExpire = Date.now() + 3600000;
+      localStorage.setItem(
+        "passwordResetExpire",
+        passwordResetExpire.toString()
+      );
+      const resetEmail = responseBody.data.email;
+      localStorage.setItem("resetEmail", resetEmail);
+      localStorage.setItem("role", responseBody.data.role);
+      localStorage.setItem("userId", responseBody.data.userId);
 
-    const token = Math.random().toString(36).substring(2, 15);
-    localStorage.setItem("passwordResetToken", token);
-
-    const passwordResetExpire = Date.now() + 3600000;
-    localStorage.setItem("passwordResetExpire", passwordResetExpire.toString());
-
-    localStorage.setItem("resetEmail", userData.email);
-    localStorage.setItem("role", userData.role);
-    localStorage.setItem("userId", userData.userId);
-
-    const input = {
-      tokenId: token,
-      emailAddress: userData.email,
-      role: userData.role,
-    };
-
-    return await sendEmail(input);
-  } catch (error) {
-    throw new Error(error.message || "An unexpected error occurred");
+      const input = {
+        tokenId: token,
+        emailAddress: resetEmail,
+        role: responseBody.data.role,
+      };
+      return await sendEmail(input);
+    } else {
+      throw new Error("No such user present!");
+    }
+  } catch (err) {
+    throw new Error("No such user present!!!");
   }
 };
 
@@ -63,6 +61,7 @@ export const sendEmail = async (request) => {
   }
 };
 
+
 export const updateUserPassword = async (request, id) => {
   try {
     const res = await fetch(`http://localhost:8080/users/reset/${id}`, {
@@ -78,6 +77,7 @@ export const updateUserPassword = async (request, id) => {
     } else {
       throw new Error(errorData.message || "An error occurred");
     }
+    return await res.json();
   } catch (error) {
     console.log("There was a problem fetching the users", error);
     throw error;

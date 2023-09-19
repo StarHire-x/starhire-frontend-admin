@@ -5,19 +5,6 @@
     flex-direction: column;
     gap: 20px;
  }
-
- .error {
-   color: rgb(201, 15, 15);
-   text-align: center;
-}
-
-.title {
-   font-size: 72px;
-   background: linear-gradient(to bottom, #194c33, #bbb);
-   -webkit-background-clip: text;
-   -webkit-text-fill-color: transparent;
- }
-
  
  .form {
     width: 300px;
@@ -58,4 +45,3 @@
   /* Optional: Adjust the radio button styles */
   margin-right: 4px; /* Adjust the spacing between the radio button and label text */
 }
-
