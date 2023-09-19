@@ -123,6 +123,12 @@ export default function ViewJobListingAdmin() {
   };
   */
 
+    // Function to format date in "day-month-year" format
+    const formatDate = (dateString) => {
+      const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
   const updateJobListingStatus = async (newStatus) => {
     try {
       const request = {
@@ -219,7 +225,7 @@ export default function ViewJobListingAdmin() {
       ) : (
         <div>
           <Card
-            title={jobListing.jobListingId}
+            title={"Job Listing ID: " + jobListing.jobListingId}
             subTitle={jobListing.title}
             footer={footer}
             className="my-card"
@@ -227,7 +233,7 @@ export default function ViewJobListingAdmin() {
           >
             <div className="my-card.p-card-content">
               <strong>Listing Date</strong>
-              <p>{jobListing.listingDate}</p>
+              <p>{formatDate(jobListing.listingDate)}</p>
               <strong>Job Desription</strong>
               <p>{jobListing.description}</p>
               <strong>Job Location</strong>
@@ -235,7 +241,7 @@ export default function ViewJobListingAdmin() {
               <strong>Average Salary</strong>
               <p>{jobListing.averageSalary}</p>
               <strong>Job Start Date</strong>
-              <p>{jobListing.jobStartDate}</p>
+              <p>{formatDate(jobListing.jobStartDate)}</p>
               <strong>Company Name</strong>
               <p>{jobListing.corporate.userName}</p>
               <strong>Current Status of Job</strong>
