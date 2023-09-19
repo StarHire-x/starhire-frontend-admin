@@ -1,20 +1,78 @@
+.centerContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* or you can set to a specific height if needed */
+  padding: 20px;
+}
+
+.inlineField {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust this to set spacing between label and value */
+  padding: 10px 0;
+  width: 80%; /* Give a consistent width to all fields for alignment */
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.inlineField label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  width: 30%; /* To make sure labels have a consistent width */
+}
+
+.inlineField p {
+  font-size: 1em;
+  color: #555;
+  flex-grow: 1; /* To ensure the content takes up the remaining width */
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%; /* To make it circular */
+  object-fit: cover; /* To ensure the image maintains its aspect ratio */
+  margin-bottom: 10px; /* Add some spacing below the image */
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column; /* To ensure children are stacked vertically */
+  align-items: center; /* Horizontally center the children */
+  justify-content: center; /* Vertically center the children (though it's optional here) */
+  gap: 1px; /* Gives a little space between the image and the h6 */
+}
+
+.avatarImageContainer {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* To make it circular */
+  object-fit: cover; /* To ensure the image maintains its aspect ratio */
+  margin-bottom: 0px; /* Add some spacing below the image */
+}
+
 .loading-animation {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.spinner {
+  border: 5px solid rgba(0, 0, 0, 0.3);
+  border-top: 5px solid #007bff; /* Adjust the color as needed */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .spinner {
-    border: 5px solid rgba(0, 0, 0, 0.3);
-    border-top: 5px solid #007bff; /* Adjust the color as needed */
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  } 
+}

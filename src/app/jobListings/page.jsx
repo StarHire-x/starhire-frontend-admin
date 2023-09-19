@@ -1,23 +1,23 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import { InputNumber } from "primereact/inputnumber";
-import { Button } from "primereact/button";
-import { ProgressBar } from "primereact/progressbar";
-import { Calendar } from "primereact/calendar";
-import { MultiSelect } from "primereact/multiselect";
-import { Slider } from "primereact/slider";
-import { Dialog } from "primereact/dialog";
-import { Tag } from "primereact/tag";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import "./styles.css";
-import { viewAllJobListings } from "@/app/api/auth/jobListings/route";
-import { getUserByUserId } from "../api/auth/user/route";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { InputNumber } from 'primereact/inputnumber';
+import { ProgressBar } from 'primereact/progressbar';
+import { Calendar } from 'primereact/calendar';
+import { MultiSelect } from 'primereact/multiselect';
+import { Slider } from 'primereact/slider';
+import { Dialog } from 'primereact/dialog';
+import { Tag } from 'primereact/tag';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import './styles.css';
+import { viewAllJobListings } from '@/app/api/auth/jobListings/route';
+import { getUserByUserId } from '../api/auth/user/route';
 
 export default function JobListings() {
   const session = useSession();
@@ -25,15 +25,15 @@ export default function JobListings() {
   const router = useRouter();
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === "authenticated" && session.data.user.userId;
+    session.status === 'authenticated' && session.data.user.userId;
 
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
+  if (session.status === 'unauthenticated') {
+    router?.push('/login');
   }
 
   const [refreshData, setRefreshData] = useState(false);
@@ -55,15 +55,17 @@ export default function JobListings() {
     },
   });
 
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [statuses] = useState(["Active", "Inactive"]);
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
+  const [statuses] = useState(['Active', 'Unverified', 'Inactive']);
 
   const getStatus = (status) => {
     switch (status) {
-      case "Active":
-        return "success";
-      case "Inactive":
-        return "danger";
+      case 'Active':
+        return 'success';
+      case 'Unverified':
+        return 'danger';
+      case 'Inactive':
+        return 'danger';
     }
   };
 
@@ -71,7 +73,7 @@ export default function JobListings() {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters["global"].value = value;
+    _filters['global'].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -82,7 +84,12 @@ export default function JobListings() {
   };
 
   const statusBodyTemplate = (rowData) => {
-    return <Tag value={rowData.status} severity={getStatus(rowData.status)} />;
+    return (
+      <Tag
+        value={rowData.jobListingStatus}
+        severity={getStatus(rowData.jobListingStatus)}
+      />
+    );
   };
 
   const statusFilterTemplate = (options) => {
@@ -104,7 +111,7 @@ export default function JobListings() {
   };
 
   const actionBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
+    console.log('Row Data:', rowData);
     return (
       <React.Fragment>
         <Button
@@ -112,8 +119,7 @@ export default function JobListings() {
           rounded
           className="mr-2"
           onClick={() => {
-            setSelectedRowData(rowData.jobListingId);
-            showUserDialog(rowData.title);
+            saveStatusChange(rowData);
           }}
         />
       </React.Fragment>
@@ -129,20 +135,21 @@ export default function JobListings() {
     return link;
   };
 
-  const saveStatusChange = async (id) => {
-    if (session.data.user.role === "Administrator") {
+  const saveStatusChange = async (rowData) => {
+    const jobListingId = rowData.jobListingId;
+    if (session.data.user.role === 'Administrator') {
       try {
         // Use router.push to navigate to another page with a query parameter
-        let link = createLink(selectedRowData);
+        let link = createLink(jobListingId);
         router.push(link);
       } catch (error) {
-        console.error("Error changing status:", error);
+        console.error('Error changing status:', error);
       }
     } else {
       try {
-        router.push("/jobListings/viewJobListingRecruiter");
+        router.push('/jobListings/viewJobListingRecruiter');
       } catch (error) {
-        console.error("Error changing status:", error);
+        console.error('Error changing status:', error);
       }
     }
   };
@@ -171,7 +178,7 @@ export default function JobListings() {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -181,7 +188,7 @@ export default function JobListings() {
   useEffect(() => {
     if (accessToken) {
       viewAllJobListings(accessToken)
-        .then((data) => {  
+        .then((data) => {
           setJobListings(data);
           setIsLoading(false);
         })
@@ -191,7 +198,7 @@ export default function JobListings() {
         });
     }
   }, [accessToken]);
-  
+
   /* Old implementation, dont delete for now
   useEffect(() => {
     fetch(`http://localhost:8080/job-listing`, {
@@ -221,15 +228,15 @@ export default function JobListings() {
   const header = renderHeader();
 
   if (
-    session.status === "authenticated" &&
-    session.data.user.role !== "Administrator"
+    session.status === 'authenticated' &&
+    session.data.user.role !== 'Administrator'
   ) {
-    router?.push("/dashboard");
+    router?.push('/dashboard');
   }
 
   if (
-    session.status === "authenticated" &&
-    session.data.user.role === "Administrator"
+    session.status === 'authenticated' &&
+    session.data.user.role === 'Administrator'
   ) {
     return (
       <div className="card">
@@ -251,53 +258,48 @@ export default function JobListings() {
               filters={filters}
               filterDisplay="menu"
               globalFilterFields={[
-                "jobListingId",
-                "title",
-                "corporate.userName",
-                "jobLocation",
-                "listingDate",
-                "jobListingStatus",
+                'jobListingId',
+                'title',
+                'corporate.userName',
+                'jobLocation',
+                'listingDate',
+                'jobListingStatus',
               ]}
               emptyMessage="No users found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
-              <Column field="jobListingId" header="Listing ID"></Column>
-              <Column field="title" header="Title"></Column>
-              <Column field="corporate.userName" header="Company Name" />
-              <Column field="jobLocation" header="Job Location"></Column>
+              <Column
+                field="jobListingId"
+                header="Listing ID"
+                sortable
+              ></Column>
+              <Column field="title" header="Title" sortable></Column>
+              <Column
+                field="corporate.userName"
+                header="Company Name"
+                sortable
+              />
+              <Column
+                field="jobLocation"
+                header="Job Location"
+                sortable
+              ></Column>
               <Column
                 field="listingDate"
                 header="List Date"
                 body={(rowData) => formatDate(rowData.listingDate)}
+                sortable
               ></Column>
 
               <Column
                 field="jobListingStatus"
                 header="Job Listing Status"
-                body={(rowData) => (
-                  <span
-                    style={{
-                      color:
-                        rowData.jobListingStatus === "Active" ? "green" : "red",
-                    }}
-                  >
-                    {rowData.jobListingStatus}
-                  </span>
-                )}
+                body={statusBodyTemplate}
+                sortable
               ></Column>
 
               <Column body={actionBodyTemplate} />
             </DataTable>
-
-            <Dialog
-              visible={userDialog}
-              style={{ width: "32rem" }}
-              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-              header="View More details?"
-              className="p-fluid"
-              footer={userDialogFooter}
-              onHide={hideDialog}
-            ></Dialog>
           </>
         )}
       </div>
