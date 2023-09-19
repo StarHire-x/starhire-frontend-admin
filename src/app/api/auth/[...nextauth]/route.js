@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { notFound } from "next/navigation";
 import bcrypt from "bcryptjs";
+import { getUserByUserId } from "../user/route";
 
 const handler = NextAuth({
   providers: [
@@ -67,8 +68,7 @@ const handler = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // Persist the OAuth access_token and or the user id to the token right after signin
-      console.log("jwt callback", { token, user });
+      // console.log("jwt callback", { token, user });
       if (user) {
         token.userId = user.userId;
         token.name = user.name;
@@ -82,6 +82,20 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       console.log("session callback", { session, token });
+
+      try {
+        // for pages that uses useSession() to check if the user is authenticated, this session call back will be triggered
+        // do a check from backend and database if the user still valid in database table or not
+        // if no longer valid, it will catch the error and just return null session, and then the user will be auto logged out
+        // else, the user remains logged in
+        const result = (token?.userId && token?.role && token?.accessToken) && await getUserByUserId(token.userId, token.role, token.accessToken);
+      } catch (error) {
+        // sign out here since user no longer in database
+        console.error(`SESSION API USER ERROR: ${error}`);
+        session.error = "INVALID_USER";
+        return session; // retrieve it from userContext.js and check if error is equal to 'INVALID_USER', if it is, sign user out to clear cookies
+      }
+
       session.user = {
         ...session.user,
         userId: token.userId,
@@ -94,33 +108,6 @@ const handler = NextAuth({
       };
       return session;
     },
-    // async jwt({ token, user, session }) {
-    //   // backend should return user object with access token field
-    //   // then we store the access token in "token" variable here
-    //   console.log("jwt callback", { token, user, session });
-    //   if (user) {
-    //     token.userId = user.userId;
-    //     token.name = user.name;
-    //     token.email = user.email;
-    //     token.role = user.role;
-    //     token.status = user.status;
-    //     token.accessToken = user.jwtAccessToken;
-    //   }
-    //   return token;
-    // },
-    // async session({ session, token, user }) {
-    //   console.log("session callback", { session, token, user });
-    //   session.user = {
-    //     ...session.user,
-    //     userId: token.userId,
-    //     name: token.name,
-    //     email: token.email,
-    //     role: token.role,
-    //     status: token.status,
-    //   };
-    //   session.accessToken = token.accessToken;
-    //   return session;
-    // },
   },
   secret: process.env.NEXTAUTH_SECRET,
   session: {
