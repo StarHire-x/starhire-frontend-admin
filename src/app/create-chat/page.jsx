@@ -50,7 +50,7 @@ const CreateChat = () => {
     },
     status: {
       operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+      constraints: [{ value: "Active", matchMode: FilterMatchMode.EQUALS }], // only takes in Active users
     },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -99,7 +99,6 @@ const CreateChat = () => {
 
   // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
   const createNewChat = async () => {
-    console.log(selectedRowData);
     let request = {};
     try {
       if (selectedRowData.role === "Job_Seeker") {
@@ -129,7 +128,6 @@ const CreateChat = () => {
   // ----------------------------- PRESS BUTTON TRIGGER THIS FUNCTION -----------------------------
 
   const hasChattedWithUser = (selectedUser) => {
-    console.log("chats length");
     const chats = selectedUser.chats;
     if (chats.length > 0) {
       for (let i = 0; i < chats.length; i++) {
@@ -153,7 +151,7 @@ const CreateChat = () => {
 
   const actionBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
-    return (
+    return !hasChattedWithUser(rowData) ? (
       <React.Fragment>
         <Button
           icon="pi pi-comments"
@@ -168,7 +166,13 @@ const CreateChat = () => {
           }}
         />
       </React.Fragment>
+    ) : (
+      "False"
     );
+  };
+
+  const actionRoleTemplate = (rowData) => {
+    return rowData.role == "Job_Seeker" ? "Job Seeker" : rowData.role;
   };
 
   const showUserDialog = (rowData) => {
@@ -188,7 +192,13 @@ const CreateChat = () => {
 
   const renderHeader = () => {
     return (
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <h4 className="m-0">Users</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
@@ -203,12 +213,14 @@ const CreateChat = () => {
   };
 
   useEffect(() => {
-    getUsers(accessToken)
-      .then((user) => setUser(user.data))
+    getUsers(currentUserId, accessToken)
+      .then((user) => {
+        setUser(user);
+      })
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
-  }, [refreshData, accessToken]);
+  }, [refreshData, accessToken, currentUserId]);
 
   const header = renderHeader();
 
@@ -237,39 +249,26 @@ const CreateChat = () => {
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             rowsPerPageOptions={[10, 25, 50]}
             dataKey="id"
-            selectionMode="checkbox"
-            selection={selectedUsers}
-            onSelectionChange={(e) => setSelectedUsers(e.value)}
             filters={filters}
             filterDisplay="menu"
-            globalFilterFields={[
-              "userId",
-              "userName",
-              "email",
-              "contactNo",
-              "status",
-              "role",
-            ]}
+            globalFilterFields={["userName", "email", "contactNo", "role"]}
             emptyMessage="No users found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >
-            <Column field="userId" header="User Id" sortable></Column>
             <Column field="userName" header="User Name" sortable></Column>
             <Column field="email" header="Email" sortable></Column>
             <Column field="contactNo" header="Contact No" sortable></Column>
             <Column
-              field="status"
-              header="Status"
+              field="role"
+              header="Role"
+              body={actionRoleTemplate}
               sortable
-              body={statusBodyTemplate}
-              filter
-              filterElement={statusFilterTemplate}
             ></Column>
-            <Column field="role" header="Role" sortable></Column>
             <Column
               body={actionBodyTemplate}
               exportable={false}
               style={{ minWidth: "12rem" }}
+              sortable
             ></Column>
           </DataTable>
 

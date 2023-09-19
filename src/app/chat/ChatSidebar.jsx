@@ -4,6 +4,8 @@ import {
   ConversationList,
   Avatar,
   Conversation,
+  Button,
+  EllipsisButton,
 } from "@chatscope/chat-ui-kit-react";
 import Image from "next/image";
 import HumanIcon from "../../../public/icon.png";
@@ -25,15 +27,28 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
     setSearchQuery("");
   };
 
+  const handleClickEllipses = () => {
+    window.location.href = "/create-chat";
+  };
+
   return (
     <Sidebar position="left" scrollable={true}>
-      <Search
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={(query) => setSearchQuery(query)}
-        onClearClick={handleClearSearch}
-      />
-
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <Search
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(query) => setSearchQuery(query)}
+          onClearClick={handleClearSearch}
+          style={{ width: "80%" }}
+        />
+        <EllipsisButton orientation="vertical" onClick={handleClickEllipses} />
+      </div>
       <ConversationList>
         {filteredChats.length > 0 ? (
           filteredChats.map((chat, index) => (
