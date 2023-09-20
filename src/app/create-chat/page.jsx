@@ -160,7 +160,6 @@ const CreateChat = () => {
           disabled={hasChattedWithUser(rowData)}
           className="mr-2"
           onClick={() => {
-            // createNewChat(rowData);
             setSelectedRowData(rowData);
             showUserDialog(rowData);
           }}
