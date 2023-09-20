@@ -19,6 +19,7 @@ const AccountManagement = () => {
     fullName: "",
     profilePictureUrl: "",
     notificationMode: "",
+    contactNo: "",
     status: "",
   });
 
@@ -73,6 +74,7 @@ const AccountManagement = () => {
     const email = formData.email;
     const userName = formData.userName;
     const fullName = formData.fullName;
+    const contactNo = formData.contactNo;
     const profilePictureUrl = formData.profilePictureUrl;
     const notificationMode = formData.notificationMode;
     const status = formData.status;
@@ -81,6 +83,7 @@ const AccountManagement = () => {
       email: email,
       userName: userName,
       fullName: fullName,
+      contactNo: contactNo,
       profilePictureUrl: profilePictureUrl,
       notificationMode: notificationMode,
       status: status,
@@ -163,6 +166,18 @@ const AccountManagement = () => {
               name="fullName"
               className={styles.input}
               value={formData.fullName}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="contactNo">Contact Number:</label>
+            <input
+              type="number"
+              id="contactNo"
+              name="contactNo"
+              className={styles.input}
+              value={formData.contactNo}
               onChange={handleInputChange}
             />
           </div>
