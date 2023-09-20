@@ -15,7 +15,7 @@ const Template = () => {
       <div className={styles.posts}>
         <div className={styles.post}>
           <div className={styles.imgContainer}>
-            <Image src={Hero} alt="" width={200} height={100} />
+            <Image src={Hero} alt="Picture" width={200} height={100} />
           </div>
           <h2 className={styles.postTitle}>Placeholder</h2>
           <span className={styles.delete} onClick={() => handleDelete()}>

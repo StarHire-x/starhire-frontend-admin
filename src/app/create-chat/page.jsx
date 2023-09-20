@@ -52,10 +52,6 @@ const CreateChat = () => {
       operator: FilterOperator.OR,
       constraints: [{ value: "Active", matchMode: FilterMatchMode.EQUALS }], // only takes in Active users
     },
-    button: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }],
-    },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [statuses] = useState(["Active", "Inactive"]);
@@ -255,13 +251,7 @@ const CreateChat = () => {
             dataKey="id"
             filters={filters}
             filterDisplay="menu"
-            globalFilterFields={[
-              "userName",
-              "email",
-              "contactNo",
-              "role",
-              "button",
-            ]}
+            globalFilterFields={["userName", "email", "contactNo", "role"]}
             emptyMessage="No users found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >

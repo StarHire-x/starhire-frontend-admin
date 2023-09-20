@@ -270,7 +270,7 @@ const Chat = () => {
                                   alt="user"
                                 />
                               ) : (
-                                <Image src={HumanIcon} />
+                                <Image src={HumanIcon} alt="Profile Picture" />
                               )
                             ) : otherUser &&
                               otherUser.profilePictureUrl != "" ? (
@@ -279,7 +279,7 @@ const Chat = () => {
                                 alt="user"
                               />
                             ) : (
-                              <Image src={HumanIcon} />
+                              <Image src={HumanIcon} alt="Profile Picture" />
                             )}
                           </Avatar>
                           <Message.CustomContent>

@@ -67,12 +67,12 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
                   chat.jobSeeker.profilePictureUrl != "" ? (
                     <img src={chat.recruiter.profilePictureUrl} alt="user" />
                   ) : (
-                    <Image src={HumanIcon} />
+                    <Image src={HumanIcon} alt="Profile Picture" />
                   )
                 ) : chat.corporate.profilePictureUrl != "" ? (
                   <img src={chat.corporate.profilePictureUrl} alt="user" />
                 ) : (
-                  <Image src={HumanIcon} />
+                  <Image src={HumanIcon} alt="Profile Picture" />
                 )}
               </Avatar>
             </Conversation>
