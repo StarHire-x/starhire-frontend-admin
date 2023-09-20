@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import { forgetPassword } from '../api/auth/forgetPassword/route';
+import ReactLoading from "react-loading";
 
 const ForgetPassword = () => {
 
@@ -16,6 +17,8 @@ const ForgetPassword = () => {
       email: "",
       role: "",
     });
+    const [errorMessage, setErrorMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
@@ -31,23 +34,42 @@ const ForgetPassword = () => {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
+      setLoading(false)
+      setErrorMessage("")
       const email = formData.email;
       const role = formData.role;
-      alert(`Email: ${email}, Role: ${role}`);
-
-      try {
-        const result = await forgetPassword(email,role);
-
-        alert(result.message);
-        router.push("/resetPassword");
-      } catch (error) {
-        alert(error);
+  
+      if (!email) {
+        setErrorMessage("Please fill in your email!");
+        return;
+      } else if (!role) {
+        setErrorMessage("Please fill in your role!");
+        return;
+      } else {
+        try {
+          setLoading(true);
+          const result = await forgetPassword(email, role);
+          if (!result.error) {
+            router.push("/resetPassword");
+            setLoading(false);
+          }
+        } catch (error) {
+          console.error("An error occurred during password reset:", error);
+          setLoading(false);
+          setErrorMessage(error.message);
+        }
       }
     };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Forget Password</h1>
+      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+      {loading && (
+        <div className={styles.loadingContainer}>
+          <ReactLoading type="bars" color="white"/>
+        </div>
+      )}
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
           type="email"
@@ -59,6 +81,7 @@ const ForgetPassword = () => {
           required
         />
         <div className={styles.radio}>
+          <p>I am a...</p>
           <label>
             <input
               type="radio"
@@ -82,7 +105,7 @@ const ForgetPassword = () => {
         </div>
         <button className={styles.button}>Reset Password</button>
       </form>
-      <Link href="/register">I don't have an account </Link>
+      <Link href="/register">I don&apos;t have an account </Link>
       <Link href="/login">Login with an existing account</Link>
     </div>
   );
