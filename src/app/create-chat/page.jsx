@@ -5,19 +5,13 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
-import { ProgressBar } from "primereact/progressbar";
-import { Calendar } from "primereact/calendar";
-import { MultiSelect } from "primereact/multiselect";
-import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { changeUserStatus, getUsersForChat } from "../api/auth/user/route";
+import { getUsersForChat } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { createNewChatByRecruiter } from "../api/auth/chat/route";
-import ResponseCache from "next/dist/server/response-cache";
 
 const CreateChat = () => {
   const session = useSession();
@@ -198,7 +192,7 @@ const CreateChat = () => {
           alignItems: "center",
         }}
       >
-        <h4 className="m-0">Users</h4>
+        <h2 className="m-0">Users</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -268,7 +262,6 @@ const CreateChat = () => {
               body={actionBodyTemplate}
               exportable={false}
               style={{ minWidth: "12rem" }}
-              sortable
             ></Column>
           </DataTable>
 
