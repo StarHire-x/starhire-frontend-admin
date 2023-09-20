@@ -23,8 +23,6 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
     return userName.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  console.log(filteredChats);
-
   const handleClearSearch = () => {
     setSearchQuery("");
   };
