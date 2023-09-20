@@ -1,9 +1,9 @@
 .container {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   flex-direction: column;
-   gap: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .title {
@@ -14,32 +14,66 @@
 }
 
 .form {
-   width: 600px;
-   margin: 0 auto;
-   display: grid;
-   grid-template-columns: repeat(2, 1fr);
-   gap: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.userRole {
+  display: flex;
+  align-items: row;
+  gap: 20px;
+}
+
+.inputFields {
+  width: 300px;
+  margin: 0 auto;
+  display: grid;
+  /* grid-template-columns: repeat(2, 1fr); */
+  gap: 20px;
 }
 
 .input {
-   padding: 20px;
-   background-color: transparent; 
-   border: 2px solid #bbb;
-   color: #bbb;
-   border-radius: 5px;
-   font-size: 20px;
-   font-weight: bold;
+  padding: 20px;
+  background-color: transparent;
+  border: 2px solid #bbb;
+  color: #bbb;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.inputCompanyRegistrationIdField {
+  padding: 20px;
+  background-color: transparent;
+  border: 2px solid #bbb;
+  color: #bbb;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 .button {
-    width: 300px;
-    padding: 20px;
-    cursor: pointer;
-    background-color: #53c28b;
-    border: none;
-    border-radius: 5px;
-    color: #eee;
-    font-weight: bold;
+  width: 100px;
+  padding: 20px;
+  cursor: pointer;
+  background-color: #53c28b;
+  border: none;
+  border-radius: 5px;
+  color: #eee;
+  font-weight: bold;
+}
+
+.stepTwoThreeButton {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.spacer {
+  margin-left: 100px;
 }
 
 .radio {
@@ -47,6 +81,7 @@
   flex-direction: row;
   align-items: center;
   gap: 8px; /* Adjust the spacing between the radio button and label */
+  justify-content: center;
 }
 
 .radio input[type="radio"] {
@@ -54,3 +89,39 @@
   margin-right: 4px; /* Adjust the spacing between the radio button and label text */
 }
 
+@media screen and (max-width: 768px) {
+  .title {
+    font-size: 50px;
+  }
+
+  .userRole {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .inputFields {
+    width: 300px;
+    grid-template-columns: repeat(1, 1fr);
+    flex-direction: column;
+  }
+
+  .input {
+    padding: 10px;
+    border: 1px solid #bbb;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .button {
+    width: 100px;
+    padding: 20px;
+    cursor: pointer;
+    background-color: #53c28b;
+    border: none;
+    border-radius: 5px;
+    color: #eee;
+    font-weight: bold;
+  }
+}
