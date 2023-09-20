@@ -13,7 +13,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { changeUserStatus, getUsers } from "../api/auth/user/route";
+import { changeUserStatus, getUsersForChat } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { createNewChatByRecruiter } from "../api/auth/chat/route";
@@ -212,7 +212,7 @@ const CreateChat = () => {
   };
 
   useEffect(() => {
-    getUsers(currentUserId, accessToken)
+    getUsersForChat(currentUserId, accessToken)
       .then((user) => {
         setUser(user);
       })
