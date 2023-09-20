@@ -47,19 +47,19 @@ const recruiterLinks = [
   {
     id: 2,
     title: "Chat",
-    url: "/chat",
-    // submenu: [
-    //   {
-    //     id: 1,
-    //     title: "New Chat",
-    //     url: "/create-chat",
-    //   },
-    //   {
-    //     id: 2,
-    //     title: "Manage Chats",
-    //     url: "/chat",
-    //   },
-    // ],
+    url: "",
+    submenu: [
+      {
+        id: 1,
+        title: "New Chat",
+        url: "/create-chat",
+      },
+      {
+        id: 2,
+        title: "Manage Chats",
+        url: "/chat",
+      },
+    ],
   },
 ];
 
