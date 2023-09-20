@@ -1,4 +1,4 @@
-export const getUsers = async (userId, accessToken) => {
+export const getUsersForChat = async (userId, accessToken) => {
   try {
     const res = await fetch(
       `http://localhost:8080/users/can-create-chat/${userId}`,
@@ -23,27 +23,27 @@ export const getUsers = async (userId, accessToken) => {
   }
 };
 
-// export const getUsers = async (accessToken) => {
-//   try {
-//     const res = await fetch(`http://localhost:8080/users/all`, {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//       cache: "no-store",
-//     });
-//     if (!res.ok) {
-//       const errorData = await res.json();
-//       throw new Error(errorData.message || "An error occurred");
-//     }
-//     // console.log(await res.json());
-//     return await res.json();
-//   } catch (error) {
-//     console.log("There was a problem fetching the users", error);
-//     throw error;
-//   }
-// };
+export const getUsers = async (accessToken) => {
+  try {
+    const res = await fetch(`http://localhost:8080/users/all`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "An error occurred");
+    }
+    // console.log(await res.json());
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the users", error);
+    throw error;
+  }
+};
 
 export const updateUser = async (request, id, accessToken) => {
   try {

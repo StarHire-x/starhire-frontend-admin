@@ -16,6 +16,8 @@ import { Tag } from "primereact/tag";
 import { updateUser, getUsers, deleteUser } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
 
 export default function AccountManagement() {
@@ -254,7 +256,11 @@ export default function AccountManagement() {
 
     return (
       <div className={styles.imageContainer}>
-        <img alt={avatar} src={avatar} className={styles.avatarImageContainer} />
+        {avatar !== "" ? (
+          <img alt={avatar} src={avatar} className={styles.avatarImageContainer} />
+        ) : (
+          <Image src={HumanIcon} alt="Icon" className={styles.avatarImageContainer} />
+        )}
         <span>{userName}</span>
       </div>
     );
