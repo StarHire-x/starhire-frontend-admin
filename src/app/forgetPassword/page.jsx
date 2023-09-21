@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { forgetPassword } from "../api/auth/forgetPassword/route";
-// import ReactLoading from "react-loading";
-import { ProgressSpinner } from "primereact/progressspinner";
+import ReactLoading from "react-loading";
 import { RadioButton } from "primereact/radiobutton";
 
 const ForgetPassword = () => {
@@ -68,8 +67,7 @@ const ForgetPassword = () => {
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       {loading && (
         <div className={styles.loadingContainer}>
-          <ProgressSpinner />
-          {/* <ReactLoading type="bars" color="white"/> */}
+          <ReactLoading type="bars" color="white" />
         </div>
       )}
       <form className={styles.form} onSubmit={handleSubmit}>
