@@ -16,11 +16,12 @@ export const registerUser = async (request) => {
     });
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(errorData.message);
+      return NextResponse.json({ error: errorData.message }, { status: errorData.statusCode });
+      // throw new Error(errorData.message);
     }
-    return await res.json();
+    return await res;
   } catch (error) {
     console.log("There was a problem fetching the users", error);
-    throw error;
+    // throw error;
   }
 };
