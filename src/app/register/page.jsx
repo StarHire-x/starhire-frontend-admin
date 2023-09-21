@@ -11,7 +11,7 @@ import { createUser } from "../api/auth/user/route";
 const Step1 = ({ formData, setFormData, onNext }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleNext = () => {
-    setErrorMessage("")
+    setErrorMessage("");
     const { role, userName, email } = formData;
     if (!role) {
       setErrorMessage("Please fill in your role!");
@@ -37,7 +37,7 @@ const Step1 = ({ formData, setFormData, onNext }) => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.subTitle}>User Information</h2>
+      <h2>Step 1: User Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.userRole}>
@@ -128,7 +128,7 @@ const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.subTitle}>Create Your Password</h2>
+      <h2>Step 2: Password</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.inputFields}>
@@ -169,8 +169,9 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
-    setErrorMessage("")
 
+    // Perform final validation and registration logic here
+    setErrorMessage("");
     const { contactNumber } = formData;
     if (!contactNumber) {
       setErrorMessage("Please fill in your Contact Number!");
@@ -200,7 +201,7 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
   
   return (
     <div className={styles.container}>
-      <h2 className={styles.subTitle}>Additional Information</h2>
+      <h2>Step 3: Additional Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputFields}>
@@ -228,7 +229,7 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
 const Register = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [err, setErr] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     userName: "",
@@ -249,8 +250,30 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setErrorMessage("");
+    // Password validation
+    const v1 = formData.password;
+    const v2 = formData.confirmPassword;
+    if (v1 !== v2) {
+      // Display a validation message near the password fields
+      setErr(true);
+      return; // Exit early if passwords don't match
+    }
+
+    if (
+      !formData.userName ||
+      !formData.email ||
+      !formData.contactNumber ||
+      !formData.role
+    ) {
+      alert(
+        "Please ensure you have filled all the fields, especially your role."
+      );
+      return;
+    }
     setErrorMessage("")
-    
+
     const data = {
       userName: formData.userName,
       email: formData.email,
@@ -260,17 +283,19 @@ const Register = () => {
     };
 
     try {
-      const response = await createUser(data)
-
+      const response = await registerUser(data);
       if (!response.ok) {
         const errorData = await response.json();
-        setErrorMessage(errorData.message);
+        console.log(errorData);
+        setErrorMessage(errorData.error);
+      } else {
+        alert("Account has been created!");
+        router.push("/login?success=Account has been created");
       }
-      alert("Account has been created!");
-      router.push("/login?success=Account has been created");
     } catch (error) {
       console.error("Fetch error:", error);
-      setErrorMessage("An error occurred while processing your request.");
+      // alert(error);
+      // setErr(true);
     }
   };
 
