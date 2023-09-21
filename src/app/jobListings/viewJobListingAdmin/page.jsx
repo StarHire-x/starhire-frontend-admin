@@ -123,11 +123,11 @@ export default function ViewJobListingAdmin() {
   };
   */
 
-    // Function to format date in "day-month-year" format
-    const formatDate = (dateString) => {
-      const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-      return new Date(dateString).toLocaleDateString(undefined, options);
-    };
+  // Function to format date in "day-month-year" format
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   const updateJobListingStatus = async (newStatus) => {
     try {
@@ -229,7 +229,7 @@ export default function ViewJobListingAdmin() {
             subTitle={jobListing.jobLocation}
             footer={footer}
             className="my-card"
-            style={{ borderRadius: "0" }}
+            style={{ borderRadius: '0' }}
           >
             <div className="my-card.p-card-content">
               <div className="company-info">
@@ -242,8 +242,12 @@ export default function ViewJobListingAdmin() {
                 </div>
               </div>
 
-              <strong>Job Desription</strong>
-              <p>{jobListing.description}</p>
+              <strong>Job Overview</strong>
+              <p>{jobListing.overview}</p>
+              <strong>Job Responsibilities</strong>
+              <p>{jobListing.responsibilities}</p>
+              <strong>Job Requirements</strong>
+              <p>{jobListing.requirements}</p>
               <strong>Average Salary</strong>
               <p>{jobListing.averageSalary}</p>
               <strong>Job Start Date</strong>
@@ -266,7 +270,7 @@ export default function ViewJobListingAdmin() {
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === "Active" ? "green" : "red",
+                    jobListing.jobListingStatus === 'Active' ? 'green' : 'red',
                 }}
               >
                 {jobListing.jobListingStatus}
@@ -276,8 +280,8 @@ export default function ViewJobListingAdmin() {
 
           <Dialog
             visible={userDialog}
-            style={{ width: "32rem" }}
-            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            style={{ width: '32rem' }}
+            breakpoints={{ '960px': '75vw', '641px': '90vw' }}
             header="Confirm?"
             className="p-fluid"
             footer={userDialogFooter}
