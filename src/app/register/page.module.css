@@ -21,6 +21,11 @@
   gap: 20px;
 }
 
+.error {
+  color: rgb(201, 15, 15);
+  text-align: center;
+}
+
 .userRole {
   display: flex;
   align-items: row;
@@ -70,6 +75,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.previousButton {
+  width: 100px;
+  padding: 20px;
+  cursor: pointer;
+  background-color: #20563b;
+  border: none;
+  border-radius: 5px;
+  color: #eee;
+  font-weight: bold;
 }
 
 .spacer {

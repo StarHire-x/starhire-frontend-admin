@@ -6,10 +6,25 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { hashing } from "@/app/api/auth/register/route";
 import { registerUser } from "@/app/api/auth/register/route";
+import { createUser } from "../api/auth/user/route";
 
 const Step1 = ({ formData, setFormData, onNext }) => {
+  const [errorMessage, setErrorMessage] = useState("");
   const handleNext = () => {
-    onNext();
+    setErrorMessage("");
+    const { role, userName, email } = formData;
+    if (!role) {
+      setErrorMessage("Please fill in your role!");
+      return;
+    } else if (!userName) {
+      setErrorMessage("Please fill in your username!");
+      return;
+    } else if (!email) {
+      setErrorMessage("Please fill in your email!");
+      return;
+    } else {
+      onNext();
+    }
   };
 
   const handleInputChange = (e) => {
@@ -23,6 +38,7 @@ const Step1 = ({ formData, setFormData, onNext }) => {
   return (
     <div className={styles.container}>
       <h2>Step 1: User Information</h2>
+      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.userRole}>
           <div>
@@ -73,15 +89,29 @@ const Step1 = ({ formData, setFormData, onNext }) => {
             required
           />
         </div>
+        <button className={styles.button} onClick={handleNext}>
+          Next
+        </button>
       </form>
-      <button className={styles.button} onClick={handleNext}>Next</button>
     </div>
   );
 };
 
+
 const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
+  const [errorMessage, setErrorMessage] = useState("");
   const handleNext = () => {
-    onNext();
+    setErrorMessage("")
+    const { password, confirmPassword } = formData;
+    if (!password || !confirmPassword) {
+      setErrorMessage("Please fill in your password!");
+      return;
+    } else if (password !== confirmPassword) {
+      setErrorMessage("The passwords provided do not match!");
+      return;
+    } else {
+      onNext();
+    }
   };
 
   const handlePrevious = () => {
@@ -99,9 +129,10 @@ const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
   return (
     <div className={styles.container}>
       <h2>Step 2: Password</h2>
+      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.inputFields}>
-        <input
+          <input
             type="password"
             name="password"
             placeholder="Password"
@@ -122,18 +153,36 @@ const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
         </div>
       </form>
       <div className={styles.stepTwoThreeButton}>
-        <button className={styles.button} onClick={handlePrevious}>Previous</button>
+        <button className={styles.previousButton} onClick={handlePrevious}>
+          Previous
+        </button>
         <div className={styles.spacer}></div>
-        <button className={styles.button} onClick={handleNext}>Next</button>
+        <button className={styles.button} onClick={handleNext}>
+          Next
+        </button>
       </div>
     </div>
   );
 };
 
 const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
+  const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Perform final validation and registration logic here
+    setErrorMessage("");
+    const { contactNumber } = formData;
+    if (!contactNumber) {
+      setErrorMessage("Please fill in your Contact Number!");
+      return;
+    }
+    const contactNumberPattern = /^\d{8}$/;
+    const isValidNumber = contactNumberPattern.test(contactNumber);
+    if (!isValidNumber) {
+      setErrorMessage("Please enter a valid 8-digit phone number.");
+      return;
+    }
     onSubmit(e);
   };
 
@@ -149,12 +198,14 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
     });
   };
 
+  
   return (
     <div className={styles.container}>
       <h2>Step 3: Additional Information</h2>
+      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputFields}>
-        <input
+          <input
             type="text"
             name="contactNumber"
             placeholder="Contact Number"
@@ -163,9 +214,10 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
             onChange={handleInputChange}
           />
         </div>
-        {err && "Something went wrong!"}
         <div className={styles.stepTwoThreeButton}>
-          <button className={styles.button} onClick={handlePrevious}>Previous</button>
+          <button className={styles.previousButton} onClick={handlePrevious}>
+            Previous
+          </button>
           <div className={styles.spacer}></div>
           <button className={styles.button}>Register</button>
         </div>
@@ -176,7 +228,7 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
 
 const Register = () => {
   const router = useRouter();
-
+  const [errorMessage, setErrorMessage] = useState("");
   const [err, setErr] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -199,6 +251,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setErrorMessage("");
     // Password validation
     const v1 = formData.password;
     const v2 = formData.confirmPassword;
@@ -219,6 +272,7 @@ const Register = () => {
       );
       return;
     }
+    setErrorMessage("")
 
     const data = {
       userName: formData.userName,
@@ -229,18 +283,26 @@ const Register = () => {
     };
 
     try {
-      await registerUser(data);
-      alert("Account has been created!");
-      router.push("/login?success=Account has been created");
+      const response = await registerUser(data);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.log(errorData);
+        setErrorMessage(errorData.error);
+      } else {
+        alert("Account has been created!");
+        router.push("/login?success=Account has been created");
+      }
     } catch (error) {
-      alert(error);
-      setErr(true);
+      console.error("Fetch error:", error);
+      // alert(error);
+      // setErr(true);
     }
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Registration</h1>
+      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       {currentStep === 1 && (
         <Step1
           formData={formData}
@@ -262,7 +324,6 @@ const Register = () => {
           setFormData={setFormData}
           onPrevious={handlePrevious}
           onSubmit={handleSubmit}
-          err = {err}
         />
       )}
       <Link href="/login">Login with an existing account</Link>
@@ -270,5 +331,6 @@ const Register = () => {
     </div>
   );
 };
+
 
 export default Register;
