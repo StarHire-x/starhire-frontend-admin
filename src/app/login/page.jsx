@@ -1,16 +1,16 @@
-"use client"
-import React from 'react'
-import styles from './page.module.css'
-import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+"use client";
+import React from "react";
+import styles from "./page.module.css";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import { headers } from '../../../next.config';
+import { headers } from "../../../next.config";
 import bcrypt from "bcryptjs";
-import { hashing } from '../api/auth/register/route';
+import { hashing } from "../api/auth/register/route";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 const Login = () => {
-
   const session = useSession();
   const router = useRouter();
 
@@ -28,11 +28,11 @@ const Login = () => {
     });
   };
 
-  if(session.status === "loading") {
-    return <p>Loading ....</p>
+  if (session.status === "loading") {
+    return <ProgressSpinner />;
   }
 
-  if(session.status === "authenticated") {
+  if (session.status === "authenticated") {
     router?.push("/dashboard");
   }
 
@@ -46,13 +46,13 @@ const Login = () => {
     if (!email || !password || !role) {
       alert("Please fill in your email, password and your role!");
       return;
-    } 
+    }
 
-    const result = await signIn('credentials', {
-        redirect: false,
-        email: email,
-        password: password,
-        role: role 
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: email,
+      password: password,
+      role: role,
     });
 
     if (!result.error) {
@@ -63,9 +63,8 @@ const Login = () => {
       alert("Authentication failed! Please try again.");
       console.error("Login error: " + result.error);
     }
-
   };
-  
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Login</h1>
@@ -116,6 +115,6 @@ const Login = () => {
       <Link href="/forgetPassword">Forget Password</Link>
     </div>
   );
-}
+};
 
 export default Login;
