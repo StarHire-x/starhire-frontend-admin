@@ -107,6 +107,35 @@ body {
   animation: spin 1s linear infinite;
 }
 
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px; /* Adjust margin as needed */
+  margin-bottom: 25px; /* Adjust margin as needed */
+}
+
+.company-info {
+  display: flex;
+  align-items: center; /* Align items vertically in the middle */
+}
+
+/* CSS */
+.contact-info {
+  /* Add any additional styling you need for the container */
+}
+
+.contact-info p {
+  margin-bottom: 0; /* Adjust the margin as needed to reduce the space */
+}
+
+/* Add a specific class for the second <p> element if needed */
+.second-p {
+  margin-bottom: 0; /* Removes margin for the second <p> element */
+}
+
+
 p-dialog .p-dialog-header {
   background-color: #007bff;
   color: white;
