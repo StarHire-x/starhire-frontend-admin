@@ -42,7 +42,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 15px; /* Adjust the spacing between the radio button and label */
+  gap: 10px; /* Adjust the spacing between the radio button and label */
+  flex-wrap: nowrap;
 }
 
 .radio input[type="radio"] {

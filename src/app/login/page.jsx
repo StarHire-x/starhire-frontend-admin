@@ -9,6 +9,7 @@ import { headers } from "../../../next.config";
 import bcrypt from "bcryptjs";
 import { hashing } from "../api/auth/register/route";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { RadioButton } from "primereact/radiobutton";
 
 const Login = () => {
   const session = useSession();
@@ -88,7 +89,28 @@ const Login = () => {
           required
         />
         <div className={styles.radio}>
-          <label>
+          <RadioButton
+            inputId="Administrator"
+            name="role"
+            value="Administrator"
+            onChange={handleInputChange}
+            checked={formData.role === "Administrator"}
+          />
+          <label htmlFor="Administrator" className="ml-2">
+            Administrator
+          </label>
+          <br />
+          <RadioButton
+            inputId="Recruiter"
+            name="role"
+            value="Recruiter"
+            onChange={handleInputChange}
+            checked={formData.role === "Recruiter"}
+          />
+          <label htmlFor="Recruiter" className="ml-2">
+            Recruiter
+          </label>
+          {/* <label>
             <input
               type="radio"
               name="role"
@@ -107,7 +129,7 @@ const Login = () => {
               onChange={handleInputChange}
             />
             Recruiter
-          </label>
+          </label> */}
         </div>
         <button className={styles.button}>Login</button>
       </form>
