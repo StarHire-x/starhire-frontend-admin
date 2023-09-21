@@ -225,34 +225,59 @@ export default function ViewJobListingAdmin() {
       ) : (
         <div>
           <Card
-            title={"Job Listing ID: " + jobListing.jobListingId}
-            subTitle={jobListing.title}
+            title={jobListing.title}
+            subTitle={jobListing.jobLocation}
             footer={footer}
             className="my-card"
-            style={{ borderRadius: '0' }}
+            style={{ borderRadius: "0" }}
           >
             <div className="my-card.p-card-content">
-              <strong>Listing Date</strong>
-              <p>{formatDate(jobListing.listingDate)}</p>
+              <div className="company-info">
+                <img
+                  src={jobListing.corporate.profilePictureUrl}
+                  className="avatar"
+                />
+                <div className="company-details">
+                  <p>{jobListing.corporate.userName}</p>
+                </div>
+              </div>
+
               <strong>Job Desription</strong>
               <p>{jobListing.description}</p>
-              <strong>Job Location</strong>
-              <p>{jobListing.jobLocation}</p>
               <strong>Average Salary</strong>
               <p>{jobListing.averageSalary}</p>
               <strong>Job Start Date</strong>
               <p>{formatDate(jobListing.jobStartDate)}</p>
-              <strong>Company Name</strong>
-              <p>{jobListing.corporate.userName}</p>
+
+              <div className="contact-info">
+                <strong>Contact Information</strong>
+                <p>{jobListing.corporate.email}</p>
+                <p className="second-p">{jobListing.corporate.contactNo}</p>
+              </div>
+
+              <strong>Details</strong>
+              <p>{jobListing.corporate.companyRegistrationId}</p>
+              <p className="second-p">{jobListing.corporate.companyAddress}</p>
+
+              <strong>Listing Date</strong>
+              <p>{formatDate(jobListing.listingDate)}</p>
+
               <strong>Current Status of Job</strong>
-              <p>{jobListing.jobListingStatus}</p>
+              <p
+                style={{
+                  color:
+                    jobListing.jobListingStatus === "Active" ? "green" : "red",
+                }}
+              >
+                {jobListing.jobListingStatus}
+              </p>
             </div>
           </Card>
 
           <Dialog
             visible={userDialog}
-            style={{ width: '32rem' }}
-            breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+            style={{ width: "32rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
             header="Confirm?"
             className="p-fluid"
             footer={userDialogFooter}
