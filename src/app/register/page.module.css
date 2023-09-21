@@ -21,6 +21,11 @@
   gap: 20px;
 }
 
+.error {
+  color: rgb(201, 15, 15);
+  text-align: center;
+}
+
 .userRole {
   display: flex;
   align-items: row;
