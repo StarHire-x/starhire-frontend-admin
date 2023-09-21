@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { hashing } from "@/app/api/auth/register/route";
 import { registerUser } from "@/app/api/auth/register/route";
+import { createUser } from "../api/auth/user/route";
 
 const Step1 = ({ formData, setFormData, onNext }) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -88,11 +89,14 @@ const Step1 = ({ formData, setFormData, onNext }) => {
             required
           />
         </div>
+        <button className={styles.button} onClick={handleNext}>
+          Next
+        </button>
       </form>
-      <button className={styles.button} onClick={handleNext}>Next</button>
     </div>
   );
 };
+
 
 const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -128,7 +132,7 @@ const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.inputFields}>
-        <input
+          <input
             type="password"
             name="password"
             placeholder="Password"
@@ -149,9 +153,13 @@ const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
         </div>
       </form>
       <div className={styles.stepTwoThreeButton}>
-        <button className={styles.button} onClick={handlePrevious}>Previous</button>
+        <button className={styles.previousButton} onClick={handlePrevious}>
+          Previous
+        </button>
         <div className={styles.spacer}></div>
-        <button className={styles.button} onClick={handleNext}>Next</button>
+        <button className={styles.button} onClick={handleNext}>
+          Next
+        </button>
       </div>
     </div>
   );
@@ -161,9 +169,9 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
+
     // Perform final validation and registration logic here
     setErrorMessage("");
-
     const { contactNumber } = formData;
     if (!contactNumber) {
       setErrorMessage("Please fill in your Contact Number!");
@@ -175,7 +183,6 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
       setErrorMessage("Please enter a valid 8-digit phone number.");
       return;
     }
-
     onSubmit(e);
   };
 
@@ -191,13 +198,14 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
     });
   };
 
+  
   return (
     <div className={styles.container}>
       <h2>Step 3: Additional Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputFields}>
-        <input
+          <input
             type="text"
             name="contactNumber"
             placeholder="Contact Number"
@@ -206,9 +214,10 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
             onChange={handleInputChange}
           />
         </div>
-        {err && "Something went wrong!"}
         <div className={styles.stepTwoThreeButton}>
-          <button className={styles.button} onClick={handlePrevious}>Previous</button>
+          <button className={styles.previousButton} onClick={handlePrevious}>
+            Previous
+          </button>
           <div className={styles.spacer}></div>
           <button className={styles.button}>Register</button>
         </div>
@@ -241,6 +250,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setErrorMessage("");
     // Password validation
     const v1 = formData.password;
@@ -262,6 +272,7 @@ const Register = () => {
       );
       return;
     }
+    setErrorMessage("")
 
     const data = {
       userName: formData.userName,
@@ -313,7 +324,6 @@ const Register = () => {
           setFormData={setFormData}
           onPrevious={handlePrevious}
           onSubmit={handleSubmit}
-          err = {err}
         />
       )}
       <Link href="/login">Login with an existing account</Link>
@@ -321,5 +331,6 @@ const Register = () => {
     </div>
   );
 };
+
 
 export default Register;

@@ -77,6 +77,17 @@
   align-items: center;
 }
 
+.previousButton {
+  width: 100px;
+  padding: 20px;
+  cursor: pointer;
+  background-color: #20563b;
+  border: none;
+  border-radius: 5px;
+  color: #eee;
+  font-weight: bold;
+}
+
 .spacer {
   margin-left: 100px;
 }
