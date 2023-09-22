@@ -7,6 +7,10 @@
     padding: 20px;
 }
 
+.buttonIcon {
+    margin-right: 10px; /* Adjust this value as needed */
+}
+
 .inlineField {
     display: flex;
     align-items: center;

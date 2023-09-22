@@ -91,7 +91,7 @@ export const updateUser = async (request, id, accessToken) => {
   }
 };
 
-export const deleteUser = async (request, id) => {
+export const deleteUser = async (request, id, accessToken) => {
   try {
     const res = await fetch(
       `http://localhost:8080/users/${id}?role=${request}`,
@@ -99,6 +99,7 @@ export const deleteUser = async (request, id) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
         cache: "no-store",
       }
