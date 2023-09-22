@@ -13,10 +13,10 @@
 
 .form {
   width: 600px;
-   margin: 0 auto;
-   display: grid;
-   grid-template-columns: repeat(2, 1fr);
-   gap: 20px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 .input {
@@ -67,12 +67,28 @@
   flex-direction: row;
   align-items: center;
   gap: 8px; /* Adjust the spacing between the radio button and label */
+  flex-wrap: wrap;
 }
-
-
-
 
 .radio input[type="radio"] {
   /* Optional: Adjust the radio button styles */
   margin-right: 4px; /* Adjust the spacing between the radio button and label text */
+}
+
+.notification {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.radioOption {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.status {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 }

@@ -7,6 +7,7 @@ import { uploadFile } from "../api/auth/upload/route";
 import { updateUser } from "../api/auth/user/route";
 import styles from "./page.module.css";
 import { UserContext } from "@/context/UserContext";
+import { RadioButton } from "primereact/radiobutton";
 
 const AccountManagement = () => {
   const session = useSession();
@@ -58,7 +59,7 @@ const AccountManagement = () => {
     const file = e.target.files[0];
     if (!file) return;
     try {
-      const response = await uploadFile(file, sessionTokenRef); 
+      const response = await uploadFile(file, sessionTokenRef);
       setFormData((prevState) => ({
         ...prevState,
         profilePictureUrl: response.url,
@@ -205,9 +206,31 @@ const AccountManagement = () => {
           </div>
 
           <div className={styles.radio}>
-            <div className={styles.radioHeader}>Notification:</div>
-            <div className={styles.radioOption}>
-              <label>
+            <div className={styles.notification}>
+              <div className={styles.radioHeader}>Notification:</div>
+              <div className={styles.radioOption}>
+                <RadioButton
+                  inputId="Email"
+                  name="notificationMode"
+                  value="Email"
+                  onChange={handleInputChange}
+                  checked={formData.notificationMode === "Email"}
+                />
+                <label htmlFor="Email" className="ml-2">
+                  Email
+                </label>
+                <br />
+                <RadioButton
+                  inputId="Sms"
+                  name="notificationMode"
+                  value="Sms"
+                  onChange={handleInputChange}
+                  checked={formData.notificationMode === "Sms"}
+                />
+                <label htmlFor="Sms" className="ml-2">
+                  Sms
+                </label>
+                {/* <label>
                 <input
                   type="radio"
                   name="notificationMode"
@@ -227,31 +250,55 @@ const AccountManagement = () => {
                   onChange={handleInputChange}
                 />
                 Sms
-              </label>
+              </label> */}
+              </div>
             </div>
-            <div className={styles.radioHeader}>Status:</div>
-            <div className={styles.radioOption}>
-              <label>
-                <input
-                  type="radio"
+            <div className={styles.status}>
+              <div className={styles.radioHeader}>Status:</div>
+              <div className={styles.radioOption}>
+                <RadioButton
+                  inputId="Active"
                   name="status"
                   value="Active"
-                  checked={formData.status === "Active"}
                   onChange={handleInputChange}
+                  checked={formData.status === "Active"}
                 />
-                Active
-              </label>
-              <br />
-              <label>
-                <input
-                  type="radio"
+                <label htmlFor="Active" className="ml-2">
+                  Active
+                </label>
+                <br />
+                <RadioButton
+                  inputId="Inactive"
                   name="status"
                   value="Inactive"
-                  checked={formData.status === "Inactive"}
                   onChange={handleInputChange}
+                  checked={formData.status === "Inactive"}
                 />
-                Inactive
-              </label>
+                <label htmlFor="Inactive" className="ml-2">
+                  Inactive
+                </label>
+                {/* <label>
+                  <input
+                    type="radio"
+                    name="status"
+                    value="Active"
+                    checked={formData.status === "Active"}
+                    onChange={handleInputChange}
+                  />
+                  Active
+                </label>
+                <br />
+                <label>
+                  <input
+                    type="radio"
+                    name="status"
+                    value="Inactive"
+                    checked={formData.status === "Inactive"}
+                    onChange={handleInputChange}
+                  />
+                  Inactive
+                </label> */}
+              </div>
             </div>
           </div>
           <div className={styles.buttonContainer}>
