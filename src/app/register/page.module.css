@@ -44,7 +44,7 @@
   padding: 20px;
   background-color: transparent;
   border: 2px solid #bbb;
-  color: #bbb;
+  color: #888686;
   border-radius: 5px;
   font-size: 20px;
   font-weight: bold;
@@ -54,7 +54,7 @@
   padding: 20px;
   background-color: transparent;
   border: 2px solid #bbb;
-  color: #bbb;
+  color: #888686;
   border-radius: 5px;
   font-size: 14px;
   font-weight: bold;
@@ -137,7 +137,7 @@
     background-color: #53c28b;
     border: none;
     border-radius: 5px;
-    color: #eee;
+    color: #ffffff;
     font-weight: bold;
   }
 }
