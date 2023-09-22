@@ -125,7 +125,7 @@ export default function AccountManagement() {
             icon="pi pi-search"
             rounded
             outlined
-            className="mr-2"
+            className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
               showViewUserDialog(rowData);
@@ -140,13 +140,13 @@ export default function AccountManagement() {
             icon="pi pi-pencil"
             rounded
             outlined
-            className="mr-2"
+            className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
               showUserDialog(rowData);
             }}
           />
-          <Button
+          {/* <Button
             icon="pi pi-trash"
             rounded
             outlined
@@ -155,12 +155,12 @@ export default function AccountManagement() {
               setSelectedRowData(rowData);
               showDeleteDialog(rowData);
             }}
-          />
+          /> */}
           <Button
             icon="pi pi-search"
             rounded
             outlined
-            className="mr-2"
+            className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
               showViewUserDialog(rowData);
@@ -216,7 +216,8 @@ export default function AccountManagement() {
       console.log(request);
       const response = await deleteUser(
         selectedRowData.role,
-        selectedRowData.userId
+        selectedRowData.userId,
+        accessToken
       );
       console.log("User is deleted", response);
       setRefreshData((prev) => !prev);
