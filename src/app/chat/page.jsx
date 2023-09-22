@@ -222,7 +222,7 @@ const Chat = () => {
                   {otherUser && otherUser.profilePictureUrl != "" ? (
                     <img src={otherUser.profilePictureUrl} alt="user" />
                   ) : (
-                    <Image src={HumanIcon} alt="Profile Picture"/>
+                    <Image src={HumanIcon} alt="Profile Picture" />
                   )}
                 </Avatar>
                 <ConversationHeader.Content

@@ -27,10 +27,6 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
     setSearchQuery("");
   };
 
-  const handleClickEllipses = () => {
-    window.location.href = "/create-chat";
-  };
-
   return (
     <Sidebar position="left" scrollable={true}>
       <div
@@ -45,9 +41,8 @@ const ChatSidebar = ({ userChats, selectCurrentChat }) => {
           value={searchQuery}
           onChange={(query) => setSearchQuery(query)}
           onClearClick={handleClearSearch}
-          style={{ width: "80%" }}
+          style={{ width: "100%" }}
         />
-        <EllipsisButton orientation="vertical" onClick={handleClickEllipses} />
       </div>
       <ConversationList>
         {filteredChats.length > 0 ? (

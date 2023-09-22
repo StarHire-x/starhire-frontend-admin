@@ -249,7 +249,7 @@ export default function ViewJobListingAdmin() {
               <strong>Job Requirements</strong>
               <p>{jobListing.requirements}</p>
               <strong>Average Salary</strong>
-              <p>{jobListing.averageSalary}</p>
+              <p>{"$" + jobListing.averageSalary + " SGD"}</p>
               <strong>Job Start Date</strong>
               <p>{formatDate(jobListing.jobStartDate)}</p>
 
@@ -259,12 +259,14 @@ export default function ViewJobListingAdmin() {
                 <p className="second-p">{jobListing.corporate.contactNo}</p>
               </div>
 
-              <strong>Details</strong>
-              <p>{jobListing.corporate.companyRegistrationId}</p>
-              <p className="second-p">{jobListing.corporate.companyAddress}</p>
+              <strong>Corporate Details</strong>
+              <p>{"UEN Number: " + jobListing.corporate.companyRegistrationId}</p>
+              <p className="second-p">{"Address: " + jobListing.corporate.companyAddress}</p>
 
-              <strong>Listing Date</strong>
+              <strong>Job Listing Details</strong>
               <p>{formatDate(jobListing.listingDate)}</p>
+
+              <p>{"Job Listing ID: " + jobListing.jobListingId}</p>
 
               <strong>Current Status of Job</strong>
               <p
