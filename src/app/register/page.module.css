@@ -13,6 +13,12 @@
   -webkit-text-fill-color: transparent;
 }
 
+.subTitle {
+  background: linear-gradient(to bottom, #194c33, #bbb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .form {
   display: flex;
   align-items: center;
@@ -71,12 +77,6 @@
   font-weight: bold;
 }
 
-.stepTwoThreeButton {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .previousButton {
   width: 100px;
   padding: 20px;
@@ -88,8 +88,14 @@
   font-weight: bold;
 }
 
+.stepTwoThreeButton {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .spacer {
-  margin-left: 100px;
+  margin-left: 10px;
 }
 
 .radio {

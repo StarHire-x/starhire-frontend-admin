@@ -20,6 +20,7 @@ const Login = () => {
     password: "",
     role: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,30 +40,37 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const email = formData.email;
-    const password = formData.password;
-    const role = formData.role;
-    // alert(`Email: ${email}, Password: ${password}, Role: ${role}`);
+    const { email, password, role } = formData;
 
-    if (!email || !password || !role) {
-      alert("Please fill in your email, password and your role!");
+    if (!email) {
+      setErrorMessage("Please fill in your email!");
       return;
-    }
-
-    const result = await signIn("credentials", {
-      redirect: false,
-      email: email,
-      password: password,
-      role: role,
-    });
-
-    if (!result.error) {
-      // User signed in successfully
-      router.push("/dashboard");
+    } else if (!password) {
+      setErrorMessage("Please fill in your password!");
+      return;
+    } else if (!role) {
+      setErrorMessage("Please fill in your role!");
+      return;
     } else {
-      // Handle the error result.error
-      alert("Authentication failed! Please try again.");
-      console.error("Login error: " + result.error);
+      try {
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+          role,
+        });
+        if (!result.error) {
+          // User signed in successfully
+          router.push("/dashboard");
+        } else {
+          // Handle the error result.error
+          console.error(`Login error: ${result.error}`);
+          setErrorMessage(result.error);
+        }
+      } catch (error) {
+        console.error("An error occurred during authentication:", error);
+        setErrorMessage(error);
+      }
     }
   };
 
@@ -70,6 +78,7 @@ const Login = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Login</h1>
       <form className={styles.form} onSubmit={handleSubmit}>
+        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
         <input
           type="email"
           name="email"
@@ -89,6 +98,7 @@ const Login = () => {
           required
         />
         <div className={styles.radio}>
+          <p>Role:</p>
           <RadioButton
             inputId="Administrator"
             name="role"

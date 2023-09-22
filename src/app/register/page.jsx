@@ -38,12 +38,12 @@ const Step1 = ({ formData, setFormData, onNext }) => {
 
   return (
     <div className={styles.container}>
-      <h2>Step 1: User Information</h2>
+      <h2 className={styles.subTitle}>User Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.userRole}>
           <div>
-            <p>I am registering as a...</p>
+            <p>I am registering as a:</p>
           </div>
 
           <div className={styles.radio}>
@@ -149,7 +149,7 @@ const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
 
   return (
     <div className={styles.container}>
-      <h2>Step 2: Password</h2>
+      <h2 className={styles.subTitle}>Create Your Password</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.inputFields}>
@@ -221,7 +221,7 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
 
   return (
     <div className={styles.container}>
-      <h2>Step 3: Additional Information</h2>
+      <h2 className={styles.subTitle}>Additional Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputFields}>
