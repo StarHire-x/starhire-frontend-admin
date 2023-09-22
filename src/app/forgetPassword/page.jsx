@@ -81,7 +81,7 @@ const ForgetPassword = () => {
           required
         />
         <div className={styles.radio}>
-          <p>I am a...</p>
+          <p>Role:</p>
           <RadioButton
             inputId="Administrator"
             name="role"
@@ -103,26 +103,6 @@ const ForgetPassword = () => {
           <label htmlFor="Recruiter" className="ml-2">
             Recruiter
           </label>
-          {/* <label>
-            <input
-              type="radio"
-              name="role"
-              value="Administrator"
-              checked={formData.role === "Administrator"}
-              onChange={handleInputChange}
-            />
-            Administrator
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="role"
-              value="Recruiter"
-              checked={formData.role === "Recruiter"}
-              onChange={handleInputChange}
-            />
-            Recruiter
-          </label> */}
         </div>
         <button className={styles.button}>Reset Password</button>
       </form>
