@@ -7,6 +7,7 @@ import { useState } from "react";
 import { hashing } from "@/app/api/auth/register/route";
 import { registerUser } from "@/app/api/auth/register/route";
 import { createUser } from "../api/auth/user/route";
+import { RadioButton } from "primereact/radiobutton";
 
 const Step1 = ({ formData, setFormData, onNext }) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -37,16 +38,37 @@ const Step1 = ({ formData, setFormData, onNext }) => {
 
   return (
     <div className={styles.container}>
-      <h2>Step 1: User Information</h2>
+      <h2 className={styles.subTitle}>User Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.userRole}>
           <div>
-            <p>I am registering as a...</p>
+            <p>I am registering as a:</p>
           </div>
 
           <div className={styles.radio}>
-            <label>
+            <RadioButton
+              inputId="Administrator"
+              name="role"
+              value="Administrator"
+              onChange={handleInputChange}
+              checked={formData.role === "Administrator"}
+            />
+            <label htmlFor="Administrator" className="ml-2">
+              Administrator
+            </label>
+            <br />
+            <RadioButton
+              inputId="Recruiter"
+              name="role"
+              value="Recruiter"
+              onChange={handleInputChange}
+              checked={formData.role === "Recruiter"}
+            />
+            <label htmlFor="Recruiter" className="ml-2">
+              Recruiter
+            </label>
+            {/* <label>
               <input
                 type="radio"
                 name="role"
@@ -65,7 +87,7 @@ const Step1 = ({ formData, setFormData, onNext }) => {
                 onChange={handleInputChange}
               />
               Recruiter
-            </label>
+            </label> */}
           </div>
         </div>
 
@@ -97,11 +119,10 @@ const Step1 = ({ formData, setFormData, onNext }) => {
   );
 };
 
-
 const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleNext = () => {
-    setErrorMessage("")
+    setErrorMessage("");
     const { password, confirmPassword } = formData;
     if (!password || !confirmPassword) {
       setErrorMessage("Please fill in your password!");
@@ -128,7 +149,7 @@ const Step2 = ({ formData, setFormData, onNext, onPrevious }) => {
 
   return (
     <div className={styles.container}>
-      <h2>Step 2: Password</h2>
+      <h2 className={styles.subTitle}>Create Your Password</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
         <div className={styles.inputFields}>
@@ -198,10 +219,9 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
     });
   };
 
-  
   return (
     <div className={styles.container}>
-      <h2>Step 3: Additional Information</h2>
+      <h2 className={styles.subTitle}>Additional Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.inputFields}>
@@ -272,7 +292,7 @@ const Register = () => {
       );
       return;
     }
-    setErrorMessage("")
+    setErrorMessage("");
 
     const data = {
       userName: formData.userName,
@@ -331,6 +351,5 @@ const Register = () => {
     </div>
   );
 };
-
 
 export default Register;
