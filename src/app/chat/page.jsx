@@ -95,7 +95,7 @@ const Chat = () => {
   });
 
   const formatRawDate = (rawDate) => {
-    const formattedDate = moment(rawDate).format("MMMM D, YYYY, h:mm A");
+    const formattedDate = moment(rawDate).format("h:mm A");
     return formattedDate;
   };
   const receiveMessage = (message) => {

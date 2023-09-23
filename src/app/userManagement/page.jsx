@@ -477,7 +477,7 @@ export default function AccountManagement() {
                 <label htmlFor="dateOfBirth" className="font-bold">
                   Date of Birth:
                 </label>
-                <p>{selectedRowData?.dateOfBirth}</p>
+                <p>{formatDate(selectedRowData?.dateOfBirth)}</p>
               </div>
             )}
             {selectedRowData?.homeAddress && (
