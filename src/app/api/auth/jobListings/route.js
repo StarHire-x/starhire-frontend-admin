@@ -1,4 +1,3 @@
-
 export const viewAllJobListings = async (accessToken) => {
   try {
     const res = await fetch(`http://localhost:8080/job-listing`, {
@@ -16,25 +15,47 @@ export const viewAllJobListings = async (accessToken) => {
       throw new Error(errorData.message);
     }
     return await res.json();
-  } catch(error) {
-    console.log(
-      "There was a problem fetching all job listings",
-      error
-    );
+  } catch (error) {
+    console.log("There was a problem fetching all job listings", error);
     throw error;
   }
 };
 
-
 export const viewOneJobListing = async (jobListingId, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/job-listing/${jobListingId}`, {
-      method: "GET",
+    const res = await fetch(
+      `http://localhost:8080/job-listing/${jobListingId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching single job listing", error);
+    throw error;
+  }
+};
+
+export const updateJobListing = async (accessToken, request, id) => {
+  try {
+    const res = await fetch(`http://localhost:8080/job-listing/${id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      cache: "no-store",
+      body: JSON.stringify(request),
     });
 
     if (!res.ok) {
@@ -43,40 +64,8 @@ export const viewOneJobListing = async (jobListingId, accessToken) => {
       throw new Error(errorData.message);
     }
     return await res.json();
-  } catch(error) {
-    console.log(
-      "There was a problem fetching single job listing",
-      error
-    );
+  } catch (error) {
+    console.log("There was a problem updating job listing", error);
     throw error;
   }
 };
-
-export const updateJobListing = async (accessToken, request, id) => {
-    try {
-        const res = await fetch(`http://localhost:8080/job-listing/${id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: JSON.stringify(request),
-        });
-  
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.log(errorData);
-        throw new Error(errorData.message);
-      }
-      return await res.json();
-    } catch(error) {
-      console.log(
-        "There was a problem updating job listing",
-        error
-      );
-      throw error;
-    }
-  };
-
-  
-  
