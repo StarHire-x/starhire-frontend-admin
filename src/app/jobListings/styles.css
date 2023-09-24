@@ -7,6 +7,15 @@
   padding: 20px;
 }
 
+.buttonContainer {
+  display: flex; /* Use flexbox to arrange buttons horizontally */
+  align-items: center; /* Align buttons vertically in the center */
+}
+
+.spacer {
+  margin-left: 10px;
+}
+
 .inlineField {
   display: flex;
   align-items: center;

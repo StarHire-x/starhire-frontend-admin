@@ -110,7 +110,7 @@ export default function JobListings() {
     return <Tag value={option} severity={getStatus(option)} />;
   };
 
-  const actionBodyTemplate = (rowData) => {
+  const actionAdminBodyTemplate = (rowData) => {
     console.log('Row Data:', rowData);
     return (
       <React.Fragment>
@@ -126,12 +126,44 @@ export default function JobListings() {
     );
   };
 
+  const actionRecruiterBodyTemplate = (rowData) => {
+    console.log('Row Data:', rowData);
+    return (
+      <React.Fragment>
+        <div className='buttonContainer'>
+          <Button
+            label="View Submissions"
+            rounded
+            className="p-button-info"
+            onClick={() => {
+            }}
+          />
+          <div className='spacer'></div>
+          <Button
+            label="View More Details"
+            rounded
+            className="mr-2"
+            onClick={() => {
+              saveStatusChange(rowData);
+            }}
+          />
+        </div>
+      </React.Fragment>
+    );
+  };
+
+
   const hideDialog = () => {
     setUserDialog(false);
   };
 
   const createLink = (id) => {
     const link = `/jobListings/viewJobListingAdmin?id=${id}`;
+    return link;
+  };
+
+  const createRecruiterLink = (id) => {
+    const link = `/jobListings/viewJobListingRecruiter?id=${id}`;
     return link;
   };
 
@@ -147,7 +179,8 @@ export default function JobListings() {
       }
     } else {
       try {
-        router.push('/jobListings/viewJobListingRecruiter');
+        let link = createRecruiterLink(jobListingId);
+        router.push(link);
       } catch (error) {
         console.error('Error changing status:', error);
       }
@@ -187,7 +220,12 @@ export default function JobListings() {
     if (accessToken) {
       viewAllJobListings(accessToken)
         .then((data) => {
-          setJobListings(data);
+          if (session.data.user.role === "Recruiter") {
+            const activeJobListing = data.filter(jobListing => jobListing.jobListingStatus === 'Active');
+            setJobListings(activeJobListing);
+          } else {
+            setJobListings(data);
+          }
           setIsLoading(false);
         })
         .catch((error) => {
@@ -290,8 +328,8 @@ export default function JobListings() {
                 body={(rowData) => formatDate(rowData.listingDate)}
                 sortable
               ></Column>
-
-              <Column
+              {session.data.user.role === "Administrator" ? (
+                <Column
                 field="jobListingStatus"
                 header="Job Listing Status"
                 body={statusBodyTemplate}
@@ -299,8 +337,18 @@ export default function JobListings() {
                 filterElement={statusFilterTemplate}
                 sortable
               ></Column>
-
-              <Column body={actionBodyTemplate} />
+              ) : (
+                <Column
+                field="jobListingStatus"
+                header="Job Listing Status"
+                body={statusBodyTemplate}
+              ></Column>
+              )}
+              {session.data.user.role === "Administrator" ? (
+                <Column body={actionAdminBodyTemplate} />
+              ) : (
+                <Column body={actionRecruiterBodyTemplate} />
+              )}
 
             </DataTable>
 
