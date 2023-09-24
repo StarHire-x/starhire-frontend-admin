@@ -226,16 +226,16 @@ export default function JobListings() {
   const header = renderHeader();
 
   if (
-    session.status === 'authenticated' &&
-    session.data.user.role !== 'Administrator'
-  ) {
+    session.status === 'authenticated' && (
+    session.data.user.role !== 'Administrator' && session.data.user.role !== 'Recruiter' 
+  )) {
     router?.push('/dashboard');
   }
 
   if (
-    session.status === 'authenticated' &&
-    session.data.user.role === 'Administrator'
-  ) {
+    session.status === 'authenticated' && (
+    session.data.user.role === 'Administrator' || session.data.user.role === 'Recruiter' 
+  )) {
     return (
       <div className="card">
         {isLoading ? (

@@ -47,7 +47,7 @@ const recruiterLinks = [
   {
     id: 2,
     title: "Job Listings",
-    url: "/jobListings/viewJobListingRecruiter",
+    url: "/jobListings",
   },
   {
     id: 3,
