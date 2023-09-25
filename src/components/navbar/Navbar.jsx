@@ -46,6 +46,11 @@ const recruiterLinks = [
   },
   {
     id: 2,
+    title: "Job Listings",
+    url: "/jobListings",
+  },
+  {
+    id: 3,
     title: "Chat",
     url: "",
     submenu: [

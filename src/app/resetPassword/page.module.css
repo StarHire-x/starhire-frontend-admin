@@ -12,6 +12,11 @@
     flex-direction: column;
     gap: 20px;
  }
+
+ .error {
+   color: rgb(201, 15, 15);
+   text-align: center;
+ } 
  
  .input {
     padding: 20px;

@@ -1,0 +1,30 @@
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.avatar {
+    width: 12vw;
+    height: 25vh;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 70vw; /* Adjust margin as needed */
+    margin-bottom: 50vh;
+}
+
+.loadingAnimation {
+    displAy: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.spinner {
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}

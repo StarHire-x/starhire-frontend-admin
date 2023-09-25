@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 export default function AccountManagement() {
   const session = useSession();
@@ -114,7 +115,7 @@ export default function AccountManagement() {
     return <Tag value={option} severity={getStatus(option)} />;
   };
 
-  const actionBodyTemplate = (rowData) => {
+  const actionAdminBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
 
     // If session.status.user.userId matches rowData.userId, return null or an empty fragment.
@@ -128,7 +129,7 @@ export default function AccountManagement() {
             className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
-              showViewUserDialog(rowData);
+              // showViewUserDialog(rowData);
             }}
           />
         </React.Fragment>
@@ -163,7 +164,9 @@ export default function AccountManagement() {
             className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
-              showViewUserDialog(rowData);
+              // showViewUserDialog(rowData);
+              // pass the rowData to the desired view user profile page
+              router?.push(`/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}`);
             }}
           />
         </React.Fragment>
@@ -171,6 +174,27 @@ export default function AccountManagement() {
     }
   };
 
+  const actionRecruiterBodyTemplate = (rowData) => {
+    console.log("Row Data:", rowData);
+    return (
+      <React.Fragment>
+        <div className={styles.buttonContainer}>
+          <Button
+            label="Assign"
+            className={styles.assignButton}
+            // onClick={() => handleOnAssignClick()}
+          />
+          <Button
+            label="View More Details"
+            className="mr-2"
+            onClick={() => {
+              router?.push(`/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}`);
+            }}
+          />
+        </div>
+      </React.Fragment>
+    );
+  };
   const hideDialog = () => {
     setUserDialog(false);
   };
@@ -258,9 +282,17 @@ export default function AccountManagement() {
     return (
       <div className={styles.imageContainer}>
         {avatar !== "" ? (
-          <img alt={avatar} src={avatar} className={styles.avatarImageContainer} />
+          <img
+            alt={avatar}
+            src={avatar}
+            className={styles.avatarImageContainer}
+          />
         ) : (
-          <Image src={HumanIcon} alt="Icon" className={styles.avatarImageContainer} />
+          <Image
+            src={HumanIcon}
+            alt="Icon"
+            className={styles.avatarImageContainer}
+          />
         )}
         <span>{userName}</span>
       </div>
@@ -272,7 +304,7 @@ export default function AccountManagement() {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const renderHeader = () => {
+  const renderAdminHeader = () => {
     return (
       <div className="flex gap-2 justify-content-between align-items-center">
         <h4 className="m-0">Users</h4>
@@ -294,26 +326,57 @@ export default function AccountManagement() {
     );
   };
 
+  const renderRecruiterHeader = () => {
+    return (
+      <div className="flex gap-2 justify-content-between align-items-center">
+        <h4 className="m-0">Users</h4>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            value={globalFilterValue}
+            onChange={onGlobalFilterChange}
+            placeholder="Keyword Search"
+          />
+        </span>
+      </div>
+    );
+  };
+
   useEffect(() => {
     getUsers(accessToken)
-      .then((user) => setUser(user.data))
+      .then((user) => {
+        if (session.data.user.role === "Recruiter") {
+          const activeJobSeekers = user.data.filter(x => x.role === 'Job_Seeker' && x.status === "Active");
+          setUser(activeJobSeekers);
+        } else {
+          setUser(user.data);
+        }
+      })
       .catch((error) => {
         console.error("Error fetching user:", error);
       });
   }, [refreshData, accessToken]);
 
-  const header = renderHeader();
+  const header = () => {
+    if (session.data.user.role === "Administrator") {
+      return renderAdminHeader();
+    } else {
+      return renderRecruiterHeader();
+    }
+  };
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role !== "Administrator"
+    session.data.user.role !== "Administrator" &&
+    session.data.user.role !== "Recruiter"
   ) {
     router?.push("/dashboard");
   }
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role === "Administrator"
+    (session.data.user.role === "Administrator" ||
+      session.data.user.role === "Recruiter")
   ) {
     return (
       <div className="card">
@@ -349,26 +412,38 @@ export default function AccountManagement() {
           ></Column>
           <Column field="email" header="Email" sortable></Column>
           <Column field="contactNo" header="Contact No" sortable></Column>
-          <Column
-            field="status"
-            header="Status"
-            sortable
-            body={statusBodyTemplate}
-            filter
-            filterElement={statusFilterTemplate}
-          ></Column>
+          {session.data.user.role === "Administrator" && (
+            <Column
+              field="status"
+              header="Status"
+              sortable
+              body={statusBodyTemplate}
+              filter
+              filterElement={statusFilterTemplate}
+            ></Column>
+          )}
           <Column field="role" header="Role" sortable></Column>
-          <Column
-            body={actionBodyTemplate}
-            exportable={false}
-            style={{ minWidth: "12rem" }}
-          ></Column>
-          <Column
-            field="createdAt"
-            header="Created Date"
-            body={(rowData) => formatDate(rowData.createdAt)}
-            sortable
-          ></Column>
+          {session.data.user.role === "Administrator" ? (
+            <Column
+              body={actionAdminBodyTemplate}
+              exportable={false}
+              style={{ minWidth: "12rem" }}
+            ></Column>
+          ) : (
+            <Column
+              body={actionRecruiterBodyTemplate}
+              exportable={false}
+              style={{ minWidth: "12rem" }}
+            ></Column>
+          )}
+          {session.data.user.role === "Administrator" && (
+            <Column
+              field="createdAt"
+              header="Created Date"
+              body={(rowData) => formatDate(rowData.createdAt)}
+              sortable
+            ></Column>
+          )}
         </DataTable>
 
         <Dialog
@@ -477,7 +552,7 @@ export default function AccountManagement() {
                 <label htmlFor="dateOfBirth" className="font-bold">
                   Date of Birth:
                 </label>
-                <p>{selectedRowData?.dateOfBirth}</p>
+                <p>{formatDate(selectedRowData?.dateOfBirth)}</p>
               </div>
             )}
             {selectedRowData?.homeAddress && (

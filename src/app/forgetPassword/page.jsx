@@ -8,6 +8,7 @@ import Link from "next/link";
 import { forgetPassword } from "../api/auth/forgetPassword/route";
 import ReactLoading from "react-loading";
 import { RadioButton } from "primereact/radiobutton";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 const ForgetPassword = () => {
   const session = useSession();
@@ -65,11 +66,6 @@ const ForgetPassword = () => {
     <div className={styles.container}>
       <h1 className={styles.title}>Forget Password</h1>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-      {loading && (
-        <div className={styles.loadingContainer}>
-          <ReactLoading type="bars" color="white" />
-        </div>
-      )}
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
           type="email"
@@ -104,7 +100,10 @@ const ForgetPassword = () => {
             Recruiter
           </label>
         </div>
-        <button className={styles.button}>Reset Password</button>
+        {loading && (
+          <ProgressSpinner style={{ width: "50px", height: "50px" }} />
+        )}
+        {!loading && <button className={styles.button}>Reset Password</button>}
       </form>
       <Link href="/register">I don&apos;t have an account </Link>
       <Link href="/login">Login with an existing account</Link>

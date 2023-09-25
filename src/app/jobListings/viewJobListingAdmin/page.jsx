@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import './styles.css';
@@ -11,6 +12,7 @@ import { Dialog } from 'primereact/dialog';
 import { useSession } from 'next-auth/react';
 import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
 import { updateJobListing } from '@/app/api/auth/jobListings/route';
+import HumanIcon from "../../../../public/icon.png";
 
 export default function ViewJobListingAdmin() {
   const session = useSession();
@@ -233,10 +235,14 @@ export default function ViewJobListingAdmin() {
           >
             <div className="my-card.p-card-content">
               <div className="company-info">
+              {jobListing.corporate.profilePictureUrl === "" ? (
+                  <Image src={HumanIcon} alt="User" className="avatar" />
+                ) : (
                 <img
                   src={jobListing.corporate.profilePictureUrl}
                   className="avatar"
                 />
+              )}
                 <div className="company-details">
                   <p>{jobListing.corporate.userName}</p>
                 </div>

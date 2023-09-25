@@ -190,9 +190,9 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
     // Perform final validation and registration logic here
-    setErrorMessage("");
     const { contactNumber } = formData;
     if (!contactNumber) {
       setErrorMessage("Please fill in your Contact Number!");
@@ -249,7 +249,7 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
 const Register = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
-  const [err, setErr] = useState(false);
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     userName: "",
@@ -271,29 +271,6 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setErrorMessage("");
-    // Password validation
-    const v1 = formData.password;
-    const v2 = formData.confirmPassword;
-    if (v1 !== v2) {
-      // Display a validation message near the password fields
-      setErr(true);
-      return; // Exit early if passwords don't match
-    }
-
-    if (
-      !formData.userName ||
-      !formData.email ||
-      !formData.contactNumber ||
-      !formData.role
-    ) {
-      alert(
-        "Please ensure you have filled all the fields, especially your role."
-      );
-      return;
-    }
-    setErrorMessage("");
-
     const data = {
       userName: formData.userName,
       email: formData.email,
@@ -314,8 +291,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Fetch error:", error);
-      // alert(error);
-      // setErr(true);
+      setErrorMessage(error)
     }
   };
 

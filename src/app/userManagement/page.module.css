@@ -1,35 +1,53 @@
 .centerContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%; /* or you can set to a specific height if needed */
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%; /* or you can set to a specific height if needed */
+  padding: 20px;
 }
 
 .buttonIcon {
-    margin-right: 10px; /* Adjust this value as needed */
+  margin-right: 10px; /* Adjust this value as needed */
+}
+
+.assignButton {
+  border: none !important;
+  color: white !important;
+  transition: all 0.3s !important;
+  margin-right: 30px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  ) !important;
+  background-color: #e29578 !important;
+}
+
+.buttonContainer {
+  display: flex; /* Use flexbox to arrange buttons horizontally */
+  align-items: center; /* Align buttons vertically in the center */
 }
 
 .inlineField {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Adjust this to set spacing between label and value */
-    padding: 10px 0;
-    width: 80%; /* Give a consistent width to all fields for alignment */
-    border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Adjust this to set spacing between label and value */
+  padding: 10px 0;
+  width: 80%; /* Give a consistent width to all fields for alignment */
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .inlineField label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    width: 30%; /* To make sure labels have a consistent width */
+  font-size: 0.8rem;
+  font-weight: 600;
+  width: 30%; /* To make sure labels have a consistent width */
 }
 
 .inlineField p {
-    font-size: 1em;
-    color: #555;
-    flex-grow: 1; /* To ensure the content takes up the remaining width */
+  font-size: 1em;
+  color: #555;
+  flex-grow: 1; /* To ensure the content takes up the remaining width */
 }
 
 .avatar {
@@ -41,11 +59,11 @@
 }
 
 .imageContainer {
-    display: flex;
-    flex-direction: column; /* To ensure children are stacked vertically */
-    align-items: center;   /* Horizontally center the children */
-    justify-content: center; /* Vertically center the children (though it's optional here) */
-    gap: 1px; /* Gives a little space between the image and the h6 */
+  display: flex;
+  flex-direction: column; /* To ensure children are stacked vertically */
+  align-items: center; /* Horizontally center the children */
+  justify-content: center; /* Vertically center the children (though it's optional here) */
+  gap: 1px; /* Gives a little space between the image and the h6 */
 }
 
 .avatarImageContainer {
@@ -53,5 +71,5 @@
   height: 40px;
   border-radius: 50%; /* To make it circular */
   object-fit: cover; /* To ensure the image maintains its aspect ratio */
-  margin-bottom: 0px /* Add some spacing below the image */
+  margin-bottom: 0px; /* Add some spacing below the image */
 }
