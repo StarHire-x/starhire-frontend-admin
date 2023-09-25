@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 import { Tag } from "primereact/tag";
 import { viewAllJobApplicationsByJobListingId } from "../api/auth/jobApplications/route";
 import { Dropdown } from "primereact/dropdown";
+import { Button } from "primereact/button";
 
 export default function CustomersDemo() {
   const session = useSession();
@@ -25,26 +26,26 @@ export default function CustomersDemo() {
   const [selectedJobApplications, setSelectedJobApplications] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    // username: {
-    //   operator: FilterOperator.AND,
-    //   constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    // },
-    // email: {
-    //   operator: FilterOperator.AND,
-    //   constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    // },
-    // contactNumber: {
-    //   operator: FilterOperator.AND,
-    //   constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    // },
-    status: {
-      operator: FilterOperator.AND,
+    userName: {
+      operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    // submittedDate: {
-    //   operator: FilterOperator.AND,
-    //   constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    // },
+    email: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    contactNo: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    jobApplicationStatus: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    submissionDate: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
 
@@ -75,14 +76,25 @@ export default function CustomersDemo() {
   };
 
   useEffect(() => {
-    const populateData = async () => {
-      const allJobApplications = await viewAllJobApplicationsByJobListingId(
-        jobListingId,
-        accessToken
+    if (accessToken) {
+      viewAllJobApplicationsByJobListingId(jobListingId, accessToken).then(
+        (data) => {
+          setJobApplications(data);
+        }
       );
-      setJobApplications(allJobApplications);
-    };
-    populateData();
+    }
+    // const populateData = async () => {
+    //   try {
+    //     const allJobApplications = await viewAllJobApplicationsByJobListingId(
+    //       jobListingId,
+    //       accessToken
+    //     );
+    //     setJobApplications(allJobApplications);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    // populateData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatDate = (value) => {
@@ -162,6 +174,21 @@ export default function CustomersDemo() {
     return formatDate(new Date(rowData?.submissionDate));
   };
 
+  const sendCorporateButtons = () => {
+    return (
+      <Button
+        rounded
+        size="small"
+        severity="secondary"
+        label="Send Corporate"
+      />
+    );
+  };
+
+  const viewDetailsButtons = () => {
+    return <Button rounded size="small" severity="help" label="View Details" />;
+  };
+
   const header = renderHeader();
 
   return (
@@ -176,15 +203,18 @@ export default function CustomersDemo() {
         dataKey="id"
         selectionMode="checkbox"
         selection={selectedJobApplications}
-        onSelectionChange={(e) => setSelectedJobApplications(e.value)}
+        onSelectionChange={(e) => {
+          console.log(e);
+          setSelectedJobApplications(e.value);
+        }}
         filters={filters}
         filterDisplay="menu"
         globalFilterFields={[
-          "username",
+          "userName",
           "email",
-          "contactNumber",
-          "status",
-          "submittedDate",
+          "contactNo",
+          "jobApplicationStatus",
+          "submissionDate",
         ]}
         emptyMessage="No job applications found."
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -194,43 +224,44 @@ export default function CustomersDemo() {
           headerStyle={{ width: "3rem" }}
         ></Column>
         <Column
-          field="username"
+          field="userName"
           header="Username"
           sortable
-          style={{ minWidth: "14rem" }}
+          style={{ minWidth: "12rem" }}
           body={usernameBodyTemplate}
         />
         <Column
           field="email"
           header="Email"
           sortable
-          style={{ minWidth: "14rem" }}
+          style={{ minWidth: "12rem" }}
           body={emailBodyTemplate}
         />
         <Column
-          field="contactNumber"
+          field="contactNo"
           header="Contact Number"
           sortable
-          style={{ minWidth: "14rem" }}
+          style={{ minWidth: "12rem" }}
           body={contactNumberBodyTemplate}
         />
         <Column
-          field="status"
+          field="jobApplicationStatus"
           header="Status"
           filterMenuStyle={{ width: "14rem" }}
           style={{ minWidth: "12rem" }}
           body={statusBodyTemplate}
-          filter
+          sortable
           filterElement={statusFilterTemplate}
         />
-
         <Column
-          field="submittedDate"
+          field="submissionDate"
           header="Submitted Date"
           sortable
           style={{ minWidth: "12rem" }}
           body={submittedDateBodyTemplate}
         />
+        <Column style={{ minWidth: "12rem" }} body={sendCorporateButtons} />
+        <Column style={{ minWidth: "12rem" }} body={viewDetailsButtons} />
       </DataTable>
     </div>
   );
