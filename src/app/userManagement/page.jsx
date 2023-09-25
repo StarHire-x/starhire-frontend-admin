@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 export default function AccountManagement() {
   const session = useSession();
@@ -128,7 +129,7 @@ export default function AccountManagement() {
             className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
-              showViewUserDialog(rowData);
+              // showViewUserDialog(rowData);
             }}
           />
         </React.Fragment>
@@ -163,7 +164,9 @@ export default function AccountManagement() {
             className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
-              showViewUserDialog(rowData);
+              // showViewUserDialog(rowData);
+              // pass the rowData to the desired view user profile page
+              router?.push(`/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}`);
             }}
           />
         </React.Fragment>
@@ -184,7 +187,9 @@ export default function AccountManagement() {
           <Button
             label="View More Details"
             className="mr-2"
-            // onClick={() => handleViewMoreDetailsClick()}
+            onClick={() => {
+              router?.push(`/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}`);
+            }}
           />
         </div>
       </React.Fragment>
