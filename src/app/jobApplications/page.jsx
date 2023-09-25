@@ -174,7 +174,7 @@ export default function CustomersDemo() {
   };
 
   const sendCorporateButtons = (rowData) => {
-    return (
+    return rowData?.jobApplicationStatus === "Submitted" ? (
       <Button
         rounded
         outlined
@@ -185,6 +185,8 @@ export default function CustomersDemo() {
           setJobApplicationToSend(rowData);
         }}
       />
+    ) : (
+      <></>
     );
   };
 
