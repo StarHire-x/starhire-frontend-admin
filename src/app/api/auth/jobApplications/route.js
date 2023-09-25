@@ -26,3 +26,24 @@ export const viewAllJobApplicationsByJobListingId = async (
     throw error;
   }
 };
+
+export const updateJobApplicationStatus = async (request, id) => {
+  try {
+    const res = await fetch(`http://localhost:8080/job-application/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (res.ok) {
+      return;
+    } else {
+      throw new Error(errorData.message || "An error occurred");
+    }
+  } catch (error) {
+    console.log("There was a problem updating the job application", error);
+    throw error;
+  }
+};

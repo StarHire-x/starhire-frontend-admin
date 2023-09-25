@@ -10,6 +10,7 @@ import { Tag } from "primereact/tag";
 import { viewAllJobApplicationsByJobListingId } from "../api/auth/jobApplications/route";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
+import { DialogBox } from "../../components/DialogBox/DialogBox";
 
 export default function CustomersDemo() {
   const session = useSession();
@@ -22,6 +23,8 @@ export default function CustomersDemo() {
   const params = useSearchParams();
   const jobListingId = params.get("id");
 
+  const [openDialog, setOpenDialog] = useState(false);
+  const [jobApplicationToSend, setJobApplicationToSend] = useState(null);
   const [jobApplications, setJobApplications] = useState([]);
   const [selectedJobApplications, setSelectedJobApplications] = useState([]);
   const [filters, setFilters] = useState({
@@ -76,25 +79,18 @@ export default function CustomersDemo() {
   };
 
   useEffect(() => {
-    if (accessToken) {
-      viewAllJobApplicationsByJobListingId(jobListingId, accessToken).then(
-        (data) => {
-          setJobApplications(data);
-        }
-      );
-    }
-    // const populateData = async () => {
-    //   try {
-    //     const allJobApplications = await viewAllJobApplicationsByJobListingId(
-    //       jobListingId,
-    //       accessToken
-    //     );
-    //     setJobApplications(allJobApplications);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    // populateData();
+    const populateData = async () => {
+      try {
+        const allJobApplications = await viewAllJobApplicationsByJobListingId(
+          jobListingId,
+          accessToken
+        );
+        setJobApplications(allJobApplications);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    populateData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatDate = (value) => {
@@ -117,7 +113,7 @@ export default function CustomersDemo() {
 
   const renderHeader = () => {
     return (
-      <div className="flex flex-wrap gap-2 justify-content space-between align-items-center">
+      <div className="flex flex-wrap gap-2 align-items-center">
         <h4 className="m-0">Job Applications</h4>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
@@ -174,26 +170,61 @@ export default function CustomersDemo() {
     return formatDate(new Date(rowData?.submissionDate));
   };
 
-  const sendCorporateButtons = () => {
+  const sendCorporateButtons = (rowData) => {
     return (
       <Button
         rounded
-        size="small"
-        severity="secondary"
-        label="Send Corporate"
+        outlined
+        severity="info"
+        icon="pi pi-send"
+        onClick={() => {
+          setOpenDialog(true);
+          setJobApplicationToSend(rowData);
+        }}
       />
     );
   };
 
   const viewDetailsButtons = () => {
-    return <Button rounded size="small" severity="help" label="View Details" />;
+    return (
+      <Button rounded outlined severity="help" icon="pi pi-align-justify" />
+    );
+  };
+
+  const footerButtons = () => {
+    return (
+      <div className="flex-container space-between">
+        <Button
+          label="No"
+          icon="pi pi-times"
+          onClick={() => setOpenDialog(false)}
+          className="p-button-text"
+        />
+        <Button
+          label="Yes"
+          icon="pi pi-check"
+          onClick={() => setOpenDialog(false)}
+          autoFocus
+        />
+      </div>
+    );
   };
 
   const header = renderHeader();
 
   return (
     <div className="card">
+      <DialogBox
+        header="Send to Corporate?"
+        content={`Sending ${jobApplicationToSend?.jobApplicationId} for ${jobApplicationToSend?.jobSeeker?.userName}.`}
+        footerContent={footerButtons}
+        isOpen={openDialog}
+        setVisible={setOpenDialog}
+      />
       <DataTable
+        style={{ minHeight: "75vh" }}
+        scrollable
+        scrollHeight="400px"
         value={jobApplications}
         paginator
         header={header}
@@ -251,6 +282,7 @@ export default function CustomersDemo() {
           style={{ minWidth: "12rem" }}
           body={statusBodyTemplate}
           sortable
+          filter
           filterElement={statusFilterTemplate}
         />
         <Column
@@ -260,8 +292,8 @@ export default function CustomersDemo() {
           style={{ minWidth: "12rem" }}
           body={submittedDateBodyTemplate}
         />
-        <Column style={{ minWidth: "12rem" }} body={sendCorporateButtons} />
-        <Column style={{ minWidth: "12rem" }} body={viewDetailsButtons} />
+        <Column body={sendCorporateButtons} />
+        <Column body={viewDetailsButtons} />
       </DataTable>
     </div>
   );
