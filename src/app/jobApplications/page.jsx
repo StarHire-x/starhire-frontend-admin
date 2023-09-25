@@ -7,7 +7,10 @@ import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { useSearchParams } from "next/navigation";
 import { Tag } from "primereact/tag";
-import { viewAllJobApplicationsByJobListingId } from "../api/auth/jobApplications/route";
+import {
+  updateJobApplicationStatus,
+  viewAllJobApplicationsByJobListingId,
+} from "../api/auth/jobApplications/route";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { DialogBox } from "../../components/DialogBox/DialogBox";
@@ -78,18 +81,18 @@ export default function CustomersDemo() {
     }
   };
 
+  const populateData = async () => {
+    try {
+      const allJobApplications = await viewAllJobApplicationsByJobListingId(
+        jobListingId,
+        accessToken
+      );
+      setJobApplications(allJobApplications);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const populateData = async () => {
-      try {
-        const allJobApplications = await viewAllJobApplicationsByJobListingId(
-          jobListingId,
-          accessToken
-        );
-        setJobApplications(allJobApplications);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     populateData();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -203,11 +206,30 @@ export default function CustomersDemo() {
         <Button
           label="Yes"
           icon="pi pi-check"
-          onClick={() => setOpenDialog(false)}
+          onClick={() => {
+            setOpenDialog(false);
+            updateStatus();
+          }}
           autoFocus
         />
       </div>
     );
+  };
+
+  const updateStatus = async () => {
+    const request = {
+      jobApplicationStatus: "Processing",
+    };
+    try {
+      await updateJobApplicationStatus(
+        request,
+        jobApplicationToSend?.jobApplicationId,
+        accessToken
+      );
+      await populateData(); // should optimize
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const header = renderHeader();

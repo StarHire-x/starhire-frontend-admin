@@ -27,12 +27,13 @@ export const viewAllJobApplicationsByJobListingId = async (
   }
 };
 
-export const updateJobApplicationStatus = async (request, id) => {
+export const updateJobApplicationStatus = async (request, id, accessToken) => {
   try {
     const res = await fetch(`http://localhost:8080/job-application/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(request),
     });
