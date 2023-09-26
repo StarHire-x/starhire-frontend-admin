@@ -13,8 +13,8 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { updateUser, getUsers, deleteUser, getUserByUserId } from "../api/auth/user/route";
-import { viewOneJobListing } from "../api/auth/jobListings/route";
+import { updateUser, getUsers, deleteUser, getUserByUserId, getJobSeekerbyJobSeekerId } from "../api/auth/user/route";
+import { updateJobListing, viewOneJobListing } from "../api/auth/jobListings/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -122,26 +122,23 @@ export default function AccountManagement() {
   };
 
   // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
-  const handleOnAssignClick = async (jobSeekerId, jobSeekerRole) => {
+  const handleOnAssignClick = async (jobSeekerId) => {
     try {
-      const jobSeeker = await getUserByUserId(jobSeekerId, jobSeekerRole, accessToken);
-      
+      const jobSeeker = await getJobSeekerbyJobSeekerId(jobSeekerId, accessToken);
+      console.log("HERE");
+      console.log(jobSeeker);
+
       try {
-        let updatedJobSeekerList = [...jobListing.jobSeekers]; //got error
-        // console.log("TEST!!!!!!!!");
-        // console.log(updatedJobSeekerList);
-        if (updatedJobSeekerList === null) {
-          updatedJobSeekerList = [];
-        }
+        let updatedJobSeekerList = [...jobListing.jobSeekers]; 
         updatedJobSeekerList.push(jobSeeker);
         const payload = {
           ...jobListing,
           jobSeekers: updatedJobSeekerList,
         };
         const response = await updateJobListing(
+          accessToken,
           payload,
           id,
-          accessToken
         );
         console.log('Job Seeker has been assigned to Job Listing', response);
         alert('Job Seeker has been assigned to Job Listing successfully');
@@ -167,7 +164,7 @@ export default function AccountManagement() {
   // ====================================== Trying to assign job listing to job seekers during matching process by updating job seekers ======================================
   const updateJobSeekerWithJobListing = async(jobSeeker) => {
     try {
-      let updatedJobListings = [...jobSeeker.jobListing];
+      let updatedJobListings = [...jobSeeker.jobListings];
       updatedJobListings.push(jobListing);
       const payload = {
         ...jobSeeker,
@@ -255,7 +252,7 @@ export default function AccountManagement() {
           <Button
             label="Assign"
             className={styles.assignButton}
-            onClick={() => handleOnAssignClick(rowData?.userId, rowData?.role)}
+            onClick={() => handleOnAssignClick(rowData?.userId)}
           />
           <Button
             label="View More Details"
