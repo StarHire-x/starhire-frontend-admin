@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -17,11 +18,14 @@ import { DialogBox } from "../../components/DialogBox/DialogBox";
 
 export default function CustomersDemo() {
   const session = useSession();
+  const router = useRouter();
 
   const accessToken =
     session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
+
+  const currentUserId = session.data && session.data.user?.userId;
 
   const params = useSearchParams();
   const jobListingId = params.get("id");
@@ -86,6 +90,7 @@ export default function CustomersDemo() {
     try {
       const allJobApplications = await viewAllJobApplicationsByJobListingId(
         jobListingId,
+        currentUserId,
         accessToken
       );
       setJobApplications(allJobApplications);
@@ -112,7 +117,7 @@ export default function CustomersDemo() {
       const filteredApplications = jobApplications.filter((application) => {
         // Check if the global filter value matches any of the job seeker attributes
         const jobSeeker = application.jobSeeker;
-        if (!jobSeeker) { 
+        if (!jobSeeker) {
           return false;
         } else {
           // console.log(jobSeeker);
@@ -122,7 +127,9 @@ export default function CustomersDemo() {
           return (
             (userName && userName.includes(value)) ||
             (email && email.includes(value)) ||
-            (contactNo && contactNo.includes(value))
+            (contactNo && contactNo.includes(value)) ||
+            application.jobApplicationStatus?.includes(value) ||
+            application.submissionDate?.includes(value)
           );
         }
       });
@@ -130,7 +137,7 @@ export default function CustomersDemo() {
       // console.log(filteredApplications.length)
       setFilteredJobApplications(filteredApplications);
     }
-  }
+  };
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -159,7 +166,6 @@ export default function CustomersDemo() {
       </div>
     );
   };
-
 
   const usernameBodyTemplate = (rowData) => {
     return rowData?.jobSeeker?.userName;
@@ -221,9 +227,19 @@ export default function CustomersDemo() {
     );
   };
 
-  const viewDetailsButtons = () => {
+  const viewDetailsButtons = (jobApplicationId) => {
     return (
-      <Button rounded outlined severity="help" icon="pi pi-align-justify" />
+      <Button
+        rounded
+        outlined
+        severity="help"
+        icon="pi pi-align-justify"
+        onClick={() => {
+          router.push(
+            `/jobApplications/viewJobApplication?id=${jobApplicationId}`
+          );
+        }}
+      />
     );
   };
 
@@ -277,10 +293,12 @@ export default function CustomersDemo() {
         setVisible={setOpenDialog}
       />
       <DataTable
-        style={{ minHeight: "75vh" }}
+        // style={{ minHeight: "75vh" }}
         scrollable
         scrollHeight="400px"
-        value={filteredJobApplications.length > 0 ? filteredJobApplications : jobApplications}
+        value={
+          globalFilterValue != "" ? filteredJobApplications : jobApplications
+        }
         paginator
         header={header}
         rows={10}
@@ -348,7 +366,9 @@ export default function CustomersDemo() {
           body={submittedDateBodyTemplate}
         />
         <Column body={sendCorporateButtons} />
-        <Column body={viewDetailsButtons} />
+        <Column
+          body={(rowData) => viewDetailsButtons(rowData?.jobApplicationId)}
+        />
       </DataTable>
     </div>
   );
