@@ -130,6 +130,7 @@ export default function CustomersDemo() {
     );
   };
 
+
   const usernameBodyTemplate = (rowData) => {
     return rowData?.jobSeeker?.userName;
   };
@@ -240,7 +241,7 @@ export default function CustomersDemo() {
     <div className="card">
       <DialogBox
         header="Send to Corporate?"
-        content={`Sending ${jobApplicationToSend?.jobApplicationId} for ${jobApplicationToSend?.jobSeeker?.userName}.`}
+        content={`Sending Job Application ID ${jobApplicationToSend?.jobApplicationId} for ${jobApplicationToSend?.jobSeeker?.userName}.`}
         footerContent={footerButtons}
         isOpen={openDialog}
         setVisible={setOpenDialog}
