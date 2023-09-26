@@ -123,66 +123,42 @@ export default function AccountManagement() {
 
   // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
   const handleOnAssignClick = async (jobSeekerId) => {
-    try {
-      const jobSeeker = await getJobSeekerbyJobSeekerId(jobSeekerId, accessToken);
-      console.log("HERE");
-      console.log(jobSeeker);
+    // try {
+    //   const jobSeeker = await getJobSeekerbyJobSeekerId(jobSeekerId, accessToken);
+    //   console.log("HERE");
+    //   console.log(jobSeeker);
 
-      try {
-        let updatedJobSeekerList = [...jobListing.jobSeekers]; 
-        updatedJobSeekerList.push(jobSeeker);
-        const payload = {
-          ...jobListing,
-          jobSeekers: updatedJobSeekerList,
-        };
-        const response = await updateJobListing(
-          accessToken,
-          payload,
-          id,
-        );
-        console.log('Job Seeker has been assigned to Job Listing', response);
-        alert('Job Seeker has been assigned to Job Listing successfully');
-        await updateJobSeekerWithJobListing(jobSeeker);
-        setRefreshData((prev) => !prev);
-      } catch (error) {
-        console.error(
-          'There was an error assigning the job seeker to the job listing:',
-          error.message
-        );
-        alert('There was an error assigning the job seeker to the job listing');
-      }
+    //   try {
+    //     let updatedJobSeekerList = [...jobListing.jobSeekers]; 
+    //     updatedJobSeekerList.push(jobSeeker);
+    //     const payload = {
+    //       ...jobListing,
+    //       jobSeekers: updatedJobSeekerList,
+    //     };
+    //     const response = await updateJobListing(
+    //       accessToken,
+    //       payload,
+    //       id,
+    //     );
+    //     console.log('Job Seeker has been assigned to Job Listing', response);
+    //     alert('Job Seeker has been assigned to Job Listing successfully');
+    //     await updateJobSeekerWithJobListing(jobSeeker);
+    //     setRefreshData((prev) => !prev);
+    //   } catch (error) {
+    //     console.error(
+    //       'There was an error assigning the job seeker to the job listing:',
+    //       error.message
+    //     );
+    //     alert('There was an error assigning the job seeker to the job listing');
+    //   }
 
-    } catch (error) {
-      console.error(
-        'There was an error retrieving the job seeker:',
-        error.message
-      );
-      alert('There was an error retrieving the job seeker');
-    }
-  }
-
-  // ====================================== Trying to assign job listing to job seekers during matching process by updating job seekers ======================================
-  const updateJobSeekerWithJobListing = async(jobSeeker) => {
-    try {
-      let updatedJobListings = [...jobSeeker.jobListings];
-      updatedJobListings.push(jobListing);
-      const payload = {
-        ...jobSeeker,
-        jobListings: updatedJobListings,
-      };
-      const response = await updateUser(
-        payload,
-        jobSeeker.id,
-        accessToken
-      );
-      console.log('Job Listing has been assigned to Job Seeker', response);
-    } catch (error) {
-      console.error(
-        'There was an error assigning the job listing to the job seeker:',
-        error.message
-      );
-      alert('There was an error assigning the job listing to the job seeker:');
-    }
+    // } catch (error) {
+    //   console.error(
+    //     'There was an error retrieving the job seeker:',
+    //     error.message
+    //   );
+    //   alert('There was an error retrieving the job seeker');
+    // }
   }
 
   const actionAdminBodyTemplate = (rowData) => {
