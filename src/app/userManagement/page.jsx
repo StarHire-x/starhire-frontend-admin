@@ -125,11 +125,12 @@ export default function AccountManagement() {
   const handleOnAssignClick = async (jobSeekerId, jobSeekerRole) => {
     try {
       const jobSeeker = await getUserByUserId(jobSeekerId, jobSeekerRole, accessToken);
+      // console.log("HERE!!");
+      // console.log(jobListing);
       try {
         let updatedJobSeekerList = [...jobListing.jobSeekers];
         // console.log("TEST!!!!!!!!");
         // console.log(updatedJobSeekerList);
-        // First time adding a job seeker to job listing
         if (updatedJobSeekerList === null) {
           updatedJobSeekerList = [];
         }
@@ -430,6 +431,7 @@ export default function AccountManagement() {
       });
   }, [refreshData, accessToken]);
 
+// Retrieve job listing but does not seem to retrieve.. 
   useEffect(() => {
     if (accessToken) {
       viewOneJobListing(id, accessToken)
