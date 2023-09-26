@@ -29,7 +29,7 @@ export default function AccountManagement() {
   const router = useRouter();
 
   const params = useSearchParams();
-  const id = params.get("id");
+  const id = params.get("jobListingId");
 
   const userIdRef =
     session.status === "authenticated" &&
@@ -125,11 +125,11 @@ export default function AccountManagement() {
   const handleOnAssignClick = async (jobSeekerId, jobSeekerRole) => {
     try {
       const jobSeeker = await getUserByUserId(jobSeekerId, jobSeekerRole, accessToken);
+      
       try {
-        let updatedJobSeekerList = [...jobListing.jobSeekers];
+        let updatedJobSeekerList = [...jobListing.jobSeekers]; //got error
         // console.log("TEST!!!!!!!!");
         // console.log(updatedJobSeekerList);
-        // First time adding a job seeker to job listing
         if (updatedJobSeekerList === null) {
           updatedJobSeekerList = [];
         }
