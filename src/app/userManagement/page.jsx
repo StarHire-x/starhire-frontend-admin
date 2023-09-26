@@ -14,7 +14,7 @@ import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { updateUser, getUsers, deleteUser, getUserByUserId, getJobSeekerbyJobSeekerId } from "../api/auth/user/route";
-import { updateJobListing, viewOneJobListing } from "../api/auth/jobListings/route";
+import { assignJobListing, viewOneJobListing } from "../api/auth/jobListings/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -123,43 +123,27 @@ export default function AccountManagement() {
 
   // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
   const handleOnAssignClick = async (jobSeekerId) => {
-    // This part should take in jobSeekerId, jobListingId, and past it to backend to do the job listing assigning part.
-    // try {
-    //   const jobSeeker = await getJobSeekerbyJobSeekerId(jobSeekerId, accessToken);
-    //   console.log("HERE");
-    //   console.log(jobSeeker);
-
-    //   try {
-    //     let updatedJobSeekerList = [...jobListing.jobSeekers]; 
-    //     updatedJobSeekerList.push(jobSeeker);
-    //     const payload = {
-    //       ...jobListing,
-    //       jobSeekers: updatedJobSeekerList,
-    //     };
-    //     const response = await updateJobListing(
-    //       accessToken,
-    //       payload,
-    //       id,
-    //     );
-    //     console.log('Job Seeker has been assigned to Job Listing', response);
-    //     alert('Job Seeker has been assigned to Job Listing successfully');
-    //     await updateJobSeekerWithJobListing(jobSeeker);
-    //     setRefreshData((prev) => !prev);
-    //   } catch (error) {
-    //     console.error(
-    //       'There was an error assigning the job seeker to the job listing:',
-    //       error.message
-    //     );
-    //     alert('There was an error assigning the job seeker to the job listing');
-    //   }
-
-    // } catch (error) {
-    //   console.error(
-    //     'There was an error retrieving the job seeker:',
-    //     error.message
-    //   );
-    //   alert('There was an error retrieving the job seeker');
-    // }
+    // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
+    const jobListingId = jobListing.jobListingId;
+    // console.log("HERE!!!");
+    // console.log(jobSeekerId);
+    
+    try {
+      const response = await assignJobListing(
+        jobSeekerId,
+        jobListingId,
+        accessToken,
+      );
+      console.log('Job Seeker has been assigned to Job Listing', response);
+      alert('Job Seeker has been matched with Job Listing successfully');
+      setRefreshData((prev) => !prev);
+    } catch (error) {
+      console.error(
+        'There was an error matching the job seeker to the job listing:',
+        error.message
+      );
+      alert('There was an error matching the job seeker to the job listing');
+    }
   }
 
   const actionAdminBodyTemplate = (rowData) => {
