@@ -123,6 +123,7 @@ export default function AccountManagement() {
 
   // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
   const handleOnAssignClick = async (jobSeekerId) => {
+    // This part should take in jobSeekerId, jobListingId, and past it to backend to do the job listing assigning part.
     // try {
     //   const jobSeeker = await getJobSeekerbyJobSeekerId(jobSeekerId, accessToken);
     //   console.log("HERE");
