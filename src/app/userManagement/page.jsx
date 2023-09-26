@@ -121,6 +121,73 @@ export default function AccountManagement() {
     return <Tag value={option} severity={getStatus(option)} />;
   };
 
+  // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
+  const handleOnAssignClick = async (jobSeekerId, jobSeekerRole) => {
+    try {
+      const jobSeeker = await getUserByUserId(jobSeekerId, jobSeekerRole, accessToken);
+      try {
+        let updatedJobSeekerList = [...jobListing.jobSeekers];
+        // console.log("TEST!!!!!!!!");
+        // console.log(updatedJobSeekerList);
+        // First time adding a job seeker to job listing
+        if (updatedJobSeekerList === null) {
+          updatedJobSeekerList = [];
+        }
+        updatedJobSeekerList.push(jobSeeker);
+        const payload = {
+          ...jobListing,
+          jobSeekers: updatedJobSeekerList,
+        };
+        const response = await updateJobListing(
+          payload,
+          id,
+          accessToken
+        );
+        console.log('Job Seeker has been assigned to Job Listing', response);
+        alert('Job Seeker has been assigned to Job Listing successfully');
+        await updateJobSeekerWithJobListing(jobSeeker);
+        setRefreshData((prev) => !prev);
+      } catch (error) {
+        console.error(
+          'There was an error assigning the job seeker to the job listing:',
+          error.message
+        );
+        alert('There was an error assigning the job seeker to the job listing');
+      }
+
+    } catch (error) {
+      console.error(
+        'There was an error retrieving the job seeker:',
+        error.message
+      );
+      alert('There was an error retrieving the job seeker');
+    }
+  }
+
+  // ====================================== Trying to assign job listing to job seekers during matching process by updating job seekers ======================================
+  const updateJobSeekerWithJobListing = async(jobSeeker) => {
+    try {
+      let updatedJobListings = [...jobSeeker.jobListing];
+      updatedJobListings.push(jobListing);
+      const payload = {
+        ...jobSeeker,
+        jobListings: updatedJobListings,
+      };
+      const response = await updateUser(
+        payload,
+        jobSeeker.id,
+        accessToken
+      );
+      console.log('Job Listing has been assigned to Job Seeker', response);
+    } catch (error) {
+      console.error(
+        'There was an error assigning the job listing to the job seeker:',
+        error.message
+      );
+      alert('There was an error assigning the job listing to the job seeker:');
+    }
+  }
+
   const actionAdminBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
 
@@ -188,7 +255,7 @@ export default function AccountManagement() {
           <Button
             label="Assign"
             className={styles.assignButton}
-            // onClick={() => handleOnAssignClick(rowData?.userId, rowData?.role)}
+            onClick={() => handleOnAssignClick(rowData?.userId, rowData?.role)}
           />
           <Button
             label="View More Details"
