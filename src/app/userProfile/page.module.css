@@ -33,7 +33,7 @@
 .userProfileSection {
     display: flex;
     flex-direction: row;
-    margin-bottom: 50vh;;
+    margin-bottom: 50vh;
 }
 
 .userDetailsCard {
