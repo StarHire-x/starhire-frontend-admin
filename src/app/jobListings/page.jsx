@@ -1,23 +1,23 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Button } from 'primereact/button';
-import { InputNumber } from 'primereact/inputnumber';
-import { ProgressBar } from 'primereact/progressbar';
-import { Calendar } from 'primereact/calendar';
-import { MultiSelect } from 'primereact/multiselect';
-import { Slider } from 'primereact/slider';
-import { Dialog } from 'primereact/dialog';
-import { Tag } from 'primereact/tag';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import './styles.css';
-import { viewAllJobListings } from '@/app/api/auth/jobListings/route';
-import { getUserByUserId } from '../api/auth/user/route';
+"use client";
+import React, { useState, useEffect } from "react";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { Button } from "primereact/button";
+import { InputNumber } from "primereact/inputnumber";
+import { ProgressBar } from "primereact/progressbar";
+import { Calendar } from "primereact/calendar";
+import { MultiSelect } from "primereact/multiselect";
+import { Slider } from "primereact/slider";
+import { Dialog } from "primereact/dialog";
+import { Tag } from "primereact/tag";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import "./styles.css";
+import { viewAllJobListings } from "@/app/api/auth/jobListings/route";
+import { getUserByUserId } from "../api/auth/user/route";
 
 export default function JobListings() {
   const session = useSession();
@@ -25,15 +25,15 @@ export default function JobListings() {
   const router = useRouter();
 
   const accessToken =
-    session.status === 'authenticated' &&
+    session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === 'authenticated' && session.data.user.userId;
+    session.status === "authenticated" && session.data.user.userId;
 
-  if (session.status === 'unauthenticated') {
-    router?.push('/login');
+  if (session.status === "unauthenticated") {
+    router?.push("/login");
   }
 
   const [refreshData, setRefreshData] = useState(false);
@@ -55,17 +55,17 @@ export default function JobListings() {
     },
   });
 
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
-  const [jobListingStatuses] = useState(['Active', 'Unverified', 'Inactive']);
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [jobListingStatuses] = useState(["Active", "Unverified", "Inactive"]);
 
   const getStatus = (status) => {
     switch (status) {
-      case 'Active':
-        return 'success';
-      case 'Unverified':
-        return 'danger';
-      case 'Inactive':
-        return 'danger';
+      case "Active":
+        return "success";
+      case "Unverified":
+        return "danger";
+      case "Inactive":
+        return "danger";
     }
   };
 
@@ -73,7 +73,7 @@ export default function JobListings() {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters['global'].value = value;
+    _filters["global"].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -111,7 +111,7 @@ export default function JobListings() {
   };
 
   const actionAdminBodyTemplate = (rowData) => {
-    console.log('Row Data:', rowData);
+    console.log("Row Data:", rowData);
     return (
       <React.Fragment>
         <Button
@@ -126,19 +126,23 @@ export default function JobListings() {
     );
   };
 
+  const handleViewSubmissionsClick = (jobListingId) => {
+    router.push(`/jobApplications?id=${jobListingId}`);
+    // `/jobListings/viewJobListingRecruiter?id=${id}`;
+  };
+
   const actionRecruiterBodyTemplate = (rowData) => {
-    console.log('Row Data:', rowData);
+    console.log("Row Data:", rowData);
     return (
       <React.Fragment>
-        <div className='buttonContainer'>
+        <div className="buttonContainer">
           <Button
             label="View Submissions"
             rounded
             className="p-button-info"
-            onClick={() => {
-            }}
+            onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
           />
-          <div className='spacer'></div>
+          <div className="spacer"></div>
           <Button
             label="View More Details"
             rounded
@@ -151,7 +155,6 @@ export default function JobListings() {
       </React.Fragment>
     );
   };
-
 
   const hideDialog = () => {
     setUserDialog(false);
@@ -169,20 +172,20 @@ export default function JobListings() {
 
   const saveStatusChange = async (rowData) => {
     const jobListingId = rowData.jobListingId;
-    if (session.data.user.role === 'Administrator') {
+    if (session.data.user.role === "Administrator") {
       try {
         // Use router.push to navigate to another page with a query parameter
         let link = createLink(jobListingId);
         router.push(link);
       } catch (error) {
-        console.error('Error changing status:', error);
+        console.error("Error changing status:", error);
       }
     } else {
       try {
         let link = createRecruiterLink(jobListingId);
         router.push(link);
       } catch (error) {
-        console.error('Error changing status:', error);
+        console.error("Error changing status:", error);
       }
     }
   };
@@ -211,17 +214,18 @@ export default function JobListings() {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
-
 
   useEffect(() => {
     if (accessToken) {
       viewAllJobListings(accessToken)
         .then((data) => {
           if (session.data.user.role === "Recruiter") {
-            const activeJobListing = data.filter(jobListing => jobListing.jobListingStatus === 'Active');
+            const activeJobListing = data.filter(
+              (jobListing) => jobListing.jobListingStatus === "Active"
+            );
             setJobListings(activeJobListing);
           } else {
             setJobListings(data);
@@ -229,7 +233,7 @@ export default function JobListings() {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error('Error fetching job listings:', error);
+          console.error("Error fetching job listings:", error);
           setIsLoading(false);
         });
     }
@@ -264,16 +268,18 @@ export default function JobListings() {
   const header = renderHeader();
 
   if (
-    session.status === 'authenticated' && (
-    session.data.user.role !== 'Administrator' && session.data.user.role !== 'Recruiter' 
-  )) {
-    router?.push('/dashboard');
+    session.status === "authenticated" &&
+    session.data.user.role !== "Administrator" &&
+    session.data.user.role !== "Recruiter"
+  ) {
+    router?.push("/dashboard");
   }
 
   if (
-    session.status === 'authenticated' && (
-    session.data.user.role === 'Administrator' || session.data.user.role === 'Recruiter' 
-  )) {
+    session.status === "authenticated" &&
+    (session.data.user.role === "Administrator" ||
+      session.data.user.role === "Recruiter")
+  ) {
     return (
       <div className="card">
         {isLoading ? (
@@ -330,26 +336,25 @@ export default function JobListings() {
               ></Column>
               {session.data.user.role === "Administrator" ? (
                 <Column
-                field="jobListingStatus"
-                header="Job Listing Status"
-                body={statusBodyTemplate}
-                filter
-                filterElement={statusFilterTemplate}
-                sortable
-              ></Column>
+                  field="jobListingStatus"
+                  header="Job Listing Status"
+                  body={statusBodyTemplate}
+                  filter
+                  filterElement={statusFilterTemplate}
+                  sortable
+                ></Column>
               ) : (
                 <Column
-                field="jobListingStatus"
-                header="Job Listing Status"
-                body={statusBodyTemplate}
-              ></Column>
+                  field="jobListingStatus"
+                  header="Job Listing Status"
+                  body={statusBodyTemplate}
+                ></Column>
               )}
               {session.data.user.role === "Administrator" ? (
                 <Column body={actionAdminBodyTemplate} />
               ) : (
                 <Column body={actionRecruiterBodyTemplate} />
               )}
-
             </DataTable>
 
             <Dialog

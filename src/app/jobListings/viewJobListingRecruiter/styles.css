@@ -9,7 +9,7 @@ body {
 
 .container {
   max-width: 1200px;
-  margin: 40px auto;
+  /* margin: 40px auto; */
   padding: 0 20px;
 }
 
@@ -57,6 +57,7 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s, transform 0.3s;
+  margin: 40px auto;
 }
 
 .my-card:hover {
