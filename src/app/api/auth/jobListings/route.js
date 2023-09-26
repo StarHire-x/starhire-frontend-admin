@@ -79,7 +79,6 @@ export const assignJobListing = async ( jobSeekerId, jobListingId, accessToken) 
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify(request),
     });
 
     if (!res.ok) {
