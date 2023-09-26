@@ -29,7 +29,7 @@ export default function AccountManagement() {
   const router = useRouter();
 
   const params = useSearchParams();
-  const id = params.get("id");
+  const id = params.get("jobListingId");
 
   const userIdRef =
     session.status === "authenticated" &&
@@ -125,8 +125,6 @@ export default function AccountManagement() {
   const handleOnAssignClick = async (jobSeekerId, jobSeekerRole) => {
     try {
       const jobSeeker = await getUserByUserId(jobSeekerId, jobSeekerRole, accessToken);
-      // console.log("HERE!!");
-      // console.log(jobListing);
       try {
         let updatedJobSeekerList = [...jobListing.jobSeekers];
         // console.log("TEST!!!!!!!!");
@@ -431,7 +429,6 @@ export default function AccountManagement() {
       });
   }, [refreshData, accessToken]);
 
-// Retrieve job listing but does not seem to retrieve.. 
   useEffect(() => {
     if (accessToken) {
       viewOneJobListing(id, accessToken)
