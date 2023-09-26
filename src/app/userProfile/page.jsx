@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getUserByUserId } from "../api/auth/user/route";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
+import { Card } from "primereact/card";
 
 export default function UserProfile() {
   const session = useSession();
@@ -63,26 +64,24 @@ export default function UserProfile() {
           <div className={styles.spinner}></div>
         </div>
       ) : (
-        <div>
-          {user.profilePictureUrl === "" ? (
-            <Image src={HumanIcon} alt="User" className={styles.avatar} />
-          ) : (
-            <img
-              src={user.profilePictureUrl}
-              alt="User"
-              className={styles.avatar}
-            />
-          )}
+        <div className={styles.userProfileSection}>
+          <div className={styles.userProfilePictureContainer}>
+            {user.profilePictureUrl === "" ? (
+              <Image src={HumanIcon} alt="User" className={styles.avatar} />
+            ) : (
+              <img
+                src={user.profilePictureUrl}
+                alt="User"
+                className={styles.avatar}
+              />
+            )}
+          </div>
 
-          {/* {user.profilePictureUrl !== "" ? (
-            <img
-              src={user?.profilePictureUrl}
-              alt="User Profile"
-              className={styles.avatar}
-            />
-          ) : (
-            <Image src={HumanIcon} alt= "User icon"/>
-          )} */}
+          <Card className={styles.userDetailsCard} title="User Details">
+            <p className="m-0">
+              {user.userName}
+            </p>
+          </Card>
         </div>
       )}
     </div>
