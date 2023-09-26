@@ -125,8 +125,9 @@ export default function AccountManagement() {
   const handleOnAssignClick = async (jobSeekerId, jobSeekerRole) => {
     try {
       const jobSeeker = await getUserByUserId(jobSeekerId, jobSeekerRole, accessToken);
+      
       try {
-        let updatedJobSeekerList = [...jobListing.jobSeekers];
+        let updatedJobSeekerList = [...jobListing.jobSeekers]; //got error
         // console.log("TEST!!!!!!!!");
         // console.log(updatedJobSeekerList);
         if (updatedJobSeekerList === null) {
