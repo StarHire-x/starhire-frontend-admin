@@ -89,7 +89,7 @@ export default function ViewJobListingRecruiter() {
   };
 
   const handleOnAssignClick = () => {
-    router.push("/userManagement");
+    router.push(`/userManagement?jobListingId=${id}`);
   };
 
   const userDialogFooter = (

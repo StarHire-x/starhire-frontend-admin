@@ -13,9 +13,11 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { updateUser, getUsers, deleteUser } from "../api/auth/user/route";
+import { updateUser, getUsers, deleteUser, getUserByUserId } from "../api/auth/user/route";
+import { viewOneJobListing } from "../api/auth/jobListings/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
@@ -25,6 +27,9 @@ export default function AccountManagement() {
   const session = useSession();
 
   const router = useRouter();
+
+  const params = useSearchParams();
+  const id = params.get("id");
 
   const userIdRef =
     session.status === "authenticated" &&
@@ -47,6 +52,7 @@ export default function AccountManagement() {
   const [viewUserDialog, setViewUserDialog] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [jobListing, setJobListing] = useState({});
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -182,7 +188,7 @@ export default function AccountManagement() {
           <Button
             label="Assign"
             className={styles.assignButton}
-            // onClick={() => handleOnAssignClick()}
+            // onClick={() => handleOnAssignClick(rowData?.userId, rowData?.role)}
           />
           <Button
             label="View More Details"
@@ -356,6 +362,18 @@ export default function AccountManagement() {
         console.error("Error fetching user:", error);
       });
   }, [refreshData, accessToken]);
+
+  useEffect(() => {
+    if (accessToken) {
+      viewOneJobListing(id, accessToken)
+        .then((data) => {
+          setJobListing(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching job listings:", error);
+        });
+    }
+  }, [accessToken]);
 
   const header = () => {
     if (session.data.user.role === "Administrator") {
