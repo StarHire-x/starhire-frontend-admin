@@ -30,6 +30,7 @@ export default function CustomersDemo() {
   const [jobApplicationToSend, setJobApplicationToSend] = useState(null);
   const [jobApplications, setJobApplications] = useState([]);
   const [selectedJobApplications, setSelectedJobApplications] = useState([]);
+  const [filteredJobApplications, setFilteredJobApplications] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     userName: {
@@ -104,6 +105,33 @@ export default function CustomersDemo() {
     });
   };
 
+  const filterData = (value) => {
+    if (value === "") {
+      setFilteredJobApplications([]);
+    } else {
+      const filteredApplications = jobApplications.filter((application) => {
+        // Check if the global filter value matches any of the job seeker attributes
+        const jobSeeker = application.jobSeeker;
+        if (!jobSeeker) { 
+          return false;
+        } else {
+          // console.log(jobSeeker);
+          const { userName, email, contactNo } = jobSeeker;
+          // console.log("RETRIEVING");
+          // console.log(userName);
+          return (
+            (userName && userName.includes(value)) ||
+            (email && email.includes(value)) ||
+            (contactNo && contactNo.includes(value))
+          );
+        }
+      });
+      // console.log("FILTERED APPS HERE!");
+      // console.log(filteredApplications.length)
+      setFilteredJobApplications(filteredApplications);
+    }
+  }
+
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
@@ -112,6 +140,8 @@ export default function CustomersDemo() {
 
     setFilters(_filters);
     setGlobalFilterValue(value);
+    // console.log("VALUE IS HERE", value);
+    filterData(value);
   };
 
   const renderHeader = () => {
@@ -250,7 +280,7 @@ export default function CustomersDemo() {
         style={{ minHeight: "75vh" }}
         scrollable
         scrollHeight="400px"
-        value={jobApplications}
+        value={filteredJobApplications.length > 0 ? filteredJobApplications : jobApplications}
         paginator
         header={header}
         rows={10}
@@ -263,7 +293,7 @@ export default function CustomersDemo() {
           console.log(e);
           setSelectedJobApplications(e.value);
         }}
-        filters={filters}
+        // filters={filters}
         filterDisplay="menu"
         globalFilterFields={[
           "userName",
