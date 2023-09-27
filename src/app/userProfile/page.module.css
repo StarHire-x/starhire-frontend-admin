@@ -1,9 +1,12 @@
 .container {
-    max-width: 1200px;
+    /* max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
     width: 100%;
-    height: 100vh;
+    height: 100vh; */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .avatar {
@@ -39,6 +42,18 @@
     width: 60vw;
 }
 
+.userDetails {
+    margin-bottom: 20px;
+    font-size: 20px;
+    margin-left: 20px;
+}
+
+.userDetailsFullName {
+    margin-bottom: 20px;
+    font-size: 35px;
+    margin-left: 20px;
+}
+
 .userProfilePictureContainer {
     max-width: 260px;
     max-height: 260px;
@@ -48,9 +63,49 @@
 }
 
 .jobPreferenceSection {
-    padding-top: 10vh;
+    padding-top: 5vh;
 }
 
 .jobExperienceSection {
-    padding-top: 10vh;
+    padding-top: 5vh;
+}
+
+/* .backButtonContainer {
+    margin: 0 auto;
+} */
+
+.backButton {
+  border: none !important;
+  color: white !important;
+  background-color: #007bff !important;
+  transition: all 0.3s !important;
+  margin-right: 30px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  ) !important;
+}
+
+.footerButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    padding-top: 5vh;
+}
+
+.assignButtonContainer {
+    margin-left: auto;
+}
+
+.assignButton {
+    border: none !important;
+    color: white !important;
+    transition: all 0.3s !important;
+    margin-right: 30px;
+    background-image: linear-gradient(
+        90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.2) 100%
+    ) !important;
+    background-color: #e29578 !important;
 }

@@ -24,6 +24,23 @@
   background-color: #e29578 !important;
 }
 
+.backButtonContainer {
+  margin-top: 30px;
+}
+
+.backButton {
+  border: none !important;
+  color: white !important;
+  background-color: #007bff !important;
+  transition: all 0.3s !important;
+  margin-right: 30px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  ) !important;
+}
+
 .buttonContainer {
   display: flex; /* Use flexbox to arrange buttons horizontally */
   align-items: center; /* Align buttons vertically in the center */
