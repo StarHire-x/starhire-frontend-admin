@@ -73,7 +73,7 @@ export const updateJobListing = async (accessToken, request, id) => {
 export const assignJobListing = async ( jobSeekerId, jobListingId, accessToken) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/job-listing/assignJobListing/jobSeekerId=${jobSeekerId}/jobListingId=${jobListingId}`, {
+      `http://localhost:8080/job-listing/assignJobListing/${jobSeekerId}/${jobListingId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
