@@ -245,7 +245,7 @@ export default function AccountManagement() {
             className="mr-2"
             onClick={() => {
               router?.push(
-                `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}`
+                `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}&jobListingId=${id}`
               );
             }}
           />
