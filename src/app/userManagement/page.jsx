@@ -235,6 +235,7 @@ export default function AccountManagement() {
           <Button
             label="Assign"
             className={styles.assignButton}
+            rounded
             onClick={() => {
               setSelectedRowData(rowData);
               showAssignDialog(rowData);
@@ -243,6 +244,7 @@ export default function AccountManagement() {
           <Button
             label="View More Details"
             className="mr-2"
+            rounded
             onClick={() => {
               router?.push(
                 `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}`
@@ -550,6 +552,7 @@ export default function AccountManagement() {
             <Button
               label="Back"
               icon="pi pi-chevron-left"
+              rounded
               className={styles.backButton}
               onClick={() => handleOnBackClick()}
             />
