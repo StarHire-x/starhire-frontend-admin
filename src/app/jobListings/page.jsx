@@ -140,6 +140,7 @@ export default function JobListings() {
             label="View Submissions"
             rounded
             className="p-button-info"
+            size="small"
             onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
           />
           <div className="spacer"></div>
@@ -147,6 +148,7 @@ export default function JobListings() {
             label="View More Details"
             rounded
             className="mr-2"
+            size="small"
             onClick={() => {
               saveStatusChange(rowData);
             }}

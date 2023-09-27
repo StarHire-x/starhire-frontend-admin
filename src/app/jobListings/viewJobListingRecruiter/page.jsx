@@ -109,12 +109,14 @@ export default function ViewJobListingRecruiter() {
       <Button
         label="Back"
         icon="pi pi-chevron-left"
+        rounded
         className="back-button p-button-outlined p-button-secondary"
         onClick={() => handleOnBackClick()}
       />
       <Button
         label="Assign to.."
         icon="pi pi-chevron-right"
+        rounded
         className="assign-button p-button-outlined p-button-secondary"
         onClick={() => handleOnAssignClick()}
       />
