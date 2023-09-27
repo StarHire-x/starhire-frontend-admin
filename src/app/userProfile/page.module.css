@@ -1,9 +1,12 @@
 .container {
-    max-width: 1200px;
+    /* max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
     width: 100%;
-    height: 100vh;
+    height: 100vh; */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .avatar {
@@ -65,32 +68,4 @@
 
 .jobExperienceSection {
     padding-top: 5vh;
-}
-
-.dialogueContainer {
-  display: flex; /* Use flexbox layout */
-  align-items: center; /* Vertically align the content in the center */
-}
-
-.inputFields {
-  width: 600px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
-.fieldRating {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.labelRating {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  padding-bottom: 5px;
 }
