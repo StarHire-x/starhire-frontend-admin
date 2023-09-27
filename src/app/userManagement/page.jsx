@@ -50,6 +50,7 @@ export default function AccountManagement() {
   const [userDialog, setUserDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [viewUserDialog, setViewUserDialog] = useState(false);
+  const [assignDialog, setAssignDialog] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [jobListing, setJobListing] = useState({});
@@ -87,6 +88,10 @@ export default function AccountManagement() {
     setGlobalFilterValue(value);
   };
 
+  const showAssignDialog = (rowData) => {
+    setAssignDialog(true);
+  };
+
   const showUserDialog = (rowData) => {
     setUserDialog(true);
   };
@@ -122,9 +127,10 @@ export default function AccountManagement() {
   };
 
   // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
-  const handleOnAssignClick = async (jobSeekerId) => {
+  const handleOnAssignClick = async () => {
     // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
     const jobListingId = jobListing.jobListingId;
+    const jobSeekerId = selectedRowData.userId;
     // console.log("HERE!!!");
     // console.log(jobSeekerId);
     
@@ -135,7 +141,7 @@ export default function AccountManagement() {
         accessToken,
       );
       console.log('Job Seeker has been assigned to Job Listing', response);
-      alert('Job Seeker has been matched with Job Listing successfully');
+      // alert('Job Seeker has been matched with Job Listing successfully');
       setRefreshData((prev) => !prev);
     } catch (error) {
       console.error(
@@ -144,6 +150,8 @@ export default function AccountManagement() {
       );
       alert('There was an error matching the job seeker to the job listing');
     }
+    setSelectedRowData();
+    setAssignDialog(false);
   }
 
   const actionAdminBodyTemplate = (rowData) => {
@@ -213,7 +221,10 @@ export default function AccountManagement() {
           <Button
             label="Assign"
             className={styles.assignButton}
-            onClick={() => handleOnAssignClick(rowData?.userId)}
+            onClick={() => {
+              setSelectedRowData(rowData);
+              showAssignDialog(rowData);
+            }}
           />
           <Button
             label="View More Details"
@@ -226,6 +237,11 @@ export default function AccountManagement() {
       </React.Fragment>
     );
   };
+
+  const hideAssignDialog = () => {
+    setAssignDialog(false);
+  };
+
   const hideDialog = () => {
     setUserDialog(false);
   };
@@ -282,6 +298,13 @@ export default function AccountManagement() {
     setSelectedRowData();
     setDeleteDialog(false);
   };
+
+  const recruiterAssignDialogFooter = (jobSeekerId) => (
+    <React.Fragment>
+      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideAssignDialog} />
+      <Button label="Assign" icon="pi pi-check" onClick={handleOnAssignClick} />
+    </React.Fragment>
+  );
 
   const userDialogFooter = (
     <React.Fragment>
@@ -488,6 +511,18 @@ export default function AccountManagement() {
             ></Column>
           )}
         </DataTable>
+
+        <Dialog
+          visible={assignDialog}
+          style={{ width: "32rem" }}
+          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+          header="Assign Job Listing"
+          className="p-fluid"
+          footer={recruiterAssignDialogFooter}
+          onHide={hideAssignDialog}
+        > 
+          <h3>Do you wish to assign Job Listing {jobListing.jobListingId} to {selectedRowData && selectedRowData.userName}?</h3>
+        </Dialog>
 
         <Dialog
           visible={userDialog}
