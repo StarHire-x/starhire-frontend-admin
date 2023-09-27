@@ -39,6 +39,18 @@
     width: 60vw;
 }
 
+.userDetails {
+    margin-bottom: 20px;
+    font-size: 20px;
+    margin-left: 20px;
+}
+
+.userDetailsFullName {
+    margin-bottom: 20px;
+    font-size: 35px;
+    margin-left: 20px;
+}
+
 .userProfilePictureContainer {
     max-width: 260px;
     max-height: 260px;
@@ -48,9 +60,37 @@
 }
 
 .jobPreferenceSection {
-    padding-top: 10vh;
+    padding-top: 5vh;
 }
 
 .jobExperienceSection {
-    padding-top: 10vh;
+    padding-top: 5vh;
+}
+
+.dialogueContainer {
+  display: flex; /* Use flexbox layout */
+  align-items: center; /* Vertically align the content in the center */
+}
+
+.inputFields {
+  width: 600px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.fieldRating {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.labelRating {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-bottom: 5px;
 }
