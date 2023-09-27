@@ -41,7 +41,8 @@ const viewJobApplication = () => {
     };
 
     populateDetails();
-  }, []);
+  }, [jobApplicationId, accessToken]);
+
   return (
     <div className={styles.container}>
       <div className={styles.jobSeekerDetails}>

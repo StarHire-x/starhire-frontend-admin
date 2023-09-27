@@ -100,7 +100,7 @@ export default function CustomersDemo() {
   };
   useEffect(() => {
     populateData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [jobListingId, currentUserId, accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatDate = (value) => {
     return value.toLocaleDateString("en-US", {
