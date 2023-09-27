@@ -13,7 +13,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
-import { updateUser, getUsers, deleteUser, getUserByUserId, getJobSeekerbyJobSeekerId } from "../api/auth/user/route";
+import { updateUser, getUsers, deleteUser, getUserByUserId } from "../api/auth/user/route";
 import { assignJobListing, viewOneJobListing } from "../api/auth/jobListings/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -397,21 +397,6 @@ export default function AccountManagement() {
   };
 
   useEffect(() => {
-    getUsers(accessToken)
-      .then((user) => {
-        if (session.data.user.role === "Recruiter") {
-          const activeJobSeekers = user.data.filter(x => x.role === 'Job_Seeker' && x.status === "Active");
-          setUser(activeJobSeekers);
-        } else {
-          setUser(user.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user:", error);
-      });
-  }, [refreshData, accessToken]);
-
-  useEffect(() => {
     if (accessToken) {
       viewOneJobListing(id, accessToken)
         .then((data) => {
@@ -421,7 +406,27 @@ export default function AccountManagement() {
           console.error("Error fetching job listings:", error);
         });
     }
-  }, [accessToken]);
+  }, [accessToken, id]);
+
+  useEffect(() => {
+    getUsers(accessToken)
+      .then((user) => {
+        if (session.data.user.role === "Recruiter") {
+          console.log("SEE HERE!!")
+          user.data.map(x => x.role === "Job_Seeker" && console.log(x.jobListings))
+          
+          const activeJobSeekers = user.data.filter(x => x.role === 'Job_Seeker' && x.status === "Active" && !x.jobListings.map(
+            (jobListing) => jobListing.jobListingId).includes(jobListing.jobListingId));
+          setUser(activeJobSeekers);
+        } else {
+          setUser(user.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user:", error);
+      });
+  }, [refreshData, accessToken, jobListing]);
+
 
   const header = () => {
     if (session.data.user.role === "Administrator") {

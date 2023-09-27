@@ -166,28 +166,3 @@ export const getUserByUserId = async (userId, role, accessToken) => {
     throw error;
   }
 };
-
-export const getJobSeekerbyJobSeekerId = async (userId, accessToken) => {
-  try {
-    const res = await fetch(
-      `http://localhost:8080/job-seeker/?id=${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        cache: "no-store",
-      }
-    );
-    const responseBody = await res.json();
-
-    if (responseBody.statusCode === 404) {
-      throw new Error(responseBody.message || "An error occurred");
-    }
-    return await responseBody;
-  } catch (error) {
-    console.log("There was a problem fetching the job seeker", error);
-    throw error;
-  }
-};
