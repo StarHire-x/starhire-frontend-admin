@@ -322,10 +322,11 @@ export default function AccountManagement() {
       <Button
         label="Cancel"
         icon="pi pi-times"
+        rounded
         outlined
         onClick={hideAssignDialog}
       />
-      <Button label="Assign" icon="pi pi-check" onClick={handleOnAssignClick} />
+      <Button label="Assign" rounded icon="pi pi-check" onClick={handleOnAssignClick} />
     </React.Fragment>
   );
 

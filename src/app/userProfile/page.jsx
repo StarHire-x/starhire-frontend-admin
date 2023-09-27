@@ -82,10 +82,11 @@ export default function UserProfile() {
       <Button
         label="Cancel"
         icon="pi pi-times"
+        rounded
         outlined
         onClick={hideAssignDialog}
       />
-      <Button label="Assign" icon="pi pi-check" onClick={handleOnAssignClick} />
+      <Button label="Assign" rounded icon="pi pi-check" onClick={handleOnAssignClick} />
     </React.Fragment>
   );
 
@@ -169,13 +170,14 @@ export default function UserProfile() {
               <Button
                 label="Back"
                 icon="pi pi-chevron-left"
+                rounded
                 className={styles.backButton}
                 onClick={() => handleOnBackClick()}
               />
             </div>
             {currentUserRole && currentUserRole === "Recruiter" && (
               <div className={styles.assignButtonContainer}>
-                <Button label="Assign" className={styles.assignButton} onClick={() => setAssignDialog(true)} />
+                <Button label="Assign" rounded className={styles.assignButton} onClick={() => setAssignDialog(true)} />
                 <Dialog
                   visible={assignDialog}
                   style={{ width: "32rem" }}
