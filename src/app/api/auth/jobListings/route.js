@@ -69,3 +69,26 @@ export const updateJobListing = async (accessToken, request, id) => {
     throw error;
   }
 };
+
+export const assignJobListing = async ( jobSeekerId, jobListingId, accessToken) => {
+  try {
+    const res = await fetch(
+      `http://localhost:8080/job-listing/assignJobListing/${jobSeekerId}/${jobListingId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem assigning job listing to job seekers and assigning job listing to job seekers", error);
+    throw error;
+  }
+};

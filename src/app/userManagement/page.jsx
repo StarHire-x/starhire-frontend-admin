@@ -14,7 +14,7 @@ import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
 import { updateUser, getUsers, deleteUser, getUserByUserId } from "../api/auth/user/route";
-import { viewOneJobListing } from "../api/auth/jobListings/route";
+import { assignJobListing, viewOneJobListing } from "../api/auth/jobListings/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -50,6 +50,7 @@ export default function AccountManagement() {
   const [userDialog, setUserDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [viewUserDialog, setViewUserDialog] = useState(false);
+  const [assignDialog, setAssignDialog] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [jobListing, setJobListing] = useState({});
@@ -87,6 +88,10 @@ export default function AccountManagement() {
     setGlobalFilterValue(value);
   };
 
+  const showAssignDialog = (rowData) => {
+    setAssignDialog(true);
+  };
+
   const showUserDialog = (rowData) => {
     setUserDialog(true);
   };
@@ -122,70 +127,31 @@ export default function AccountManagement() {
   };
 
   // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
-  const handleOnAssignClick = async (jobSeekerId, jobSeekerRole) => {
+  const handleOnAssignClick = async () => {
+    // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
+    const jobListingId = jobListing.jobListingId;
+    const jobSeekerId = selectedRowData.userId;
+    // console.log("HERE!!!");
+    // console.log(jobSeekerId);
+    
     try {
-      const jobSeeker = await getUserByUserId(jobSeekerId, jobSeekerRole, accessToken);
-      
-      try {
-        let updatedJobSeekerList = [...jobListing.jobSeekers]; //got error
-        // console.log("TEST!!!!!!!!");
-        // console.log(updatedJobSeekerList);
-        if (updatedJobSeekerList === null) {
-          updatedJobSeekerList = [];
-        }
-        updatedJobSeekerList.push(jobSeeker);
-        const payload = {
-          ...jobListing,
-          jobSeekers: updatedJobSeekerList,
-        };
-        const response = await updateJobListing(
-          payload,
-          id,
-          accessToken
-        );
-        console.log('Job Seeker has been assigned to Job Listing', response);
-        alert('Job Seeker has been assigned to Job Listing successfully');
-        await updateJobSeekerWithJobListing(jobSeeker);
-        setRefreshData((prev) => !prev);
-      } catch (error) {
-        console.error(
-          'There was an error assigning the job seeker to the job listing:',
-          error.message
-        );
-        alert('There was an error assigning the job seeker to the job listing');
-      }
-
+      const response = await assignJobListing(
+        jobSeekerId,
+        jobListingId,
+        accessToken,
+      );
+      console.log('Job Seeker has been assigned to Job Listing', response);
+      // alert('Job Seeker has been matched with Job Listing successfully');
+      setRefreshData((prev) => !prev);
     } catch (error) {
       console.error(
-        'There was an error retrieving the job seeker:',
+        'There was an error matching the job seeker to the job listing:',
         error.message
       );
-      alert('There was an error retrieving the job seeker');
+      alert('There was an error matching the job seeker to the job listing');
     }
-  }
-
-  // ====================================== Trying to assign job listing to job seekers during matching process by updating job seekers ======================================
-  const updateJobSeekerWithJobListing = async(jobSeeker) => {
-    try {
-      let updatedJobListings = [...jobSeeker.jobListing];
-      updatedJobListings.push(jobListing);
-      const payload = {
-        ...jobSeeker,
-        jobListings: updatedJobListings,
-      };
-      const response = await updateUser(
-        payload,
-        jobSeeker.id,
-        accessToken
-      );
-      console.log('Job Listing has been assigned to Job Seeker', response);
-    } catch (error) {
-      console.error(
-        'There was an error assigning the job listing to the job seeker:',
-        error.message
-      );
-      alert('There was an error assigning the job listing to the job seeker:');
-    }
+    setSelectedRowData();
+    setAssignDialog(false);
   }
 
   const actionAdminBodyTemplate = (rowData) => {
@@ -255,7 +221,10 @@ export default function AccountManagement() {
           <Button
             label="Assign"
             className={styles.assignButton}
-            onClick={() => handleOnAssignClick(rowData?.userId, rowData?.role)}
+            onClick={() => {
+              setSelectedRowData(rowData);
+              showAssignDialog(rowData);
+            }}
           />
           <Button
             label="View More Details"
@@ -268,6 +237,11 @@ export default function AccountManagement() {
       </React.Fragment>
     );
   };
+
+  const hideAssignDialog = () => {
+    setAssignDialog(false);
+  };
+
   const hideDialog = () => {
     setUserDialog(false);
   };
@@ -324,6 +298,13 @@ export default function AccountManagement() {
     setSelectedRowData();
     setDeleteDialog(false);
   };
+
+  const recruiterAssignDialogFooter = (jobSeekerId) => (
+    <React.Fragment>
+      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideAssignDialog} />
+      <Button label="Assign" icon="pi pi-check" onClick={handleOnAssignClick} />
+    </React.Fragment>
+  );
 
   const userDialogFooter = (
     <React.Fragment>
@@ -416,21 +397,6 @@ export default function AccountManagement() {
   };
 
   useEffect(() => {
-    getUsers(accessToken)
-      .then((user) => {
-        if (session.data.user.role === "Recruiter") {
-          const activeJobSeekers = user.data.filter(x => x.role === 'Job_Seeker' && x.status === "Active");
-          setUser(activeJobSeekers);
-        } else {
-          setUser(user.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user:", error);
-      });
-  }, [refreshData, accessToken]);
-
-  useEffect(() => {
     if (accessToken) {
       viewOneJobListing(id, accessToken)
         .then((data) => {
@@ -440,7 +406,27 @@ export default function AccountManagement() {
           console.error("Error fetching job listings:", error);
         });
     }
-  }, [accessToken]);
+  }, [accessToken, id]);
+
+  useEffect(() => {
+    getUsers(accessToken)
+      .then((user) => {
+        if (session.data.user.role === "Recruiter") {
+          console.log("SEE HERE!!")
+          user.data.map(x => x.role === "Job_Seeker" && console.log(x.jobListings))
+          
+          const activeJobSeekers = user.data.filter(x => x.role === 'Job_Seeker' && x.status === "Active" && !x.jobListings.map(
+            (jobListing) => jobListing.jobListingId).includes(jobListing.jobListingId));
+          setUser(activeJobSeekers);
+        } else {
+          setUser(user.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user:", error);
+      });
+  }, [refreshData, accessToken, jobListing]);
+
 
   const header = () => {
     if (session.data.user.role === "Administrator") {
@@ -530,6 +516,18 @@ export default function AccountManagement() {
             ></Column>
           )}
         </DataTable>
+
+        <Dialog
+          visible={assignDialog}
+          style={{ width: "32rem" }}
+          breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+          header="Assign Job Listing"
+          className="p-fluid"
+          footer={recruiterAssignDialogFooter}
+          onHide={hideAssignDialog}
+        > 
+          <h3>Do you wish to assign Job Listing {jobListing.jobListingId} to {selectedRowData && selectedRowData.userName}?</h3>
+        </Dialog>
 
         <Dialog
           visible={userDialog}

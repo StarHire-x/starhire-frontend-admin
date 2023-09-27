@@ -7,6 +7,7 @@ import { getUserByUserId } from "../api/auth/user/route";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
 import { Card } from "primereact/card";
+import { Panel } from "primereact/panel";
 
 export default function UserProfile() {
   const session = useSession();
@@ -64,25 +65,33 @@ export default function UserProfile() {
           <div className={styles.spinner}></div>
         </div>
       ) : (
-        <div className={styles.userProfileSection}>
-          <div className={styles.userProfilePictureContainer}>
-            {user.profilePictureUrl === "" ? (
-              <Image src={HumanIcon} alt="User" className={styles.avatar} />
-            ) : (
-              <img
-                src={user.profilePictureUrl}
-                alt="User"
-                className={styles.avatar}
-              />
-            )}
-          </div>
+        <>
+          <div className={styles.userProfileSection}>
+            <div className={styles.userProfilePictureContainer}>
+              {user.profilePictureUrl === "" ? (
+                <Image src={HumanIcon} alt="User" className={styles.avatar} />
+              ) : (
+                <Image
+                  src={user.profilePictureUrl}
+                  alt="User"
+                  className={styles.avatar}
+                />
+              )}
+            </div>
 
-          <Card className={styles.userDetailsCard} title="User Details">
-            <p className="m-0">
-              {user.userName}
-            </p>
-          </Card>
-        </div>
+            <Card className={styles.userDetailsCard} title="User Details">
+              <p className="m-0">{user.userName}</p>
+              <p className="m-0">{user.email}</p>
+              <p className="m-0">{user.contactNo}</p>
+            </Card>
+          </div>
+          <div className={styles.jobPreferenceSection}>
+            <Panel header="Job Preferences" toggleable></Panel>
+          </div>
+          <div className={styles.jobExperienceSection}>
+            <Panel header="Job Experience" toggleable></Panel>
+          </div>
+        </>
       )}
     </div>
   );
