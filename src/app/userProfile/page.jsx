@@ -7,6 +7,8 @@ import { getUserByUserId } from "../api/auth/user/route";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
 import { Card } from "primereact/card";
+import JobExperiencePanel from "@/components/JobExperiencePanel/JobExperiencePanel";
+import JobPreferencePanel from "@/components/JobPreferencePanel/JobPreferencePanel";
 
 export default function UserProfile() {
   const session = useSession();
@@ -57,6 +59,11 @@ export default function UserProfile() {
     console.log(`User data: ${JSON.stringify(user)}`);
   }, [user]);
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className={styles.container}>
       {isLoading ? (
@@ -64,25 +71,41 @@ export default function UserProfile() {
           <div className={styles.spinner}></div>
         </div>
       ) : (
-        <div className={styles.userProfileSection}>
-          <div className={styles.userProfilePictureContainer}>
-            {user.profilePictureUrl === "" ? (
-              <Image src={HumanIcon} alt="User" className={styles.avatar} />
-            ) : (
-              <img
-                src={user.profilePictureUrl}
-                alt="User"
-                className={styles.avatar}
-              />
-            )}
-          </div>
+        <>
+          <div className={styles.userProfileSection}>
+            <div className={styles.userProfilePictureContainer}>
+              {user.profilePictureUrl === "" ? (
+                <Image src={HumanIcon} alt="User" className={styles.avatar} />
+              ) : (
+                <img
+                  src={user.profilePictureUrl}
+                  alt="User"
+                  className={styles.avatar}
+                />
+              )}
+            </div>
 
-          <Card className={styles.userDetailsCard} title="User Details">
-            <p className="m-0">
-              {user.userName}
-            </p>
-          </Card>
-        </div>
+            <Card className={styles.userDetailsCard}>
+              <p className={styles.userDetailsFullName}>
+                Name: {user?.fullName}
+              </p>
+              <p className={styles.userDetails}>
+                Date of Birth: {formatDate(user?.dateOfBirth)}
+              </p>
+              <p className={styles.userDetails}>Username: {user.userName}</p>
+              <p className={styles.userDetails}>Email: {user.email}</p>
+              <p className={styles.userDetails}>
+                Contact Number: {user.contactNo}
+              </p>
+            </Card>
+          </div>
+          <div className={styles.jobPreferenceSection}>
+            <JobPreferencePanel jobPreference={user?.jobPreference} />
+          </div>
+          <div className={styles.jobExperienceSection}>
+            <JobExperiencePanel jobExperience={user?.jobExperiences} />
+          </div>
+        </>
       )}
     </div>
   );
