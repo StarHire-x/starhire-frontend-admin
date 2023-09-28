@@ -13,6 +13,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
+import { ProgressSpinner } from "primereact/progressspinner";
 import {
   updateUser,
   getUsers,
@@ -54,6 +55,7 @@ export default function AccountManagement() {
   }
 
   const [refreshData, setRefreshData] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [userDialog, setUserDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -436,7 +438,7 @@ export default function AccountManagement() {
     getUsers(accessToken)
       .then((user) => {
         if (session.data.user.role === "Recruiter") {
-          console.log("SEE HERE!!");
+          // console.log("SEE HERE!!");
           user.data.map(
             (x) => x.role === "Job_Seeker" && console.log(x.jobListings)
           );
@@ -450,12 +452,15 @@ export default function AccountManagement() {
                 .includes(jobListing.jobListingId)
           );
           setUser(activeJobSeekers);
+          setIsLoading(false);
         } else {
           setUser(user.data);
+          setIsLoading(false);
         }
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
+        setIsLoading(false);
       });
   }, [refreshData, accessToken, jobListing]);
 
@@ -482,6 +487,10 @@ export default function AccountManagement() {
   ) {
     return (
       <>
+      {isLoading ? (
+        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}} />
+      ) : (
+        <>
         <div className="card">
           <DataTable
             value={user}
@@ -736,6 +745,8 @@ export default function AccountManagement() {
             </div>
           </Dialog>
         </div>
+      </>
+      )}
       </>
     );
   }

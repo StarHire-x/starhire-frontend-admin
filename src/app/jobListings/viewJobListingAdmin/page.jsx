@@ -9,6 +9,7 @@ import { Jolly_Lodger } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Dialog } from 'primereact/dialog';
+import { ProgressSpinner } from "primereact/progressspinner";
 import { useSession } from 'next-auth/react';
 import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
 import { updateJobListing } from '@/app/api/auth/jobListings/route';
@@ -221,9 +222,7 @@ export default function ViewJobListingAdmin() {
   return (
     <div className="container">
       {isLoading ? (
-        <div className="loading-animation">
-          <div className="spinner"></div>
-        </div>
+        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
       ) : (
         <div>
           <Card
