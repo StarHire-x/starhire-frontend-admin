@@ -223,12 +223,12 @@ export default function ViewJobListingAdmin() {
 
   const footer = (
     <div className="flex flex-wrap justify-content-end gap-2">
-      {(jobListing.jobListingStatus === 'Unverified' || jobListing.jobListingStatus === 'Inactive') && (
+      {(jobListing.jobListingStatus === 'Unverified' || jobListing.jobListingStatus === 'Rejected' || jobListing.jobListingStatus === 'Archived') && (
         <Button
           label="Approve"
           icon="pi pi-check"
           className="approve-button p-button-outlined p-button-secondary"
-          onClick={() => showUserDialog('Active')}
+          onClick={() => showUserDialog('Approved')}
         />
       )}
       {jobListing.jobListingStatus === 'Unverified' && (
@@ -236,10 +236,10 @@ export default function ViewJobListingAdmin() {
           label="Reject"
           icon="pi pi-times"
           className="reject-button p-button-outlined p-button-secondary"
-          onClick={() => showUserDialog('Inactive')}
+          onClick={() => showUserDialog('Rejected')}
         />
       )}
-      {(jobListing.jobListingStatus === 'Active' || jobListing.jobListingStatus === 'Inactive') && (
+      {(jobListing.jobListingStatus === 'Approved' || jobListing.jobListingStatus === 'Rejected') && (
         <Button
           label="Archive"
           icon="pi pi-folder"
