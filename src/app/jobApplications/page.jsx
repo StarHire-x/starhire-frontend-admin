@@ -16,6 +16,9 @@ import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { DialogBox } from "../../components/DialogBox/DialogBox";
 import { ProgressSpinner } from "primereact/progressspinner";
+import Image from "next/image";
+import HumanIcon from "../../../public/icon.png";
+import styles from "./page.module.css";
 
 export default function CustomersDemo() {
   const session = useSession();
@@ -172,7 +175,24 @@ export default function CustomersDemo() {
   };
 
   const usernameBodyTemplate = (rowData) => {
-    return rowData?.jobSeeker?.userName;
+    return (
+      <div className={styles.userDetails}>
+        {rowData?.jobSeeker?.profilePictureUrl === "" ? (
+          <Image
+            src={HumanIcon}
+            alt="Profile Picture"
+            className={styles.avatar}
+          />
+        ) : (
+          <img
+            src={rowData.jobSeeker.profilePictureUrl}
+            alt="user"
+            className={styles.avatar}
+          />
+        )}
+        <p>{rowData?.jobSeeker?.userName}</p>
+      </div>
+    );
   };
 
   const emailBodyTemplate = (rowData) => {
