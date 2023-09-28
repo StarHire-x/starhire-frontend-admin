@@ -128,7 +128,7 @@ export default function UserProfile() {
   return (
     <div className={styles.container}>
       {isLoading ? (
-        <ProgressSpinner />
+        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
       ) : (
         <>
           <div className={styles.userProfileSection}>

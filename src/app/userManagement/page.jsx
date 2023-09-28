@@ -488,7 +488,7 @@ export default function AccountManagement() {
     return (
       <>
       {isLoading ? (
-        <ProgressSpinner />
+        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}} />
       ) : (
         <>
         <div className="card">

@@ -222,7 +222,7 @@ export default function ViewJobListingAdmin() {
   return (
     <div className="container">
       {isLoading ? (
-        <ProgressSpinner />
+        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
       ) : (
         <div>
           <Card
