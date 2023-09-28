@@ -15,6 +15,7 @@ import {
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { DialogBox } from "../../components/DialogBox/DialogBox";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export default function CustomersDemo() {
   const session = useSession();
@@ -30,6 +31,7 @@ export default function CustomersDemo() {
   const params = useSearchParams();
   const jobListingId = params.get("id");
 
+  const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [jobApplicationToSend, setJobApplicationToSend] = useState(null);
   const [jobApplications, setJobApplications] = useState([]);
@@ -94,11 +96,13 @@ export default function CustomersDemo() {
         accessToken
       );
       setJobApplications(allJobApplications);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
+    setIsLoading(true);
     populateData();
   }, [jobListingId, currentUserId, accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -292,84 +296,91 @@ export default function CustomersDemo() {
         isOpen={openDialog}
         setVisible={setOpenDialog}
       />
-      <DataTable
-        // style={{ minHeight: "75vh" }}
-        scrollable
-        scrollHeight="400px"
-        value={
-          globalFilterValue != "" ? filteredJobApplications : jobApplications
-        }
-        paginator
-        header={header}
-        rows={10}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        rowsPerPageOptions={[10, 25, 50]}
-        dataKey="id"
-        selectionMode="checkbox"
-        selection={selectedJobApplications}
-        onSelectionChange={(e) => {
-          console.log(e);
-          setSelectedJobApplications(e.value);
-        }}
-        // filters={filters}
-        filterDisplay="menu"
-        globalFilterFields={[
-          "userName",
-          "email",
-          "contactNo",
-          "jobApplicationStatus",
-          "submissionDate",
-        ]}
-        emptyMessage="No job applications found."
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      >
-        <Column
-          selectionMode="multiple"
-          headerStyle={{ width: "3rem" }}
-        ></Column>
-        <Column
-          field="userName"
-          header="Username"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={usernameBodyTemplate}
-        />
-        <Column
-          field="email"
-          header="Email"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={emailBodyTemplate}
-        />
-        <Column
-          field="contactNo"
-          header="Contact Number"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={contactNumberBodyTemplate}
-        />
-        <Column
-          field="jobApplicationStatus"
-          header="Status"
-          filterMenuStyle={{ width: "14rem" }}
-          style={{ minWidth: "12rem" }}
-          body={statusBodyTemplate}
-          sortable
-          filter
-          filterElement={statusFilterTemplate}
-        />
-        <Column
-          field="submissionDate"
-          header="Submitted Date"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={submittedDateBodyTemplate}
-        />
-        <Column body={sendCorporateButtons} />
-        <Column
-          body={(rowData) => viewDetailsButtons(rowData?.jobApplicationId)}
-        />
-      </DataTable>
+      {isLoading && (
+        <div className="card flex justify-content-center">
+          <ProgressSpinner style={{ width: "50px", height: "50px" }} />
+        </div>
+      )}
+      {!isLoading && (
+        <DataTable
+          // style={{ minHeight: "75vh" }}
+          scrollable
+          scrollHeight="400px"
+          value={
+            globalFilterValue != "" ? filteredJobApplications : jobApplications
+          }
+          paginator
+          header={header}
+          rows={10}
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          rowsPerPageOptions={[10, 25, 50]}
+          dataKey="id"
+          selectionMode="checkbox"
+          selection={selectedJobApplications}
+          onSelectionChange={(e) => {
+            console.log(e);
+            setSelectedJobApplications(e.value);
+          }}
+          // filters={filters}
+          filterDisplay="menu"
+          globalFilterFields={[
+            "userName",
+            "email",
+            "contactNo",
+            "jobApplicationStatus",
+            "submissionDate",
+          ]}
+          emptyMessage="No job applications found."
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        >
+          <Column
+            selectionMode="multiple"
+            headerStyle={{ width: "3rem" }}
+          ></Column>
+          <Column
+            field="userName"
+            header="Username"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={usernameBodyTemplate}
+          />
+          <Column
+            field="email"
+            header="Email"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={emailBodyTemplate}
+          />
+          <Column
+            field="contactNo"
+            header="Contact Number"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={contactNumberBodyTemplate}
+          />
+          <Column
+            field="jobApplicationStatus"
+            header="Status"
+            filterMenuStyle={{ width: "14rem" }}
+            style={{ minWidth: "12rem" }}
+            body={statusBodyTemplate}
+            sortable
+            filter
+            filterElement={statusFilterTemplate}
+          />
+          <Column
+            field="submissionDate"
+            header="Submitted Date"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={submittedDateBodyTemplate}
+          />
+          <Column body={sendCorporateButtons} />
+          <Column
+            body={(rowData) => viewDetailsButtons(rowData?.jobApplicationId)}
+          />
+        </DataTable>
+      )}
     </div>
   );
 }
