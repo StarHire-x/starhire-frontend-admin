@@ -13,6 +13,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { useSession } from 'next-auth/react';
 import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
 import { updateJobListing } from '@/app/api/auth/jobListings/route';
+import { informJobListingStatus } from '@/app/api/auth/jobListings/route';
 import HumanIcon from "../../../../public/icon.png";
 
 export default function ViewJobListingAdmin() {
@@ -141,6 +142,7 @@ export default function ViewJobListingAdmin() {
       const response = await updateJobListing(accessToken, request, id);
 
       if (response.statusCode === 200) {
+        informJobListingStatusMethod(id, accessToken);
         handleRefresh();
       } else {
         alert('Something went wrong! ERROR CODE:' + response.statusCode);
@@ -150,6 +152,22 @@ export default function ViewJobListingAdmin() {
       console.error('Error changing status:', error);
     }
   };
+
+  //Send email about change in state for job listing
+    const informJobListingStatusMethod = async (jobListingId) => {
+      try {
+        //This is the backend API call
+        const response = await informJobListingStatus(jobListingId, accessToken);
+    
+        if (response.status === 200) {
+          console.log('Job listing status email sent successfully');
+        } else {
+          console.error('Failed to send job listing status email' + JSON.stringify(response));
+        }
+      } catch (error) {
+        console.error('Error sending job listing status email:', error);
+      }
+    }; 
 
   /*
   const footer = (
