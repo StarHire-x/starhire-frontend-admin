@@ -227,7 +227,7 @@ export default function JobListings() {
         .then((data) => {
           if (session.data.user.role === "Recruiter") {
             const activeJobListing = data.filter(
-              (jobListing) => jobListing.jobListingStatus === "Active"
+              (jobListing) => jobListing.jobListingStatus === "Approved"
             );
             setJobListings(activeJobListing);
           } else {

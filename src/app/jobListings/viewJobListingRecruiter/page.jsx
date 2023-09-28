@@ -186,7 +186,7 @@ export default function ViewJobListingRecruiter() {
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === "Active" ? "green" : "red",
+                    jobListing.jobListingStatus === "Approved" ? "green" : "red",
                 }}
               >
                 {jobListing.jobListingStatus}
