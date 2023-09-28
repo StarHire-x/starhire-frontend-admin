@@ -196,6 +196,7 @@ export default function ViewJobListingAdmin() {
     </React.Fragment>
   );
 
+  /*
   const footer = (
     <div className="flex flex-wrap justify-content-end gap-2">
       <Button
@@ -218,6 +219,38 @@ export default function ViewJobListingAdmin() {
       />
     </div>
   );
+  */
+
+  const footer = (
+    <div className="flex flex-wrap justify-content-end gap-2">
+      {(jobListing.jobListingStatus === 'Unverified' || jobListing.jobListingStatus === 'Inactive') && (
+        <Button
+          label="Approve"
+          icon="pi pi-check"
+          className="approve-button p-button-outlined p-button-secondary"
+          onClick={() => showUserDialog('Active')}
+        />
+      )}
+      {jobListing.jobListingStatus === 'Unverified' && (
+        <Button
+          label="Reject"
+          icon="pi pi-times"
+          className="reject-button p-button-outlined p-button-secondary"
+          onClick={() => showUserDialog('Inactive')}
+        />
+      )}
+      {(jobListing.jobListingStatus === 'Active' || jobListing.jobListingStatus === 'Inactive') && (
+        <Button
+          label="Archive"
+          icon="pi pi-folder"
+          className="archive-button p-button-outlined p-button-secondary"
+          onClick={() => showUserDialog('Archived')}
+        />
+      )}
+    </div>
+  );
+  
+  
 
   return (
     <div className="container">
