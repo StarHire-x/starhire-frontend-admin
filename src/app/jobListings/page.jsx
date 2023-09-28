@@ -12,6 +12,7 @@ import { Calendar } from "primereact/calendar";
 import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -56,15 +57,15 @@ export default function JobListings() {
   });
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [jobListingStatuses] = useState(["Active", "Unverified", "Inactive"]);
+  const [jobListingStatuses] = useState(["Approved", "Unverified", "Rejected", "Archived"]);
 
   const getStatus = (status) => {
     switch (status) {
-      case "Active":
+      case "Approved":
         return "success";
       case "Unverified":
         return "danger";
-      case "Inactive":
+      case "Rejected":
         return "danger";
     }
   };
@@ -226,7 +227,7 @@ export default function JobListings() {
         .then((data) => {
           if (session.data.user.role === "Recruiter") {
             const activeJobListing = data.filter(
-              (jobListing) => jobListing.jobListingStatus === "Active"
+              (jobListing) => jobListing.jobListingStatus === "Approved"
             );
             setJobListings(activeJobListing);
           } else {
@@ -285,9 +286,7 @@ export default function JobListings() {
     return (
       <div className="card">
         {isLoading ? (
-          <div className="loading-animation">
-            <div className="spinner"></div>
-          </div>
+          <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}} />
         ) : (
           <>
             <DataTable
@@ -377,40 +376,3 @@ export default function JobListings() {
   }
 }
 
-//OLD CODE
-/*
-import React, { useState, useEffect } from 'react';
-import JobListingsDataScroller from '@/components/JobListingsDataScroller/jobListingsDataScroller';
-import JobListingsTable from '@/components/JobListingsTable/jobListingsTable';
-import { useRouter } from "next/router";
-        
-
-export default function JobListings() {
-    //const router = useRouter();
-    const [jobListings, setJobListings] = useState([]);
-
-
-    useEffect(() => {
-        fetch(`http://localhost:8080/job-listing`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setJobListings(data);
-            })
-            .catch((error) => {
-                console.error('Error fetching data:', error);
-            });
-    }, []);
-
-    return (
-        <div className="card">
-            <JobListingsTable jobListings={jobListings} /> 
-        </div>
-
-    );
-}
-*/

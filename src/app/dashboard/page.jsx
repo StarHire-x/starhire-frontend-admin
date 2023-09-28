@@ -3,6 +3,8 @@ import React from "react";
 import styles from "./page.module.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ProgressSpinner } from "primereact/progressspinner";
+
 
 const Dashboard = () => {
   const session = useSession();
@@ -12,7 +14,7 @@ const Dashboard = () => {
   console.log(session);
 
   if (session.status === "loading") {
-    return <p>Loading...</p>;
+    return <ProgressSpinner />;
   }
 
   if (session.status === "unauthenticated") {

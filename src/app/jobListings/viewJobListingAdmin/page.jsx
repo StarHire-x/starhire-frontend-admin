@@ -9,9 +9,11 @@ import { Jolly_Lodger } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Dialog } from 'primereact/dialog';
+import { ProgressSpinner } from "primereact/progressspinner";
 import { useSession } from 'next-auth/react';
 import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
 import { updateJobListing } from '@/app/api/auth/jobListings/route';
+import { informJobListingStatus } from '@/app/api/auth/jobListings/route';
 import HumanIcon from "../../../../public/icon.png";
 
 export default function ViewJobListingAdmin() {
@@ -140,6 +142,7 @@ export default function ViewJobListingAdmin() {
       const response = await updateJobListing(accessToken, request, id);
 
       if (response.statusCode === 200) {
+        informJobListingStatusMethod(id, accessToken);
         handleRefresh();
       } else {
         alert('Something went wrong! ERROR CODE:' + response.statusCode);
@@ -149,6 +152,22 @@ export default function ViewJobListingAdmin() {
       console.error('Error changing status:', error);
     }
   };
+
+  //Send email about change in state for job listing
+    const informJobListingStatusMethod = async (jobListingId) => {
+      try {
+        //This is the backend API call
+        const response = await informJobListingStatus(jobListingId, accessToken);
+    
+        if (response.status === 200) {
+          console.log('Job listing status email sent successfully');
+        } else {
+          console.error('Failed to send job listing status email' + JSON.stringify(response));
+        }
+      } catch (error) {
+        console.error('Error sending job listing status email:', error);
+      }
+    }; 
 
   /*
   const footer = (
@@ -195,6 +214,7 @@ export default function ViewJobListingAdmin() {
     </React.Fragment>
   );
 
+  /*
   const footer = (
     <div className="flex flex-wrap justify-content-end gap-2">
       <Button
@@ -217,13 +237,43 @@ export default function ViewJobListingAdmin() {
       />
     </div>
   );
+  */
+
+  const footer = (
+    <div className="flex flex-wrap justify-content-end gap-2">
+      {(jobListing.jobListingStatus === 'Unverified' || jobListing.jobListingStatus === 'Rejected' || jobListing.jobListingStatus === 'Archived') && (
+        <Button
+          label="Approve"
+          icon="pi pi-check"
+          className="approve-button p-button-outlined p-button-secondary"
+          onClick={() => showUserDialog('Approved')}
+        />
+      )}
+      {jobListing.jobListingStatus === 'Unverified' && (
+        <Button
+          label="Reject"
+          icon="pi pi-times"
+          className="reject-button p-button-outlined p-button-secondary"
+          onClick={() => showUserDialog('Rejected')}
+        />
+      )}
+      {(jobListing.jobListingStatus === 'Approved' || jobListing.jobListingStatus === 'Rejected') && (
+        <Button
+          label="Archive"
+          icon="pi pi-folder"
+          className="archive-button p-button-outlined p-button-secondary"
+          onClick={() => showUserDialog('Archived')}
+        />
+      )}
+    </div>
+  );
+  
+  
 
   return (
     <div className="container">
       {isLoading ? (
-        <div className="loading-animation">
-          <div className="spinner"></div>
-        </div>
+        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
       ) : (
         <div>
           <Card
@@ -278,7 +328,7 @@ export default function ViewJobListingAdmin() {
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === 'Active' ? 'green' : 'red',
+                    jobListing.jobListingStatus === 'Approved' ? 'green' : 'red',
                 }}
               >
                 {jobListing.jobListingStatus}

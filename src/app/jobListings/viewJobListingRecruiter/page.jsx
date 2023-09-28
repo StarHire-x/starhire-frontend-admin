@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
+import { ProgressSpinner } from "primereact/progressspinner";
 import "./styles.css";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
@@ -126,9 +127,7 @@ export default function ViewJobListingRecruiter() {
   return (
     <div className="container">
       {isLoading ? (
-        <div className="loading-animation">
-          <div className="spinner"></div>
-        </div>
+        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
       ) : (
         <div>
           <Card
@@ -187,7 +186,7 @@ export default function ViewJobListingRecruiter() {
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === "Active" ? "green" : "red",
+                    jobListing.jobListingStatus === "Approved" ? "green" : "red",
                 }}
               >
                 {jobListing.jobListingStatus}
