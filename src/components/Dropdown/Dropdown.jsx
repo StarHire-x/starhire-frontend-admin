@@ -5,7 +5,7 @@ import { Tree } from "primereact/tree";
 export const Dropdown = (props) => {
   const { nodes } = props;
   const nodeTemplate = (node, options) => {
-    let label = <b>{node.label}</b>;
+    let label = <p>{node.label}</p>;
 
     if (node.url) {
       label = (

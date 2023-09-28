@@ -11,9 +11,8 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Button } from "primereact/button";
 import { Tag } from "primereact/tag";
 import { useRouter } from "next/navigation";
-import { classNames } from "primereact/utils";
-import { Tree } from "primereact/tree";
 import { Dropdown } from "@/components/Dropdown/Dropdown";
+import { Checkbox } from "primereact/checkbox";
 
 const viewJobApplication = () => {
   const session = useSession();
@@ -32,6 +31,7 @@ const viewJobApplication = () => {
   const [jobApplication, setJobApplication] = useState(null);
   const [documents, setDocuments] = useState([]);
   const [jobListing, setJobListing] = useState(null);
+  const [selectedDocuments, setSelectedDocuments] = useState([]);
 
   const convertTimestampToDate = (timestamp) => {
     let currentDate = new Date(timestamp);
@@ -71,9 +71,7 @@ const viewJobApplication = () => {
   };
 
   const handleOnBackClick = () => {
-    return router.push(
-      `/jobApplications?id=${jobApplication?.jobApplicationId}`
-    );
+    return router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
   };
 
   const nodes = [
@@ -83,11 +81,18 @@ const viewJobApplication = () => {
       children: [
         { key: "0-0", label: `Title: ${jobListing?.title}` },
         { key: "0-1", label: `Overview: ${jobListing?.overview}` },
+        { key: "0-2", label: `Location: ${jobListing?.jobLocation}` },
+        {
+          key: "0-3",
+          label: `Job Start Date: ${convertTimestampToDate(
+            jobListing?.jobStartDate
+          )}`,
+        },
       ],
     },
     {
       key: "1",
-      label: "Requirements",
+      label: "Qualifications & Requirements",
       children: [
         {
           key: "1-0",
@@ -102,6 +107,18 @@ const viewJobApplication = () => {
     },
   ];
 
+  const onDocumentChange = (e) => {
+    let _selectedDocuments = [...selectedDocuments];
+
+    if (e.checked) _selectedDocuments.push(e.value);
+    else
+      _selectedDocuments = _selectedDocuments.filter(
+        (document) => document.documentId !== e.value.documentId
+      );
+
+    setSelectedDocuments(_selectedDocuments);
+  };
+
   // retrieve all jobApplication and jobSeeker details
   useEffect(() => {
     const populateDetails = async () => {
@@ -110,7 +127,6 @@ const viewJobApplication = () => {
           jobApplicationId,
           accessToken
         );
-        console.log(details);
         setJobApplication(details);
         setJobSeeker(details.jobSeeker);
         setDocuments(details.documents);
@@ -147,7 +163,7 @@ const viewJobApplication = () => {
                 className={styles.avatar}
               />
             )}
-            <Card className={styles.jobSeekerCard} title="Applicant Details">
+            <Card className={styles.jobSeekerCard}>
               <p className={styles.text}>
                 <b>Username: </b>
                 {jobSeeker?.userName}
@@ -169,25 +185,56 @@ const viewJobApplication = () => {
             </Card>
           </div>
           <div className={styles.jobSeekerApplication}>
-            <Card className={styles.childCard} title="Job Listing Details">
+            <Card className={styles.childCard} title="Job Listing">
               <Dropdown nodes={nodes} />
             </Card>
             <Card
               className={styles.childCard}
-              title="Application Details"
+              title="Application"
               subTitle={getApplicationStatus}
             >
               <div className={styles.dates}>
                 <p>
-                  <b>Available Start Date:</b>
+                  <b>Available Dates</b>
                   <br />
-                  {convertTimestampToDate(jobApplication?.availableStartDate)}
+                  {convertTimestampToDate(
+                    jobApplication?.availableStartDate
+                  )}{" "}
+                  to {convertTimestampToDate(jobApplication?.availableEndDate)}
                 </p>
+              </div>
+              <div className={styles.checkboxes}>
                 <p>
-                  <b>Available End Date:</b>
-                  <br />
-                  {convertTimestampToDate(jobApplication?.availableEndDate)}
+                  {" "}
+                  <b>Documents Submitted:</b>
                 </p>
+                {documents.map((document) => (
+                  <div
+                    key={document.documentId}
+                    className={styles.childCheckbox}
+                  >
+                    <Checkbox
+                      inputId={document.documentId}
+                      name="document"
+                      value={document}
+                      onChange={onDocumentChange}
+                      checked={selectedDocuments.some(
+                        (item) => item.documentId === document.documentId
+                      )}
+                    />
+                    <label htmlFor={document.documentId} className="ml-2">
+                      {document.documentName}
+                    </label>
+                    <a href={`${document.documentLink}`} target="_blank">
+                      <Button
+                        icon="pi pi-download"
+                        rounded
+                        text
+                        severity="info"
+                      />
+                    </a>
+                  </div>
+                ))}
               </div>
             </Card>
           </div>
@@ -204,6 +251,7 @@ const viewJobApplication = () => {
               icon="pi pi-send"
               rounded
               severity="info"
+              disabled={selectedDocuments.length != documents.length}
               // onClick={() => handleOnAssignClick()}
             />
           </div>
