@@ -141,6 +141,7 @@ export default function AccountManagement() {
     // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
     const jobListingId = jobListing.jobListingId;
     const jobSeekerId = selectedRowData.userId;
+    const recruiterId = session.data.user.userId;
     // console.log("HERE!!!");
     // console.log(jobSeekerId);
 
@@ -148,6 +149,7 @@ export default function AccountManagement() {
       const response = await assignJobListing(
         jobSeekerId,
         jobListingId,
+        recruiterId,
         accessToken
       );
       console.log("Job Seeker has been assigned to Job Listing", response);

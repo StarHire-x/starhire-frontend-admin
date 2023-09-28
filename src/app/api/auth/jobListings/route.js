@@ -70,10 +70,10 @@ export const updateJobListing = async (accessToken, request, id) => {
   }
 };
 
-export const assignJobListing = async ( jobSeekerId, jobListingId, accessToken) => {
+export const assignJobListing = async ( jobSeekerId, jobListingId, recruiterId, accessToken) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/job-listing/assignJobListing/${jobSeekerId}/${jobListingId}`, {
+      `http://localhost:8080/job-listing/assignJobListing/${jobSeekerId}/${jobListingId}/${recruiterId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -92,3 +92,33 @@ export const assignJobListing = async ( jobSeekerId, jobListingId, accessToken) 
     throw error;
   }
 };
+
+export const informJobListingStatus = async (jobListingId, accessToken) => {
+  try {
+    const res = await fetch(`http://localhost:8080/email/inform-status/${jobListingId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      /*
+      body: JSON.stringify({
+        jobListingId: jobListingId, 
+      }),
+      */
+
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem", error);
+    throw error;
+  }
+};
+
