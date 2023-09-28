@@ -87,7 +87,12 @@ export default function UserProfile() {
         outlined
         onClick={hideAssignDialog}
       />
-      <Button label="Assign" rounded icon="pi pi-check" onClick={handleOnAssignClick} />
+      <Button
+        label="Assign"
+        rounded
+        icon="pi pi-check"
+        onClick={handleOnAssignClick}
+      />
     </React.Fragment>
   );
 
@@ -108,6 +113,7 @@ export default function UserProfile() {
       const response = await assignJobListing(
         jobSeekerId,
         jobListingId,
+        userIdRef,
         accessToken
       );
       console.log("Job Seeker has been assigned to Job Listing", response);
@@ -128,7 +134,14 @@ export default function UserProfile() {
   return (
     <div className={styles.container}>
       {isLoading ? (
-        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
+        <ProgressSpinner
+          style={{
+            display: "flex",
+            height: "100vh",
+            "justify-content": "center",
+            "align-items": "center",
+          }}
+        />
       ) : (
         <>
           <div className={styles.userProfileSection}>
@@ -145,17 +158,39 @@ export default function UserProfile() {
             </div>
 
             <Card className={styles.userDetailsCard}>
-              <p className={styles.userDetailsFullName}>
-                Name: {user?.fullName}
-              </p>
-              <p className={styles.userDetails}>
-                Date of Birth: {formatDate(user?.dateOfBirth)}
-              </p>
-              <p className={styles.userDetails}>Username: {user.userName}</p>
-              <p className={styles.userDetails}>Email: {user.email}</p>
-              <p className={styles.userDetails}>
-                Contact Number: {user.contactNo}
-              </p>
+              <div className={styles.userInformationContainer}>
+                <div>
+                  {user?.fullName && (
+                    <p className={styles.userDetailsFullName}>
+                      Name: {user?.fullName}
+                    </p>
+                  )}
+                  <p className={styles.userDetails}>
+                    Username: {user.userName}
+                  </p>
+                  <p className={styles.userDetails}>
+                    Date of Birth: {formatDate(user?.dateOfBirth)}
+                  </p>
+
+                  <p className={styles.userDetails}>Email: {user.email}</p>
+                  <p className={styles.userDetails}>
+                    Contact Number: {user.contactNo}
+                  </p>
+                  {user?.resumePdf && currentUserRole === "Recruiter" && (
+                    <Button
+                      size="small"
+                      label="View Resume"
+                      icon="pi pi-file-pdf"
+                      onClick={() => {
+                        window.open(user?.resumePdf, "_blank");
+                      }}
+                    />
+                  )}
+                </div>
+                <div className={styles.userInformationSecondRow}>
+                  {/* display information here in new row */}
+                </div>
+              </div>
             </Card>
           </div>
           <div className={styles.jobPreferenceSection}>
@@ -176,7 +211,12 @@ export default function UserProfile() {
             </div>
             {currentUserRole && currentUserRole === "Recruiter" && (
               <div className={styles.assignButtonContainer}>
-                <Button label="Assign" rounded className={styles.assignButton} onClick={() => setAssignDialog(true)} />
+                <Button
+                  label="Assign"
+                  rounded
+                  className={styles.assignButton}
+                  onClick={() => setAssignDialog(true)}
+                />
                 <Dialog
                   visible={assignDialog}
                   style={{ width: "32rem" }}

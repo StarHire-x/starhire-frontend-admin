@@ -39,24 +39,22 @@
 
 .userDetailsCard {
     margin-left: auto;
-    width: 60vw;
+    width: 100%;
 }
 
 .userDetails {
     margin-bottom: 20px;
     font-size: 20px;
-    margin-left: 20px;
 }
 
 .userDetailsFullName {
     margin-bottom: 20px;
     font-size: 35px;
-    margin-left: 20px;
 }
 
 .userProfilePictureContainer {
-    max-width: 260px;
-    max-height: 260px;
+    max-width: 360px;
+    max-height: 360px;
     min-width: 60px;
     min-height: 60px;
     margin-right: 5vw;
@@ -108,4 +106,15 @@
       rgba(255, 255, 255, 0.2) 100%
     ) !important;
     background-color: #e29578 !important;
+}
+
+
+.userInformationContainer {
+    display: flex;
+    flex-direction: row;
+    margin-left: 5%;
+}
+
+.userInformationSecondRow {
+    margin-left: 5%;
 }
