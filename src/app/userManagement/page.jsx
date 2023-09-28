@@ -13,6 +13,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
 import { Tag } from "primereact/tag";
+import { ProgressSpinner } from "primereact/progressspinner";
 import {
   updateUser,
   getUsers,
@@ -487,9 +488,7 @@ export default function AccountManagement() {
     return (
       <>
       {isLoading ? (
-        <div className={styles.loadingAnimation}>
-          <div className={styles.spinner}></div>
-        </div>
+        <ProgressSpinner />
       ) : (
         <>
         <div className="card">

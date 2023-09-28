@@ -12,6 +12,7 @@ import JobPreferencePanel from "@/components/JobPreferencePanel/JobPreferencePan
 import { Button } from "primereact/button";
 import { assignJobListing } from "../api/auth/jobListings/route";
 import { Dialog } from "primereact/dialog";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 export default function UserProfile() {
   const session = useSession();
@@ -127,9 +128,7 @@ export default function UserProfile() {
   return (
     <div className={styles.container}>
       {isLoading ? (
-        <div className={styles.loadingAnimation}>
-          <div className={styles.spinner}></div>
-        </div>
+        <ProgressSpinner />
       ) : (
         <>
           <div className={styles.userProfileSection}>

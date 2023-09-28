@@ -12,6 +12,7 @@ import { Calendar } from "primereact/calendar";
 import { MultiSelect } from "primereact/multiselect";
 import { Slider } from "primereact/slider";
 import { Dialog } from "primereact/dialog";
+import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -285,9 +286,7 @@ export default function JobListings() {
     return (
       <div className="card">
         {isLoading ? (
-          <div className="loading-animation">
-            <div className="spinner"></div>
-          </div>
+          <ProgressSpinner />
         ) : (
           <>
             <DataTable
