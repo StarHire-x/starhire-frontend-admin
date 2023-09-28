@@ -486,6 +486,12 @@ export default function AccountManagement() {
   ) {
     return (
       <>
+      {isLoading ? (
+        <div className={styles.loadingAnimation}>
+          <div className={styles.spinner}></div>
+        </div>
+      ) : (
+        <>
         <div className="card">
           <DataTable
             value={user}
@@ -740,6 +746,8 @@ export default function AccountManagement() {
             </div>
           </Dialog>
         </div>
+      </>
+      )}
       </>
     );
   }
