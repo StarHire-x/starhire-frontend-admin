@@ -13,6 +13,7 @@ import { Tag } from "primereact/tag";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "@/components/Dropdown/Dropdown";
 import { Checkbox } from "primereact/checkbox";
+import { updateJobApplicationStatus } from "@/app/api/auth/jobApplications/route";
 
 const viewJobApplication = () => {
   const session = useSession();
@@ -58,6 +59,9 @@ const viewJobApplication = () => {
       case "Processing":
         return "warning";
 
+      case "To_Be_Submitted":
+        return "null";
+
       case "Waiting_For_Interview":
         return null;
     }
@@ -72,6 +76,21 @@ const viewJobApplication = () => {
 
   const handleOnBackClick = () => {
     return router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
+  };
+
+  const updateStatus = async (status) => {
+    const request = {
+      jobApplicationStatus: status,
+    };
+    try {
+      await updateJobApplicationStatus(
+        request,
+        jobApplication?.jobApplicationId,
+        accessToken
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const nodes = [
@@ -213,15 +232,17 @@ const viewJobApplication = () => {
                     key={document.documentId}
                     className={styles.childCheckbox}
                   >
-                    <Checkbox
-                      inputId={document.documentId}
-                      name="document"
-                      value={document}
-                      onChange={onDocumentChange}
-                      checked={selectedDocuments.some(
-                        (item) => item.documentId === document.documentId
-                      )}
-                    />
+                    {jobApplication?.jobApplicationStatus === "Submitted" && (
+                      <Checkbox
+                        inputId={document.documentId}
+                        name="document"
+                        value={document}
+                        onChange={onDocumentChange}
+                        checked={selectedDocuments.some(
+                          (item) => item.documentId === document.documentId
+                        )}
+                      />
+                    )}
                     <label htmlFor={document.documentId} className="ml-2">
                       {document.documentName}
                     </label>
@@ -246,14 +267,25 @@ const viewJobApplication = () => {
               severity="primary"
               onClick={() => handleOnBackClick()}
             />
-            <Button
-              label="Send Corporate"
-              icon="pi pi-send"
-              rounded
-              severity="info"
-              disabled={selectedDocuments.length != documents.length}
-              // onClick={() => handleOnAssignClick()}
-            />
+            {jobApplication?.jobApplicationStatus === "Submitted" && (
+              <div className={styles.subButtons}>
+                <Button
+                  label="Reject"
+                  icon="pi pi-thumbs-down"
+                  rounded
+                  severity="danger"
+                  onClick={() => updateStatus("To_Be_Submitted")}
+                />
+                <Button
+                  label="Send Corporate"
+                  icon="pi pi-send"
+                  rounded
+                  severity="info"
+                  disabled={selectedDocuments.length != documents.length}
+                  onClick={() => updateStatus("Processing")}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

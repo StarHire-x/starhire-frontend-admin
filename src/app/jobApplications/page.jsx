@@ -71,6 +71,7 @@ export default function CustomersDemo() {
     "Submitted",
     "Processing",
     "Waiting_For_Interview",
+    "To_Be_Submitted",
   ];
   const getSeverity = (status) => {
     switch (status) {
@@ -85,6 +86,9 @@ export default function CustomersDemo() {
 
       case "Processing":
         return "warning";
+
+      case "To_Be_Submitted":
+        return "null";
 
       case "Waiting_For_Interview":
         return null;
