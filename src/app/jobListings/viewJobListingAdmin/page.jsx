@@ -310,7 +310,7 @@ export default function ViewJobListingAdmin() {
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === 'Active' ? 'green' : 'red',
+                    jobListing.jobListingStatus === 'Approved' ? 'green' : 'red',
                 }}
               >
                 {jobListing.jobListingStatus}
