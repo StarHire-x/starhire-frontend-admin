@@ -169,6 +169,9 @@ export default function AccountManagement() {
   const handleOnBackClick = () => {
     router.push(`/jobListings/viewJobListingRecruiter?id=${id}`);
   };
+  const handleViewJobApplicationClick = () => {
+    router.push(`/jobApplications?id=${id}`);
+  };
 
   const actionAdminBodyTemplate = (rowData) => {
     console.log("Row Data:", rowData);
@@ -330,7 +333,12 @@ export default function AccountManagement() {
         outlined
         onClick={hideAssignDialog}
       />
-      <Button label="Assign" rounded icon="pi pi-check" onClick={handleOnAssignClick} />
+      <Button
+        label="Assign"
+        rounded
+        icon="pi pi-check"
+        onClick={handleOnAssignClick}
+      />
     </React.Fragment>
   );
 
@@ -489,266 +497,284 @@ export default function AccountManagement() {
   ) {
     return (
       <>
-      {isLoading ? (
-        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}} />
-      ) : (
-        <>
-        <div className="card">
-          <DataTable
-            value={user}
-            paginator
-            ref={dt}
-            header={header}
-            rows={10}
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            rowsPerPageOptions={[10, 25, 50]}
-            dataKey="id"
-            selectionMode="checkbox"
-            selection={selectedUsers}
-            onSelectionChange={(e) => setSelectedUsers(e.value)}
-            filters={filters}
-            filterDisplay="menu"
-            globalFilterFields={[
-              "userName",
-              "email",
-              "contactNo",
-              "status",
-              "role",
-            ]}
-            emptyMessage="No users found."
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-          >
-            <Column
-              field="userName"
-              header="User Name"
-              sortable
-              body={usernameBodyTemplate}
-            ></Column>
-            <Column field="email" header="Email" sortable></Column>
-            <Column field="contactNo" header="Contact No" sortable></Column>
-            {session.data.user.role === "Administrator" && (
-              <Column
-                field="status"
-                header="Status"
-                sortable
-                body={statusBodyTemplate}
-                filter
-                filterElement={statusFilterTemplate}
-              ></Column>
-            )}
-            <Column field="role" header="Role" sortable></Column>
-            {session.data.user.role === "Administrator" ? (
-              <Column
-                body={actionAdminBodyTemplate}
-                exportable={false}
-                style={{ minWidth: "12rem" }}
-              ></Column>
-            ) : (
-              <Column
-                body={actionRecruiterBodyTemplate}
-                exportable={false}
-                style={{ minWidth: "12rem" }}
-              ></Column>
-            )}
-            {session.data.user.role === "Administrator" && (
-              <Column
-                field="createdAt"
-                header="Created Date"
-                body={(rowData) => formatDate(rowData.createdAt)}
-                sortable
-              ></Column>
-            )}
-          </DataTable>
-          <div className={styles.backButtonContainer}>
-          {session.data.user.role === "Recruiter" && (
-            <Button
-              label="Back"
-              icon="pi pi-chevron-left"
-              rounded
-              className={styles.backButton}
-              onClick={() => handleOnBackClick()}
-            />
-          )}
-        </div>
+        {isLoading ? (
+          <ProgressSpinner
+            style={{
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
+            }}
+          />
+        ) : (
+          <>
+            <div className="card">
+              <DataTable
+                value={user}
+                paginator
+                ref={dt}
+                header={header}
+                rows={10}
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                rowsPerPageOptions={[10, 25, 50]}
+                dataKey="id"
+                selectionMode="checkbox"
+                selection={selectedUsers}
+                onSelectionChange={(e) => setSelectedUsers(e.value)}
+                filters={filters}
+                filterDisplay="menu"
+                globalFilterFields={[
+                  "userName",
+                  "email",
+                  "contactNo",
+                  "status",
+                  "role",
+                ]}
+                emptyMessage="No users found."
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              >
+                <Column
+                  field="userName"
+                  header="User Name"
+                  sortable
+                  body={usernameBodyTemplate}
+                ></Column>
+                <Column field="email" header="Email" sortable></Column>
+                <Column field="contactNo" header="Contact No" sortable></Column>
+                {session.data.user.role === "Administrator" && (
+                  <Column
+                    field="status"
+                    header="Status"
+                    sortable
+                    body={statusBodyTemplate}
+                    filter
+                    filterElement={statusFilterTemplate}
+                  ></Column>
+                )}
+                <Column field="role" header="Role" sortable></Column>
+                {session.data.user.role === "Administrator" ? (
+                  <Column
+                    body={actionAdminBodyTemplate}
+                    exportable={false}
+                    style={{ minWidth: "12rem" }}
+                  ></Column>
+                ) : (
+                  <Column
+                    body={actionRecruiterBodyTemplate}
+                    exportable={false}
+                    style={{ minWidth: "12rem" }}
+                  ></Column>
+                )}
+                {session.data.user.role === "Administrator" && (
+                  <Column
+                    field="createdAt"
+                    header="Created Date"
+                    body={(rowData) => formatDate(rowData.createdAt)}
+                    sortable
+                  ></Column>
+                )}
+              </DataTable>
+              <div className={styles.backButtonContainer}>
+                {session.data.user.role === "Recruiter" && (
+                  <>
+                    <Button
+                      label="Back"
+                      icon="pi pi-chevron-left"
+                      rounded
+                      className={styles.backButton}
+                      onClick={() => handleOnBackClick()}
+                    />
+                    <Button
+                      label="View Job Applications"
+                      rounded
+                      className="p-button-warning"
+                      onClick={() => handleViewJobApplicationClick()}
+                    />
+                  </>
+                )}
+              </div>
 
-          <Dialog
-            visible={assignDialog}
-            style={{ width: "32rem" }}
-            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-            header="Assign Job Listing"
-            className="p-fluid"
-            footer={recruiterAssignDialogFooter}
-            onHide={hideAssignDialog}
-          >
-            <h3>
-              Do you wish to assign Job Listing {jobListing.jobListingId} to{" "}
-              {selectedRowData && selectedRowData.userName}?
-            </h3>
-          </Dialog>
+              <Dialog
+                visible={assignDialog}
+                style={{ width: "32rem" }}
+                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                header="Assign Job Listing"
+                className="p-fluid"
+                footer={recruiterAssignDialogFooter}
+                onHide={hideAssignDialog}
+              >
+                <h3>
+                  Do you wish to assign Job Listing {jobListing.jobListingId} to{" "}
+                  {selectedRowData && selectedRowData.userName}?
+                </h3>
+              </Dialog>
 
-          <Dialog
-            visible={userDialog}
-            style={{ width: "32rem" }}
-            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-            header="Change Status"
-            className="p-fluid"
-            footer={userDialogFooter}
-            onHide={hideDialog}
-          >
-            <h3>{selectedRowData && selectedRowData.userName}</h3>
-          </Dialog>
+              <Dialog
+                visible={userDialog}
+                style={{ width: "32rem" }}
+                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                header="Change Status"
+                className="p-fluid"
+                footer={userDialogFooter}
+                onHide={hideDialog}
+              >
+                <h3>{selectedRowData && selectedRowData.userName}</h3>
+              </Dialog>
 
-          <Dialog
-            visible={deleteDialog}
-            style={{ width: "32rem" }}
-            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-            header="Delete user"
-            className="p-fluid"
-            footer={deleteUserDialogFooter}
-            onHide={hideDeleteDialog}
-          >
-            <h1>{selectedRowData && selectedRowData.userName}</h1>
-          </Dialog>
+              <Dialog
+                visible={deleteDialog}
+                style={{ width: "32rem" }}
+                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                header="Delete user"
+                className="p-fluid"
+                footer={deleteUserDialogFooter}
+                onHide={hideDeleteDialog}
+              >
+                <h1>{selectedRowData && selectedRowData.userName}</h1>
+              </Dialog>
 
-          <Dialog
-            visible={viewUserDialog}
-            style={{ width: "32rem" }}
-            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-            header="User Details"
-            modal
-            className="p-fluid"
-            onHide={hideViewDialog}
-          >
-            <div className={styles.centerContent}>
-              {selectedRowData?.profilePictureUrl && (
-                <img
-                  src={selectedRowData.profilePictureUrl}
-                  alt="User Profile"
-                  className={styles.avatar}
-                />
-              )}
-              {selectedRowData?.userId && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="userId" className="font-bold">
-                    User Id:
-                  </label>
-                  <p>{selectedRowData?.userId}</p>
-                </div>
-              )}
-              {selectedRowData?.userName && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="userName" className="font-bold">
-                    Username:
-                  </label>
-                  <p>{selectedRowData?.userName}</p>
-                </div>
-              )}
-              {selectedRowData?.email && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="email" className="font-bold">
-                    Email:
-                  </label>
-                  <p>{selectedRowData?.email}</p>
-                </div>
-              )}
-              {selectedRowData?.fullName && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="fullName" className="font-bold">
-                    Full Name:
-                  </label>
-                  <p>{selectedRowData?.fullName}</p>
-                </div>
-              )}
+              <Dialog
+                visible={viewUserDialog}
+                style={{ width: "32rem" }}
+                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                header="User Details"
+                modal
+                className="p-fluid"
+                onHide={hideViewDialog}
+              >
+                <div className={styles.centerContent}>
+                  {selectedRowData?.profilePictureUrl && (
+                    <img
+                      src={selectedRowData.profilePictureUrl}
+                      alt="User Profile"
+                      className={styles.avatar}
+                    />
+                  )}
+                  {selectedRowData?.userId && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="userId" className="font-bold">
+                        User Id:
+                      </label>
+                      <p>{selectedRowData?.userId}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.userName && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="userName" className="font-bold">
+                        Username:
+                      </label>
+                      <p>{selectedRowData?.userName}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.email && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="email" className="font-bold">
+                        Email:
+                      </label>
+                      <p>{selectedRowData?.email}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.fullName && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="fullName" className="font-bold">
+                        Full Name:
+                      </label>
+                      <p>{selectedRowData?.fullName}</p>
+                    </div>
+                  )}
 
-              {/* Corporate specific stuff */}
-              {selectedRowData?.companyName && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="companyName" className="font-bold">
-                    Company Name:
-                  </label>
-                  <p>{selectedRowData?.companyName}</p>
-                </div>
-              )}
-              {selectedRowData?.companyRegistrationId && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="companyRegistrationId" className="font-bold">
-                    Company Registration Id:
-                  </label>
-                  <p>{selectedRowData?.companyRegistrationId}</p>
-                </div>
-              )}
-              {selectedRowData?.companyAddress && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="companyAddress" className="font-bold">
-                    Company Address:
-                  </label>
-                  <p>{selectedRowData?.companyAddress}</p>
-                </div>
-              )}
+                  {/* Corporate specific stuff */}
+                  {selectedRowData?.companyName && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="companyName" className="font-bold">
+                        Company Name:
+                      </label>
+                      <p>{selectedRowData?.companyName}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.companyRegistrationId && (
+                    <div className={styles.inlineField}>
+                      <label
+                        htmlFor="companyRegistrationId"
+                        className="font-bold"
+                      >
+                        Company Registration Id:
+                      </label>
+                      <p>{selectedRowData?.companyRegistrationId}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.companyAddress && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="companyAddress" className="font-bold">
+                        Company Address:
+                      </label>
+                      <p>{selectedRowData?.companyAddress}</p>
+                    </div>
+                  )}
 
-              {/* Job seeker specific stuff */}
-              {selectedRowData?.dateOfBirth && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="dateOfBirth" className="font-bold">
-                    Date of Birth:
-                  </label>
-                  <p>{formatDate(selectedRowData?.dateOfBirth)}</p>
-                </div>
-              )}
-              {selectedRowData?.homeAddress && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="homeAddress" className="font-bold">
-                    Home Address:
-                  </label>
-                  <p>{selectedRowData?.homeAddress}</p>
-                </div>
-              )}
+                  {/* Job seeker specific stuff */}
+                  {selectedRowData?.dateOfBirth && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="dateOfBirth" className="font-bold">
+                        Date of Birth:
+                      </label>
+                      <p>{formatDate(selectedRowData?.dateOfBirth)}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.homeAddress && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="homeAddress" className="font-bold">
+                        Home Address:
+                      </label>
+                      <p>{selectedRowData?.homeAddress}</p>
+                    </div>
+                  )}
 
-              {selectedRowData?.contactNo && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="contactNo" className="font-bold">
-                    Contact No:
-                  </label>
-                  <p>{selectedRowData?.contactNo}</p>
+                  {selectedRowData?.contactNo && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="contactNo" className="font-bold">
+                        Contact No:
+                      </label>
+                      <p>{selectedRowData?.contactNo}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.status && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="status" className="font-bold">
+                        Status:
+                      </label>
+                      <p>{selectedRowData?.status}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.status && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="notificationMode" className="font-bold">
+                        Notification Mode:
+                      </label>
+                      <p>{selectedRowData?.notificationMode}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.role && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="role" className="font-bold">
+                        Role:
+                      </label>
+                      <p>{selectedRowData?.role}</p>
+                    </div>
+                  )}
+                  {selectedRowData?.createdAt && (
+                    <div className={styles.inlineField}>
+                      <label htmlFor="createdAt" className="font-bold">
+                        Created At:
+                      </label>
+                      <p>{formatDate(selectedRowData?.createdAt)}</p>
+                    </div>
+                  )}
                 </div>
-              )}
-              {selectedRowData?.status && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="status" className="font-bold">
-                    Status:
-                  </label>
-                  <p>{selectedRowData?.status}</p>
-                </div>
-              )}
-              {selectedRowData?.status && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="notificationMode" className="font-bold">
-                    Notification Mode:
-                  </label>
-                  <p>{selectedRowData?.notificationMode}</p>
-                </div>
-              )}
-              {selectedRowData?.role && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="role" className="font-bold">
-                    Role:
-                  </label>
-                  <p>{selectedRowData?.role}</p>
-                </div>
-              )}
-              {selectedRowData?.createdAt && (
-                <div className={styles.inlineField}>
-                  <label htmlFor="createdAt" className="font-bold">
-                    Created At:
-                  </label>
-                  <p>{formatDate(selectedRowData?.createdAt)}</p>
-                </div>
-              )}
+              </Dialog>
             </div>
-          </Dialog>
-        </div>
-      </>
-      )}
+          </>
+        )}
       </>
     );
   }
