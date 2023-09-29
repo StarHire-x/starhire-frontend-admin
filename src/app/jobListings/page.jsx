@@ -57,7 +57,12 @@ export default function JobListings() {
   });
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [jobListingStatuses] = useState(["Approved", "Unverified", "Rejected", "Archived"]);
+  const [jobListingStatuses] = useState([
+    "Approved",
+    "Unverified",
+    "Rejected",
+    "Archived",
+  ]);
 
   const getStatus = (status) => {
     switch (status) {
@@ -118,6 +123,7 @@ export default function JobListings() {
         <Button
           label="View More Details"
           rounded
+          size="small"
           className="mr-2"
           onClick={() => {
             saveStatusChange(rowData);
@@ -138,7 +144,7 @@ export default function JobListings() {
       <React.Fragment>
         <div className="buttonContainer">
           <Button
-            label="View Submissions"
+            label="View Job Applications"
             rounded
             className="p-button-info"
             size="small"
@@ -202,7 +208,14 @@ export default function JobListings() {
 
   const renderHeader = () => {
     return (
-      <div className="flex gap-2 justify-content-between align-items-center">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="m-0">Job Listings</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -286,7 +299,14 @@ export default function JobListings() {
     return (
       <div className="card">
         {isLoading ? (
-          <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}} />
+          <ProgressSpinner
+            style={{
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
+            }}
+          />
         ) : (
           <>
             <DataTable
@@ -375,4 +395,3 @@ export default function JobListings() {
     );
   }
 }
-

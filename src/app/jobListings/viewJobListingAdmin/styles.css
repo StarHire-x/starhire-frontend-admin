@@ -7,14 +7,15 @@
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 100vw;
   /* margin: 40px auto; */
-  padding: 0 20px;
+  /* padding: 0 20px; */
 }
 
 .approve-button,
 .reject-button,
-.archive-button {
+.archive-button,
+.back-button {
   border: none !important;
   color: white !important;
   transition: all 0.3s !important;
@@ -35,6 +36,10 @@
 }
 
 .archive-button {
+  background-color: #007bff !important;
+}
+
+.back-button {
   background-color: #007bff !important;
 }
 

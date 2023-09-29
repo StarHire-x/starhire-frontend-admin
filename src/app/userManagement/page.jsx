@@ -396,8 +396,14 @@ export default function AccountManagement() {
 
   const renderAdminHeader = () => {
     return (
-      <div className="flex gap-2 justify-content-between align-items-center">
-        <h4 className="m-0">Users</h4>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="m-0">Users</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -418,8 +424,14 @@ export default function AccountManagement() {
 
   const renderRecruiterHeader = () => {
     return (
-      <div className="flex gap-2 justify-content-between align-items-center">
-        <h4 className="m-0">Users</h4>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="m-0">Assign Users</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -581,14 +593,14 @@ export default function AccountManagement() {
                       label="Back"
                       icon="pi pi-chevron-left"
                       rounded
-                      size="small"
+                      size="medium"
                       className={styles.backButton}
                       onClick={() => handleOnBackClick()}
                     />
                     <Button
                       label="View Job Applications"
                       rounded
-                      size="small"
+                      size="medium"
                       className="p-button-warning"
                       onClick={() => handleViewJobApplicationClick()}
                     />
