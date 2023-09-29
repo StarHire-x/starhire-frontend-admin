@@ -18,6 +18,9 @@ import { updateJobApplicationStatus } from "@/app/api/auth/jobApplications/route
 const viewJobApplication = () => {
   const session = useSession();
   const router = useRouter();
+  if (session.status === "unauthenticated") {
+    router?.push("/login");
+  }
 
   const accessToken =
     session.status === "authenticated" &&
