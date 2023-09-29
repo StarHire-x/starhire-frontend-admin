@@ -341,7 +341,6 @@ export default function CustomersDemo() {
       )}
       {!isLoading && (
         <DataTable
-          style={{ minwidth: "75vw" }}
           scrollable
           scrollHeight="400px"
           value={

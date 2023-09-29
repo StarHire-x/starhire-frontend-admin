@@ -581,12 +581,14 @@ export default function AccountManagement() {
                       label="Back"
                       icon="pi pi-chevron-left"
                       rounded
+                      size="small"
                       className={styles.backButton}
                       onClick={() => handleOnBackClick()}
                     />
                     <Button
                       label="View Job Applications"
                       rounded
+                      size="small"
                       className="p-button-warning"
                       onClick={() => handleViewJobApplicationClick()}
                     />
