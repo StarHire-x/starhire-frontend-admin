@@ -91,6 +91,7 @@ const viewJobApplication = () => {
     } catch (error) {
       console.log(error);
     }
+    router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
   };
 
   const nodes = [
