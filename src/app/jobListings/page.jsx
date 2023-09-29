@@ -139,7 +139,7 @@ export default function JobListings() {
       <React.Fragment>
         <div className="buttonContainer">
           <Button
-            label="View Submissions"
+            label="View Job Applications"
             rounded
             className="p-button-info"
             size="small"
@@ -290,9 +290,9 @@ export default function JobListings() {
           <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}} />
         ) : (
           <>
+          <h2 style={{marginBottom: "10px"}}>Job Listings</h2>
             <DataTable
               value={jobListings}
-              // style={{minWidth: "75vw"}}
               paginator
               header={header}
               rows={10}

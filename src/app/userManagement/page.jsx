@@ -508,6 +508,9 @@ export default function AccountManagement() {
           />
         ) : (
           <>
+            {session.data.user.role === "Recruiter" && 
+              <h2>Assign Users</h2>
+            }
             <div className="card">
               <DataTable
                 value={user}
