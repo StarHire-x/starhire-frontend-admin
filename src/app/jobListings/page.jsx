@@ -118,6 +118,7 @@ export default function JobListings() {
         <Button
           label="View More Details"
           rounded
+          size="small"
           className="mr-2"
           onClick={() => {
             saveStatusChange(rowData);

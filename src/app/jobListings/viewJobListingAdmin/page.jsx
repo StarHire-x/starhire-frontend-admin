@@ -239,12 +239,24 @@ export default function ViewJobListingAdmin() {
   );
   */
 
+  const handleOnBackClick = () => {
+    router.push("/jobListings");
+  };
+
   const footer = (
     <div className="flex flex-wrap justify-content-end gap-2">
+      <Button
+        label="Back"
+        icon="pi pi-chevron-left"
+        rounded
+        className="back-button p-button-outlined p-button-secondary"
+        onClick={() => handleOnBackClick()}
+      />
       {(jobListing.jobListingStatus === 'Unverified' || jobListing.jobListingStatus === 'Rejected' || jobListing.jobListingStatus === 'Archived') && (
         <Button
           label="Approve"
           icon="pi pi-check"
+          rounded
           className="approve-button p-button-outlined p-button-secondary"
           onClick={() => showUserDialog('Approved')}
         />
@@ -253,6 +265,7 @@ export default function ViewJobListingAdmin() {
         <Button
           label="Reject"
           icon="pi pi-times"
+          rounded
           className="reject-button p-button-outlined p-button-secondary"
           onClick={() => showUserDialog('Rejected')}
         />
@@ -261,6 +274,7 @@ export default function ViewJobListingAdmin() {
         <Button
           label="Archive"
           icon="pi pi-folder"
+          rounded
           className="archive-button p-button-outlined p-button-secondary"
           onClick={() => showUserDialog('Archived')}
         />
