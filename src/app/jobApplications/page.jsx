@@ -293,6 +293,10 @@ export default function CustomersDemo() {
     );
   };
 
+  const handleOnBackClick = () => {
+    router.back();
+  };
+
   const updateStatus = async () => {
     const request = {
       jobApplicationStatus: "Processing",
@@ -405,6 +409,15 @@ export default function CustomersDemo() {
           />
         </DataTable>
       )}
+      <div className={styles.backButtonContainer}>
+        <Button
+          label="Back"
+          icon="pi pi-chevron-left"
+          rounded
+          className={styles.backButton}
+          onClick={() => handleOnBackClick()}
+        />
+      </div>
     </div>
   );
 }
