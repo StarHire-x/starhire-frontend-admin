@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -14,18 +15,26 @@ import {
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { DialogBox } from "../../components/DialogBox/DialogBox";
+import { ProgressSpinner } from "primereact/progressspinner";
+import Image from "next/image";
+import HumanIcon from "../../../public/icon.png";
+import styles from "./page.module.css";
 
 export default function CustomersDemo() {
   const session = useSession();
+  const router = useRouter();
 
   const accessToken =
     session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
 
+  const currentUserId = session.data && session.data.user?.userId;
+
   const params = useSearchParams();
   const jobListingId = params.get("id");
 
+  const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [jobApplicationToSend, setJobApplicationToSend] = useState(null);
   const [jobApplications, setJobApplications] = useState([]);
@@ -62,6 +71,7 @@ export default function CustomersDemo() {
     "Submitted",
     "Processing",
     "Waiting_For_Interview",
+    "To_Be_Submitted",
   ];
   const getSeverity = (status) => {
     switch (status) {
@@ -77,6 +87,9 @@ export default function CustomersDemo() {
       case "Processing":
         return "warning";
 
+      case "To_Be_Submitted":
+        return "null";
+
       case "Waiting_For_Interview":
         return null;
     }
@@ -86,16 +99,19 @@ export default function CustomersDemo() {
     try {
       const allJobApplications = await viewAllJobApplicationsByJobListingId(
         jobListingId,
+        currentUserId,
         accessToken
       );
       setJobApplications(allJobApplications);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
+    setIsLoading(true);
     populateData();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [jobListingId, currentUserId, accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatDate = (value) => {
     return value.toLocaleDateString("en-US", {
@@ -112,7 +128,7 @@ export default function CustomersDemo() {
       const filteredApplications = jobApplications.filter((application) => {
         // Check if the global filter value matches any of the job seeker attributes
         const jobSeeker = application.jobSeeker;
-        if (!jobSeeker) { 
+        if (!jobSeeker) {
           return false;
         } else {
           // console.log(jobSeeker);
@@ -122,7 +138,9 @@ export default function CustomersDemo() {
           return (
             (userName && userName.includes(value)) ||
             (email && email.includes(value)) ||
-            (contactNo && contactNo.includes(value))
+            (contactNo && contactNo.includes(value)) ||
+            application.jobApplicationStatus?.includes(value) ||
+            application.submissionDate?.includes(value)
           );
         }
       });
@@ -130,7 +148,7 @@ export default function CustomersDemo() {
       // console.log(filteredApplications.length)
       setFilteredJobApplications(filteredApplications);
     }
-  }
+  };
 
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -160,9 +178,25 @@ export default function CustomersDemo() {
     );
   };
 
-
   const usernameBodyTemplate = (rowData) => {
-    return rowData?.jobSeeker?.userName;
+    return (
+      <div className={styles.userDetails}>
+        {rowData?.jobSeeker?.profilePictureUrl === "" ? (
+          <Image
+            src={HumanIcon}
+            alt="Profile Picture"
+            className={styles.avatar}
+          />
+        ) : (
+          <img
+            src={rowData.jobSeeker.profilePictureUrl}
+            alt="user"
+            className={styles.avatar}
+          />
+        )}
+        <p>{rowData?.jobSeeker?.userName}</p>
+      </div>
+    );
   };
 
   const emailBodyTemplate = (rowData) => {
@@ -176,7 +210,7 @@ export default function CustomersDemo() {
   const statusBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData?.jobApplicationStatus}
+        value={rowData?.jobApplicationStatus?.replace(/"_"/g, " ")}
         severity={getSeverity(rowData?.jobApplicationStatus)}
       />
     );
@@ -221,9 +255,19 @@ export default function CustomersDemo() {
     );
   };
 
-  const viewDetailsButtons = () => {
+  const viewDetailsButtons = (jobApplicationId) => {
     return (
-      <Button rounded outlined severity="help" icon="pi pi-align-justify" />
+      <Button
+        rounded
+        outlined
+        severity="help"
+        icon="pi pi-align-justify"
+        onClick={() => {
+          router.push(
+            `/jobApplications/viewJobApplication?id=${jobApplicationId}`
+          );
+        }}
+      />
     );
   };
 
@@ -276,80 +320,91 @@ export default function CustomersDemo() {
         isOpen={openDialog}
         setVisible={setOpenDialog}
       />
-      <DataTable
-        style={{ minHeight: "75vh" }}
-        scrollable
-        scrollHeight="400px"
-        value={filteredJobApplications.length > 0 ? filteredJobApplications : jobApplications}
-        paginator
-        header={header}
-        rows={10}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        rowsPerPageOptions={[10, 25, 50]}
-        dataKey="id"
-        selectionMode="checkbox"
-        selection={selectedJobApplications}
-        onSelectionChange={(e) => {
-          console.log(e);
-          setSelectedJobApplications(e.value);
-        }}
-        // filters={filters}
-        filterDisplay="menu"
-        globalFilterFields={[
-          "userName",
-          "email",
-          "contactNo",
-          "jobApplicationStatus",
-          "submissionDate",
-        ]}
-        emptyMessage="No job applications found."
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      >
-        <Column
-          selectionMode="multiple"
-          headerStyle={{ width: "3rem" }}
-        ></Column>
-        <Column
-          field="userName"
-          header="Username"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={usernameBodyTemplate}
-        />
-        <Column
-          field="email"
-          header="Email"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={emailBodyTemplate}
-        />
-        <Column
-          field="contactNo"
-          header="Contact Number"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={contactNumberBodyTemplate}
-        />
-        <Column
-          field="jobApplicationStatus"
-          header="Status"
-          filterMenuStyle={{ width: "14rem" }}
-          style={{ minWidth: "12rem" }}
-          body={statusBodyTemplate}
-          sortable
-          filter
-          filterElement={statusFilterTemplate}
-        />
-        <Column
-          field="submissionDate"
-          header="Submitted Date"
-          sortable
-          style={{ minWidth: "12rem" }}
-          body={submittedDateBodyTemplate}
-        />
-        <Column body={sendCorporateButtons} />
-        <Column body={viewDetailsButtons} />
-      </DataTable>
+      {isLoading && (
+        <div className="card flex justify-content-center">
+          <ProgressSpinner style={{ width: "50px", height: "50px" }} />
+        </div>
+      )}
+      {!isLoading && (
+        <DataTable
+          // style={{ minHeight: "75vh" }}
+          scrollable
+          scrollHeight="400px"
+          value={
+            globalFilterValue != "" ? filteredJobApplications : jobApplications
+          }
+          paginator
+          header={header}
+          rows={10}
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          rowsPerPageOptions={[10, 25, 50]}
+          dataKey="id"
+          selectionMode="checkbox"
+          selection={selectedJobApplications}
+          onSelectionChange={(e) => {
+            console.log(e);
+            setSelectedJobApplications(e.value);
+          }}
+          // filters={filters}
+          filterDisplay="menu"
+          globalFilterFields={[
+            "userName",
+            "email",
+            "contactNo",
+            "jobApplicationStatus",
+            "submissionDate",
+          ]}
+          emptyMessage="No job applications found."
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        >
+          <Column
+            selectionMode="multiple"
+            headerStyle={{ width: "3rem" }}
+          ></Column>
+          <Column
+            field="userName"
+            header="Username"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={usernameBodyTemplate}
+          />
+          <Column
+            field="email"
+            header="Email"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={emailBodyTemplate}
+          />
+          <Column
+            field="contactNo"
+            header="Contact Number"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={contactNumberBodyTemplate}
+          />
+          <Column
+            field="jobApplicationStatus"
+            header="Status"
+            filterMenuStyle={{ width: "14rem" }}
+            style={{ minWidth: "12rem" }}
+            body={statusBodyTemplate}
+            sortable
+            filter
+            filterElement={statusFilterTemplate}
+          />
+          <Column
+            field="submissionDate"
+            header="Submitted Date"
+            sortable
+            style={{ minWidth: "12rem" }}
+            body={submittedDateBodyTemplate}
+          />
+          <Column body={sendCorporateButtons} />
+          <Column
+            body={(rowData) => viewDetailsButtons(rowData?.jobApplicationId)}
+          />
+        </DataTable>
+      )}
     </div>
   );
 }

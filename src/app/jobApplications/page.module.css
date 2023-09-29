@@ -1,0 +1,13 @@
+.avatar {
+  clip-path: circle();
+  object-fit: cover;
+  width: 7vh;
+  height: 7vh;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
