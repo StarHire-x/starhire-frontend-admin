@@ -13,11 +13,8 @@ const Step1 = ({ formData, setFormData, onNext }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const handleNext = () => {
     setErrorMessage("");
-    const { role, userName, email } = formData;
-    if (!role) {
-      setErrorMessage("Please fill in your role!");
-      return;
-    } else if (!userName) {
+    const { userName, email } = formData;
+    if (!userName) {
       setErrorMessage("Please fill in your username!");
       return;
     } else if (!email) {
@@ -38,10 +35,10 @@ const Step1 = ({ formData, setFormData, onNext }) => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.subTitle}>User Information</h2>
+      <h2 className={styles.subTitle}>Recruiter Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
-        <div className={styles.userRole}>
+        {/* <div className={styles.userRole}>
           <div>
             <p>I am registering as a:</p>
           </div>
@@ -68,28 +65,8 @@ const Step1 = ({ formData, setFormData, onNext }) => {
             <label htmlFor="Recruiter" className="ml-2">
               Recruiter
             </label>
-            {/* <label>
-              <input
-                type="radio"
-                name="role"
-                value="Administrator"
-                checked={formData.role === "Administrator"}
-                onChange={handleInputChange}
-              />
-              Administrator
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="role"
-                value="Recruiter"
-                checked={formData.role === "Recruiter"}
-                onChange={handleInputChange}
-              />
-              Recruiter
-            </label> */}
           </div>
-        </div>
+        </div> */}
 
         <div className={styles.inputFields}>
           <input
@@ -249,7 +226,7 @@ const Step3 = ({ formData, setFormData, onPrevious, onSubmit, err }) => {
 const Register = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     userName: "",
@@ -276,7 +253,7 @@ const Register = () => {
       email: formData.email,
       password: formData.password,
       contactNo: formData.contactNumber,
-      role: formData.role,
+      role: "Recruiter",
     };
 
     try {
@@ -291,7 +268,7 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Fetch error:", error);
-      setErrorMessage(error)
+      setErrorMessage(error);
     }
   };
 
