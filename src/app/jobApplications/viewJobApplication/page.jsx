@@ -262,6 +262,7 @@ const viewJobApplication = () => {
           <div className={styles.buttons}>
             <Button
               label="Back"
+              className={styles.backButton}
               icon="pi pi-chevron-left"
               rounded
               severity="primary"

@@ -294,7 +294,7 @@ export default function CustomersDemo() {
   };
 
   const handleOnBackClick = () => {
-    router.back();
+    router.push("/jobListings");
   };
 
   const updateStatus = async () => {
