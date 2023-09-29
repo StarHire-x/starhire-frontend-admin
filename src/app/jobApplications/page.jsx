@@ -326,12 +326,19 @@ export default function CustomersDemo() {
       />
       {isLoading && (
         <div className="card flex justify-content-center">
-          <ProgressSpinner style={{ width: "50px", height: "50px" }} />
+          <ProgressSpinner
+            style={{
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
+            }}
+          />
         </div>
       )}
       {!isLoading && (
         <DataTable
-          // style={{ minHeight: "75vh" }}
+          style={{ minwidth: "75vw" }}
           scrollable
           scrollHeight="400px"
           value={

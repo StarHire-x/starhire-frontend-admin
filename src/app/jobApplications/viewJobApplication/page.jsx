@@ -164,7 +164,14 @@ const viewJobApplication = () => {
     <>
       {isLoading && (
         <div className="card flex justify-content-center">
-          <ProgressSpinner style={{ width: "50px", height: "50px" }} />
+          <ProgressSpinner
+            style={{
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
+            }}
+          />
         </div>
       )}
       {!isLoading && (
