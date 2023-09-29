@@ -403,7 +403,7 @@ export default function AccountManagement() {
           alignItems: "center",
         }}
       >
-        <h4 className="m-0">Users</h4>
+        <h2 className="m-0">Users</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
