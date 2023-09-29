@@ -167,8 +167,14 @@ export default function CustomersDemo() {
 
   const renderHeader = () => {
     return (
-      <div className="flex flex-wrap gap-2 align-items-center">
-        <h4 className="m-0">Job Applications</h4>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="m-0">Job Applications for Job Listing {jobListingId}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -341,7 +347,6 @@ export default function CustomersDemo() {
       )}
       {!isLoading && (
         <>
-          <h2 style={{marginBottom: "10px"}}> Job Applications for Job Listing ID {jobListingId}</h2>
           <DataTable
             scrollable
             scrollHeight="400px"

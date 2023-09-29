@@ -57,7 +57,12 @@ export default function JobListings() {
   });
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [jobListingStatuses] = useState(["Approved", "Unverified", "Rejected", "Archived"]);
+  const [jobListingStatuses] = useState([
+    "Approved",
+    "Unverified",
+    "Rejected",
+    "Archived",
+  ]);
 
   const getStatus = (status) => {
     switch (status) {
@@ -203,7 +208,14 @@ export default function JobListings() {
 
   const renderHeader = () => {
     return (
-      <div className="flex gap-2 justify-content-between align-items-center">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="m-0">Job Listings</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -287,10 +299,16 @@ export default function JobListings() {
     return (
       <div className="card">
         {isLoading ? (
-          <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}} />
+          <ProgressSpinner
+            style={{
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
+            }}
+          />
         ) : (
           <>
-          <h2 style={{marginBottom: "10px"}}>Job Listings</h2>
             <DataTable
               value={jobListings}
               paginator
@@ -377,4 +395,3 @@ export default function JobListings() {
     );
   }
 }
-
