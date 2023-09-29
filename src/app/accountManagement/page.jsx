@@ -8,6 +8,8 @@ import { updateUser } from "../api/auth/user/route";
 import styles from "./page.module.css";
 import { UserContext } from "@/context/UserContext";
 import { RadioButton } from "primereact/radiobutton";
+import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
 
 const AccountManagement = () => {
   const session = useSession();
@@ -23,6 +25,8 @@ const AccountManagement = () => {
     contactNo: "",
     status: "",
   });
+
+  const [deactivateAccountDialog, setDeactivateAccountDialog] = useState(false);
 
   // this is to do a reload of userContext if it is updated in someway
   const { userData, fetchUserData } = useContext(UserContext);
@@ -69,8 +73,34 @@ const AccountManagement = () => {
     }
   };
 
-  const saveChanges = async (e) => {
+  const hideDeactivateAccountDialog = () => {
+    setDeactivateAccountDialog(false);
+  };
+
+  const deactivateAccountDialogFooter = () => (
+    <React.Fragment>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        rounded
+        outlined
+        onClick={hideDeactivateAccountDialog}
+      />
+      <Button label="Yes" rounded icon="pi pi-check" onClick={saveChanges} />
+    </React.Fragment>
+  );
+
+  const confirmChanges = async (e) => {
     e.preventDefault();
+    if (formData.status === "Inactive") {
+      setDeactivateAccountDialog(true);
+    } else {
+      await saveChanges();
+    }
+  };
+
+  const saveChanges = async (e) => {
+    // e.preventDefault();
     const userId = formData.userId;
     const email = formData.email;
     const userName = formData.userName;
@@ -97,6 +127,9 @@ const AccountManagement = () => {
       );
       console.log("Status changed successfully:", response);
       alert("Status changed successfully!");
+      if (deactivateAccountDialog) {
+        hideDeactivateAccountDialog();
+      }
 
       setRefreshData((prev) => !prev);
       // this is to do a reload of userContext if it is updated so that navbar can change
@@ -111,7 +144,7 @@ const AccountManagement = () => {
     return (
       <div className={styles.container}>
         <h1 className={styles.title}>My Account Details</h1>
-        <form className={styles.form} onSubmit={saveChanges}>
+        <form className={styles.form} onSubmit={confirmChanges}>
           <div className={styles.avatarContainer}>
             {formData?.profilePictureUrl && (
               <img
@@ -300,6 +333,22 @@ const AccountManagement = () => {
                 </label> */}
               </div>
             </div>
+            <Dialog
+              visible={deactivateAccountDialog}
+              style={{ width: "32rem" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              header="Warning on self-deactivation of account"
+              className="p-fluid"
+              footer={deactivateAccountDialogFooter}
+              onHide={hideDeactivateAccountDialog}
+            >
+              <h3>
+                You may have accidentally selected Inactive for your account
+                status. Are you sure you want to deactivate your account? Please
+                note that this action is irreversible, and you need to contact
+                our Admin to activate back your account if needed.
+              </h3>
+            </Dialog>
           </div>
           <div className={styles.buttonContainer}>
             <button className={styles.button}>Save Changes</button>
