@@ -12,6 +12,7 @@ import { getUsersForChat } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { createNewChatByRecruiter } from "../api/auth/chat/route";
+import Enums from "@/common/enums/enums";
 
 const CreateChat = () => {
   const session = useSession();
@@ -38,23 +39,23 @@ const CreateChat = () => {
     role: {
       operator: FilterOperator.OR,
       constraints: [
-        { value: "Job_Seeker", matchMode: FilterMatchMode.EQUALS },
-        { value: "Corporate", matchMode: FilterMatchMode.EQUALS },
+        { value: Enums.JOBSEEKER, matchMode: FilterMatchMode.EQUALS },
+        { value: Enums.CORPORATE, matchMode: FilterMatchMode.EQUALS },
       ],
     },
     status: {
       operator: FilterOperator.OR,
-      constraints: [{ value: "Active", matchMode: FilterMatchMode.EQUALS }], // only takes in Active users
+      constraints: [{ value: Enums.ACTIVE, matchMode: FilterMatchMode.EQUALS }], // only takes in Active users
     },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [statuses] = useState(["Active", "Inactive"]);
+  const [statuses] = useState([Enums.ACTIVE, Enums.INACTIVE]);
 
   const getStatus = (status) => {
     switch (status) {
-      case "Active":
+      case Enums.ACTIVE:
         return "success";
-      case "Inactive":
+      case Enums.INACTIVE:
         return "danger";
     }
   };
@@ -95,13 +96,13 @@ const CreateChat = () => {
   const createNewChat = async () => {
     let request = {};
     try {
-      if (selectedRowData.role === "Job_Seeker") {
+      if (selectedRowData.role === Enums.JOBSEEKER) {
         request = {
           recruiterId: currentUserId, // retrieve it from session next time
           jobSeekerId: selectedRowData.userId,
           lastUpdated: new Date(),
         };
-      } else if (selectedRowData.role === "Corporate") {
+      } else if (selectedRowData.role === Enums.CORPORATE) {
         request = {
           recruiterId: currentUserId, // retrieve it from session next time
           corporateId: selectedRowData.userId,
@@ -127,12 +128,12 @@ const CreateChat = () => {
       for (let i = 0; i < chats.length; i++) {
         if (chats[i].recruiter.userId === currentUserId) {
           if (
-            selectedUser.role === "Job_Seeker" &&
+            selectedUser.role === Enums.JOBSEEKER &&
             chats[i].jobSeeker.userId === selectedUser.userId
           ) {
             return true;
           } else if (
-            selectedUser.role === "Corporate" &&
+            selectedUser.role === Enums.CORPORATE &&
             chats[i].corporate.userId === selectedUser.userId
           ) {
             return true;
@@ -165,7 +166,7 @@ const CreateChat = () => {
   };
 
   const actionRoleTemplate = (rowData) => {
-    return rowData.role == "Job_Seeker" ? "Job Seeker" : rowData.role;
+    return rowData.role == Enums.JOBSEEKER ? "Job Seeker" : rowData.role;
   };
 
   const showUserDialog = (rowData) => {
@@ -219,14 +220,14 @@ const CreateChat = () => {
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role !== "Recruiter"
+    session.data.user.role !== Enums.RECRUITER
   ) {
     router?.push("/dashboard");
   }
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role === "Recruiter"
+    session.data.user.role === Enums.RECRUITER
   ) {
     return (
       <>

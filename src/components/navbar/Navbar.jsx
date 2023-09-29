@@ -9,6 +9,7 @@ import { useState, useEffect, useContext } from "react";
 import { getUserByUserId } from "@/app/api/auth/user/route";
 import HumanIcon from "../../../public/icon.png";
 import { UserContext } from "@/context/UserContext";
+import Enums from "@/common/enums/enums";
 
 const adminLinks = [
   {
@@ -102,7 +103,7 @@ const Navbar = () => {
       <div className={styles.links}>
         <DarkModeToggle />
         {session.status === "authenticated" &&
-          session.data.user.role === "Administrator" &&
+          session.data.user.role === Enums.ADMIN &&
           adminLinks.map((link) => (
             <div
               key={link.id}
@@ -129,7 +130,7 @@ const Navbar = () => {
             </div>
           ))}
         {session.status === "authenticated" &&
-          session.data.user.role === "Recruiter" &&
+          session.data.user.role === Enums.RECRUITER &&
           recruiterLinks.map((link) => (
             <div
               key={link.id}

@@ -31,6 +31,7 @@ import Image from "next/image";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
 import Link from "next/link";
+import Enums from "@/common/enums/enums";
 
 export default function AccountManagement() {
   const session = useSession();
@@ -76,14 +77,14 @@ export default function AccountManagement() {
     },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [statuses] = useState(["Active", "Inactive"]);
+  const [statuses] = useState([Enums.ACTIVE, Enums.INACTIVE]);
   const dt = useRef(null);
 
   const getStatus = (status) => {
     switch (status) {
-      case "Active":
+      case Enums.ACTIVE:
         return "success";
-      case "Inactive":
+      case Enums.INACTIVE:
         return "danger";
     }
   };
@@ -283,7 +284,7 @@ export default function AccountManagement() {
     console.log(selectedRowData);
     try {
       const toggledStatus =
-        selectedRowData.status === "Active" ? "Inactive" : "Active";
+        selectedRowData.status === Enums.ACTIVE ? Enums.INACTIVE : Enums.ACTIVE;
       const request = {
         role: selectedRowData.role,
         status: toggledStatus,
@@ -459,16 +460,16 @@ export default function AccountManagement() {
   useEffect(() => {
     getUsers(accessToken)
       .then((user) => {
-        if (session.data.user.role === "Recruiter") {
+        if (session.data.user.role === Enums.RECRUITER) {
           // console.log("SEE HERE!!");
           user.data.map(
-            (x) => x.role === "Job_Seeker" && console.log(x.jobListings)
+            (x) => x.role === Enums.JOBSEEKER && console.log(x.jobListings)
           );
 
           const activeJobSeekers = user.data.filter(
             (x) =>
-              x.role === "Job_Seeker" &&
-              x.status === "Active" &&
+              x.role === Enums.JOBSEEKER &&
+              x.status === Enums.ACTIVE &&
               !x.jobListings
                 .map((jobListing) => jobListing.jobListingId)
                 .includes(jobListing.jobListingId)
@@ -487,7 +488,7 @@ export default function AccountManagement() {
   }, [refreshData, accessToken, jobListing]);
 
   const header = () => {
-    if (session.data.user.role === "Administrator") {
+    if (session.data.user.role === Enums.ADMIN) {
       return renderAdminHeader();
     } else {
       return renderRecruiterHeader();
@@ -496,16 +497,16 @@ export default function AccountManagement() {
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role !== "Administrator" &&
-    session.data.user.role !== "Recruiter"
+    session.data.user.role !== Enums.ADMIN &&
+    session.data.user.role !== Enums.RECRUITER
   ) {
     router?.push("/dashboard");
   }
 
   if (
     session.status === "authenticated" &&
-    (session.data.user.role === "Administrator" ||
-      session.data.user.role === "Recruiter")
+    (session.data.user.role === Enums.ADMIN ||
+      session.data.user.role === Enums.RECRUITER)
   ) {
     return (
       <>
@@ -553,7 +554,7 @@ export default function AccountManagement() {
                 ></Column>
                 <Column field="email" header="Email" sortable></Column>
                 <Column field="contactNo" header="Contact No" sortable></Column>
-                {session.data.user.role === "Administrator" && (
+                {session.data.user.role === Enums.ADMIN && (
                   <Column
                     field="status"
                     header="Status"
@@ -564,7 +565,7 @@ export default function AccountManagement() {
                   ></Column>
                 )}
                 <Column field="role" header="Role" sortable></Column>
-                {session.data.user.role === "Administrator" ? (
+                {session.data.user.role === Enums.ADMIN ? (
                   <Column
                     body={actionAdminBodyTemplate}
                     exportable={false}
@@ -577,7 +578,7 @@ export default function AccountManagement() {
                     style={{ minWidth: "12rem" }}
                   ></Column>
                 )}
-                {session.data.user.role === "Administrator" && (
+                {session.data.user.role === Enums.ADMIN && (
                   <Column
                     field="createdAt"
                     header="Created Date"
@@ -587,7 +588,7 @@ export default function AccountManagement() {
                 )}
               </DataTable>
               <div className={styles.backButtonContainer}>
-                {session.data.user.role === "Recruiter" && (
+                {session.data.user.role === Enums.RECRUITER && (
                   <>
                     <Button
                       label="Back"

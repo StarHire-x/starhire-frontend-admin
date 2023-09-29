@@ -10,6 +10,7 @@ import { UserContext } from "@/context/UserContext";
 import { RadioButton } from "primereact/radiobutton";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import Enums from "@/common/enums/enums";
 
 const AccountManagement = () => {
   const session = useSession();
@@ -92,7 +93,7 @@ const AccountManagement = () => {
 
   const confirmChanges = async (e) => {
     e.preventDefault();
-    if (formData.status === "Inactive") {
+    if (formData.status === Enums.INACTIVE) {
       setDeactivateAccountDialog(true);
     } else {
       await saveChanges();
@@ -290,32 +291,32 @@ const AccountManagement = () => {
               <div className={styles.radioHeader}>Status:</div>
               <div className={styles.radioOption}>
                 <RadioButton
-                  inputId="Active"
+                  inputId={Enums.ACTIVE}
                   name="status"
-                  value="Active"
+                  value={Enums.ACTIVE}
                   onChange={handleInputChange}
-                  checked={formData.status === "Active"}
+                  checked={formData.status === Enums.ACTIVE}
                 />
-                <label htmlFor="Active" className="ml-2">
+                <label htmlFor={Enums.ACTIVE} className="ml-2">
                   Active
                 </label>
                 <br />
                 <RadioButton
-                  inputId="Inactive"
+                  inputId={Enums.INACTIVE}
                   name="status"
-                  value="Inactive"
+                  value={Enums.INACTIVE}
                   onChange={handleInputChange}
-                  checked={formData.status === "Inactive"}
+                  checked={formData.status === Enums.INACTIVE}
                 />
-                <label htmlFor="Inactive" className="ml-2">
+                <label htmlFor={Enums.INACTIVE} className="ml-2">
                   Inactive
                 </label>
                 {/* <label>
                   <input
                     type="radio"
                     name="status"
-                    value="Active"
-                    checked={formData.status === "Active"}
+                    value={Enums.ACTIVE}
+                    checked={formData.status === Enums.ACTIVE}
                     onChange={handleInputChange}
                   />
                   Active
@@ -325,8 +326,8 @@ const AccountManagement = () => {
                   <input
                     type="radio"
                     name="status"
-                    value="Inactive"
-                    checked={formData.status === "Inactive"}
+                    value={Enums.INACTIVE}
+                    checked={formData.status === Enums.INACTIVE}
                     onChange={handleInputChange}
                   />
                   Inactive

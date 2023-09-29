@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import "./styles.css";
 import { viewAllJobListings } from "@/app/api/auth/jobListings/route";
 import { getUserByUserId } from "../api/auth/user/route";
+import Enums from "@/common/enums/enums";
 
 export default function JobListings() {
   const session = useSession();
@@ -181,7 +182,7 @@ export default function JobListings() {
 
   const saveStatusChange = async (rowData) => {
     const jobListingId = rowData.jobListingId;
-    if (session.data.user.role === "Administrator") {
+    if (session.data.user.role === Enums.ADMIN) {
       try {
         // Use router.push to navigate to another page with a query parameter
         let link = createLink(jobListingId);
@@ -238,7 +239,7 @@ export default function JobListings() {
     if (accessToken) {
       viewAllJobListings(accessToken)
         .then((data) => {
-          if (session.data.user.role === "Recruiter") {
+          if (session.data.user.role === Enums.RECRUITER) {
             const activeJobListing = data.filter(
               (jobListing) => jobListing.jobListingStatus === "Approved"
             );
@@ -285,16 +286,16 @@ export default function JobListings() {
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role !== "Administrator" &&
-    session.data.user.role !== "Recruiter"
+    session.data.user.role !== Enums.ADMIN &&
+    session.data.user.role !== Enums.RECRUITER
   ) {
     router?.push("/dashboard");
   }
 
   if (
     session.status === "authenticated" &&
-    (session.data.user.role === "Administrator" ||
-      session.data.user.role === "Recruiter")
+    (session.data.user.role === Enums.ADMIN ||
+      session.data.user.role === Enums.RECRUITER)
   ) {
     return (
       <div className="card">
@@ -355,7 +356,7 @@ export default function JobListings() {
                 body={(rowData) => formatDate(rowData.listingDate)}
                 sortable
               ></Column>
-              {session.data.user.role === "Administrator" ? (
+              {session.data.user.role === Enums.ADMIN ? (
                 <Column
                   field="jobListingStatus"
                   header="Job Listing Status"
@@ -371,7 +372,7 @@ export default function JobListings() {
                   body={statusBodyTemplate}
                 ></Column>
               )}
-              {session.data.user.role === "Administrator" ? (
+              {session.data.user.role === Enums.ADMIN ? (
                 <Column body={actionAdminBodyTemplate} />
               ) : (
                 <Column body={actionRecruiterBodyTemplate} />
