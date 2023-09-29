@@ -291,6 +291,7 @@ export default function JobListings() {
           <>
             <DataTable
               value={jobListings}
+              // style={{minWidth: "75vw"}}
               paginator
               header={header}
               rows={10}
