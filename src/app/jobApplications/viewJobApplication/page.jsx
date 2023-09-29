@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { Dropdown } from "@/components/Dropdown/Dropdown";
 import { Checkbox } from "primereact/checkbox";
 import { updateJobApplicationStatus } from "@/app/api/auth/jobApplications/route";
+import moment from "moment";
 
 const viewJobApplication = () => {
   const session = useSession();
@@ -38,14 +39,7 @@ const viewJobApplication = () => {
   const [selectedDocuments, setSelectedDocuments] = useState([]);
 
   const convertTimestampToDate = (timestamp) => {
-    let currentDate = new Date(timestamp);
-    return (
-      currentDate.getDate() +
-      "/" +
-      currentDate.getMonth() +
-      "/" +
-      currentDate.getFullYear()
-    );
+    return moment(timestamp).format("DD/MM/YYYY");
   };
 
   const getSeverity = (status) => {
