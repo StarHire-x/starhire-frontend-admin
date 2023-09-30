@@ -15,6 +15,7 @@ import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
 import { updateJobListing } from '@/app/api/auth/jobListings/route';
 import { informJobListingStatus } from '@/app/api/auth/jobListings/route';
 import HumanIcon from "../../../../public/icon.png";
+import Enums from "@/common/enums/enums";
 
 export default function ViewJobListingAdmin() {
   const session = useSession();
@@ -176,13 +177,13 @@ export default function ViewJobListingAdmin() {
         label="Approve"
         icon="pi pi-check"
         className="approve-button p-button-outlined p-button-secondary"
-        onClick={() => updateJobListingStatus("Active")}
+        onClick={() => updateJobListingStatus(Enums.ACTIVE)}
       />
       <Button
         label="Reject"
         icon="pi pi-times"
         className="reject-button p-button-outlined p-button-secondary"
-        onClick={() => updateJobListingStatus("Inactive")}
+        onClick={() => updateJobListingStatus(Enums.INACTIVE)}
       />
       <Button
         label="Archive"
@@ -221,19 +222,19 @@ export default function ViewJobListingAdmin() {
         label="Approve"
         icon="pi pi-check"
         className="approve-button p-button-outlined p-button-secondary"
-        onClick={() => showUserDialog('Active')}
+        onClick={() => showUserDialog(Enums.ACTIVE)}
       />
       <Button
         label="Reject"
         icon="pi pi-times"
         className="reject-button p-button-outlined p-button-secondary"
-        onClick={() => showUserDialog('Inactive')}
+        onClick={() => showUserDialog(Enums.INACTIVE)}
       />
       <Button
         label="Archive"
         icon="pi pi-folder"
         className="archive-button p-button-outlined p-button-secondary"
-        onClick={() => showUserDialog('Inactive')}
+        onClick={() => showUserDialog(Enums.INACTIVE)}
       />
     </div>
   );

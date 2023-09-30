@@ -13,6 +13,7 @@ import { Button } from "primereact/button";
 import { assignJobListing } from "../api/auth/jobListings/route";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
+import Enums from "@/common/enums/enums";
 
 export default function UserProfile() {
   const session = useSession();
@@ -176,7 +177,7 @@ export default function UserProfile() {
                   <p className={styles.userDetails}>
                     Contact Number: {user.contactNo}
                   </p>
-                  {user?.resumePdf && currentUserRole === "Recruiter" && (
+                  {user?.resumePdf && currentUserRole === Enums.RECRUITER && (
                     <Button
                       size="small"
                       label="View Resume"
@@ -209,7 +210,7 @@ export default function UserProfile() {
                 onClick={() => handleOnBackClick()}
               />
             </div>
-            {currentUserRole && currentUserRole === "Recruiter" && (
+            {currentUserRole && currentUserRole === Enums.RECRUITER && (
               <div className={styles.assignButtonContainer}>
                 <Button
                   label="Assign"

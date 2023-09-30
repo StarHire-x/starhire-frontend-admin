@@ -26,6 +26,7 @@ import HumanIcon from "../../../public/icon.png";
 
 import { getAllUserChats, getOneUserChat } from "../api/auth/chat/route";
 import { uploadFile } from "../api/auth/upload/route";
+import Enums from "@/common/enums/enums";
 
 const Chat = () => {
   const session = useSession();
@@ -199,7 +200,7 @@ const Chat = () => {
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role === "Recruiter"
+    session.data.user.role === Enums.RECRUITER
   ) {
     return (
       <>

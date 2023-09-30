@@ -12,7 +12,7 @@ const JobPreferencePanel = ({ jobPreference }) => {
   const headerTemplate = (options) => {
     const className = `${options.className}`;
     const titleClassName = `${options.titleClassName} ml-2 text-primary`;
-    const style = { fontSize: "1.25rem" };
+    const style = { fontSize: "1rem" };
 
     return (
       <div className={className}>

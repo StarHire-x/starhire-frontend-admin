@@ -219,7 +219,7 @@ export default function CustomersDemo() {
   const statusBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData?.jobApplicationStatus?.replace(/"_"/g, " ")}
+        value={rowData?.jobApplicationStatus?.replaceAll("_", " ")}
         severity={getSeverity(rowData?.jobApplicationStatus)}
       />
     );

@@ -7,6 +7,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import Link from 'next/link';
+import Enums from '@/common/enums/enums';
 
 
 
@@ -75,7 +76,7 @@ export default function JobListingsTable({ jobListings, router }) {
           body={(rowData) => (
             <span
               style={{
-                color: rowData.jobListingStatus === "Active" ? "green" : "red",
+                color: rowData.jobListingStatus === Enums.ACTIVE ? "green" : "red",
               }}
             >
               {rowData.jobListingStatus}

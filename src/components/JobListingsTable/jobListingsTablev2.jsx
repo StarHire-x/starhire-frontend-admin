@@ -16,6 +16,7 @@ import { Tag } from "primereact/tag";
 import { updateUser, getUsers } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Enums from "@/common/enums/enums";
 
 export default function AccountManagement() {
   const session = useSession();
@@ -45,13 +46,13 @@ export default function AccountManagement() {
     },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [statuses] = useState(["Active", "Inactive"]);
+  const [statuses] = useState([Enums.ACTIVE, Enums.INACTIVE]);
 
   const getStatus = (status) => {
     switch (status) {
-      case "Active":
+      case Enums.ACTIVE:
         return "success";
-      case "Inactive":
+      case Enums.INACTIVE:
         return "danger";
     }
   };
@@ -119,7 +120,7 @@ export default function AccountManagement() {
     console.log(selectedRowData);
     try {
       const toggledStatus =
-        selectedRowData.status === "Active" ? "Inactive" : "Active";
+        selectedRowData.status === Enums.ACTIVE ? Enums.INACTIVE : Enums.ACTIVE;
       const request = {
         role: selectedRowData.role,
         status: toggledStatus,
@@ -170,13 +171,13 @@ export default function AccountManagement() {
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role !== "Administrator"
+    session.data.user.role !== Enums.ADMIN
   ) {
     router?.push("/dashboard");
   }
 
   if (
-    session.status === "authenticated" && session.data.user.role === "Administrator"
+    session.status === "authenticated" && session.data.user.role === Enums.ADMIN
   ) {
     return (
       <div className="card">
