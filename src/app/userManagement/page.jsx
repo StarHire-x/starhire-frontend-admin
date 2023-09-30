@@ -280,6 +280,14 @@ export default function AccountManagement() {
     setViewUserDialog(false);
   };
 
+  const statusRoleTemplate = (rowData) => {
+    return (
+      <Tag
+        value={rowData?.role?.replaceAll("_", " ")}
+      />
+    );
+  };
+
   const saveStatusChange = async () => {
     console.log(selectedRowData);
     try {
@@ -564,7 +572,7 @@ export default function AccountManagement() {
                     filterElement={statusFilterTemplate}
                   ></Column>
                 )}
-                <Column field="role" header="Role" sortable></Column>
+                <Column field="role" header="Role" body={statusRoleTemplate} sortable></Column>
                 {session.data.user.role === Enums.ADMIN ? (
                   <Column
                     body={actionAdminBodyTemplate}
