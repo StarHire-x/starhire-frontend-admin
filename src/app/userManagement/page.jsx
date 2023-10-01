@@ -440,7 +440,7 @@ export default function AccountManagement() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Assign Users</h2>
+        <h2 className="m-0">Assign Users for Job Listing {id}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
