@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { Card } from "primereact/card";
-import { Button } from "primereact/button";
-import { ProgressSpinner } from "primereact/progressspinner";
-import "./styles.css";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { Dialog } from "primereact/dialog";
-import { useSession } from "next-auth/react";
-import { viewOneJobListing } from "@/app/api/auth/jobListings/route";
-import { updateJobListing } from "@/app/api/auth/jobListings/route";
-import HumanIcon from "../../../../public/icon.png";
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { Card } from 'primereact/card';
+import { Button } from 'primereact/button';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import './styles.css';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { Dialog } from 'primereact/dialog';
+import { useSession } from 'next-auth/react';
+import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
+import { updateJobListing } from '@/app/api/auth/jobListings/route';
+import HumanIcon from '../../../../public/icon.png';
 
 export default function ViewJobListingRecruiter() {
   const session = useSession();
@@ -20,15 +20,15 @@ export default function ViewJobListingRecruiter() {
   const router = useRouter();
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === "authenticated" && session.data.user.userId;
+    session.status === 'authenticated' && session.data.user.userId;
 
   const params = useSearchParams();
-  const id = params.get("id");
+  const id = params.get('id');
 
   const [jobListing, setJobListing] = useState({});
 
@@ -46,7 +46,7 @@ export default function ViewJobListingRecruiter() {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching job listings:", error);
+          console.error('Error fetching job listings:', error);
           setIsLoading(false);
         });
     }
@@ -58,7 +58,7 @@ export default function ViewJobListingRecruiter() {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -73,11 +73,11 @@ export default function ViewJobListingRecruiter() {
       if (response.statusCode === 200) {
         handleRefresh();
       } else {
-        alert("Something went wrong! ERROR CODE:" + response.statusCode);
+        alert('Something went wrong! ERROR CODE:' + response.statusCode);
       }
-      console.log("Status changed successfully:", response);
+      console.log('Status changed successfully:', response);
     } catch (error) {
-      console.error("Error changing status:", error);
+      console.error('Error changing status:', error);
     }
   };
 
@@ -86,7 +86,7 @@ export default function ViewJobListingRecruiter() {
   };
 
   const handleOnBackClick = () => {
-    router.push("/jobListings");
+    router.push('/jobListings');
   };
 
   const handleOnAssignClick = () => {
@@ -127,7 +127,14 @@ export default function ViewJobListingRecruiter() {
   return (
     <div className="container">
       {isLoading ? (
-        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
+        <ProgressSpinner
+          style={{
+            display: 'flex',
+            height: '100vh',
+            'justify-content': 'center',
+            'align-items': 'center',
+          }}
+        />
       ) : (
         <div>
           <Card
@@ -135,11 +142,11 @@ export default function ViewJobListingRecruiter() {
             subTitle={jobListing.jobLocation}
             footer={footer}
             className="my-card"
-            style={{ borderRadius: "0" }}
+            style={{ borderRadius: '0' }}
           >
             <div className="my-card.p-card-content">
               <div className="company-info">
-                {jobListing.corporate.profilePictureUrl === "" ? (
+                {jobListing.corporate.profilePictureUrl === '' ? (
                   <Image src={HumanIcon} alt="User" className="avatar" />
                 ) : (
                   <img
@@ -158,8 +165,10 @@ export default function ViewJobListingRecruiter() {
               <p>{jobListing.responsibilities}</p>
               <strong>Job Requirements</strong>
               <p>{jobListing.requirements}</p>
+              <strong>Required Documents</strong>
+              <p>{jobListing.requiredDocuments}</p>
               <strong>Average Salary</strong>
-              <p>{"$" + jobListing.averageSalary + " SGD"}</p>
+              <p>{'$' + jobListing.averageSalary + ' SGD'}</p>
               <strong>Job Start Date</strong>
               <p>{formatDate(jobListing.jobStartDate)}</p>
 
@@ -171,22 +180,24 @@ export default function ViewJobListingRecruiter() {
 
               <strong>Corporate Details</strong>
               <p>
-                {"UEN Number: " + jobListing.corporate.companyRegistrationId}
+                {'UEN Number: ' + jobListing.corporate.companyRegistrationId}
               </p>
               <p className="second-p">
-                {"Address: " + jobListing.corporate.companyAddress}
+                {'Address: ' + jobListing.corporate.companyAddress}
               </p>
 
               <strong>Job Listing Details</strong>
               <p>{formatDate(jobListing.listingDate)}</p>
 
-              <p>{"Job Listing ID: " + jobListing.jobListingId}</p>
+              <p>{'Job Listing ID: ' + jobListing.jobListingId}</p>
 
               <strong>Current Status of Job</strong>
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === "Approved" ? "green" : "red",
+                    jobListing.jobListingStatus === 'Approved'
+                      ? 'green'
+                      : 'red',
                 }}
               >
                 {jobListing.jobListingStatus}

@@ -125,7 +125,6 @@
   align-items: center; /* Align items vertically in the middle */
 }
 
-/* CSS */
 .contact-info {
   /* Add any additional styling you need for the container */
 }
@@ -134,7 +133,6 @@
   margin-bottom: 0; /* Adjust the margin as needed to reduce the space */
 }
 
-/* Add a specific class for the second <p> element if needed */
 .second-p {
   margin-bottom: 0; /* Removes margin for the second <p> element */
 }
