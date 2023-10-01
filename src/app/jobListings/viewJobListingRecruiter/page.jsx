@@ -39,6 +39,9 @@ export default function ViewJobListingRecruiter() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
+    if (session.status === 'unauthenticated' || session.status === 'loading') {
+      router.push('/login');
+    }
     if (accessToken) {
       viewOneJobListing(id, accessToken)
         .then((data) => {
