@@ -9,13 +9,13 @@ import { Jolly_Lodger } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Dialog } from 'primereact/dialog';
-import { ProgressSpinner } from "primereact/progressspinner";
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { useSession } from 'next-auth/react';
 import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
 import { updateJobListing } from '@/app/api/auth/jobListings/route';
 import { informJobListingStatus } from '@/app/api/auth/jobListings/route';
-import HumanIcon from "../../../../public/icon.png";
-import Enums from "@/common/enums/enums";
+import HumanIcon from '../../../../public/icon.png';
+import Enums from '@/common/enums/enums';
 
 export default function ViewJobListingAdmin() {
   const session = useSession();
@@ -42,6 +42,9 @@ export default function ViewJobListingAdmin() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
+    if (session.status === 'unauthenticated' || session.status === 'loading') {
+      router.push('/login');
+    }
     if (accessToken) {
       viewOneJobListing(id, accessToken)
         .then((data) => {
@@ -155,20 +158,22 @@ export default function ViewJobListingAdmin() {
   };
 
   //Send email about change in state for job listing
-    const informJobListingStatusMethod = async (jobListingId) => {
-      try {
-        //This is the backend API call
-        const response = await informJobListingStatus(jobListingId, accessToken);
-    
-        if (response.status === 200) {
-          console.log('Job listing status email sent successfully');
-        } else {
-          console.error('Failed to send job listing status email' + JSON.stringify(response));
-        }
-      } catch (error) {
-        console.error('Error sending job listing status email:', error);
+  const informJobListingStatusMethod = async (jobListingId) => {
+    try {
+      //This is the backend API call
+      const response = await informJobListingStatus(jobListingId, accessToken);
+
+      if (response.status === 200) {
+        console.log('Job listing status email sent successfully');
+      } else {
+        console.error(
+          'Failed to send job listing status email' + JSON.stringify(response)
+        );
       }
-    }; 
+    } catch (error) {
+      console.error('Error sending job listing status email:', error);
+    }
+  };
 
   /*
   const footer = (
@@ -241,7 +246,7 @@ export default function ViewJobListingAdmin() {
   */
 
   const handleOnBackClick = () => {
-    router.push("/jobListings");
+    router.push('/jobListings');
   };
 
   const footer = (
@@ -253,7 +258,9 @@ export default function ViewJobListingAdmin() {
         className="back-button p-button-outlined p-button-secondary"
         onClick={() => handleOnBackClick()}
       />
-      {(jobListing.jobListingStatus === 'Unverified' || jobListing.jobListingStatus === 'Rejected' || jobListing.jobListingStatus === 'Archived') && (
+      {(jobListing.jobListingStatus === 'Unverified' ||
+        jobListing.jobListingStatus === 'Rejected' ||
+        jobListing.jobListingStatus === 'Archived') && (
         <Button
           label="Approve"
           icon="pi pi-check"
@@ -271,7 +278,8 @@ export default function ViewJobListingAdmin() {
           onClick={() => showUserDialog('Rejected')}
         />
       )}
-      {(jobListing.jobListingStatus === 'Approved' || jobListing.jobListingStatus === 'Rejected') && (
+      {(jobListing.jobListingStatus === 'Approved' ||
+        jobListing.jobListingStatus === 'Rejected') && (
         <Button
           label="Archive"
           icon="pi pi-folder"
@@ -282,13 +290,18 @@ export default function ViewJobListingAdmin() {
       )}
     </div>
   );
-  
-  
 
   return (
     <div className="container">
       {isLoading ? (
-        <ProgressSpinner style={{"display": "flex", "height": "100vh", "justify-content": "center", "align-items": "center"}}/>
+        <ProgressSpinner
+          style={{
+            display: 'flex',
+            height: '100vh',
+            'justify-content': 'center',
+            'align-items': 'center',
+          }}
+        />
       ) : (
         <div>
           <Card
@@ -300,14 +313,14 @@ export default function ViewJobListingAdmin() {
           >
             <div className="my-card.p-card-content">
               <div className="company-info">
-              {jobListing.corporate.profilePictureUrl === "" ? (
+                {jobListing.corporate.profilePictureUrl === '' ? (
                   <Image src={HumanIcon} alt="User" className="avatar" />
                 ) : (
-                <img
-                  src={jobListing.corporate.profilePictureUrl}
-                  className="avatar"
-                />
-              )}
+                  <img
+                    src={jobListing.corporate.profilePictureUrl}
+                    className="avatar"
+                  />
+                )}
                 <div className="company-details">
                   <p>{jobListing.corporate.userName}</p>
                 </div>
@@ -319,8 +332,10 @@ export default function ViewJobListingAdmin() {
               <p>{jobListing.responsibilities}</p>
               <strong>Job Requirements</strong>
               <p>{jobListing.requirements}</p>
+              <strong>Required Documents</strong>
+              <p>{jobListing.requiredDocuments}</p>
               <strong>Average Salary</strong>
-              <p>{"$" + jobListing.averageSalary + " SGD"}</p>
+              <p>{'$' + jobListing.averageSalary + ' SGD'}</p>
               <strong>Job Start Date</strong>
               <p>{formatDate(jobListing.jobStartDate)}</p>
 
@@ -331,19 +346,25 @@ export default function ViewJobListingAdmin() {
               </div>
 
               <strong>Corporate Details</strong>
-              <p>{"UEN Number: " + jobListing.corporate.companyRegistrationId}</p>
-              <p className="second-p">{"Address: " + jobListing.corporate.companyAddress}</p>
+              <p>
+                {'UEN Number: ' + jobListing.corporate.companyRegistrationId}
+              </p>
+              <p className="second-p">
+                {'Address: ' + jobListing.corporate.companyAddress}
+              </p>
 
               <strong>Job Listing Details</strong>
               <p>{formatDate(jobListing.listingDate)}</p>
 
-              <p>{"Job Listing ID: " + jobListing.jobListingId}</p>
+              <p>{'Job Listing ID: ' + jobListing.jobListingId}</p>
 
               <strong>Current Status of Job</strong>
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === 'Approved' ? 'green' : 'red',
+                    jobListing.jobListingStatus === 'Approved'
+                      ? 'green'
+                      : 'red',
                 }}
               >
                 {jobListing.jobListingStatus}
