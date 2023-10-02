@@ -235,11 +235,6 @@ export default function ViewJobListingRecruiter() {
               setSelectedUser(rowData);
               setUserProfileModalVisibility(true);
             }}
-            // onClick={() => {
-            //   router?.push(
-            //     `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}&jobListingId=${id}`
-            //   );
-            // }}
           />
         </div>
       </React.Fragment>

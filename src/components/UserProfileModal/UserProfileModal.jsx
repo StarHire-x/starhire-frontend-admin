@@ -6,8 +6,6 @@ import { Card } from "primereact/card";
 import JobExperiencePanel from "@/components/JobExperiencePanel/JobExperiencePanel";
 import JobPreferencePanel from "@/components/JobPreferencePanel/JobPreferencePanel";
 import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { ProgressSpinner } from "primereact/progressspinner";
 import Enums from "@/common/enums/enums";
 
 const formatDate = (dateString) => {
@@ -20,11 +18,6 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
   return (
     <div className={styles.container}>
       <>
-        {/* <Dialog
-            header="User Profile"
-            visible={userProfileModalVisibility}
-            onHide={() => setUserProfileModalVisibility(false)}
-          > */}
         <div className={styles.userProfileSection}>
           <div className={styles.userProfilePictureContainer}>
             {selectedUser.profilePictureUrl === "" ? (
@@ -114,7 +107,6 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
                   Do you wish to assign Job Listing {selectedJobListingId} to{" "}
                   {selectedUser && selectedUser?.userName}?
                 </h3>
-              </Dialog>
             </div>
           )}
         </div> */}
