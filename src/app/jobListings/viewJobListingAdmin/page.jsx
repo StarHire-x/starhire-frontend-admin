@@ -246,7 +246,8 @@ export default function ViewJobListingAdmin() {
   */
 
   const handleOnBackClick = () => {
-    router.push('/jobListings');
+    // router.push('/jobListings');
+    router.back();
   };
 
   const footer = (

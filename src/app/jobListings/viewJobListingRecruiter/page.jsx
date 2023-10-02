@@ -204,7 +204,8 @@ export default function ViewJobListingRecruiter() {
   };
 
   const handleOnBackClick = () => {
-    router.push(`/jobListings`);
+    // router.push(`/jobListings`);
+    router.back();
   };
 
   const handleViewJobApplicationClick = () => {

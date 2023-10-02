@@ -303,7 +303,8 @@ export default function CustomersDemo() {
   };
 
   const handleOnBackClick = () => {
-    router.push("/jobListings");
+    // router.push("/jobListings");
+    router.back();
   };
 
   const updateStatus = async () => {

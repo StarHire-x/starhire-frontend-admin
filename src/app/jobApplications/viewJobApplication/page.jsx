@@ -72,7 +72,8 @@ const viewJobApplication = () => {
   };
 
   const handleOnBackClick = () => {
-    return router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
+    // return router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
+    router.back();
   };
 
   const updateStatus = async (status) => {
