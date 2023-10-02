@@ -139,7 +139,7 @@ export default function ViewJobListingRecruiter() {
           }}
         />
       ) : (
-        <div>
+        <div className="content-container">
           <Card
             title={jobListing.title}
             subTitle={jobListing.jobLocation}
@@ -218,6 +218,7 @@ export default function ViewJobListingRecruiter() {
             onHide={hideDialog}
           ></Dialog> */}
         </div>
+        //insert datatable here
       )}
     </div>
   );
