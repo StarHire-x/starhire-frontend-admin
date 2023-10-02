@@ -21,11 +21,16 @@ import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import Enums from "@/common/enums/enums";
+import UserProfileModal from "@/components/UserProfileModal/UserProfileModal";
 
 export default function ViewJobListingRecruiter() {
   const session = useSession();
 
   const router = useRouter();
+
+  if (session.status === "unauthenticated") {
+    router.push("/login");
+  }
 
   const accessToken =
     session.status === "authenticated" &&
@@ -34,6 +39,11 @@ export default function ViewJobListingRecruiter() {
 
   const currentUserId =
     session.status === "authenticated" && session.data.user.userId;
+
+  const currentUserRole =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.role;
 
   const params = useSearchParams();
   const id = params.get("id");
@@ -46,6 +56,9 @@ export default function ViewJobListingRecruiter() {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [status, setStatus] = useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [userProfileModalVisibility, setUserProfileModalVisibility] =
+    useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -62,9 +75,6 @@ export default function ViewJobListingRecruiter() {
   const dt = useRef(null);
 
   useEffect(() => {
-    if (session.status === "unauthenticated" || session.status === "loading") {
-      router.push("/login");
-    }
     if (accessToken) {
       viewOneJobListing(id, accessToken)
         .then((data) => {
@@ -83,7 +93,7 @@ export default function ViewJobListingRecruiter() {
                   x.status === Enums.ACTIVE &&
                   !x.jobListings
                     .map((jobListing) => jobListing.jobListingId)
-                    .includes(jobListing.jobListingId)
+                    .includes(data.jobListingId)
               );
               setUser(activeJobSeekers);
               setIsLoading(false);
@@ -98,7 +108,7 @@ export default function ViewJobListingRecruiter() {
           setIsLoading(false);
         });
     }
-  }, [refreshData, accessToken, id, jobListing]);
+  }, [refreshData, accessToken, id]);
 
   const handleRefresh = () => {
     router.push(`/jobListings`); // This will refresh the current page
@@ -222,10 +232,14 @@ export default function ViewJobListingRecruiter() {
             rounded
             size="small"
             onClick={() => {
-              router?.push(
-                `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}&jobListingId=${id}`
-              );
+              setSelectedUser(rowData);
+              setUserProfileModalVisibility(true);
             }}
+            // onClick={() => {
+            //   router?.push(
+            //     `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}&jobListingId=${id}`
+            //   );
+            // }}
           />
         </div>
       </React.Fragment>
@@ -396,12 +410,7 @@ export default function ViewJobListingRecruiter() {
             onSelectionChange={(e) => setSelectedUsers(e.value)}
             filters={filters}
             filterDisplay="menu"
-            globalFilterFields={[
-              "userName",
-              "email",
-              "contactNo",
-              "role",
-            ]}
+            globalFilterFields={["userName", "email", "contactNo", "role"]}
             emptyMessage="No users found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >
@@ -425,6 +434,17 @@ export default function ViewJobListingRecruiter() {
               style={{ minWidth: "12rem" }}
             ></Column>
           </DataTable>
+
+          <Dialog
+            header="User Profile"
+            visible={userProfileModalVisibility}
+            onHide={() => setUserProfileModalVisibility(false)}
+          >
+            <UserProfileModal
+              selectedUser={selectedUser}
+              currentUserRole={currentUserRole}
+            />
+          </Dialog>
 
           <Dialog
             visible={assignDialog}

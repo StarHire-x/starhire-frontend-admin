@@ -1,0 +1,120 @@
+.container {
+    /* max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    width: 100%;
+    height: 100vh; */
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.loadingAnimation {
+    displAy: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.spinner {
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+.userProfileSection {
+    display: flex;
+    flex-direction: row;
+}
+
+.userDetailsCard {
+    margin-left: auto;
+    width: 100%;
+}
+
+.userDetails {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.userDetailsFullName {
+    margin-bottom: 20px;
+    font-size: 35px;
+}
+
+.userProfilePictureContainer {
+    max-width: 360px;
+    max-height: 360px;
+    min-width: 60px;
+    min-height: 60px;
+    margin-right: 5vw;
+}
+
+.jobPreferenceSection {
+    padding-top: 5vh;
+}
+
+.jobExperienceSection {
+    padding-top: 5vh;
+}
+
+/* .backButtonContainer {
+    margin: 0 auto;
+} */
+
+.backButton {
+  border: none !important;
+  color: white !important;
+  background-color: #007bff !important;
+  transition: all 0.3s !important;
+  margin-right: 30px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  ) !important;
+}
+
+.footerButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    padding-top: 5vh;
+}
+
+.assignButtonContainer {
+    margin-left: auto;
+}
+
+.assignButton {
+    border: none !important;
+    color: white !important;
+    transition: all 0.3s !important;
+    margin-right: 30px;
+    background-image: linear-gradient(
+        90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.2) 100%
+    ) !important;
+    background-color: #e29578 !important;
+}
+
+
+.userInformationContainer {
+    display: flex;
+    flex-direction: row;
+    margin-left: 5%;
+}
+
+.userInformationSecondRow {
+    margin-left: 5%;
+}
