@@ -51,6 +51,11 @@ export default function AccountManagement() {
     session.data &&
     session.data.user.accessToken;
 
+  const currentUserRole =
+  session.status === "authenticated" &&
+  session.data &&
+  session.data.user.role;
+
   if (session.status === "unauthenticated") {
     router?.push("/login");
   }
@@ -181,11 +186,7 @@ export default function AccountManagement() {
             className={styles.buttonIcon}
             onClick={() => {
               setSelectedRowData(rowData);
-              // showViewUserDialog(rowData);
-              // pass the rowData to the desired view user profile page
-              router?.push(
-                `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}`
-              );
+              setViewUserDialog(rowData);
             }}
           />
         </React.Fragment>
