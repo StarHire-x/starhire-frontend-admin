@@ -10,6 +10,11 @@ body {
 .container {
 }
 
+.button-container {
+  display: flex; /* Use flexbox to arrange buttons horizontally */
+  align-items: center; /* Align buttons vertically in the center */
+}
+
 .assign-button,
 .back-button {
   border: none !important;
@@ -26,6 +31,11 @@ body {
 .assign-button {
   background-color: #e29578 !important;
   flex-direction: row-reverse; 
+}
+
+
+.back-button-container {
+  margin-top: 30px;
 }
 
 .back-button {
@@ -91,22 +101,6 @@ body {
   color: #555;
 }
 
-/* .loading-animation {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-} */
-
-/* .spinner {
-  border: 5px solid rgba(0, 0, 0, 0.1);
-  border-top: 5px solid #007bff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-} */
-
 .avatar {
   width: 50px;
   height: 50px;
@@ -115,6 +109,23 @@ body {
   margin-right: 10px; /* Adjust margin as needed */
   margin-bottom: 25px; /* Adjust margin as needed */
 }
+
+.image-container {
+  display: flex;
+  flex-direction: column; /* To ensure children are stacked vertically */
+  align-items: center; /* Horizontally center the children */
+  justify-content: center; /* Vertically center the children (though it's optional here) */
+  gap: 1px; /* Gives a little space between the image and the h6 */
+}
+
+.avatar-image-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* To make it circular */
+  object-fit: cover; /* To ensure the image maintains its aspect ratio */
+  margin-bottom: 0px; /* Add some spacing below the image */
+}
+
 
 .company-info {
   display: flex;
@@ -134,7 +145,6 @@ body {
 .second-p {
   margin-bottom: 0; /* Removes margin for the second <p> element */
 }
-
 
 p-dialog .p-dialog-header {
   background-color: #007bff;

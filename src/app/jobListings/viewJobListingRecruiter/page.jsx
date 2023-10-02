@@ -1,18 +1,25 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Card } from 'primereact/card';
-import { Button } from 'primereact/button';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import './styles.css';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
-import { Dialog } from 'primereact/dialog';
-import { useSession } from 'next-auth/react';
-import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
-import { updateJobListing } from '@/app/api/auth/jobListings/route';
-import HumanIcon from '../../../../public/icon.png';
+import React, { useEffect, useState, useRef } from "react";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
+import Image from "next/image";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import { ProgressSpinner } from "primereact/progressspinner";
+import "./styles.css";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Dialog } from "primereact/dialog";
+import { useSession } from "next-auth/react";
+import { viewOneJobListing } from "@/app/api/auth/jobListings/route";
+import { updateJobListing } from "@/app/api/auth/jobListings/route";
+import { getUsers } from "../../api/auth/user/route";
+import HumanIcon from "../../../../public/icon.png";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import { InputText } from "primereact/inputtext";
+import { Tag } from "primereact/tag";
+import Enums from "@/common/enums/enums";
 
 export default function ViewJobListingRecruiter() {
   const session = useSession();
@@ -20,40 +27,77 @@ export default function ViewJobListingRecruiter() {
   const router = useRouter();
 
   const accessToken =
-    session.status === 'authenticated' &&
+    session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === 'authenticated' && session.data.user.userId;
+    session.status === "authenticated" && session.data.user.userId;
 
   const params = useSearchParams();
-  const id = params.get('id');
+  const id = params.get("id");
 
   const [jobListing, setJobListing] = useState({});
-
   const [isLoading, setIsLoading] = useState(true);
-
-  // const [userDialog, setUserDialog] = useState(false);
-
+  const [assignDialog, setAssignDialog] = useState(false);
+  const [refreshData, setRefreshData] = useState(false);
+  const [user, setUser] = useState(null);
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const [status, setStatus] = useState(null);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    role: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+    },
+    status: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+    },
+  });
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const dt = useRef(null);
 
   useEffect(() => {
-    if (session.status === 'unauthenticated' || session.status === 'loading') {
-      router.push('/login');
+    if (session.status === "unauthenticated" || session.status === "loading") {
+      router.push("/login");
     }
     if (accessToken) {
       viewOneJobListing(id, accessToken)
         .then((data) => {
           setJobListing(data);
           setIsLoading(false);
+
+          getUsers(accessToken)
+            .then((user) => {
+              user.data.map(
+                (x) => x.role === Enums.JOBSEEKER && console.log(x.jobListings)
+              );
+
+              const activeJobSeekers = user.data.filter(
+                (x) =>
+                  x.role === Enums.JOBSEEKER &&
+                  x.status === Enums.ACTIVE &&
+                  !x.jobListings
+                    .map((jobListing) => jobListing.jobListingId)
+                    .includes(jobListing.jobListingId)
+              );
+              setUser(activeJobSeekers);
+              setIsLoading(false);
+            })
+            .catch((error) => {
+              console.error("Error fetching user:", error);
+              setIsLoading(false);
+            });
         })
         .catch((error) => {
-          console.error('Error fetching job listings:', error);
+          console.error("Error fetching job listings:", error);
           setIsLoading(false);
         });
     }
-  }, [accessToken]);
+  }, [refreshData, accessToken, id, jobListing]);
 
   const handleRefresh = () => {
     router.push(`/jobListings`); // This will refresh the current page
@@ -61,7 +105,7 @@ export default function ViewJobListingRecruiter() {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -76,11 +120,11 @@ export default function ViewJobListingRecruiter() {
       if (response.statusCode === 200) {
         handleRefresh();
       } else {
-        alert('Something went wrong! ERROR CODE:' + response.statusCode);
+        alert("Something went wrong! ERROR CODE:" + response.statusCode);
       }
-      console.log('Status changed successfully:', response);
+      console.log("Status changed successfully:", response);
     } catch (error) {
-      console.error('Error changing status:', error);
+      console.error("Error changing status:", error);
     }
   };
 
@@ -88,13 +132,13 @@ export default function ViewJobListingRecruiter() {
     setUserDialog(false);
   };
 
-  const handleOnBackClick = () => {
-    router.push('/jobListings');
-  };
+  // const handleOnBackClick = () => {
+  //   router.push("/jobListings");
+  // };
 
-  const handleOnAssignClick = () => {
-    router.push(`/userManagement?jobListingId=${id}`);
-  };
+  // const handleOnAssignClick = () => {
+  //   router.push(`/userManagement?jobListingId=${id}`);
+  // };
 
   const userDialogFooter = (
     <React.Fragment>
@@ -126,16 +170,176 @@ export default function ViewJobListingRecruiter() {
       />
     </div>
   );
+  // ============================ Code to populate datatable ============================
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+
+    _filters["global"].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  };
+
+  const showAssignDialog = (rowData) => {
+    setAssignDialog(true);
+  };
+
+  const hideAssignDialog = () => {
+    setAssignDialog(false);
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    return <Tag value={rowData.status} severity={getStatus(rowData.status)} />;
+  };
+
+  const handleOnAssignClick = async () => {
+    // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
+    const jobListingId = jobListing.jobListingId;
+    const jobSeekerId = selectedRowData.userId;
+    const recruiterId = session.data.user.userId;
+    // console.log("HERE!!!");
+    // console.log(jobSeekerId);
+
+    try {
+      const response = await assignJobListing(
+        jobSeekerId,
+        jobListingId,
+        recruiterId,
+        accessToken
+      );
+      console.log("Job Seeker has been assigned to Job Listing", response);
+      // alert('Job Seeker has been matched with Job Listing successfully');
+      setRefreshData((prev) => !prev);
+    } catch (error) {
+      console.error(
+        "There was an error matching the job seeker to the job listing:",
+        error.message
+      );
+      alert("There was an error matching the job seeker to the job listing");
+    }
+    setSelectedRowData();
+    setAssignDialog(false);
+  };
+
+  const handleOnBackClick = () => {
+    router.push(`/jobListings`);
+  };
+
+  const handleViewJobApplicationClick = () => {
+    router.push(`/jobApplications?id=${id}`);
+  };
+
+  const actionRecruiterBodyTemplate = (rowData) => {
+    console.log("Row Data:", rowData);
+    return (
+      <React.Fragment>
+        <div className="button-container">
+          <Button
+            label="Assign"
+            className="assign-button"
+            rounded
+            onClick={() => {
+              setSelectedRowData(rowData);
+              showAssignDialog(rowData);
+            }}
+          />
+          <Button
+            label="View More Details"
+            className="mr-2"
+            rounded
+            onClick={() => {
+              router?.push(
+                `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}&jobListingId=${id}`
+              );
+            }}
+          />
+        </div>
+      </React.Fragment>
+    );
+  };
+
+  const statusRoleTemplate = (rowData) => {
+    return <Tag value={rowData?.role?.replaceAll("_", " ")} />;
+  };
+
+  const recruiterAssignDialogFooter = (jobSeekerId) => (
+    <React.Fragment>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        rounded
+        outlined
+        onClick={hideAssignDialog}
+      />
+      <Button
+        label="Assign"
+        rounded
+        icon="pi pi-check"
+        onClick={handleOnAssignClick}
+      />
+    </React.Fragment>
+  );
+
+  const usernameBodyTemplate = (rowData) => {
+    const userName = rowData.userName;
+    const avatar = rowData.profilePictureUrl;
+
+    return (
+      <div className="image-container">
+        {avatar !== "" ? (
+          <img
+            alt={avatar}
+            src={avatar}
+            className="avatar-image-container"
+          />
+        ) : (
+          <Image
+            src={HumanIcon}
+            alt="Icon"
+            className="avatar-image-container"
+          />
+        )}
+        <span>{userName}</span>
+      </div>
+    );
+  };
+
+  const renderRecruiterHeader = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="m-0">Assign Users for Job Listing {id}</h2>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            value={globalFilterValue}
+            onChange={onGlobalFilterChange}
+            placeholder="Keyword Search"
+          />
+        </span>
+      </div>
+    );
+  };
+
+  const header = () => {
+    return renderRecruiterHeader();
+  };
 
   return (
     <div className="container">
       {isLoading ? (
         <ProgressSpinner
           style={{
-            display: 'flex',
-            height: '100vh',
-            'justify-content': 'center',
-            'align-items': 'center',
+            display: "flex",
+            height: "100vh",
+            "justify-content": "center",
+            "align-items": "center",
           }}
         />
       ) : (
@@ -145,11 +349,11 @@ export default function ViewJobListingRecruiter() {
             subTitle={jobListing.jobLocation}
             footer={footer}
             className="my-card"
-            style={{ borderRadius: '0' }}
+            style={{ borderRadius: "0" }}
           >
             <div className="my-card.p-card-content">
               <div className="company-info">
-                {jobListing.corporate.profilePictureUrl === '' ? (
+                {jobListing.corporate.profilePictureUrl === "" ? (
                   <Image src={HumanIcon} alt="User" className="avatar" />
                 ) : (
                   <img
@@ -171,7 +375,7 @@ export default function ViewJobListingRecruiter() {
               <strong>Required Documents</strong>
               <p>{jobListing.requiredDocuments}</p>
               <strong>Average Salary</strong>
-              <p>{'$' + jobListing.averageSalary + ' SGD'}</p>
+              <p>{"$" + jobListing.averageSalary + " SGD"}</p>
               <strong>Job Start Date</strong>
               <p>{formatDate(jobListing.jobStartDate)}</p>
 
@@ -183,42 +387,112 @@ export default function ViewJobListingRecruiter() {
 
               <strong>Corporate Details</strong>
               <p>
-                {'UEN Number: ' + jobListing.corporate.companyRegistrationId}
+                {"UEN Number: " + jobListing.corporate.companyRegistrationId}
               </p>
               <p className="second-p">
-                {'Address: ' + jobListing.corporate.companyAddress}
+                {"Address: " + jobListing.corporate.companyAddress}
               </p>
 
               <strong>Job Listing Details</strong>
               <p>{formatDate(jobListing.listingDate)}</p>
 
-              <p>{'Job Listing ID: ' + jobListing.jobListingId}</p>
+              <p>{"Job Listing ID: " + jobListing.jobListingId}</p>
 
               <strong>Current Status of Job</strong>
               <p
                 style={{
                   color:
-                    jobListing.jobListingStatus === 'Approved'
-                      ? 'green'
-                      : 'red',
+                    jobListing.jobListingStatus === "Approved"
+                      ? "green"
+                      : "red",
                 }}
               >
                 {jobListing.jobListingStatus}
               </p>
             </div>
           </Card>
+          <DataTable
+            value={user}
+            paginator
+            ref={dt}
+            header={header}
+            rows={10}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            rowsPerPageOptions={[10, 25, 50]}
+            dataKey="id"
+            selectionMode="checkbox"
+            selection={selectedUsers}
+            onSelectionChange={(e) => setSelectedUsers(e.value)}
+            filters={filters}
+            filterDisplay="menu"
+            globalFilterFields={[
+              "userName",
+              "email",
+              "contactNo",
+              "status",
+              "role",
+            ]}
+            emptyMessage="No users found."
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          >
+            <Column
+              field="userName"
+              header="User Name"
+              sortable
+              body={usernameBodyTemplate}
+            ></Column>
+            <Column field="email" header="Email" sortable></Column>
+            <Column field="contactNo" header="Contact No" sortable></Column>
+            <Column
+              field="role"
+              header="Role"
+              body={statusRoleTemplate}
+              sortable
+            ></Column>
+            <Column
+              body={actionRecruiterBodyTemplate}
+              exportable={false}
+              style={{ minWidth: "12rem" }}
+            ></Column>
+          </DataTable>
 
-          {/* <Dialog
-            visible={userDialog}
-            style={{ width: '32rem' }}
-            breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-            header="Confirm?"
+          <div className="back-button-container">
+            {session.data.user.role === Enums.RECRUITER && (
+              <>
+                <Button
+                  label="Back"
+                  icon="pi pi-chevron-left"
+                  rounded
+                  size="medium"
+                  className="back-button"
+                  onClick={() => handleOnBackClick()}
+                />
+                <Button
+                  label="View Job Applications"
+                  rounded
+                  size="medium"
+                  className="p-button-warning"
+                  onClick={() => handleViewJobApplicationClick()}
+                />
+              </>
+            )}
+          </div>
+
+          <Dialog
+            visible={assignDialog}
+            style={{ width: "32rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header="Assign Job Listing"
             className="p-fluid"
-            footer={userDialogFooter}
-            onHide={hideDialog}
-          ></Dialog> */}
+            footer={recruiterAssignDialogFooter}
+            onHide={hideAssignDialog}
+          >
+            <h3>
+              Do you wish to assign Job Listing {jobListing.jobListingId} to{" "}
+              {selectedRowData && selectedRowData.userName}?
+            </h3>
+          </Dialog>
         </div>
-        //insert datatable here
       )}
     </div>
   );
