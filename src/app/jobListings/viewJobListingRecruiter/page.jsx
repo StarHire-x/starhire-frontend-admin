@@ -164,10 +164,6 @@ export default function ViewJobListingRecruiter() {
     setAssignDialog(false);
   };
 
-  const statusBodyTemplate = (rowData) => {
-    return <Tag value={rowData.status} severity={getStatus(rowData.status)} />;
-  };
-
   const handleOnAssignClick = async () => {
     // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
     const jobListingId = jobListing.jobListingId;
