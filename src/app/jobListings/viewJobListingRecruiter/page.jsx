@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import { viewOneJobListing } from "@/app/api/auth/jobListings/route";
 import { updateJobListing } from "@/app/api/auth/jobListings/route";
 import { getUsers } from "../../api/auth/user/route";
+import { assignJobListing } from "@/app/api/auth/jobListings/route";
 import HumanIcon from "../../../../public/icon.png";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
