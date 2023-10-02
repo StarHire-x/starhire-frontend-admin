@@ -79,6 +79,8 @@ body {
   /* min-width: 20vw; */
   /* flex: 1; */
   margin-right: 10px;
+  height: 100vh;
+  overflow: auto;
 }
 
 .my-card:hover {
