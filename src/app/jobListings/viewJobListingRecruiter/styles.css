@@ -75,9 +75,9 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s, transform 0.3s;
-  /* margin: 40px auto; */
-  min-width: 20vw;
-  flex: 1;
+  width: 440px;
+  /* min-width: 20vw; */
+  /* flex: 1; */
   margin-right: 10px;
 }
 

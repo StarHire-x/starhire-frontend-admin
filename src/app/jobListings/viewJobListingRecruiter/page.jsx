@@ -213,6 +213,7 @@ export default function ViewJobListingRecruiter() {
             label="Assign"
             className="assign-button"
             rounded
+            size="small"
             onClick={() => {
               setSelectedRowData(rowData);
               showAssignDialog(rowData);
@@ -222,6 +223,7 @@ export default function ViewJobListingRecruiter() {
             label="View More Details"
             className="mr-2"
             rounded
+            size="small"
             onClick={() => {
               router?.push(
                 `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}&jobListingId=${id}`
@@ -405,7 +407,6 @@ export default function ViewJobListingRecruiter() {
             ]}
             emptyMessage="No users found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            style={{flex: "1"}}
           >
             <Column
               field="userName"
