@@ -395,45 +395,64 @@ export default function ViewJobListingRecruiter() {
               </p>
             </div>
           </Card>
+          <div>
+            <DataTable
+              value={user}
+              paginator
+              ref={dt}
+              header={header}
+              rows={10}
+              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+              rowsPerPageOptions={[10, 25, 50]}
+              dataKey="id"
+              selectionMode="checkbox"
+              selection={selectedUsers}
+              onSelectionChange={(e) => setSelectedUsers(e.value)}
+              filters={filters}
+              filterDisplay="menu"
+              globalFilterFields={["userName", "email", "contactNo", "role"]}
+              emptyMessage="No users found."
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            >
+              <Column
+                field="userName"
+                header="User Name"
+                sortable
+                body={usernameBodyTemplate}
+              ></Column>
+              <Column field="email" header="Email" sortable></Column>
+              <Column field="contactNo" header="Contact No" sortable></Column>
+              <Column
+                field="role"
+                header="Role"
+                body={statusRoleTemplate}
+                sortable
+              ></Column>
+              <Column
+                body={actionRecruiterBodyTemplate}
+                exportable={false}
+                style={{ minWidth: "12rem" }}
+              ></Column>
+            </DataTable>
 
-          <DataTable
-            value={user}
-            paginator
-            ref={dt}
-            header={header}
-            rows={10}
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-            rowsPerPageOptions={[10, 25, 50]}
-            dataKey="id"
-            selectionMode="checkbox"
-            selection={selectedUsers}
-            onSelectionChange={(e) => setSelectedUsers(e.value)}
-            filters={filters}
-            filterDisplay="menu"
-            globalFilterFields={["userName", "email", "contactNo", "role"]}
-            emptyMessage="No users found."
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-          >
-            <Column
-              field="userName"
-              header="User Name"
-              sortable
-              body={usernameBodyTemplate}
-            ></Column>
-            <Column field="email" header="Email" sortable></Column>
-            <Column field="contactNo" header="Contact No" sortable></Column>
-            <Column
-              field="role"
-              header="Role"
-              body={statusRoleTemplate}
-              sortable
-            ></Column>
-            <Column
-              body={actionRecruiterBodyTemplate}
-              exportable={false}
-              style={{ minWidth: "12rem" }}
-            ></Column>
-          </DataTable>
+            <div className="bottom-button-container">
+              <Button
+                label="Back"
+                icon="pi pi-chevron-left"
+                rounded
+                size="medium"
+                className="back-button"
+                onClick={() => handleOnBackClick()}
+              />
+              <Button
+                label="View Job Applications"
+                rounded
+                size="medium"
+                className="p-button-warning"
+                onClick={() => handleViewJobApplicationClick()}
+              />
+            </div>
+          </div>
 
           <Dialog
             header="User Profile"
@@ -462,23 +481,6 @@ export default function ViewJobListingRecruiter() {
           </Dialog>
         </div>
       )}
-      <div className="bottom-button-container">
-        <Button
-          label="Back"
-          icon="pi pi-chevron-left"
-          rounded
-          size="medium"
-          className="back-button"
-          onClick={() => handleOnBackClick()}
-        />
-        <Button
-          label="View Job Applications"
-          rounded
-          size="medium"
-          className="p-button-warning"
-          onClick={() => handleViewJobApplicationClick()}
-        />
-      </div>
     </div>
   );
 }
