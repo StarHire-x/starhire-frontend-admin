@@ -1,22 +1,10 @@
 /* CSS */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f7f8fc;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
-
-.container {
-}
-
 .button-container {
   display: flex; /* Use flexbox to arrange buttons horizontally */
   align-items: center; /* Align buttons vertically in the center */
 }
 
-.assign-button,
-.back-button {
+.assign-button {
   border: none !important;
   color: white !important;
   transition: all 0.3s !important;
@@ -26,24 +14,30 @@ body {
     rgba(255, 255, 255, 0.1) 0%,
     rgba(255, 255, 255, 0.2) 100%
   ) !important;
-}
-
-.assign-button {
   background-color: #e29578 !important;
-  flex-direction: row-reverse; 
 }
 
-
-.back-button-container {
+.bottom-button-container {
+  display: flex;
+  justify-content: space-between;
   margin-top: 30px;
 }
 
 .back-button {
+  border: none !important;
+  color: white !important;
   background-color: #007bff !important;
+  transition: all 0.3s !important;
+  margin-right: 30px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  ) !important;
 }
 
 .transparent-circle:before {
-  content: '';
+  content: "";
   display: inline-block;
   width: 16px; /* Adjust the circle's width to your preference */
   height: 16px; /* Adjust the circle's height to your preference */
@@ -59,6 +53,18 @@ body {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #f7f8fc;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  padding: 0;
+}
+
 .content-container {
   display: flex;
   justify-content: space-between;
@@ -69,7 +75,8 @@ body {
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s, transform 0.3s;
-  margin: 40px auto;
+  /* margin: 40px auto; */
+  min-width: 20vw;
   flex: 1;
   margin-right: 10px;
 }
@@ -125,7 +132,6 @@ body {
   object-fit: cover; /* To ensure the image maintains its aspect ratio */
   margin-bottom: 0px; /* Add some spacing below the image */
 }
-
 
 .company-info {
   display: flex;

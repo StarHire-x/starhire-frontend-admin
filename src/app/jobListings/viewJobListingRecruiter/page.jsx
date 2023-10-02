@@ -132,14 +132,6 @@ export default function ViewJobListingRecruiter() {
     setUserDialog(false);
   };
 
-  // const handleOnBackClick = () => {
-  //   router.push("/jobListings");
-  // };
-
-  // const handleOnAssignClick = () => {
-  //   router.push(`/userManagement?jobListingId=${id}`);
-  // };
-
   const userDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
@@ -152,24 +144,6 @@ export default function ViewJobListingRecruiter() {
     </React.Fragment>
   );
 
-  const footer = (
-    <div className="flex flex-wrap justify-content-end gap-2">
-      <Button
-        label="Back"
-        icon="pi pi-chevron-left"
-        rounded
-        className="back-button p-button-outlined p-button-secondary"
-        onClick={() => handleOnBackClick()}
-      />
-      <Button
-        label="Assign to.."
-        icon="pi pi-chevron-right"
-        rounded
-        className="assign-button p-button-outlined p-button-secondary"
-        onClick={() => handleOnAssignClick()}
-      />
-    </div>
-  );
   // ============================ Code to populate datatable ============================
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
@@ -270,12 +244,14 @@ export default function ViewJobListingRecruiter() {
         icon="pi pi-times"
         rounded
         outlined
+        size="small"
         onClick={hideAssignDialog}
       />
       <Button
         label="Assign"
         rounded
         icon="pi pi-check"
+        size="small"
         onClick={handleOnAssignClick}
       />
     </React.Fragment>
@@ -288,11 +264,7 @@ export default function ViewJobListingRecruiter() {
     return (
       <div className="image-container">
         {avatar !== "" ? (
-          <img
-            alt={avatar}
-            src={avatar}
-            className="avatar-image-container"
-          />
+          <img alt={avatar} src={avatar} className="avatar-image-container" />
         ) : (
           <Image
             src={HumanIcon}
@@ -347,7 +319,6 @@ export default function ViewJobListingRecruiter() {
           <Card
             title={jobListing.title}
             subTitle={jobListing.jobLocation}
-            footer={footer}
             className="my-card"
             style={{ borderRadius: "0" }}
           >
@@ -411,6 +382,7 @@ export default function ViewJobListingRecruiter() {
               </p>
             </div>
           </Card>
+
           <DataTable
             value={user}
             paginator
@@ -429,11 +401,11 @@ export default function ViewJobListingRecruiter() {
               "userName",
               "email",
               "contactNo",
-              "status",
               "role",
             ]}
             emptyMessage="No users found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            style={{flex: "1"}}
           >
             <Column
               field="userName"
@@ -456,28 +428,6 @@ export default function ViewJobListingRecruiter() {
             ></Column>
           </DataTable>
 
-          <div className="back-button-container">
-            {session.data.user.role === Enums.RECRUITER && (
-              <>
-                <Button
-                  label="Back"
-                  icon="pi pi-chevron-left"
-                  rounded
-                  size="medium"
-                  className="back-button"
-                  onClick={() => handleOnBackClick()}
-                />
-                <Button
-                  label="View Job Applications"
-                  rounded
-                  size="medium"
-                  className="p-button-warning"
-                  onClick={() => handleViewJobApplicationClick()}
-                />
-              </>
-            )}
-          </div>
-
           <Dialog
             visible={assignDialog}
             style={{ width: "32rem" }}
@@ -494,6 +444,23 @@ export default function ViewJobListingRecruiter() {
           </Dialog>
         </div>
       )}
+      <div className="bottom-button-container">
+        <Button
+          label="Back"
+          icon="pi pi-chevron-left"
+          rounded
+          size="medium"
+          className="back-button"
+          onClick={() => handleOnBackClick()}
+        />
+        <Button
+          label="View Job Applications"
+          rounded
+          size="medium"
+          className="p-button-warning"
+          onClick={() => handleViewJobApplicationClick()}
+        />
+      </div>
     </div>
   );
 }
