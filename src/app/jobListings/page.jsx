@@ -153,7 +153,7 @@ export default function JobListings() {
           />
           <div className="spacer"></div>
           <Button
-            label="View More Details"
+            label="Assign Users"
             rounded
             className="mr-2"
             size="small"
