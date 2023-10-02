@@ -61,7 +61,6 @@ export default function AccountManagement() {
   const [userDialog, setUserDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [viewUserDialog, setViewUserDialog] = useState(false);
-  const [assignDialog, setAssignDialog] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [jobListing, setJobListing] = useState({});
@@ -99,10 +98,6 @@ export default function AccountManagement() {
     setGlobalFilterValue(value);
   };
 
-  const showAssignDialog = (rowData) => {
-    setAssignDialog(true);
-  };
-
   const showUserDialog = (rowData) => {
     setUserDialog(true);
   };
@@ -135,43 +130,6 @@ export default function AccountManagement() {
 
   const statusItemTemplate = (option) => {
     return <Tag value={option} severity={getStatus(option)} />;
-  };
-
-  // ====================================== Trying to assign job seekers to job listing during matching process by updating job listing ======================================
-  const handleOnAssignClick = async () => {
-    // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
-    const jobListingId = jobListing.jobListingId;
-    const jobSeekerId = selectedRowData.userId;
-    const recruiterId = session.data.user.userId;
-    // console.log("HERE!!!");
-    // console.log(jobSeekerId);
-
-    try {
-      const response = await assignJobListing(
-        jobSeekerId,
-        jobListingId,
-        recruiterId,
-        accessToken
-      );
-      console.log("Job Seeker has been assigned to Job Listing", response);
-      // alert('Job Seeker has been matched with Job Listing successfully');
-      setRefreshData((prev) => !prev);
-    } catch (error) {
-      console.error(
-        "There was an error matching the job seeker to the job listing:",
-        error.message
-      );
-      alert("There was an error matching the job seeker to the job listing");
-    }
-    setSelectedRowData();
-    setAssignDialog(false);
-  };
-
-  const handleOnBackClick = () => {
-    router.push(`/jobListings/viewJobListingRecruiter?id=${id}`);
-  };
-  const handleViewJobApplicationClick = () => {
-    router.push(`/jobApplications?id=${id}`);
   };
 
   const actionAdminBodyTemplate = (rowData) => {
@@ -235,39 +193,6 @@ export default function AccountManagement() {
     }
   };
 
-  const actionRecruiterBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
-    return (
-      <React.Fragment>
-        <div className={styles.buttonContainer}>
-          <Button
-            label="Assign"
-            className={styles.assignButton}
-            rounded
-            onClick={() => {
-              setSelectedRowData(rowData);
-              showAssignDialog(rowData);
-            }}
-          />
-          <Button
-            label="View More Details"
-            className="mr-2"
-            rounded
-            onClick={() => {
-              router?.push(
-                `/userProfile/?userId=${rowData?.userId}&role=${rowData?.role}&jobListingId=${id}`
-              );
-            }}
-          />
-        </div>
-      </React.Fragment>
-    );
-  };
-
-  const hideAssignDialog = () => {
-    setAssignDialog(false);
-  };
-
   const hideDialog = () => {
     setUserDialog(false);
   };
@@ -281,11 +206,7 @@ export default function AccountManagement() {
   };
 
   const statusRoleTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData?.role?.replaceAll("_", " ")}
-      />
-    );
+    return <Tag value={rowData?.role?.replaceAll("_", " ")} />;
   };
 
   const saveStatusChange = async () => {
@@ -332,24 +253,6 @@ export default function AccountManagement() {
     setSelectedRowData();
     setDeleteDialog(false);
   };
-
-  const recruiterAssignDialogFooter = (jobSeekerId) => (
-    <React.Fragment>
-      <Button
-        label="Cancel"
-        icon="pi pi-times"
-        rounded
-        outlined
-        onClick={hideAssignDialog}
-      />
-      <Button
-        label="Assign"
-        rounded
-        icon="pi pi-check"
-        onClick={handleOnAssignClick}
-      />
-    </React.Fragment>
-  );
 
   const userDialogFooter = (
     <React.Fragment>
@@ -431,28 +334,6 @@ export default function AccountManagement() {
     );
   };
 
-  const renderRecruiterHeader = () => {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h2 className="m-0">Assign Users for Job Listing {id}</h2>
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            value={globalFilterValue}
-            onChange={onGlobalFilterChange}
-            placeholder="Keyword Search"
-          />
-        </span>
-      </div>
-    );
-  };
-
   useEffect(() => {
     if (accessToken) {
       viewOneJobListing(id, accessToken)
@@ -468,26 +349,8 @@ export default function AccountManagement() {
   useEffect(() => {
     getUsers(accessToken)
       .then((user) => {
-        if (session.data.user.role === Enums.RECRUITER) {
-          // console.log("SEE HERE!!");
-          user.data.map(
-            (x) => x.role === Enums.JOBSEEKER && console.log(x.jobListings)
-          );
-
-          const activeJobSeekers = user.data.filter(
-            (x) =>
-              x.role === Enums.JOBSEEKER &&
-              x.status === Enums.ACTIVE &&
-              !x.jobListings
-                .map((jobListing) => jobListing.jobListingId)
-                .includes(jobListing.jobListingId)
-          );
-          setUser(activeJobSeekers);
-          setIsLoading(false);
-        } else {
-          setUser(user.data);
-          setIsLoading(false);
-        }
+        setUser(user.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -496,25 +359,19 @@ export default function AccountManagement() {
   }, [refreshData, accessToken, jobListing]);
 
   const header = () => {
-    if (session.data.user.role === Enums.ADMIN) {
-      return renderAdminHeader();
-    } else {
-      return renderRecruiterHeader();
-    }
+    return renderAdminHeader();
   };
 
   if (
     session.status === "authenticated" &&
-    session.data.user.role !== Enums.ADMIN &&
-    session.data.user.role !== Enums.RECRUITER
+    session.data.user.role !== Enums.ADMIN
   ) {
     router?.push("/dashboard");
   }
 
   if (
     session.status === "authenticated" &&
-    (session.data.user.role === Enums.ADMIN ||
-      session.data.user.role === Enums.RECRUITER)
+    session.data.user.role === Enums.ADMIN
   ) {
     return (
       <>
@@ -572,66 +429,26 @@ export default function AccountManagement() {
                     filterElement={statusFilterTemplate}
                   ></Column>
                 )}
-                <Column field="role" header="Role" body={statusRoleTemplate} sortable></Column>
-                {session.data.user.role === Enums.ADMIN ? (
-                  <Column
-                    body={actionAdminBodyTemplate}
-                    exportable={false}
-                    style={{ minWidth: "12rem" }}
-                  ></Column>
-                ) : (
-                  <Column
-                    body={actionRecruiterBodyTemplate}
-                    exportable={false}
-                    style={{ minWidth: "12rem" }}
-                  ></Column>
-                )}
-                {session.data.user.role === Enums.ADMIN && (
-                  <Column
-                    field="createdAt"
-                    header="Created Date"
-                    body={(rowData) => formatDate(rowData.createdAt)}
-                    sortable
-                  ></Column>
-                )}
+                <Column
+                  field="role"
+                  header="Role"
+                  body={statusRoleTemplate}
+                  sortable
+                ></Column>
+
+                <Column
+                  body={actionAdminBodyTemplate}
+                  exportable={false}
+                  style={{ minWidth: "12rem" }}
+                ></Column>
+
+                <Column
+                  field="createdAt"
+                  header="Created Date"
+                  body={(rowData) => formatDate(rowData.createdAt)}
+                  sortable
+                ></Column>
               </DataTable>
-              <div className={styles.backButtonContainer}>
-                {session.data.user.role === Enums.RECRUITER && (
-                  <>
-                    <Button
-                      label="Back"
-                      icon="pi pi-chevron-left"
-                      rounded
-                      size="medium"
-                      className={styles.backButton}
-                      onClick={() => handleOnBackClick()}
-                    />
-                    <Button
-                      label="View Job Applications"
-                      rounded
-                      size="medium"
-                      className="p-button-warning"
-                      onClick={() => handleViewJobApplicationClick()}
-                    />
-                  </>
-                )}
-              </div>
-
-              <Dialog
-                visible={assignDialog}
-                style={{ width: "32rem" }}
-                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-                header="Assign Job Listing"
-                className="p-fluid"
-                footer={recruiterAssignDialogFooter}
-                onHide={hideAssignDialog}
-              >
-                <h3>
-                  Do you wish to assign Job Listing {jobListing.jobListingId} to{" "}
-                  {selectedRowData && selectedRowData.userName}?
-                </h3>
-              </Dialog>
-
               <Dialog
                 visible={userDialog}
                 style={{ width: "32rem" }}
