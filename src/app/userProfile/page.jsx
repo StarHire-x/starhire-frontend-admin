@@ -49,9 +49,6 @@ export default function UserProfile() {
   const selectedJobListingId = params.get("jobListingId");
 
   useEffect(() => {
-    console.log(`selected userId: ${selectedUserId}`);
-    console.log(`selected user role: ${selectedUserRole}`);
-
     // call API to retrieve selected user data
     if (accessToken) {
       getUserByUserId(selectedUserId, selectedUserRole, accessToken)

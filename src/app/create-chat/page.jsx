@@ -145,7 +145,6 @@ const CreateChat = () => {
   };
 
   const actionBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
     return !hasChattedWithUser(rowData) ? (
       <React.Fragment>
         <Button

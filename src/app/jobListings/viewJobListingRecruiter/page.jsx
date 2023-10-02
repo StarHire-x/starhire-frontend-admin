@@ -83,9 +83,9 @@ export default function ViewJobListingRecruiter() {
 
           getUsers(accessToken)
             .then((user) => {
-              user.data.map(
-                (x) => x.role === Enums.JOBSEEKER && console.log(x.jobListings)
-              );
+              // user.data.map(
+              //   (x) => x.role === Enums.JOBSEEKER && console.log(x.jobListings)
+              // );
 
               const activeJobSeekers = user.data.filter(
                 (x) =>
@@ -212,7 +212,6 @@ export default function ViewJobListingRecruiter() {
   };
 
   const actionRecruiterBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
     return (
       <React.Fragment>
         <div className="button-container">

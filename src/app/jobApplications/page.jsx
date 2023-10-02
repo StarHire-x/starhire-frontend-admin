@@ -364,7 +364,6 @@ export default function CustomersDemo() {
             selectionMode="checkbox"
             selection={selectedJobApplications}
             onSelectionChange={(e) => {
-              console.log(e);
               setSelectedJobApplications(e.value);
             }}
             // filters={filters}

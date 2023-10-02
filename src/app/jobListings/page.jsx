@@ -118,7 +118,6 @@ export default function JobListings() {
   };
 
   const actionAdminBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
     return (
       <React.Fragment>
         <Button
@@ -140,7 +139,6 @@ export default function JobListings() {
   };
 
   const actionRecruiterBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
     return (
       <React.Fragment>
         <div className="buttonContainer">

@@ -138,7 +138,6 @@ export default function AccountManagement() {
   };
 
   const actionAdminBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
 
     // If session.status.user.userId matches rowData.userId, return null or an empty fragment.
     if (userIdRef === rowData.userId) {
@@ -211,7 +210,6 @@ export default function AccountManagement() {
   };
 
   const saveStatusChange = async () => {
-    console.log(selectedRowData);
     try {
       const toggledStatus =
         selectedRowData.status === Enums.ACTIVE ? Enums.INACTIVE : Enums.ACTIVE;
@@ -219,7 +217,6 @@ export default function AccountManagement() {
         role: selectedRowData.role,
         status: toggledStatus,
       };
-      console.log(request);
       const response = await updateUser(
         request,
         selectedRowData.userId,
@@ -235,12 +232,10 @@ export default function AccountManagement() {
   };
 
   const deleteUserFromRow = async () => {
-    console.log(selectedRowData);
     try {
       const request = {
         role: selectedRowData.role,
       };
-      console.log(request);
       const response = await deleteUser(
         selectedRowData.role,
         selectedRowData.userId,

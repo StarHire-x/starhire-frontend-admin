@@ -94,7 +94,6 @@ export default function AccountManagement() {
   };
 
   const actionBodyTemplate = (rowData) => {
-    console.log("Row Data:", rowData);
     return (
       <React.Fragment>
         <Button
@@ -117,7 +116,6 @@ export default function AccountManagement() {
   };
 
   const saveStatusChange = async () => {
-    console.log(selectedRowData);
     try {
       const toggledStatus =
         selectedRowData.status === Enums.ACTIVE ? Enums.INACTIVE : Enums.ACTIVE;
@@ -125,7 +123,6 @@ export default function AccountManagement() {
         role: selectedRowData.role,
         status: toggledStatus,
       };
-      console.log(request);
       const response = await updateUser(request, selectedRowData.userId);
       console.log("Status changed successfully:", response);
       setRefreshData((prev) => !prev);
