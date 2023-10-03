@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
-import './styles.css';
+// import './styles.css';
+import styles from './viewJobListingAdmin.module.css';
 import { Jolly_Lodger } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
@@ -256,7 +257,7 @@ export default function ViewJobListingAdmin() {
         label="Back"
         icon="pi pi-chevron-left"
         rounded
-        className="back-button p-button-outlined p-button-secondary"
+        className={`${styles.backButton} p-button-outlined p-button-secondary`}
         onClick={() => handleOnBackClick()}
       />
       {(jobListing.jobListingStatus === 'Unverified' ||
@@ -266,7 +267,7 @@ export default function ViewJobListingAdmin() {
           label="Approve"
           icon="pi pi-check"
           rounded
-          className="approve-button p-button-outlined p-button-secondary"
+          className={`${styles.approveButton} p-button-outlined p-button-secondary`}
           onClick={() => showUserDialog('Approved')}
         />
       )}
@@ -275,7 +276,7 @@ export default function ViewJobListingAdmin() {
           label="Reject"
           icon="pi pi-times"
           rounded
-          className="reject-button p-button-outlined p-button-secondary"
+          className={`${styles.rejectButton} p-button-outlined p-button-secondary`}
           onClick={() => showUserDialog('Rejected')}
         />
       )}
@@ -285,7 +286,7 @@ export default function ViewJobListingAdmin() {
           label="Archive"
           icon="pi pi-folder"
           rounded
-          className="archive-button p-button-outlined p-button-secondary"
+          className={`${styles.archiveButton} p-button-outlined p-button-secondary`}
           onClick={() => showUserDialog('Archived')}
         />
       )}
@@ -309,20 +310,20 @@ export default function ViewJobListingAdmin() {
             title={jobListing.title}
             subTitle={jobListing.jobLocation}
             footer={footer}
-            className="my-card"
+            className={styles.myCard}
             style={{ borderRadius: '0' }}
           >
-            <div className="my-card.p-card-content">
-              <div className="company-info">
+            <div className={styles.pCardContent}>
+              <div className={styles.companyInfo}>
                 {jobListing.corporate.profilePictureUrl === '' ? (
-                  <Image src={HumanIcon} alt="User" className="avatar" />
+                  <Image src={HumanIcon} alt="User" className={styles.avatar} />
                 ) : (
                   <img
                     src={jobListing.corporate.profilePictureUrl}
-                    className="avatar"
+                    className={styles.avatar}
                   />
                 )}
-                <div className="company-details">
+                <div>
                   <p>{jobListing.corporate.userName}</p>
                 </div>
               </div>
@@ -343,14 +344,14 @@ export default function ViewJobListingAdmin() {
               <div className="contact-info">
                 <strong>Contact Information</strong>
                 <p>{jobListing.corporate.email}</p>
-                <p className="second-p">{jobListing.corporate.contactNo}</p>
+                <p className={styles.secondP}>{jobListing.corporate.contactNo}</p>
               </div>
 
               <strong>Corporate Details</strong>
               <p>
                 {'UEN Number: ' + jobListing.corporate.companyRegistrationId}
               </p>
-              <p className="second-p">
+              <p className={styles.secondP}>
                 {'Address: ' + jobListing.corporate.companyAddress}
               </p>
 

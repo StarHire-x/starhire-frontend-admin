@@ -13,9 +13,9 @@
 }
 
 .approve-button,
-.reject-button,
-.archive-button,
-.back-button {
+.rejectButton,
+.archiveButton,
+.backButton {
   border: none !important;
   color: white !important;
   transition: all 0.3s !important;
@@ -27,19 +27,19 @@
   ) !important;
 }
 
-.approve-button {
+.approveButton {
   background-color: #006d77 !important;
 }
 
-.reject-button {
+.rejectButton {
   background-color: #e29578 !important;
 }
 
-.archive-button {
+.archiveButton {
   background-color: #007bff !important;
 }
 
-.back-button {
+.backButton {
   background-color: #007bff !important;
 }
 
@@ -54,14 +54,14 @@
   margin-right: 5px; /* Space between the circle and label */
 }
 
-.approve-button:hover,
-.reject-button:hover,
-.archive-button:hover {
+.approveButton:hover,
+.rejectButton:hover,
+.archiveButton:hover {
   transform: scale(1.05);
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-.my-card {
+.myCard {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -70,20 +70,20 @@
   overflow: auto;
 }
 
-.my-card:hover {
+.myCard:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transform: translateY(-3px);
 }
 
-.my-card .p-card-title {
+.myCard .p-card-title {
   margin-bottom: 0;
 }
 
-.my-card .p-card-content {
+.myCard .pCardContent {
   padding-top: 0.5rem;
 }
 
-.my-card .p-card-content strong {
+.myCard .pCardContent strong {
   display: block !important;
   margin-top: 10px;
   margin-bottom: 1rem !important;
@@ -91,7 +91,7 @@
   color: #333;
 }
 
-.my-card .p-card-content p {
+.myCard .pCardContent p {
   line-height: 1.5 !important;
   margin-bottom: 2rem !important;
   color: #555;
@@ -122,7 +122,7 @@
   margin-bottom: 25px; /* Adjust margin as needed */
 }
 
-.company-info {
+.companyInfo {
   display: flex;
   align-items: center; /* Align items vertically in the middle */
 }
@@ -135,7 +135,7 @@
   margin-bottom: 0; /* Adjust the margin as needed to reduce the space */
 }
 
-.second-p {
+.secondP {
   margin-bottom: 0; /* Removes margin for the second <p> element */
 }
 
