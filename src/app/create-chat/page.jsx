@@ -11,7 +11,7 @@ import { Tag } from "primereact/tag";
 import { getUsersForChat } from "../api/auth/user/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { createNewChatByRecruiter } from "../api/auth/chat/route";
+import { createNewChatByRecruiter } from "../api/chat/route";
 import Enums from "@/common/enums/enums";
 
 const CreateChat = () => {

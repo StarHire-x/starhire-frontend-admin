@@ -18,7 +18,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 // import "./styles.css";
 import styles from './jobListings.module.css';
-import { viewAllJobListings } from "@/app/api/auth/jobListings/route";
+import { viewAllJobListings } from "@/app/api/jobListings/route";
 import { getUserByUserId } from "../api/auth/user/route";
 import Enums from "@/common/enums/enums";
 

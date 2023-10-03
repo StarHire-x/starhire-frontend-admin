@@ -10,7 +10,7 @@ import { Card } from "primereact/card";
 import JobExperiencePanel from "@/components/JobExperiencePanel/JobExperiencePanel";
 import JobPreferencePanel from "@/components/JobPreferencePanel/JobPreferencePanel";
 import { Button } from "primereact/button";
-import { assignJobListing } from "../api/auth/jobListings/route";
+import { assignJobListing } from "../api/jobListings/route";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
 import Enums from "@/common/enums/enums";
