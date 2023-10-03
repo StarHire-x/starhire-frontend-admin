@@ -1,10 +1,10 @@
 /* CSS */
-.button-container {
+.buttonContainer {
   display: flex; /* Use flexbox to arrange buttons horizontally */
   align-items: center; /* Align buttons vertically in the center */
 }
 
-.assign-button {
+.assignButton {
   border: none !important;
   color: white !important;
   transition: all 0.3s !important;
@@ -17,7 +17,7 @@
   background-color: #e29578 !important;
 }
 
-.bottom-button-container {
+.bottomButtonContainer {
   display: flex;
   justify-content: space-between;
   margin-top: 30px;
@@ -53,29 +53,29 @@
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-body {
+/* body {
   font-family: "Arial", sans-serif;
   background-color: #f7f8fc;
   color: #333;
   margin: 0;
   padding: 0;
-}
+} */
 
 .container {
   padding: 0;
 }
 
-.content-container {
+.contentContainer {
   display: flex;
   justify-content: space-between;
 }
 
-.my-card {
+.myCard {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s, transform 0.3s;
-  width: 440px;
+  width: 20vw;
   /* min-width: 20vw; */
   /* flex: 1; */
   margin-right: 10px;
@@ -83,20 +83,20 @@ body {
   overflow: auto;
 }
 
-.my-card:hover {
+.myCard:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   transform: translateY(-3px);
 }
 
-.my-card .p-card-title {
+.myCard .p-card-title {
   margin-bottom: 0;
 }
 
-.my-card .p-card-content {
+.myCard .pCardContent{
   padding-top: 0.5rem;
 }
 
-.my-card .p-card-content strong {
+.myCard .pCardContent strong {
   display: block !important;
   margin-top: 10px;
   margin-bottom: 1rem !important;
@@ -104,7 +104,7 @@ body {
   color: #333;
 }
 
-.my-card .p-card-content p {
+.myCard .pCardContent p {
   line-height: 1.5 !important;
   margin-bottom: 2rem !important;
   color: #555;
@@ -119,7 +119,7 @@ body {
   margin-bottom: 25px; /* Adjust margin as needed */
 }
 
-.image-container {
+.imageContainer {
   display: flex;
   flex-direction: column; /* To ensure children are stacked vertically */
   align-items: center; /* Horizontally center the children */
@@ -127,7 +127,7 @@ body {
   gap: 1px; /* Gives a little space between the image and the h6 */
 }
 
-.avatar-image-container {
+.avatarImageContainer {
   width: 40px;
   height: 40px;
   border-radius: 50%; /* To make it circular */
@@ -135,7 +135,7 @@ body {
   margin-bottom: 0px; /* Add some spacing below the image */
 }
 
-.company-info {
+.companyInfo {
   display: flex;
   align-items: center; /* Align items vertically in the middle */
 }
@@ -150,7 +150,7 @@ body {
 }
 
 /* Add a specific class for the second <p> element if needed */
-.second-p {
+.secondP {
   margin-bottom: 0; /* Removes margin for the second <p> element */
 }
 

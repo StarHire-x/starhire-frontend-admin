@@ -6,7 +6,8 @@ import Image from "next/image";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
-import "./styles.css";
+// import "./styles.css";
+import styles from './viewJobListingRecruiter.module.css';
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { Dialog } from "primereact/dialog";
@@ -215,10 +216,10 @@ export default function ViewJobListingRecruiter() {
   const actionRecruiterBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="button-container">
+        <div className={styles.buttonContainer}>
           <Button
             label="Assign"
-            className="assign-button"
+            className={styles.assignButton}
             rounded
             size="small"
             onClick={() => {
@@ -270,14 +271,14 @@ export default function ViewJobListingRecruiter() {
     const avatar = rowData.profilePictureUrl;
 
     return (
-      <div className="image-container">
+      <div className={styles.imageContainer}>
         {avatar !== "" ? (
-          <img alt={avatar} src={avatar} className="avatar-image-container" />
+          <img alt={avatar} src={avatar} className={styles.avatarImageContainer} />
         ) : (
           <Image
             src={HumanIcon}
             alt="Icon"
-            className="avatar-image-container"
+            className={styles.avatarImageContainer}
           />
         )}
         <span>{userName}</span>
@@ -312,7 +313,7 @@ export default function ViewJobListingRecruiter() {
   };
 
   return (
-    <div className="container">
+    <div>
       {isLoading ? (
         <ProgressSpinner
           style={{
@@ -323,21 +324,21 @@ export default function ViewJobListingRecruiter() {
           }}
         />
       ) : (
-        <div className="content-container">
+        <div className={styles.contentContainer}>
           <Card
             title={jobListing.title}
             subTitle={jobListing.jobLocation}
-            className="my-card"
+            className={styles.myCard}
             style={{ borderRadius: "0" }}
           >
-            <div className="my-card.p-card-content">
-              <div className="company-info">
+            <div className={`${styles.pCardContent}`}>
+              <div className={styles.companyInfo}>
                 {jobListing.corporate.profilePictureUrl === "" ? (
-                  <Image src={HumanIcon} alt="User" className="avatar" />
+                  <Image src={HumanIcon} alt="User" className={styles.avatar} />
                 ) : (
                   <img
                     src={jobListing.corporate.profilePictureUrl}
-                    className="avatar"
+                    className={styles.avatar}
                   />
                 )}
                 <div className="company-details">
@@ -361,14 +362,14 @@ export default function ViewJobListingRecruiter() {
               <div className="contact-info">
                 <strong>Contact Information</strong>
                 <p>{jobListing.corporate.email}</p>
-                <p className="second-p">{jobListing.corporate.contactNo}</p>
+                <p className={styles.secondP}>{jobListing.corporate.contactNo}</p>
               </div>
 
               <strong>Corporate Details</strong>
               <p>
                 {"UEN Number: " + jobListing.corporate.companyRegistrationId}
               </p>
-              <p className="second-p">
+              <p className={styles.secondP}>
                 {"Address: " + jobListing.corporate.companyAddress}
               </p>
 
@@ -430,7 +431,7 @@ export default function ViewJobListingRecruiter() {
               ></Column>
             </DataTable>
 
-            <div className="bottom-button-container">
+            <div className={styles.bottomButtonContainer}>
               <Button
                 label="Back"
                 icon="pi pi-chevron-left"
