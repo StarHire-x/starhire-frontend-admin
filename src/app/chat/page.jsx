@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 import styles from "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import io from "socket.io-client";
@@ -34,6 +34,10 @@ const Chat = () => {
   if (session.status === "unauthenticated") {
     router?.push("/login");
   }
+
+  const params = useSearchParams();
+  const chatId = params.get("id");
+
   const accessToken =
     session.status === "authenticated" &&
     session.data &&
@@ -176,6 +180,15 @@ const Chat = () => {
     );
     setCurrentChat(chatMessagesByCurrentChatId);
   };
+
+  useEffect(() => {
+    const findChatId = async () => {
+      return await getOneUserChat(chatId, accessToken);
+    };
+    if (chatId) {
+      setCurrentChat(findChatId());
+    }
+  }, [chatId]);
 
   useEffect(() => {
     if (session.status === "authenticated") {

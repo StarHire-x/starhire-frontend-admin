@@ -16,6 +16,10 @@ import { Checkbox } from "primereact/checkbox";
 import { DialogBox } from "@/components/DialogBox/DialogBox";
 import { updateJobApplicationStatus } from "@/app/api/jobApplications/route";
 import moment from "moment";
+import {
+  createNewChatByRecruiter,
+  getAllUserChats,
+} from "@/app/api/chat/route";
 
 const viewJobApplication = () => {
   const session = useSession();
@@ -23,6 +27,8 @@ const viewJobApplication = () => {
   if (session.status === "unauthenticated") {
     router?.push("/login");
   }
+
+  const currentUserId = session.data && session.data.user?.userId;
 
   const accessToken =
     session.status === "authenticated" &&
@@ -73,6 +79,46 @@ const viewJobApplication = () => {
     return (
       <Tag severity={severity} value={jobApplication?.jobApplicationStatus} />
     );
+  };
+
+  const getCardHeader = () => {
+    return (
+      <div className={styles.chatButton} i>
+        <Button
+          outlined
+          rounded
+          size="small"
+          icon="pi pi-comments"
+          onClick={handleChatClick}
+        />
+      </div>
+    );
+  };
+
+  const handleChatClick = async () => {
+    // Check if chat exists already
+    const jobSeekerChats = await getAllUserChats(
+      jobSeeker?.userId,
+      accessToken
+    );
+    const matchingChats = jobSeekerChats.filter(
+      (chat) => chat?.recruiter?.userId === currentUserId
+    );
+    console.log(jobSeekerChats, matchingChats);
+    let chatId = null;
+    if (matchingChats.length === 0) {
+      const request = {
+        recruiterId: currentUserId,
+        jobSeekerId: jobSeeker?.userId,
+        lastUpdated: new Date(),
+      };
+      const response = await createNewChatByRecruiter(request, accessToken);
+      chatId = response?.chatId;
+    } else {
+      chatId = matchingChats[0]?.chatId;
+    }
+    // router.push(`/chat?id=${chatId}`);
+    router.push(`/chat`);
   };
 
   const handleOnBackClick = () => {
@@ -256,7 +302,7 @@ const viewJobApplication = () => {
                 className={styles.avatar}
               />
             )}
-            <Card className={styles.jobSeekerCard}>
+            <Card header={getCardHeader} className={styles.jobSeekerCard}>
               <p className={styles.text}>
                 <b>Username: </b>
                 {jobSeeker?.userName}
