@@ -19,6 +19,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import Image from "next/image";
 import HumanIcon from "../../../public/icon.png";
 import styles from "./page.module.css";
+import { viewOneJobListing } from "../api/jobListings/route";
 
 export default function CustomersDemo() {
   const session = useSession();
@@ -41,6 +42,7 @@ export default function CustomersDemo() {
   const [openDialog, setOpenDialog] = useState(false);
   const [jobApplicationToSend, setJobApplicationToSend] = useState(null);
   const [jobApplications, setJobApplications] = useState([]);
+  const [jobListing, setJobListing] = useState([]);
   const [selectedJobApplications, setSelectedJobApplications] = useState([]);
   const [filteredJobApplications, setFilteredJobApplications] = useState([]);
   const [filters, setFilters] = useState({
@@ -105,6 +107,9 @@ export default function CustomersDemo() {
         currentUserId,
         accessToken
       );
+      const jobListing = await viewOneJobListing(jobListingId, accessToken);
+      console.log(jobListing);
+      setJobListing(jobListing);
       setJobApplications(allJobApplications);
       setIsLoading(false);
     } catch (error) {
@@ -174,7 +179,7 @@ export default function CustomersDemo() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Job Applications for Job Listing {jobListingId}</h2>
+        <h2 className="m-0">Job Applications for {jobListing?.title}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -286,6 +291,7 @@ export default function CustomersDemo() {
         <Button
           label="No"
           icon="pi pi-times"
+          outlined
           onClick={() => setOpenDialog(false)}
           className="p-button-text"
         />
@@ -329,7 +335,11 @@ export default function CustomersDemo() {
     <div className="card">
       <DialogBox
         header="Send to Corporate?"
-        content={`Sending Job Application ID ${jobApplicationToSend?.jobApplicationId} for ${jobApplicationToSend?.jobSeeker?.userName}.`}
+        content={`Send ${jobApplicationToSend?.jobSeeker?.userName}'s for ${
+          jobListing?.title
+        } role to ${
+          jobListing?.corporate ? jobListing?.corporate?.userName : "corporate"
+        }?`}
         footerContent={footerButtons}
         isOpen={openDialog}
         setVisible={setOpenDialog}
@@ -362,7 +372,6 @@ export default function CustomersDemo() {
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
             rowsPerPageOptions={[10, 25, 50]}
             dataKey="id"
-            selectionMode="checkbox"
             selection={selectedJobApplications}
             onSelectionChange={(e) => {
               setSelectedJobApplications(e.value);
@@ -379,10 +388,6 @@ export default function CustomersDemo() {
             emptyMessage="No job applications found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
           >
-            <Column
-              selectionMode="multiple"
-              headerStyle={{ width: "3rem" }}
-            ></Column>
             <Column
               field="userName"
               header="Username"

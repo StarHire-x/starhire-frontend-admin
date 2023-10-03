@@ -13,6 +13,7 @@ import { Tag } from "primereact/tag";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "@/components/Dropdown/Dropdown";
 import { Checkbox } from "primereact/checkbox";
+import { DialogBox } from "@/components/DialogBox/DialogBox";
 import { updateJobApplicationStatus } from "@/app/api/jobApplications/route";
 import moment from "moment";
 
@@ -37,6 +38,9 @@ const viewJobApplication = () => {
   const [documents, setDocuments] = useState([]);
   const [jobListing, setJobListing] = useState(null);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
+  const [openRejectDialog, setOpenRejectDialog] = useState(false);
+  const [openSendCorporateDialog, setOpenSendCorporateDialog] = useState(false);
+  const [dialogLoading, setDialogLoading] = useState(false);
 
   const convertTimestampToDate = (timestamp) => {
     return moment(timestamp).format("DD/MM/YYYY");
@@ -137,6 +141,47 @@ const viewJobApplication = () => {
     setSelectedDocuments(_selectedDocuments);
   };
 
+  const handleClickReject = () => {
+    setOpenRejectDialog(true);
+  };
+
+  const handleClickSendCorporate = () => {
+    setOpenSendCorporateDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenRejectDialog(false);
+    setOpenSendCorporateDialog(false);
+  };
+
+  const footerButtons = () => {
+    return (
+      <div className="flex-container space-between">
+        <Button
+          label="No"
+          icon="pi pi-times"
+          outlined
+          onClick={handleCloseDialog}
+          className="p-button-text"
+        />
+        <Button
+          label="Yes"
+          icon="pi pi-check"
+          onClick={async () => {
+            setDialogLoading(true);
+            await updateStatus(
+              openRejectDialog ? "To_Be_Submitted" : "Processing"
+            );
+            handleCloseDialog;
+            setDialogLoading(false);
+          }}
+          loading={dialogLoading}
+          autoFocus
+        />
+      </div>
+    );
+  };
+
   // retrieve all jobApplication and jobSeeker details
   useEffect(() => {
     const populateDetails = async () => {
@@ -160,6 +205,27 @@ const viewJobApplication = () => {
 
   return (
     <>
+      <DialogBox
+        header={
+          openRejectDialog
+            ? `Reject Application`
+            : openSendCorporateDialog
+            ? `Accept Application`
+            : ``
+        }
+        content={
+          openRejectDialog
+            ? `Reject ${jobSeeker?.userName}'s application?`
+            : openSendCorporateDialog
+            ? `Send ${jobSeeker?.userName}'s application to corporate?`
+            : ``
+        }
+        footerContent={footerButtons}
+        isOpen={openRejectDialog || openSendCorporateDialog}
+        setVisible={
+          openRejectDialog ? setOpenRejectDialog : setOpenSendCorporateDialog
+        }
+      />
       {isLoading && (
         <div className="card flex justify-content-center">
           <ProgressSpinner
@@ -281,7 +347,7 @@ const viewJobApplication = () => {
                   icon="pi pi-thumbs-down"
                   rounded
                   severity="danger"
-                  onClick={() => updateStatus("To_Be_Submitted")}
+                  onClick={handleClickReject}
                 />
                 <Button
                   label="Send Corporate"
@@ -289,7 +355,7 @@ const viewJobApplication = () => {
                   rounded
                   severity="info"
                   disabled={selectedDocuments.length != documents.length}
-                  onClick={() => updateStatus("Processing")}
+                  onClick={handleClickSendCorporate}
                 />
               </div>
             )}
