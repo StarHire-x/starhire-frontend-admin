@@ -151,9 +151,9 @@ export default function JobListings() {
           />
           <div className="spacer"></div>
           <Button
-            label="Assign"
+            label="View Details"
             rounded
-            className="assign-button"
+            className="mr-2"
             size="small"
             onClick={() => {
               saveStatusChange(rowData);

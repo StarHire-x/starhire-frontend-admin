@@ -71,7 +71,7 @@
   margin-bottom: 0px; /* Add some spacing below the image */
 }
 
-.assign-button {
+.view-detail-button {
   border: none !important;
   color: white !important;
   transition: all 0.3s !important;
