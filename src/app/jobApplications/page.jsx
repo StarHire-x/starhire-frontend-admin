@@ -11,7 +11,7 @@ import { Tag } from "primereact/tag";
 import {
   updateJobApplicationStatus,
   viewAllJobApplicationsByJobListingId,
-} from "../api/auth/jobApplications/route";
+} from "../api/jobApplications/route";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { DialogBox } from "../../components/DialogBox/DialogBox";
