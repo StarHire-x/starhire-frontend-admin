@@ -16,7 +16,8 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import "./styles.css";
+// import "./styles.css";
+import styles from './jobListings.module.css';
 import { viewAllJobListings } from "@/app/api/auth/jobListings/route";
 import { getUserByUserId } from "../api/auth/user/route";
 import Enums from "@/common/enums/enums";
@@ -141,7 +142,7 @@ export default function JobListings() {
   const actionRecruiterBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <div className="buttonContainer">
+        <div className={styles.buttonContainer}>
           <Button
             label="View Job Applications"
             rounded
@@ -149,7 +150,7 @@ export default function JobListings() {
             size="small"
             onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
           />
-          <div className="spacer"></div>
+          <div className={styles.spacer}></div>
           <Button
             label="View Details"
             rounded
@@ -296,7 +297,7 @@ export default function JobListings() {
       session.data.user.role === Enums.RECRUITER)
   ) {
     return (
-      <div className="card">
+      <div className={styles.card}>
         {isLoading ? (
           <ProgressSpinner
             style={{
