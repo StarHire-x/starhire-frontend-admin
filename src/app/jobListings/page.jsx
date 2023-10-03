@@ -140,8 +140,8 @@ export default function JobListings() {
     // `/jobListings/viewJobListingRecruiter?id=${id}`;
   };
 
-  const getNumberOfProcessingJobApplicationsByJobListingByCurrentRecruiter = (jobListing) => {
-    return jobListing?.jobApplications.filter((jobApp) => jobApp.jobApplicationStatus === Enums.PROCESSING && jobApp?.recruiter.userId === currentUserId).length;
+  const getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter = (jobListing) => {
+    return jobListing?.jobApplications.filter((jobApp) => jobApp.jobApplicationStatus === Enums.SUBMITTED && jobApp?.recruiter.userId === currentUserId).length;
   }
 
   const actionRecruiterBodyTemplate = (rowData) => {
@@ -155,7 +155,7 @@ export default function JobListings() {
             size="small"
             onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
           >
-            <Badge severity="danger" value={getNumberOfProcessingJobApplicationsByJobListingByCurrentRecruiter(rowData)} />
+            <Badge severity="danger" value={getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(rowData)} />
           </Button>
           <div className={styles.spacer}></div>
           <Button
@@ -187,7 +187,7 @@ export default function JobListings() {
   };
 
   const sortJobListingsByNumberOfProcessingJobApps = (jobListings) => {
-    return jobListings.sort((x, y) => getNumberOfProcessingJobApplicationsByJobListingByCurrentRecruiter(y) - getNumberOfProcessingJobApplicationsByJobListingByCurrentRecruiter(x));
+    return jobListings.sort((x, y) => getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(y) - getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(x));
   };
 
   const saveStatusChange = async (rowData) => {
