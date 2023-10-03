@@ -64,7 +64,7 @@ const viewJobApplication = () => {
         return "null";
 
       case "Waiting_For_Interview":
-        return null;
+        return "null";
     }
   };
 
@@ -76,7 +76,6 @@ const viewJobApplication = () => {
   };
 
   const handleOnBackClick = () => {
-    // return router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
     router.back();
   };
 
@@ -101,14 +100,14 @@ const viewJobApplication = () => {
       key: "0",
       label: "Basic Details",
       children: [
-        { key: "0-0", label: `Title: ${jobListing?.title}` },
-        { key: "0-1", label: `Overview: ${jobListing?.overview}` },
-        { key: "0-2", label: `Location: ${jobListing?.jobLocation}` },
+        { key: "0-0", label: `Title: ${jobListing?.title || "none"}` },
+        { key: "0-1", label: `Overview: ${jobListing?.overview || "--"}` },
+        { key: "0-2", label: `Location: ${jobListing?.jobLocation || "--"}` },
         {
           key: "0-3",
-          label: `Job Start Date: ${convertTimestampToDate(
-            jobListing?.jobStartDate
-          )}`,
+          label: `Job Start Date: ${
+            convertTimestampToDate(jobListing?.jobStartDate) || "--"
+          }`,
         },
       ],
     },
@@ -118,12 +117,15 @@ const viewJobApplication = () => {
       children: [
         {
           key: "1-0",
-          label: `Responsibilities: ${jobListing?.responsibilities}`,
+          label: `Responsibilities: ${jobListing?.responsibilities || "--"}`,
         },
-        { key: "1-1", label: `Requirements: ${jobListing?.requirements}` },
+        {
+          key: "1-1",
+          label: `Requirements: ${jobListing?.requirements || "--"}`,
+        },
         {
           key: "1-2",
-          label: `Required Documents: ${jobListing?.requiredDocuments}`,
+          label: `Required Documents: ${jobListing?.requiredDocuments || "--"}`,
         },
       ],
     },
@@ -286,11 +288,12 @@ const viewJobApplication = () => {
             >
               <div className={styles.dates}>
                 <p>
-                  <b>Available Dates</b>
-                  <br />
-                  {convertTimestampToDate(
-                    jobApplication?.availableStartDate
-                  )}{" "}
+                  <b>Submission Date:</b>{" "}
+                  {convertTimestampToDate(jobApplication?.submissionDate)}
+                </p>
+                <p>
+                  <b>Available Dates:</b>{" "}
+                  {convertTimestampToDate(jobApplication?.availableStartDate)}{" "}
                   to {convertTimestampToDate(jobApplication?.availableEndDate)}
                 </p>
               </div>

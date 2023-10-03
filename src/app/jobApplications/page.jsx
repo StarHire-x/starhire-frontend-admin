@@ -96,7 +96,7 @@ export default function CustomersDemo() {
         return "null";
 
       case "Waiting_For_Interview":
-        return null;
+        return "null";
     }
   };
 
@@ -309,8 +309,8 @@ export default function CustomersDemo() {
   };
 
   const handleOnBackClick = () => {
-    // router.push("/jobListings");
-    router.back();
+    // router.back();
+    router.push("/jobListings");
   };
 
   const updateStatus = async () => {
@@ -337,9 +337,7 @@ export default function CustomersDemo() {
         header="Send to Corporate?"
         content={`Send ${jobApplicationToSend?.jobSeeker?.userName}'s for ${
           jobListing?.title
-        } role to ${
-          jobListing?.corporate ? jobListing?.corporate?.userName : "corporate"
-        }?`}
+        } role to ${jobListing?.corporate?.userName || "corporate"}?`}
         footerContent={footerButtons}
         isOpen={openDialog}
         setVisible={setOpenDialog}

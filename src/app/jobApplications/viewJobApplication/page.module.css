@@ -89,7 +89,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding-bottom: 50px;
+  padding-bottom: 30px;
   gap: 30px;
 }
 
@@ -98,12 +98,12 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 20px;
+  gap: 10px;
 }
 
 .childCheckbox {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 20px;
+  gap: 10px;
 }
