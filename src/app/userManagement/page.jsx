@@ -23,7 +23,7 @@ import {
 import {
   assignJobListing,
   viewOneJobListing,
-} from "../api/auth/jobListings/route";
+} from "../api/jobListings/route";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";

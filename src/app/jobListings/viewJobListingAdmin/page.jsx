@@ -12,9 +12,9 @@ import { useSearchParams } from 'next/navigation';
 import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { useSession } from 'next-auth/react';
-import { viewOneJobListing } from '@/app/api/auth/jobListings/route';
-import { updateJobListing } from '@/app/api/auth/jobListings/route';
-import { informJobListingStatus } from '@/app/api/auth/jobListings/route';
+import { viewOneJobListing } from '@/app/api/jobListings/route';
+import { updateJobListing } from '@/app/api/jobListings/route';
+import { informJobListingStatus } from '@/app/api/jobListings/route';
 import HumanIcon from '../../../../public/icon.png';
 import Enums from '@/common/enums/enums';
 
