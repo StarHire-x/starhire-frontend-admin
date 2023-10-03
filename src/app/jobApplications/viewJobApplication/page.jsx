@@ -13,8 +13,13 @@ import { Tag } from "primereact/tag";
 import { useRouter } from "next/navigation";
 import { Dropdown } from "@/components/Dropdown/Dropdown";
 import { Checkbox } from "primereact/checkbox";
+import { DialogBox } from "@/components/DialogBox/DialogBox";
 import { updateJobApplicationStatus } from "@/app/api/jobApplications/route";
 import moment from "moment";
+import {
+  createNewChatByRecruiter,
+  getAllUserChats,
+} from "@/app/api/chat/route";
 
 const viewJobApplication = () => {
   const session = useSession();
@@ -22,6 +27,8 @@ const viewJobApplication = () => {
   if (session.status === "unauthenticated") {
     router?.push("/login");
   }
+
+  const currentUserId = session.data && session.data.user?.userId;
 
   const accessToken =
     session.status === "authenticated" &&
@@ -37,6 +44,9 @@ const viewJobApplication = () => {
   const [documents, setDocuments] = useState([]);
   const [jobListing, setJobListing] = useState(null);
   const [selectedDocuments, setSelectedDocuments] = useState([]);
+  const [openRejectDialog, setOpenRejectDialog] = useState(false);
+  const [openSendCorporateDialog, setOpenSendCorporateDialog] = useState(false);
+  const [dialogLoading, setDialogLoading] = useState(false);
 
   const convertTimestampToDate = (timestamp) => {
     return moment(timestamp).format("DD/MM/YYYY");
@@ -60,7 +70,7 @@ const viewJobApplication = () => {
         return "null";
 
       case "Waiting_For_Interview":
-        return null;
+        return "null";
     }
   };
 
@@ -71,8 +81,47 @@ const viewJobApplication = () => {
     );
   };
 
+  const getCardHeader = () => {
+    return (
+      <div className={styles.chatButton} i>
+        <Button
+          outlined
+          rounded
+          size="small"
+          icon="pi pi-comments"
+          onClick={handleChatClick}
+        />
+      </div>
+    );
+  };
+
+  const handleChatClick = async () => {
+    // Check if chat exists already
+    const jobSeekerChats = await getAllUserChats(
+      jobSeeker?.userId,
+      accessToken
+    );
+    const matchingChats = jobSeekerChats.filter(
+      (chat) => chat?.recruiter?.userId === currentUserId
+    );
+    console.log(jobSeekerChats, matchingChats);
+    let chatId = null;
+    if (matchingChats.length === 0) {
+      const request = {
+        recruiterId: currentUserId,
+        jobSeekerId: jobSeeker?.userId,
+        lastUpdated: new Date(),
+      };
+      const response = await createNewChatByRecruiter(request, accessToken);
+      chatId = response?.chatId;
+    } else {
+      chatId = matchingChats[0]?.chatId;
+    }
+    // router.push(`/chat?id=${chatId}`);
+    router.push(`/chat`);
+  };
+
   const handleOnBackClick = () => {
-    // return router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
     router.back();
   };
 
@@ -97,14 +146,14 @@ const viewJobApplication = () => {
       key: "0",
       label: "Basic Details",
       children: [
-        { key: "0-0", label: `Title: ${jobListing?.title}` },
-        { key: "0-1", label: `Overview: ${jobListing?.overview}` },
-        { key: "0-2", label: `Location: ${jobListing?.jobLocation}` },
+        { key: "0-0", label: `Title: ${jobListing?.title || "none"}` },
+        { key: "0-1", label: `Overview: ${jobListing?.overview || "--"}` },
+        { key: "0-2", label: `Location: ${jobListing?.jobLocation || "--"}` },
         {
           key: "0-3",
-          label: `Job Start Date: ${convertTimestampToDate(
-            jobListing?.jobStartDate
-          )}`,
+          label: `Job Start Date: ${
+            convertTimestampToDate(jobListing?.jobStartDate) || "--"
+          }`,
         },
       ],
     },
@@ -114,12 +163,15 @@ const viewJobApplication = () => {
       children: [
         {
           key: "1-0",
-          label: `Responsibilities: ${jobListing?.responsibilities}`,
+          label: `Responsibilities: ${jobListing?.responsibilities || "--"}`,
         },
-        { key: "1-1", label: `Requirements: ${jobListing?.requirements}` },
+        {
+          key: "1-1",
+          label: `Requirements: ${jobListing?.requirements || "--"}`,
+        },
         {
           key: "1-2",
-          label: `Required Documents: ${jobListing?.requiredDocuments}`,
+          label: `Required Documents: ${jobListing?.requiredDocuments || "--"}`,
         },
       ],
     },
@@ -135,6 +187,47 @@ const viewJobApplication = () => {
       );
 
     setSelectedDocuments(_selectedDocuments);
+  };
+
+  const handleClickReject = () => {
+    setOpenRejectDialog(true);
+  };
+
+  const handleClickSendCorporate = () => {
+    setOpenSendCorporateDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenRejectDialog(false);
+    setOpenSendCorporateDialog(false);
+  };
+
+  const footerButtons = () => {
+    return (
+      <div className="flex-container space-between">
+        <Button
+          label="No"
+          icon="pi pi-times"
+          outlined
+          onClick={handleCloseDialog}
+          className="p-button-text"
+        />
+        <Button
+          label="Yes"
+          icon="pi pi-check"
+          onClick={async () => {
+            setDialogLoading(true);
+            await updateStatus(
+              openRejectDialog ? "To_Be_Submitted" : "Processing"
+            );
+            handleCloseDialog;
+            setDialogLoading(false);
+          }}
+          loading={dialogLoading}
+          autoFocus
+        />
+      </div>
+    );
   };
 
   // retrieve all jobApplication and jobSeeker details
@@ -160,6 +253,27 @@ const viewJobApplication = () => {
 
   return (
     <>
+      <DialogBox
+        header={
+          openRejectDialog
+            ? `Reject Application`
+            : openSendCorporateDialog
+            ? `Accept Application`
+            : ``
+        }
+        content={
+          openRejectDialog
+            ? `Reject ${jobSeeker?.userName}'s application?`
+            : openSendCorporateDialog
+            ? `Send ${jobSeeker?.userName}'s application to corporate?`
+            : ``
+        }
+        footerContent={footerButtons}
+        isOpen={openRejectDialog || openSendCorporateDialog}
+        setVisible={
+          openRejectDialog ? setOpenRejectDialog : setOpenSendCorporateDialog
+        }
+      />
       {isLoading && (
         <div className="card flex justify-content-center">
           <ProgressSpinner
@@ -188,7 +302,7 @@ const viewJobApplication = () => {
                 className={styles.avatar}
               />
             )}
-            <Card className={styles.jobSeekerCard}>
+            <Card header={getCardHeader} className={styles.jobSeekerCard}>
               <p className={styles.text}>
                 <b>Username: </b>
                 {jobSeeker?.userName}
@@ -220,11 +334,12 @@ const viewJobApplication = () => {
             >
               <div className={styles.dates}>
                 <p>
-                  <b>Available Dates</b>
-                  <br />
-                  {convertTimestampToDate(
-                    jobApplication?.availableStartDate
-                  )}{" "}
+                  <b>Submission Date:</b>{" "}
+                  {convertTimestampToDate(jobApplication?.submissionDate)}
+                </p>
+                <p>
+                  <b>Available Dates:</b>{" "}
+                  {convertTimestampToDate(jobApplication?.availableStartDate)}{" "}
                   to {convertTimestampToDate(jobApplication?.availableEndDate)}
                 </p>
               </div>
@@ -281,7 +396,7 @@ const viewJobApplication = () => {
                   icon="pi pi-thumbs-down"
                   rounded
                   severity="danger"
-                  onClick={() => updateStatus("To_Be_Submitted")}
+                  onClick={handleClickReject}
                 />
                 <Button
                   label="Send Corporate"
@@ -289,7 +404,7 @@ const viewJobApplication = () => {
                   rounded
                   severity="info"
                   disabled={selectedDocuments.length != documents.length}
-                  onClick={() => updateStatus("Processing")}
+                  onClick={handleClickSendCorporate}
                 />
               </div>
             )}

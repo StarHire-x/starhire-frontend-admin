@@ -21,6 +21,7 @@ import styles from './jobListings.module.css';
 import { viewAllJobListings } from "@/app/api/jobListings/route";
 import { getUserByUserId } from "../api/auth/user/route";
 import Enums from "@/common/enums/enums";
+import { Badge } from "primereact/badge";
 
 export default function JobListings() {
   const session = useSession();
@@ -139,6 +140,10 @@ export default function JobListings() {
     // `/jobListings/viewJobListingRecruiter?id=${id}`;
   };
 
+  const getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter = (jobListing) => {
+    return jobListing?.jobApplications.filter((jobApp) => jobApp.jobApplicationStatus === Enums.SUBMITTED && jobApp?.recruiter.userId === currentUserId).length;
+  }
+
   const actionRecruiterBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -149,7 +154,9 @@ export default function JobListings() {
             className="p-button-info"
             size="small"
             onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
-          />
+          >
+            <Badge severity="danger" value={getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(rowData)} />
+          </Button>
           <div className={styles.spacer}></div>
           <Button
             label="View Details"
@@ -177,6 +184,10 @@ export default function JobListings() {
   const createRecruiterLink = (id) => {
     const link = `/jobListings/viewJobListingRecruiter?id=${id}`;
     return link;
+  };
+
+  const sortJobListingsByNumberOfProcessingJobApps = (jobListings) => {
+    return jobListings.sort((x, y) => getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(y) - getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(x));
   };
 
   const saveStatusChange = async (rowData) => {
@@ -310,7 +321,7 @@ export default function JobListings() {
         ) : (
           <>
             <DataTable
-              value={jobListings}
+              value={sortJobListingsByNumberOfProcessingJobApps(jobListings)}
               paginator
               header={header}
               rows={10}
