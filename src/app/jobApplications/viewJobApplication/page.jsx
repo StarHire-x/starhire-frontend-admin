@@ -120,8 +120,7 @@ const viewJobApplication = () => {
     } else {
       chatId = matchingChats[0]?.chatId;
     }
-    // router.push(`/chat?id=${chatId}`);
-    router.push(`/chat`);
+    router.push(`/chat?id=${chatId}`);
   };
 
   const handleOnBackClick = () => {
