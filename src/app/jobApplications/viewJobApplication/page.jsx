@@ -83,14 +83,17 @@ const viewJobApplication = () => {
 
   const getCardHeader = () => {
     return (
-      <div className={styles.chatButton} i>
-        <Button
-          outlined
-          rounded
-          size="small"
-          icon="pi pi-comments"
-          onClick={handleChatClick}
-        />
+      <div className={styles.cardHeader}>
+        <h2>User Details</h2>
+        <div>
+          <Button
+            outlined
+            rounded
+            size="small"
+            icon="pi pi-comments"
+            onClick={handleChatClick}
+          />
+        </div>
       </div>
     );
   };
