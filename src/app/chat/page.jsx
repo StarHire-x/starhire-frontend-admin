@@ -186,7 +186,7 @@ const Chat = () => {
       return await getOneUserChat(chatId, accessToken);
     };
     if (chatId) {
-      setCurrentChat(findChatId());
+      findChatId().then((chat) => setCurrentChat(chat));
     }
   }, [chatId]);
 
@@ -198,7 +198,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (currentChat) {
-      const chatMessages = currentChat.chatMessages;
+      const chatMessages = currentChat?.chatMessages;
       chatMessages.sort(
         (message1, message2) => message1.timestamp > message2.timestamp
       );

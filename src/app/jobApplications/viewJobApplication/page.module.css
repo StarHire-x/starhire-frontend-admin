@@ -108,9 +108,9 @@
   gap: 10px;
 }
 
-.chatButton {
+.cardHeader {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 10px 10px 0px 0px;
+  justify-content: space-between;
+  padding: 10px 10px 0px 20px;
+  align-items: center;
 }

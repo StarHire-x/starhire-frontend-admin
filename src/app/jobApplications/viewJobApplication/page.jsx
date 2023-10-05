@@ -83,14 +83,17 @@ const viewJobApplication = () => {
 
   const getCardHeader = () => {
     return (
-      <div className={styles.chatButton} i>
-        <Button
-          outlined
-          rounded
-          size="small"
-          icon="pi pi-comments"
-          onClick={handleChatClick}
-        />
+      <div className={styles.cardHeader}>
+        <h2>User Details</h2>
+        <div>
+          <Button
+            outlined
+            rounded
+            size="small"
+            icon="pi pi-comments"
+            onClick={handleChatClick}
+          />
+        </div>
       </div>
     );
   };
@@ -117,8 +120,7 @@ const viewJobApplication = () => {
     } else {
       chatId = matchingChats[0]?.chatId;
     }
-    // router.push(`/chat?id=${chatId}`);
-    router.push(`/chat`);
+    router.push(`/chat?id=${chatId}`);
   };
 
   const handleOnBackClick = () => {
@@ -138,7 +140,11 @@ const viewJobApplication = () => {
     } catch (error) {
       console.log(error);
     }
-    router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
+    handleCloseDialog();
+    setIsLoading(true);
+    await populateDetails();
+
+    // router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
   };
 
   const nodes = [
@@ -230,23 +236,24 @@ const viewJobApplication = () => {
     );
   };
 
+  const populateDetails = async () => {
+    try {
+      const details = await viewJobApplicationDetails(
+        jobApplicationId,
+        accessToken
+      );
+      setJobApplication(details);
+      setJobSeeker(details.jobSeeker);
+      setDocuments(details.documents);
+      setJobListing(details.jobListing);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // retrieve all jobApplication and jobSeeker details
   useEffect(() => {
-    const populateDetails = async () => {
-      try {
-        const details = await viewJobApplicationDetails(
-          jobApplicationId,
-          accessToken
-        );
-        setJobApplication(details);
-        setJobSeeker(details.jobSeeker);
-        setDocuments(details.documents);
-        setJobListing(details.jobListing);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     setIsLoading(true);
     populateDetails();
   }, [jobApplicationId, accessToken]);
