@@ -138,7 +138,11 @@ const viewJobApplication = () => {
     } catch (error) {
       console.log(error);
     }
-    router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
+    handleCloseDialog();
+    setIsLoading(true);
+    await populateDetails();
+
+    // router.push(`/jobApplications?id=${jobListing?.jobListingId}`);
   };
 
   const nodes = [
@@ -230,23 +234,24 @@ const viewJobApplication = () => {
     );
   };
 
+  const populateDetails = async () => {
+    try {
+      const details = await viewJobApplicationDetails(
+        jobApplicationId,
+        accessToken
+      );
+      setJobApplication(details);
+      setJobSeeker(details.jobSeeker);
+      setDocuments(details.documents);
+      setJobListing(details.jobListing);
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // retrieve all jobApplication and jobSeeker details
   useEffect(() => {
-    const populateDetails = async () => {
-      try {
-        const details = await viewJobApplicationDetails(
-          jobApplicationId,
-          accessToken
-        );
-        setJobApplication(details);
-        setJobSeeker(details.jobSeeker);
-        setDocuments(details.documents);
-        setJobListing(details.jobListing);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     setIsLoading(true);
     populateDetails();
   }, [jobApplicationId, accessToken]);
