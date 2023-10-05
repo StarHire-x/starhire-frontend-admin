@@ -77,7 +77,10 @@ const viewJobApplication = () => {
   const getApplicationStatus = () => {
     const severity = getSeverity(jobApplication?.jobApplicationStatus);
     return (
-      <Tag severity={severity} value={jobApplication?.jobApplicationStatus} />
+      <Tag
+        severity={severity}
+        value={jobApplication?.jobApplicationStatus?.replaceAll("_", " ")}
+      />
     );
   };
 
