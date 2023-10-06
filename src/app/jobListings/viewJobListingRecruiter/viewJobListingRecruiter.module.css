@@ -75,7 +75,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s, transform 0.3s;
-  /* min-width: 18vw; */
+  min-width: 18vw;
   max-width: 22vw;
   margin-right: 10px;
   height: 100vh;
@@ -91,7 +91,7 @@
   margin-bottom: 0;
 }
 
-.myCard .pCardContent{
+.myCard .pCardContent {
   padding-top: 0.5rem;
 }
 
