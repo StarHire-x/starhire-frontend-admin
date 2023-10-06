@@ -1,4 +1,4 @@
-import {} from "@chatscope/chat-ui-kit-react";
+import {MessageList, MessageSeparator, Message, Avatar} from "@chatscope/chat-ui-kit-react";
 import Image from "next/image";
 import {HumanIcon} from "../../../public/icon.png";
 

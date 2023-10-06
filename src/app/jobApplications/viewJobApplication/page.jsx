@@ -21,7 +21,7 @@ import {
   getAllUserChats,
 } from "@/app/api/chat/route";
 
-const viewJobApplication = () => {
+const ViewJobApplication = () => {
   const session = useSession();
   const router = useRouter();
   if (session.status === "unauthenticated") {
@@ -425,4 +425,4 @@ const viewJobApplication = () => {
   );
 };
 
-export default viewJobApplication;
+export default ViewJobApplication;
