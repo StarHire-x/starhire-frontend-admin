@@ -14,7 +14,6 @@ const formatDate = (dateString) => {
 };
 
 const UserProfileModal = ({ selectedUser, currentUserRole }) => {
-
   return (
     <div className={styles.container}>
       <>
@@ -34,10 +33,13 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
           <Card className={styles.userDetailsCard}>
             <div className={styles.userInformationContainer}>
               <div>
-                {selectedUser?.fullName && (
-                  <p className={styles.userDetailsFullName}>
+                <p className={styles.userDetailsTitle}>Personal Information</p>
+                {selectedUser?.fullName ? (
+                  <p className={styles.userDetails}>
                     Name: {selectedUser?.fullName}
                   </p>
+                ) : (
+                  <p className={styles.userDetails}>Name: Not specified</p>
                 )}
                 <p className={styles.userDetails}>
                   Username: {selectedUser.userName}
@@ -53,7 +55,7 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
                   Contact Number: {selectedUser.contactNo}
                 </p>
                 {selectedUser?.resumePdf &&
-                  currentUserRole === Enums.RECRUITER && (
+                  currentUserRole === Enums.RECRUITER ? (
                     <Button
                       size="small"
                       label="View Resume"
@@ -62,10 +64,42 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
                         window.open(selectedUser?.resumePdf, "_blank");
                       }}
                     />
+                  ): (
+                    <p style={{color: 'red'}}>{selectedUser?.userName} has not uploaded his/her resume.</p>
                   )}
               </div>
               <div className={styles.userInformationSecondRow}>
                 {/* display information here in new row */}
+                <p className={styles.userDetailsTitle}>Education</p>
+                {selectedUser?.highestEducationStatus ? (
+                  <p className={styles.userDetails}>
+                    Highest Education: {selectedUser?.highestEducationStatus}
+                  </p>
+                ) : (
+                  <p className={styles.userDetails}>
+                    Highest Education: Not specified
+                  </p>
+                )}
+
+                {selectedUser?.instituteName ? (
+                  <p className={styles.userDetails}>
+                    Educational Institution: {selectedUser?.instituteName}
+                  </p>
+                ) : (
+                  <p className={styles.userDetails}>
+                    Educational Institution: Not specified
+                  </p>
+                )}
+
+                {selectedUser?.dateOfGraduation ? (
+                  <p className={styles.userDetails}>
+                    Date of Graduation: {formatDate(selectedUser?.dateOfGraduation)}
+                  </p>
+                ) : (
+                  <p className={styles.userDetails}>
+                    Date of Graduation: Not specified
+                  </p>
+                )}
               </div>
             </div>
           </Card>
