@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -10,10 +10,12 @@ import { updateUserPassword } from "../api/auth/forgetPassword/route";
 import { RadioButton } from "primereact/radiobutton";
 import { ProgressSpinner } from "primereact/progressspinner";
 import Enums from "@/common/enums/enums";
+import { Toast } from "primereact/toast";
 
 const ResetPassword = () => {
   const router = useRouter();
   const session = useSession();
+  const toast = useRef(null);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -110,7 +112,12 @@ const ResetPassword = () => {
       try {
         setLoading(true);
         const response = await updateUserPassword(resetPassword, storedUserId);
-        alert("Password changed successfully");
+        toast.current.show({
+          severity: "success",
+          summary: "Success",
+          detail: "Password changed successfully!",
+          life: 5000,
+        });
         localStorage.removeItem("passwordResetToken");
         localStorage.removeItem("passwordResetExpire");
         localStorage.removeItem("resetEmail");
@@ -127,78 +134,83 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Reset Password</h1>
-      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="tokenId"
-          placeholder="Token Id"
-          className={styles.input}
-          value={formData.tokenId}
-          onChange={handleInputChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          className={styles.input}
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className={styles.input}
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          className={styles.input}
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-          required
-        />
-        <div className={styles.radio}>
-          <p>Role:</p>
-          <RadioButton
-            inputId={Enums.ADMIN}
-            name="role"
-            value={Enums.ADMIN}
+    <>
+      <Toast ref={toast} />
+      <div className={styles.container}>
+        <h1 className={styles.title}>Reset Password</h1>
+        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="tokenId"
+            placeholder="Token Id"
+            className={styles.input}
+            value={formData.tokenId}
             onChange={handleInputChange}
-            checked={formData.role === Enums.ADMIN}
+            required
           />
-          <label htmlFor={Enums.ADMIN} className="ml-2">
-            Administrator
-          </label>
-          <br />
-          <RadioButton
-            inputId={Enums.RECRUITER}
-            name="role"
-            value={Enums.RECRUITER}
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className={styles.input}
+            value={formData.email}
             onChange={handleInputChange}
-            checked={formData.role === Enums.RECRUITER}
+            required
           />
-          <label htmlFor={Enums.RECRUITER} className="ml-2">
-            Recruiter
-          </label>
-        </div>
-        {loading && (
-          <ProgressSpinner style={{ width: "50px", height: "50px" }} />
-        )}
-        {!loading && <button className={styles.button}>Reset Password</button>}
-      </form>
-      <Link href="/register">I don&apos;t have an account </Link>
-      <Link href="/login">Login with an existing account</Link>
-    </div>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className={styles.input}
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            className={styles.input}
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
+            required
+          />
+          <div className={styles.radio}>
+            <p>Role:</p>
+            <RadioButton
+              inputId={Enums.ADMIN}
+              name="role"
+              value={Enums.ADMIN}
+              onChange={handleInputChange}
+              checked={formData.role === Enums.ADMIN}
+            />
+            <label htmlFor={Enums.ADMIN} className="ml-2">
+              Administrator
+            </label>
+            <br />
+            <RadioButton
+              inputId={Enums.RECRUITER}
+              name="role"
+              value={Enums.RECRUITER}
+              onChange={handleInputChange}
+              checked={formData.role === Enums.RECRUITER}
+            />
+            <label htmlFor={Enums.RECRUITER} className="ml-2">
+              Recruiter
+            </label>
+          </div>
+          {loading && (
+            <ProgressSpinner style={{ width: "50px", height: "50px" }} />
+          )}
+          {!loading && (
+            <button className={styles.button}>Reset Password</button>
+          )}
+        </form>
+        <Link href="/register">I don&apos;t have an account </Link>
+        <Link href="/login">Login with an existing account</Link>
+      </div>
+    </>
   );
 };
 
