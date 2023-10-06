@@ -10,11 +10,13 @@ import { UserContext } from "@/context/UserContext";
 import { RadioButton } from "primereact/radiobutton";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import { Toast } from "primereact/toast";
 import Enums from "@/common/enums/enums";
 
 const AccountManagement = () => {
   const session = useSession();
   const router = useRouter();
+  const toast = useRef(null);
   const [refreshData, setRefreshData] = useState(false);
   const [formData, setFormData] = useState({
     userId: "",
@@ -126,8 +128,14 @@ const AccountManagement = () => {
         userId,
         sessionTokenRef
       );
-      console.log("Status changed successfully:", response);
-      alert("Status changed successfully!");
+
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Status changed successfully!",
+        life: 5000,
+      });
+
       if (deactivateAccountDialog) {
         hideDeactivateAccountDialog();
       }
@@ -137,88 +145,95 @@ const AccountManagement = () => {
       fetchUserData();
     } catch {
       console.log("Failed to update user");
-      alert("Failed to update user particulars");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to update user particulars!",
+        life: 5000,
+      });
     }
   };
 
   if (session.status === "authenticated") {
     return (
-      <div className={styles.container}>
-        <h1 className={styles.title}>My Account Details</h1>
-        <form className={styles.form} onSubmit={confirmChanges}>
-          <div className={styles.avatarContainer}>
-            {formData?.profilePictureUrl && (
-              <img
-                src={formData.profilePictureUrl}
-                alt="User Profile"
-                className={styles.avatar}
+      <>
+        <Toast ref={toast} />
+        <div className={styles.container}>
+          <h1 className={styles.title}>My Account Details</h1>
+          <form className={styles.form} onSubmit={confirmChanges}>
+            <div className={styles.avatarContainer}>
+              {formData?.profilePictureUrl && (
+                <img
+                  src={formData.profilePictureUrl}
+                  alt="User Profile"
+                  className={styles.avatar}
+                />
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label htmlFor="userId">User ID:</label>
+              <input
+                type="text"
+                id="userId"
+                name="userId"
+                className={styles.input}
+                value={formData.userId}
+                onChange={handleInputChange}
+                readOnly // User ID typically shouldn't be editable
               />
-            )}
-          </div>
+            </div>
 
-          <div className={styles.field}>
-            <label htmlFor="userId">User ID:</label>
-            <input
-              type="text"
-              id="userId"
-              name="userId"
-              className={styles.input}
-              value={formData.userId}
-              onChange={handleInputChange}
-              readOnly // User ID typically shouldn't be editable
-            />
-          </div>
+            <div className={styles.field}>
+              <label htmlFor="userName">User Name:</label>
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                className={styles.input}
+                value={formData.userName}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label htmlFor="userName">User Name:</label>
-            <input
-              type="text"
-              id="userName"
-              name="userName"
-              className={styles.input}
-              value={formData.userName}
-              onChange={handleInputChange}
-            />
-          </div>
+            <div className={styles.field}>
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className={styles.input}
+                value={formData.email}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className={styles.input}
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </div>
+            <div className={styles.field}>
+              <label htmlFor="fullName">Full Name:</label>
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                className={styles.input}
+                value={formData.fullName}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label htmlFor="fullName">Full Name:</label>
-            <input
-              type="text"
-              id="fullName"
-              name="fullName"
-              className={styles.input}
-              value={formData.fullName}
-              onChange={handleInputChange}
-            />
-          </div>
+            <div className={styles.field}>
+              <label htmlFor="contactNo">Contact Number:</label>
+              <input
+                type="number"
+                id="contactNo"
+                name="contactNo"
+                className={styles.input}
+                value={formData.contactNo}
+                onChange={handleInputChange}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label htmlFor="contactNo">Contact Number:</label>
-            <input
-              type="number"
-              id="contactNo"
-              name="contactNo"
-              className={styles.input}
-              value={formData.contactNo}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          {/* This is just to check the image link */}
-          {/* <div className={styles.field}>
+            {/* This is just to check the image link */}
+            {/* <div className={styles.field}>
             <label htmlFor="profilePictureUrl">Profile Picture URL:</label>
             <input
               type="url"
@@ -230,41 +245,41 @@ const AccountManagement = () => {
             />
           </div> */}
 
-          <div className={styles.field}>
-            <label htmlFor="profilePicture">Upload Profile Picture:</label>
-            <input
-              type="file"
-              id="profilePicture"
-              onChange={handleFileChange}
-            />
-          </div>
+            <div className={styles.field}>
+              <label htmlFor="profilePicture">Upload Profile Picture:</label>
+              <input
+                type="file"
+                id="profilePicture"
+                onChange={handleFileChange}
+              />
+            </div>
 
-          <div className={styles.radio}>
-            <div className={styles.notification}>
-              <div className={styles.radioHeader}>Notification:</div>
-              <div className={styles.radioOption}>
-                <RadioButton
-                  inputId="Email"
-                  name="notificationMode"
-                  value="Email"
-                  onChange={handleInputChange}
-                  checked={formData.notificationMode === "Email"}
-                />
-                <label htmlFor="Email" className="ml-2">
-                  Email
-                </label>
-                <br />
-                <RadioButton
-                  inputId="Sms"
-                  name="notificationMode"
-                  value="Sms"
-                  onChange={handleInputChange}
-                  checked={formData.notificationMode === "Sms"}
-                />
-                <label htmlFor="Sms" className="ml-2">
-                  Sms
-                </label>
-                {/* <label>
+            <div className={styles.radio}>
+              <div className={styles.notification}>
+                <div className={styles.radioHeader}>Notification:</div>
+                <div className={styles.radioOption}>
+                  <RadioButton
+                    inputId="Email"
+                    name="notificationMode"
+                    value="Email"
+                    onChange={handleInputChange}
+                    checked={formData.notificationMode === "Email"}
+                  />
+                  <label htmlFor="Email" className="ml-2">
+                    Email
+                  </label>
+                  <br />
+                  <RadioButton
+                    inputId="Sms"
+                    name="notificationMode"
+                    value="Sms"
+                    onChange={handleInputChange}
+                    checked={formData.notificationMode === "Sms"}
+                  />
+                  <label htmlFor="Sms" className="ml-2">
+                    Sms
+                  </label>
+                  {/* <label>
                 <input
                   type="radio"
                   name="notificationMode"
@@ -285,33 +300,33 @@ const AccountManagement = () => {
                 />
                 Sms
               </label> */}
+                </div>
               </div>
-            </div>
-            <div className={styles.status}>
-              <div className={styles.radioHeader}>Status:</div>
-              <div className={styles.radioOption}>
-                <RadioButton
-                  inputId={Enums.ACTIVE}
-                  name="status"
-                  value={Enums.ACTIVE}
-                  onChange={handleInputChange}
-                  checked={formData.status === Enums.ACTIVE}
-                />
-                <label htmlFor={Enums.ACTIVE} className="ml-2">
-                  Active
-                </label>
-                <br />
-                <RadioButton
-                  inputId={Enums.INACTIVE}
-                  name="status"
-                  value={Enums.INACTIVE}
-                  onChange={handleInputChange}
-                  checked={formData.status === Enums.INACTIVE}
-                />
-                <label htmlFor={Enums.INACTIVE} className="ml-2">
-                  Inactive
-                </label>
-                {/* <label>
+              <div className={styles.status}>
+                <div className={styles.radioHeader}>Status:</div>
+                <div className={styles.radioOption}>
+                  <RadioButton
+                    inputId={Enums.ACTIVE}
+                    name="status"
+                    value={Enums.ACTIVE}
+                    onChange={handleInputChange}
+                    checked={formData.status === Enums.ACTIVE}
+                  />
+                  <label htmlFor={Enums.ACTIVE} className="ml-2">
+                    Active
+                  </label>
+                  <br />
+                  <RadioButton
+                    inputId={Enums.INACTIVE}
+                    name="status"
+                    value={Enums.INACTIVE}
+                    onChange={handleInputChange}
+                    checked={formData.status === Enums.INACTIVE}
+                  />
+                  <label htmlFor={Enums.INACTIVE} className="ml-2">
+                    Inactive
+                  </label>
+                  {/* <label>
                   <input
                     type="radio"
                     name="status"
@@ -332,30 +347,31 @@ const AccountManagement = () => {
                   />
                   Inactive
                 </label> */}
+                </div>
               </div>
+              <Dialog
+                visible={deactivateAccountDialog}
+                style={{ width: "32rem" }}
+                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                header="Warning on self-deactivation of account"
+                className="p-fluid"
+                footer={deactivateAccountDialogFooter}
+                onHide={hideDeactivateAccountDialog}
+              >
+                <p>
+                  You may have accidentally selected Inactive for your account
+                  status. Are you sure you want to deactivate your account?
+                  Please note that this action is irreversible, and you need to
+                  contact our Admin to activate back your account if needed.
+                </p>
+              </Dialog>
             </div>
-            <Dialog
-              visible={deactivateAccountDialog}
-              style={{ width: "32rem" }}
-              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-              header="Warning on self-deactivation of account"
-              className="p-fluid"
-              footer={deactivateAccountDialogFooter}
-              onHide={hideDeactivateAccountDialog}
-            >
-              <p>
-                You may have accidentally selected Inactive for your account
-                status. Are you sure you want to deactivate your account? Please
-                note that this action is irreversible, and you need to contact
-                our Admin to activate back your account if needed.
-              </p>
-            </Dialog>
-          </div>
-          <div className={styles.buttonContainer}>
-            <button className={styles.button}>Save Changes</button>
-          </div>
-        </form>
-      </div>
+            <div className={styles.buttonContainer}>
+              <button className={styles.button}>Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </>
     );
   }
 };

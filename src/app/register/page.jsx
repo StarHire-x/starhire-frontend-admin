@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef } from "react";
 import styles from "./page.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -264,7 +264,13 @@ const Register = () => {
         console.log(errorData);
         setErrorMessage(errorData.error);
       } else {
-        alert("Account has been created!");
+        // toast.current.show({
+        //   severity: "success",
+        //   summary: "Success",
+        //   detail: "Account has been created!",
+        //   life: 5000,
+        // });
+
         router.push("/login?success=Account has been created");
       }
     } catch (error) {
@@ -274,35 +280,37 @@ const Register = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Registration</h1>
-      {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-      {currentStep === 1 && (
-        <Step1
-          formData={formData}
-          setFormData={setFormData}
-          onNext={handleNext}
-        />
-      )}
-      {currentStep === 2 && (
-        <Step2
-          formData={formData}
-          setFormData={setFormData}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-        />
-      )}
-      {currentStep === 3 && (
-        <Step3
-          formData={formData}
-          setFormData={setFormData}
-          onPrevious={handlePrevious}
-          onSubmit={handleSubmit}
-        />
-      )}
-      <Link href="/login">Login with an existing account</Link>
-      <Link href="/forgetPassword">Forget Password</Link>
-    </div>
+    <>
+      <div className={styles.container}>
+        <h1 className={styles.title}>Registration</h1>
+        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
+        {currentStep === 1 && (
+          <Step1
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+          />
+        )}
+        {currentStep === 2 && (
+          <Step2
+            formData={formData}
+            setFormData={setFormData}
+            onNext={handleNext}
+            onPrevious={handlePrevious}
+          />
+        )}
+        {currentStep === 3 && (
+          <Step3
+            formData={formData}
+            setFormData={setFormData}
+            onPrevious={handlePrevious}
+            onSubmit={handleSubmit}
+          />
+        )}
+        <Link href="/login">Login with an existing account</Link>
+        <Link href="/forgetPassword">Forget Password</Link>
+      </div>
+    </>
   );
 };
 

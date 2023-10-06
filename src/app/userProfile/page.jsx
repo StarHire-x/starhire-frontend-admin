@@ -14,11 +14,14 @@ import { assignJobListing } from "../api/jobListings/route";
 import { Dialog } from "primereact/dialog";
 import { ProgressSpinner } from "primereact/progressspinner";
 import Enums from "@/common/enums/enums";
+import { Toast } from "primereact/toast";
 
 export default function UserProfile() {
   const session = useSession();
 
   const router = useRouter();
+
+  const toast = useRef(null);
 
   const [user, setUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
@@ -123,117 +126,125 @@ export default function UserProfile() {
         "There was an error matching the job seeker to the job listing:",
         error.message
       );
-      alert("There was an error matching the job seeker to the job listing");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "There was an error matching the job seeker to the job listing",
+        life: 5000,
+      });
     }
     // setSelectedRowData();
     setAssignDialog(false);
   };
 
   return (
-    <div className={styles.container}>
-      {isLoading ? (
-        <ProgressSpinner
-          style={{
-            display: "flex",
-            height: "100vh",
-            "justify-content": "center",
-            "align-items": "center",
-          }}
-        />
-      ) : (
-        <>
-          <div className={styles.userProfileSection}>
-            <div className={styles.userProfilePictureContainer}>
-              {user.profilePictureUrl === "" ? (
-                <Image src={HumanIcon} alt="User" className={styles.avatar} />
-              ) : (
-                <img
-                  src={user.profilePictureUrl}
-                  alt="User"
-                  className={styles.avatar}
+    <>
+      <Toast ref={toast} />
+      <div className={styles.container}>
+        {isLoading ? (
+          <ProgressSpinner
+            style={{
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
+            }}
+          />
+        ) : (
+          <>
+            <div className={styles.userProfileSection}>
+              <div className={styles.userProfilePictureContainer}>
+                {user.profilePictureUrl === "" ? (
+                  <Image src={HumanIcon} alt="User" className={styles.avatar} />
+                ) : (
+                  <img
+                    src={user.profilePictureUrl}
+                    alt="User"
+                    className={styles.avatar}
+                  />
+                )}
+              </div>
+
+              <Card className={styles.userDetailsCard}>
+                <div className={styles.userInformationContainer}>
+                  <div>
+                    {user?.fullName && (
+                      <p className={styles.userDetailsFullName}>
+                        Name: {user?.fullName}
+                      </p>
+                    )}
+                    <p className={styles.userDetails}>
+                      Username: {user.userName}
+                    </p>
+                    <p className={styles.userDetails}>
+                      Date of Birth: {formatDate(user?.dateOfBirth)}
+                    </p>
+
+                    <p className={styles.userDetails}>Email: {user.email}</p>
+                    <p className={styles.userDetails}>
+                      Contact Number: {user.contactNo}
+                    </p>
+                    {user?.resumePdf && currentUserRole === Enums.RECRUITER && (
+                      <Button
+                        size="small"
+                        label="View Resume"
+                        icon="pi pi-file-pdf"
+                        onClick={() => {
+                          window.open(user?.resumePdf, "_blank");
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className={styles.userInformationSecondRow}>
+                    {/* display information here in new row */}
+                  </div>
+                </div>
+              </Card>
+            </div>
+            <div className={styles.jobPreferenceSection}>
+              <JobPreferencePanel jobPreference={user?.jobPreference} />
+            </div>
+            <div className={styles.jobExperienceSection}>
+              <JobExperiencePanel jobExperience={user?.jobExperiences} />
+            </div>
+            <div className={styles.footerButtonsContainer}>
+              <div className={styles.backButtonContainer}>
+                <Button
+                  label="Back"
+                  icon="pi pi-chevron-left"
+                  rounded
+                  className={styles.backButton}
+                  onClick={() => handleOnBackClick()}
                 />
+              </div>
+              {currentUserRole && currentUserRole === Enums.RECRUITER && (
+                <div className={styles.assignButtonContainer}>
+                  <Button
+                    label="Assign"
+                    rounded
+                    className={styles.assignButton}
+                    onClick={() => setAssignDialog(true)}
+                  />
+                  <Dialog
+                    visible={assignDialog}
+                    style={{ width: "32rem" }}
+                    breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                    header="Assign Job Listing"
+                    className="p-fluid"
+                    footer={recruiterAssignDialogFooter}
+                    onHide={hideAssignDialog}
+                  >
+                    <h3>
+                      Do you wish to assign Job Listing {selectedJobListingId}{" "}
+                      to {user && user?.userName}?
+                    </h3>
+                  </Dialog>
+                </div>
               )}
             </div>
-
-            <Card className={styles.userDetailsCard}>
-              <div className={styles.userInformationContainer}>
-                <div>
-                  {user?.fullName && (
-                    <p className={styles.userDetailsFullName}>
-                      Name: {user?.fullName}
-                    </p>
-                  )}
-                  <p className={styles.userDetails}>
-                    Username: {user.userName}
-                  </p>
-                  <p className={styles.userDetails}>
-                    Date of Birth: {formatDate(user?.dateOfBirth)}
-                  </p>
-
-                  <p className={styles.userDetails}>Email: {user.email}</p>
-                  <p className={styles.userDetails}>
-                    Contact Number: {user.contactNo}
-                  </p>
-                  {user?.resumePdf && currentUserRole === Enums.RECRUITER && (
-                    <Button
-                      size="small"
-                      label="View Resume"
-                      icon="pi pi-file-pdf"
-                      onClick={() => {
-                        window.open(user?.resumePdf, "_blank");
-                      }}
-                    />
-                  )}
-                </div>
-                <div className={styles.userInformationSecondRow}>
-                  {/* display information here in new row */}
-                </div>
-              </div>
-            </Card>
-          </div>
-          <div className={styles.jobPreferenceSection}>
-            <JobPreferencePanel jobPreference={user?.jobPreference} />
-          </div>
-          <div className={styles.jobExperienceSection}>
-            <JobExperiencePanel jobExperience={user?.jobExperiences} />
-          </div>
-          <div className={styles.footerButtonsContainer}>
-            <div className={styles.backButtonContainer}>
-              <Button
-                label="Back"
-                icon="pi pi-chevron-left"
-                rounded
-                className={styles.backButton}
-                onClick={() => handleOnBackClick()}
-              />
-            </div>
-            {currentUserRole && currentUserRole === Enums.RECRUITER && (
-              <div className={styles.assignButtonContainer}>
-                <Button
-                  label="Assign"
-                  rounded
-                  className={styles.assignButton}
-                  onClick={() => setAssignDialog(true)}
-                />
-                <Dialog
-                  visible={assignDialog}
-                  style={{ width: "32rem" }}
-                  breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-                  header="Assign Job Listing"
-                  className="p-fluid"
-                  footer={recruiterAssignDialogFooter}
-                  onHide={hideAssignDialog}
-                >
-                  <h3>
-                    Do you wish to assign Job Listing {selectedJobListingId} to{" "}
-                    {user && user?.userName}?
-                  </h3>
-                </Dialog>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }

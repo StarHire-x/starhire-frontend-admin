@@ -7,7 +7,7 @@ import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 // import "./styles.css";
-import styles from './viewJobListingRecruiter.module.css';
+import styles from "./viewJobListingRecruiter.module.css";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { Dialog } from "primereact/dialog";
@@ -23,11 +23,13 @@ import { InputText } from "primereact/inputtext";
 import { Tag } from "primereact/tag";
 import Enums from "@/common/enums/enums";
 import UserProfileModal from "@/components/UserProfileModal/UserProfileModal";
+import { Toast } from "primereact/toast";
 
 export default function ViewJobListingRecruiter() {
   const session = useSession();
 
   const router = useRouter();
+  const toast = useRef(null);
 
   if (session.status === "unauthenticated") {
     router.push("/login");
@@ -132,7 +134,12 @@ export default function ViewJobListingRecruiter() {
       if (response.statusCode === 200) {
         handleRefresh();
       } else {
-        alert("Something went wrong! ERROR CODE:" + response.statusCode);
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Something went wrong! ERROR CODE:" + response.statusCode,
+          life: 5000,
+        });
       }
       console.log("Status changed successfully:", response);
     } catch (error) {
@@ -198,7 +205,12 @@ export default function ViewJobListingRecruiter() {
         "There was an error matching the job seeker to the job listing:",
         error.message
       );
-      alert("There was an error matching the job seeker to the job listing");
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "There was an error matching the job seeker to the job listing",
+        life: 5000,
+      });
     }
     setSelectedRowData();
     setAssignDialog(false);
@@ -273,7 +285,11 @@ export default function ViewJobListingRecruiter() {
     return (
       <div className={styles.imageContainer}>
         {avatar !== "" ? (
-          <img alt={avatar} src={avatar} className={styles.avatarImageContainer} />
+          <img
+            alt={avatar}
+            src={avatar}
+            className={styles.avatarImageContainer}
+          />
         ) : (
           <Image
             src={HumanIcon}
@@ -314,6 +330,7 @@ export default function ViewJobListingRecruiter() {
 
   return (
     <div>
+      <Toast ref={toast} />
       {isLoading ? (
         <ProgressSpinner
           style={{
@@ -362,7 +379,9 @@ export default function ViewJobListingRecruiter() {
               <div className="contact-info">
                 <strong>Contact Information</strong>
                 <p>{jobListing.corporate.email}</p>
-                <p className={styles.secondP}>{jobListing.corporate.contactNo}</p>
+                <p className={styles.secondP}>
+                  {jobListing.corporate.contactNo}
+                </p>
               </div>
 
               <strong>Corporate Details</strong>
