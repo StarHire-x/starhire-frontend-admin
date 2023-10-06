@@ -409,7 +409,7 @@ export default function ViewJobListingRecruiter() {
               globalFilterFields={["userName", "email", "contactNo", "role"]}
               emptyMessage="No users found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-              style={{minWidth: "60vw"}}
+              style={{minWidth: "63vw"}}
             >
               <Column
                 field="userName"
