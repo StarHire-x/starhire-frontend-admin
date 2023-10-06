@@ -103,27 +103,31 @@ const ViewJobApplication = () => {
 
   const handleChatClick = async () => {
     // Check if chat exists already
-    const jobSeekerChats = await getAllUserChats(
-      jobSeeker?.userId,
-      accessToken
-    );
-    const matchingChats = jobSeekerChats.filter(
-      (chat) => chat?.recruiter?.userId === currentUserId
-    );
-    console.log(jobSeekerChats, matchingChats);
-    let chatId = null;
-    if (matchingChats.length === 0) {
-      const request = {
-        recruiterId: currentUserId,
-        jobSeekerId: jobSeeker?.userId,
-        lastUpdated: new Date(),
-      };
-      const response = await createNewChatByRecruiter(request, accessToken);
-      chatId = response?.chatId;
-    } else {
-      chatId = matchingChats[0]?.chatId;
+    try {
+      const jobSeekerChats = await getAllUserChats(
+        jobSeeker?.userId,
+        accessToken
+      );
+      const matchingChats = jobSeekerChats.filter(
+        (chat) => chat?.recruiter?.userId === currentUserId
+      );
+      console.log(jobSeekerChats, matchingChats);
+      let chatId = null;
+      if (matchingChats.length === 0) {
+        const request = {
+          recruiterId: currentUserId,
+          jobSeekerId: jobSeeker?.userId,
+          lastUpdated: new Date(),
+        };
+        const response = await createNewChatByRecruiter(request, accessToken);
+        chatId = response?.chatId;
+      } else {
+        chatId = matchingChats[0]?.chatId;
+      }
+      router.push(`/chat?id=${chatId}`);
+    } catch (error) {
+      console.log(error);
     }
-    router.push(`/chat?id=${chatId}`);
   };
 
   const handleOnBackClick = () => {
@@ -226,9 +230,14 @@ const ViewJobApplication = () => {
           icon="pi pi-check"
           onClick={async () => {
             setDialogLoading(true);
-            await updateStatus(
-              openRejectDialog ? "To_Be_Submitted" : "Processing"
-            );
+            try {
+              await updateStatus(
+                openRejectDialog ? "To_Be_Submitted" : "Processing"
+              );
+            } catch (error) {
+              console.log(error);
+            }
+
             handleCloseDialog;
             setDialogLoading(false);
           }}

@@ -108,7 +108,6 @@ export default function CustomersDemo() {
         accessToken
       );
       const jobListing = await viewOneJobListing(jobListingId, accessToken);
-      console.log(jobListing);
       setJobListing(jobListing);
       setJobApplications(allJobApplications);
       setIsLoading(false);
