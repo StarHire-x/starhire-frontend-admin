@@ -75,10 +75,10 @@
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s, transform 0.3s;
-  width: 16vw;
+  width: 18vw;
   /* min-width: 20vw; */
   /* flex: 1; */
-  /* margin-right: 5px; */
+  margin-right: 10px;
   height: 100vh;
   overflow: auto;
 }
