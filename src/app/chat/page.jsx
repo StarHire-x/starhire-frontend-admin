@@ -261,6 +261,7 @@ const Chat = () => {
                       />
                       {chatMessages.map((value, index) => (
                         <Message
+                          key={index}
                           index={index}
                           model={{
                             sentTime: value.timestamp,
