@@ -10,12 +10,10 @@ import { updateUserPassword } from "../api/auth/forgetPassword/route";
 import { RadioButton } from "primereact/radiobutton";
 import { ProgressSpinner } from "primereact/progressspinner";
 import Enums from "@/common/enums/enums";
-import { Toast } from "primereact/toast";
 
 const ResetPassword = () => {
   const router = useRouter();
   const session = useSession();
-  const toast = useRef(null);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -112,12 +110,12 @@ const ResetPassword = () => {
       try {
         setLoading(true);
         const response = await updateUserPassword(resetPassword, storedUserId);
-        toast.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: "Password changed successfully!",
-          life: 5000,
-        });
+        // toast.current.show({
+        //   severity: "success",
+        //   summary: "Success",
+        //   detail: "Password changed successfully!",
+        //   life: 5000,
+        // });
         localStorage.removeItem("passwordResetToken");
         localStorage.removeItem("passwordResetExpire");
         localStorage.removeItem("resetEmail");
@@ -135,7 +133,6 @@ const ResetPassword = () => {
 
   return (
     <>
-      <Toast ref={toast} />
       <div className={styles.container}>
         <h1 className={styles.title}>Reset Password</h1>
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}

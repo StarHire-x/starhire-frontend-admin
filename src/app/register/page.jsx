@@ -9,11 +9,8 @@ import { registerUser } from "@/app/api/auth/register/route";
 import { createUser } from "../api/auth/user/route";
 import { RadioButton } from "primereact/radiobutton";
 import Enums from "@/common/enums/enums";
-import { Toast } from "primereact/toast";
 
 const Step1 = ({ formData, setFormData, onNext }) => {
-  const toast = useRef(null);
-
   const [errorMessage, setErrorMessage] = useState("");
   const handleNext = () => {
     setErrorMessage("");
@@ -267,12 +264,12 @@ const Register = () => {
         console.log(errorData);
         setErrorMessage(errorData.error);
       } else {
-        toast.current.show({
-          severity: "success",
-          summary: "Success",
-          detail: "Account has been created!",
-          life: 5000,
-        });
+        // toast.current.show({
+        //   severity: "success",
+        //   summary: "Success",
+        //   detail: "Account has been created!",
+        //   life: 5000,
+        // });
 
         router.push("/login?success=Account has been created");
       }
@@ -284,7 +281,6 @@ const Register = () => {
 
   return (
     <>
-      <Toast ref={toast} />
       <div className={styles.container}>
         <h1 className={styles.title}>Registration</h1>
         {errorMessage && <p className={styles.error}>{errorMessage}</p>}
