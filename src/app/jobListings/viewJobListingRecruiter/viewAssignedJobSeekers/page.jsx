@@ -45,7 +45,7 @@ export default function ViewAssignedJobSeekers() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [details, setDetails] = useState({});
-  const [selectedRow, setSelectedRows] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -72,7 +72,7 @@ export default function ViewAssignedJobSeekers() {
   useEffect(() => {
     if (accessToken) {
       viewAssignedJobSeekersByJobListing(id, accessToken)
-        .then((data) => {
+        .then((data) => { //can do another map here to call another api fetch to fetch all the job seeker details based on the job seeker id.
           setDetails(data);
           setIsLoading(false);
         })
