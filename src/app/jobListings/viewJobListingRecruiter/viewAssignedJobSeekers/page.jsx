@@ -72,18 +72,18 @@ export default function ViewAssignedJobSeekers() {
   useEffect(() => {
     if (accessToken) {
       viewAssignedJobSeekersByJobListing(id, accessToken)
-      .then((data) => {
-        setDetails(data);
-        setIsLoading(false)
-      })
-      .catch((error) => {
-        console.error("Error fetching job assignment details:", error);
-        setIsLoading(false);
-      });
+        .then((data) => {
+          setDetails(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching job assignment details:", error);
+          setIsLoading(false);
+        });
     }
     // console.log("SEEHERE!");
     // console.log(details);
-  }, [id, accessToken])
+  }, [id, accessToken]);
 
   const renderRecruiterHeader = () => {
     return (
@@ -94,7 +94,7 @@ export default function ViewAssignedJobSeekers() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Assign Users for Job Listing {id}</h2>
+        <h2 className="m-0">Job Assignment Details for Job Listing {id}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -144,12 +144,10 @@ export default function ViewAssignedJobSeekers() {
               filters={filters}
               filterDisplay="menu"
               globalFilterFields={["userName", "email", "contactNo", "role"]}
-              emptyMessage="No users found."
+              emptyMessage="No job assignments found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               style={{ minWidth: "50vw" }}
-            >
-             
-            </DataTable>
+            ></DataTable>
 
             <div className={styles.bottomButtonContainer}>
               <Button
