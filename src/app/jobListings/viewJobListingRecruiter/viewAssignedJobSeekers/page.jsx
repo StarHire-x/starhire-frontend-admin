@@ -81,8 +81,8 @@ export default function ViewAssignedJobSeekers() {
         setIsLoading(false);
       });
     }
-    console.log("SEEHERE!");
-    console.log(details);
+    // console.log("SEEHERE!");
+    // console.log(details);
   }, [id, accessToken])
 
   const renderRecruiterHeader = () => {
@@ -109,6 +109,10 @@ export default function ViewAssignedJobSeekers() {
 
   const header = () => {
     return renderRecruiterHeader();
+  };
+
+  const handleOnBackClick = () => {
+    router.back();
   };
 
   return (
@@ -155,13 +159,6 @@ export default function ViewAssignedJobSeekers() {
                 size="medium"
                 className="p-button-warning"
                 onClick={() => handleOnBackClick()}
-              />
-              <Button
-                label="View Job Applications"
-                rounded
-                size="medium"
-                className="p-button-info"
-                onClick={() => handleViewJobApplicationClick()}
               />
             </div>
           </div>
