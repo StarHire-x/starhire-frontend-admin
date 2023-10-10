@@ -225,6 +225,10 @@ export default function ViewJobListingRecruiter() {
     router.push(`/jobApplications?id=${id}`);
   };
 
+  const handleViewAssignedJobSeekersClick = () => {
+    router.push(`/jobListings/viewJobListingRecruiter/viewAssignedJobSeekers?id=${id}`)
+  }
+
   const actionRecruiterBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -459,6 +463,13 @@ export default function ViewJobListingRecruiter() {
                 size="medium"
                 className="p-button-warning"
                 onClick={() => handleOnBackClick()}
+              />
+              <Button
+                label="View Assigned Job Seekers"
+                rounded
+                size="medium"
+                className="p-button-info"
+                onClick={() => handleViewAssignedJobSeekersClick()}
               />
               <Button
                 label="View Job Applications"

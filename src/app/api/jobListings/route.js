@@ -47,6 +47,29 @@ export const viewOneJobListing = async (jobListingId, accessToken) => {
   }
 };
 
+export const viewAssignedJobSeekersByJobListing = async (jobListingId, accessToken) => {
+  try {
+    const res = await fetch(`http://localhost:8080/job-assignment/jobListing/${jobListingId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the assigned job seekers and job listing details", error);
+    throw error;
+  }
+};
+
 export const updateJobListing = async (accessToken, request, id) => {
   try {
     const res = await fetch(`http://localhost:8080/job-listing/${id}`, {
