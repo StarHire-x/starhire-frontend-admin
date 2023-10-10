@@ -132,6 +132,10 @@ const ForumPage = () => {
           <GuidelinesDisplay
             category={selectedCategory}
             accessToken={accessToken}
+            closeDialog={() => {
+              initializeForumCategories();
+              setIsGuidelinesDialog(false);
+            }}
           />
         </DialogBox>
       )}

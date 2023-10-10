@@ -5,7 +5,7 @@ import styles from "./GuidelinesForm.module.css";
 import { Button } from "primereact/button";
 import { updateForumCategory } from "@/app/api/forum/route";
 
-const GuidelinesDisplay = ({ category, accessToken }) => {
+const GuidelinesDisplay = ({ category, accessToken, closeDialog }) => {
   const [guidelines, setGuidelines] = useState(
     category?.forumGuidelines?.split("~")
   );
@@ -34,6 +34,7 @@ const GuidelinesDisplay = ({ category, accessToken }) => {
     };
     await updateForumCategory(request, category?.forumCategoryId, accessToken);
     setIsLoading(false);
+    closeDialog();
   };
   return (
     <>
