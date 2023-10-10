@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { DialogBox } from "@/components/DialogBox/DialogBox";
 
 const ForumPage = () => {
   const session = useSession();
@@ -29,6 +30,9 @@ const ForumPage = () => {
   });
   const [focusCategory, setFocusCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isArchiveDialog, setIsArchiveDialog] = useState(false);
+  const [categorySelected, setCategorySelected] = useState(null);
+  const [isGuidelinesDialog, setIsGuidelinesDialog] = useState(true);
 
   const initializeForumCategories = async (state) => {
     try {
@@ -48,6 +52,7 @@ const ForumPage = () => {
       await updateForumCategory(request, categoryId, accessToken);
       await initializeForumCategories();
       setIsLoading(false);
+      setIsArchiveDialog(false);
     } catch (error) {
       console.log(error);
     }
@@ -84,8 +89,38 @@ const ForumPage = () => {
     </div>
   );
 
+  const archiveDialogButtons = (
+    <div className="flex-container space-between">
+      <Button
+        label="No"
+        icon="pi pi-times"
+        outlined
+        onClick={() => setIsArchiveDialog(false)}
+        className="p-button-text"
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        onClick={async () => {
+          await archiveCategory(categorySelected?.forumCategoryId);
+        }}
+        loading={isLoading}
+        autoFocus
+      />
+    </div>
+  );
+
   return (
     <>
+      {isArchiveDialog && (
+        <DialogBox
+          header={"Archive event category?"}
+          content={"Are you sure you would like to archive this forum category"}
+          footerContent={archiveDialogButtons}
+          isOpen={isArchiveDialog}
+          setVisible={setIsArchiveDialog}
+        ></DialogBox>
+      )}
       {isLoading && <ProgressSpinner />}
       {!isLoading && (
         <>
@@ -125,9 +160,10 @@ const ForumPage = () => {
                           text
                           severity="danger"
                           aria-label="Cancel"
-                          onClick={() =>
-                            archiveCategory(forumCategory?.forumCategoryId)
-                          }
+                          onClick={() => {
+                            setCategorySelected(forumCategory);
+                            setIsArchiveDialog(true);
+                          }}
                         />
                       )}
                       {footerButtons}
