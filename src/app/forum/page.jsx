@@ -9,6 +9,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { DialogBox } from "@/components/DialogBox/DialogBox";
+import GuidelinesDisplay from "@/components/GuidelinesForm/GuidelinesForm";
 
 const ForumPage = () => {
   const session = useSession();
@@ -31,8 +32,8 @@ const ForumPage = () => {
   const [focusCategory, setFocusCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isArchiveDialog, setIsArchiveDialog] = useState(false);
-  const [categorySelected, setCategorySelected] = useState(null);
-  const [isGuidelinesDialog, setIsGuidelinesDialog] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isGuidelinesDialog, setIsGuidelinesDialog] = useState(false);
 
   const initializeForumCategories = async (state) => {
     try {
@@ -82,12 +83,22 @@ const ForumPage = () => {
     }
   }, [selectedState, forumCategories]);
 
-  const footerButtons = (
-    <div className={styles.footerButtons}>
-      <Button size="small" label="Details" severity="info" />
-      <Button size="small" label="Guidelines" severity="success" />
-    </div>
-  );
+  const footerButtons = (forumCategory) => {
+    return (
+      <div className={styles.footerButtons}>
+        <Button size="small" label="Details" severity="info" />
+        <Button
+          size="small"
+          label="Guidelines"
+          severity="success"
+          onClick={() => {
+            setSelectedCategory(forumCategory);
+            setIsGuidelinesDialog(true);
+          }}
+        />
+      </div>
+    );
+  };
 
   const archiveDialogButtons = (
     <div className="flex-container space-between">
@@ -102,7 +113,7 @@ const ForumPage = () => {
         label="Yes"
         icon="pi pi-check"
         onClick={async () => {
-          await archiveCategory(categorySelected?.forumCategoryId);
+          await archiveCategory(selectedCategory?.forumCategoryId);
         }}
         loading={isLoading}
         autoFocus
@@ -112,10 +123,24 @@ const ForumPage = () => {
 
   return (
     <>
+      {isGuidelinesDialog && (
+        <DialogBox
+          header={`Guidelines for ${selectedCategory?.forumCategoryTitle}`}
+          isOpen={isGuidelinesDialog}
+          setVisible={setIsGuidelinesDialog}
+        >
+          <GuidelinesDisplay
+            category={selectedCategory}
+            accessToken={accessToken}
+          />
+        </DialogBox>
+      )}
       {isArchiveDialog && (
         <DialogBox
           header={"Archive event category?"}
-          content={"Are you sure you would like to archive this forum category"}
+          content={
+            "Are you sure you would like to archive this forum category?"
+          }
           footerContent={archiveDialogButtons}
           isOpen={isArchiveDialog}
           setVisible={setIsArchiveDialog}
@@ -161,12 +186,12 @@ const ForumPage = () => {
                           severity="danger"
                           aria-label="Cancel"
                           onClick={() => {
-                            setCategorySelected(forumCategory);
+                            setSelectedCategory(forumCategory);
                             setIsArchiveDialog(true);
                           }}
                         />
                       )}
-                      {footerButtons}
+                      {footerButtons(forumCategory)}
                     </>
                   ) : (
                     <></>
