@@ -47,9 +47,9 @@ export const viewOneJobListing = async (jobListingId, accessToken) => {
   }
 };
 
-export const viewAssignedJobSeekersByJobListing = async (jobListingId, accessToken) => {
+export const viewAssignedJobSeekersByJobListing = async (jobListingId, recruiterId, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/job-assignment/jobListing/${jobListingId}`, {
+    const res = await fetch(`http://localhost:8080/job-assignment/${jobListingId}/${recruiterId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

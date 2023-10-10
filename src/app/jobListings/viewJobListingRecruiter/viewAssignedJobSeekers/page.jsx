@@ -71,7 +71,7 @@ export default function ViewAssignedJobSeekers() {
 
   useEffect(() => {
     if (accessToken) {
-      viewAssignedJobSeekersByJobListing(id, accessToken)
+      viewAssignedJobSeekersByJobListing(id, currentUserId, accessToken)
         .then((data) => { //can do another map here to call another api fetch to fetch all the job seeker details based on the job seeker id.
           setDetails(data);
           setIsLoading(false);
@@ -81,9 +81,12 @@ export default function ViewAssignedJobSeekers() {
           setIsLoading(false);
         });
     }
-    // console.log("SEEHERE!");
-    // console.log(details);
-  }, [id, accessToken]);
+  }, [id, currentUserId, accessToken]);
+
+  useEffect(() => {
+    console.log("SEEHERE!");
+    console.log(details);
+  })
 
   const renderRecruiterHeader = () => {
     return (
