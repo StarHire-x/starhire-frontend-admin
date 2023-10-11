@@ -1,4 +1,5 @@
 import { Dialog } from "primereact/dialog";
+import styles from "./dialogBox.module.css";
 
 export const DialogBox = ({
   header,

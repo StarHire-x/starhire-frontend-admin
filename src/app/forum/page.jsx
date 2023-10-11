@@ -10,6 +10,8 @@ import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { DialogBox } from "@/components/DialogBox/DialogBox";
 import GuidelinesDisplay from "@/components/GuidelinesForm/GuidelinesForm";
+import { InputText } from "primereact/inputtext";
+import { addForumCategory } from "../api/forum/route";
 
 const ForumPage = () => {
   const session = useSession();
@@ -34,6 +36,9 @@ const ForumPage = () => {
   const [isArchiveDialog, setIsArchiveDialog] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isGuidelinesDialog, setIsGuidelinesDialog] = useState(false);
+  const [isAddCategoryDialog, setIsAddCategoryDialog] = useState(false);
+  const [addCategoryTitle, setAddCategoryTitle] = useState("");
+  const [addCategoryError, setAddCategoryError] = useState("");
 
   const initializeForumCategories = async (state) => {
     try {
@@ -56,6 +61,29 @@ const ForumPage = () => {
       setIsArchiveDialog(false);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const addCategory = async (categoryTitle) => {
+    if (categoryTitle.length >= 20) {
+      setAddCategoryError("Title too long! Max 20 characters");
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setAddCategoryError("");
+      const request = {
+        forumCategoryTitle: categoryTitle,
+        isArchived: false,
+        forumGuidelines: "",
+      };
+      await addForumCategory(request, accessToken);
+      await initializeForumCategories();
+      setIsLoading(false);
+      setIsAddCategoryDialog(false);
+    } catch (error) {
+      setIsLoading(false);
+      setAddCategoryError(error.message);
     }
   };
 
@@ -86,7 +114,14 @@ const ForumPage = () => {
   const footerButtons = (forumCategory) => {
     return (
       <div className={styles.footerButtons}>
-        <Button size="small" label="Details" severity="info" />
+        <Button
+          size="small"
+          label="Details"
+          severity="info"
+          onClick={() =>
+            router.push(`/category/${forumCategory?.forumCategoryId}`)
+          }
+        />
         <Button
           size="small"
           label="Guidelines"
@@ -121,6 +156,27 @@ const ForumPage = () => {
     </div>
   );
 
+  const addCategoryDialogButtons = (
+    <div>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        outlined
+        onClick={() => setIsAddCategoryDialog(false)}
+        className="p-button-text"
+      />
+      <Button
+        label="Add"
+        icon="pi pi-check"
+        onClick={async () => {
+          await addCategory(addCategoryTitle);
+        }}
+        loading={isLoading}
+        autoFocus
+      />
+    </div>
+  );
+
   return (
     <>
       {isGuidelinesDialog && (
@@ -139,6 +195,29 @@ const ForumPage = () => {
           />
         </DialogBox>
       )}
+      {isAddCategoryDialog && (
+        <DialogBox
+          header={"Add Forum Category"}
+          isOpen={isAddCategoryDialog}
+          setVisible={setIsAddCategoryDialog}
+          footerContent={addCategoryDialogButtons}
+        >
+          <div className={styles.inputText}>
+            <InputText
+              id="categoryName"
+              placeholder="Category Name"
+              type="text"
+              onChange={(e) => setAddCategoryTitle(e.target.value)}
+              className={addCategoryError != "" ? "p-invalid" : ""}
+            />
+            {addCategoryError != "" && (
+              <small className="p-error" id="categoryName-help">
+                {addCategoryError}
+              </small>
+            )}
+          </div>
+        </DialogBox>
+      )}
       {isArchiveDialog && (
         <DialogBox
           header={"Archive event category?"}
@@ -148,7 +227,7 @@ const ForumPage = () => {
           footerContent={archiveDialogButtons}
           isOpen={isArchiveDialog}
           setVisible={setIsArchiveDialog}
-        ></DialogBox>
+        />
       )}
       {isLoading && <ProgressSpinner />}
       {!isLoading && (
@@ -163,6 +242,14 @@ const ForumPage = () => {
               optionLabel="name"
             />
           </div>
+          <Button
+            outlined
+            severity={"info"}
+            className={styles.addButton}
+            label={"Add"}
+            icon="pi pi-plus"
+            onClick={() => setIsAddCategoryDialog(true)}
+          />
           <div className={styles.container}>
             {filteredForumCategories &&
               filteredForumCategories.map((forumCategory, index) => (
@@ -172,7 +259,6 @@ const ForumPage = () => {
                       ? styles.archivedCardBox
                       : styles.cardBox
                   }
-                  onClick={() => console.log("hello")}
                   onMouseOver={() => setFocusCategory(index)}
                   onMouseLeave={() => setFocusCategory(null)}
                 >

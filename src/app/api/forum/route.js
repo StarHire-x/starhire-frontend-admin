@@ -31,13 +31,32 @@ export const updateForumCategory = async (request, id, accessToken) => {
       body: JSON.stringify(request),
     });
 
-    if (res.ok) {
-      return;
-    } else {
-      throw new Error(errorData.message || "An error occurred");
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message);
     }
   } catch (error) {
     console.log("There was a problem updating the forum category", error);
+    throw error;
+  }
+};
+
+export const addForumCategory = async (request, accessToken) => {
+  try {
+    const res = await fetch(`http://localhost:8080/forum-categories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(request),
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message);
+    }
+  } catch (error) {
+    console.log(error.message);
     throw error;
   }
 };

@@ -7,6 +7,13 @@
   padding: 10px;
 }
 
+.addButton {
+  display: flex;
+  align-self: flex-end;
+  min-width: 10vh;
+  margin: 10px;
+}
+
 .dropdown {
   min-width: 20vh;
 }
@@ -79,4 +86,11 @@
   top: 5px; /* Adjust the top position as needed */
   right: 10px; /* Adjust the right position as needed */
   background-color: #ff5733; /* Background color for the delete button */
+}
+
+.inputText {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
 }
