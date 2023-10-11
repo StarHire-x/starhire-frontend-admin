@@ -1,0 +1,24 @@
+.forumGuideline {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  padding: 10px;
+}
+
+.forumGuidelineInput {
+  min-width: 80%;
+}
+
+.cancelButton {
+  height: 5%;
+  width: 5%;
+  max-height: 20px;
+  max-width: 20px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}

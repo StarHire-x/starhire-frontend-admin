@@ -6,6 +6,7 @@ export const DialogBox = ({
   footerContent,
   isOpen,
   setVisible,
+  children,
 }) => {
   return (
     <Dialog
@@ -16,6 +17,7 @@ export const DialogBox = ({
       footer={footerContent}
     >
       <p className="m-0">{content}</p>
+      {children}
     </Dialog>
   );
 };

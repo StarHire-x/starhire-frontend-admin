@@ -20,7 +20,9 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         const { email, password, role } = credentials;
-
+        console.log(
+          `http://localhost:8080/users/login?email=${email}&password=${password}&role=${role}`
+        );
         const res = await fetch(
           `http://localhost:8080/users/login?email=${email}&password=${password}&role=${role}`,
           {
@@ -89,8 +91,12 @@ const handler = NextAuth({
         // do a check from backend and database if the user still valid in database table or not
         // if no longer valid, it will catch the error and just return null session, and then the user will be auto logged out
         // else, the user remains logged in
-        const result = (token?.userId && token?.role && token?.accessToken) && await getUserByUserId(token.userId, token.role, token.accessToken);
-        const currentAccountStatus = result?.data?.status
+        const result =
+          token?.userId &&
+          token?.role &&
+          token?.accessToken &&
+          (await getUserByUserId(token.userId, token.role, token.accessToken));
+        const currentAccountStatus = result?.data?.status;
         console.log(`Current user account status: ${currentAccountStatus}`);
         if (currentAccountStatus === Enums.INACTIVE) {
           // sign out here since user no longer in database
@@ -113,7 +119,7 @@ const handler = NextAuth({
         role: token.role,
         status: token.status,
         image: token.image,
-        accessToken: token.accessToken
+        accessToken: token.accessToken,
       };
       return session;
     },

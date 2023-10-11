@@ -1,0 +1,82 @@
+.heading {
+  top: 20vh;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.dropdown {
+  min-width: 20vh;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  flex-wrap: wrap;
+  overflow: auto;
+}
+
+.cardBox {
+  display: flex;
+  flex-direction: column; /* Change to a column layout */
+  justify-content: space-between; /* Space between category and footerButtons */
+  margin: 10px;
+  height: 30vh;
+  width: 30vh;
+  transition: background-color 0.3s ease;
+  background-color: #c1e1c1;
+  position: relative; /* Needed for absolute positioning */
+}
+
+.cardBox:hover {
+  background-color: #b8d8be;
+  box-shadow: 2px 2px;
+}
+
+.archivedCardBox {
+  display: flex;
+  flex-direction: column; /* Change to a column layout */
+  justify-content: space-between; /* Space between category and footerButtons */
+  margin: 10px;
+  height: 30vh;
+  width: 30vh;
+  transition: background-color 0.3s ease;
+  background-color: #b2beb5;
+  position: relative; /* Needed for absolute positioning */
+}
+
+.archivedCardBox:hover {
+  background-color: #a9a9a9;
+  box-shadow: 2px 2px;
+}
+
+.category {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  text-align: center;
+}
+
+.footerButtons {
+  max-height: 10vh;
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 5px; /* Adjust the top position as needed */
+  right: 10px; /* Adjust the right position as needed */
+  background-color: #ff5733; /* Background color for the delete button */
+}
