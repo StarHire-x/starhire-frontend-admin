@@ -6,8 +6,10 @@
   padding: 10px;
 }
 
-.forumGuidelineInput {
-  min-width: 80%;
+.inputText {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
 }
 
 .cancelButton {

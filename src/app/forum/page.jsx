@@ -119,7 +119,7 @@ const ForumPage = () => {
           label="Details"
           severity="info"
           onClick={() =>
-            router.push(`/category/${forumCategory?.forumCategoryId}`)
+            router.push(`/forum/category?id=${forumCategory?.forumCategoryId}`)
           }
         />
         <Button
