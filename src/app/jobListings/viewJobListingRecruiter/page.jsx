@@ -592,6 +592,7 @@ export default function ViewJobListingRecruiter() {
             <UserProfileModal
               selectedUser={selectedUser}
               currentUserRole={currentUserRole}
+              selectedCorporateJP={selectedCorporateJP}
             />
           </Dialog>
 
