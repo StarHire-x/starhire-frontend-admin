@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 export const createUser = async (userData) => {
   try {
     const response = await fetch(`http://localhost:8080/users`, {
@@ -164,5 +166,29 @@ export const getUserByUserId = async (userId, role, accessToken) => {
   } catch (error) {
     console.log("There was a problem fetching the users", error);
     throw error;
+  }
+};
+
+export const getCorporateDetails = async (userId, accessToken) => {
+  try {
+    const res = await fetch(`http://localhost:8080/corporate/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      cache: "no-store",
+    });
+    const response = await res.json();
+    if (response.statusCode === 200) {
+      return response;
+    } else {
+      return NextResponse.json(
+        { error: response.message },
+        { status: response.statusCode }
+      );
+    }
+  } catch (error) {
+    console.log("There was a problem fetching the users", error.message);
   }
 };
