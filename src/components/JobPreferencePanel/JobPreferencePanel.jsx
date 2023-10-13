@@ -2,10 +2,14 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Panel } from "primereact/panel";
 import { Rating } from "primereact/rating";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Chart } from "primereact/chart";
 import styles from "./JobPreferencePanel.module.css";
 
-const JobPreferencePanel = ({ jobPreference }) => {
+const JobPreferencePanel = ({
+  jobPreference,
+  selectedCorporateJP,
+}) => {
   // Job Preference informaton Dialog Box
   const [visible, setVisible] = useState(false);
 
@@ -33,9 +37,89 @@ const JobPreferencePanel = ({ jobPreference }) => {
     );
   };
 
+  const [chartData, setChartData] = useState({});
+  const [chartOptions, setChartOptions] = useState({});
+
+  useEffect(() => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue("--text-color");
+    const textColorSecondary = documentStyle.getPropertyValue(
+      "--text-color-secondary"
+    );
+
+    console.log(jobPreference);
+    console.log(selectedCorporateJP);
+
+    const data = {
+      labels: ["Benefit", "Salary", "Work-life Balance"],
+      datasets: [
+        {
+          label: "Job Seeker Preference",
+          borderColor: documentStyle.getPropertyValue("--bluegray-600"), // darker shade
+          pointBackgroundColor:
+            documentStyle.getPropertyValue("--bluegray-600"),
+          pointBorderColor: documentStyle.getPropertyValue("--bluegray-600"),
+          pointHoverBackgroundColor: textColor,
+          pointHoverBorderColor:
+            documentStyle.getPropertyValue("--bluegray-600"),
+          data: [
+            jobPreference?.benefitPreference,
+            jobPreference?.salaryPreference,
+            jobPreference?.workLifeBalancePreference,
+          ],
+        },
+        {
+          label: "Corporate Preference",
+          borderColor: documentStyle.getPropertyValue("--pink-600"), // darker shade
+          pointBackgroundColor: documentStyle.getPropertyValue("--pink-600"),
+          pointBorderColor: documentStyle.getPropertyValue("--pink-600"),
+          pointHoverBackgroundColor: textColor,
+          pointHoverBorderColor: documentStyle.getPropertyValue("--pink-600"),
+          data: [
+            selectedCorporateJP?.benefitPreference,
+            selectedCorporateJP?.salaryPreference,
+            selectedCorporateJP?.workLifeBalancePreference,
+          ],
+        },
+      ],
+    };
+    const options = {
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor,
+          },
+        },
+      },
+      scales: {
+        r: {
+          min: 0, // Setting minimum value of scale
+          max: 5, // Setting maximum value of scale
+          grid: {
+            color: textColorSecondary,
+          },
+          ticks: {
+            stepSize: 1, // Setting each step to be of size 1
+          },
+        },
+      },
+    };
+
+    setChartData(data);
+    setChartOptions(options);
+  }, []);
+
   return (
     <Panel headerTemplate={headerTemplate}>
-      <div className={styles.dialogueContainer}>
+      <Chart
+        type="radar"
+        data={chartData}
+        options={chartOptions}
+        className="w-20rem h-20rem"
+      />
+      
+      {/* Original Code, dont delete first  */}
+      {/* <div className={styles.dialogueContainer}>
         <Dialog
           header="What are job preferences?"
           visible={visible}
@@ -140,7 +224,7 @@ const JobPreferencePanel = ({ jobPreference }) => {
             cancel={false}
           />
         </div>
-      </div>
+      </div> */}
     </Panel>
   );
 };

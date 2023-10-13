@@ -13,7 +13,11 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-const UserProfileModal = ({ selectedUser, currentUserRole }) => {
+const UserProfileModal = ({
+  selectedUser,
+  currentUserRole,
+  selectedCorporateJP,
+}) => {
   return (
     <div className={styles.container}>
       <>
@@ -55,18 +59,20 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
                   Contact Number: {selectedUser.contactNo}
                 </p>
                 {selectedUser?.resumePdf &&
-                  currentUserRole === Enums.RECRUITER ? (
-                    <Button
-                      size="small"
-                      label="View Resume"
-                      icon="pi pi-file-pdf"
-                      onClick={() => {
-                        window.open(selectedUser?.resumePdf, "_blank");
-                      }}
-                    />
-                  ): (
-                    <p style={{color: 'red'}}>{selectedUser?.userName} has not uploaded his/her resume.</p>
-                  )}
+                currentUserRole === Enums.RECRUITER ? (
+                  <Button
+                    size="small"
+                    label="View Resume"
+                    icon="pi pi-file-pdf"
+                    onClick={() => {
+                      window.open(selectedUser?.resumePdf, "_blank");
+                    }}
+                  />
+                ) : (
+                  <p style={{ color: "red" }}>
+                    {selectedUser?.userName} has not uploaded his/her resume.
+                  </p>
+                )}
               </div>
               <div className={styles.userInformationSecondRow}>
                 {/* display information here in new row */}
@@ -93,7 +99,8 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
 
                 {selectedUser?.dateOfGraduation ? (
                   <p className={styles.userDetails}>
-                    Date of Graduation: {formatDate(selectedUser?.dateOfGraduation)}
+                    Date of Graduation:{" "}
+                    {formatDate(selectedUser?.dateOfGraduation)}
                   </p>
                 ) : (
                   <p className={styles.userDetails}>
@@ -105,7 +112,10 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
           </Card>
         </div>
         <div className={styles.jobPreferenceSection}>
-          <JobPreferencePanel jobPreference={selectedUser?.jobPreference} />
+          <JobPreferencePanel
+            jobPreference={selectedUser?.jobPreference}
+            selectedCorporateJP={selectedCorporateJP}
+          />
         </div>
         <div className={styles.jobExperienceSection}>
           <JobExperiencePanel jobExperience={selectedUser?.jobExperiences} />
