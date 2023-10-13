@@ -538,7 +538,7 @@ export default function ViewJobListingRecruiter() {
                 body={usernameBodyTemplate}
               ></Column>
               <Column field="email" header="Email" sortable></Column>
-              {/* <Column field="contactNo" header="Contact No" sortable></Column> */}
+              <Column field="contactNo" header="Contact No" sortable></Column>
               {/* <Column
                 field="role"
                 header="Role"
