@@ -11,6 +11,8 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Card } from "primereact/card";
 import { Tag } from "primereact/tag";
+import { InputText } from "primereact/inputtext";
+import { DialogBox } from "@/components/DialogBox/DialogBox";
 
 const CategoryPage = () => {
   const session = useSession();
@@ -27,13 +29,16 @@ const CategoryPage = () => {
   const categoryId = params.get("id");
   const tabs = [
     { label: "All Posts", icon: "", index: 0 },
-    { label: "Reviewing", icon: "", index: 1 },
+    { label: "Pending", icon: "", index: 1 },
+    { label: "Reported", icon: "", index: 2 },
   ];
 
   const [category, setCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState(tabs[0]);
   const [forumPosts, setForumPosts] = useState([]);
+  const [searchId, setSearchId] = useState("");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const getSeverity = (status) => {
     switch (status) {
@@ -43,11 +48,14 @@ const CategoryPage = () => {
       case "Active":
         return "success";
 
-      case "Inactive":
-        return "null";
-
       case "Pending":
         return "warning";
+
+      case "Inactive":
+        return "primary";
+
+      case "Deleted":
+        return "null";
     }
   };
 
@@ -102,20 +110,27 @@ const CategoryPage = () => {
     const status = rowData?.forumPostStatus;
     return (
       <div className={styles.actionButtons}>
-        <Button rounded outlined severity="info" icon="pi pi-align-justify" />
-        {status != "Inactive" && (
-          <Button
-            icon="pi pi-times"
-            rounded
-            outlined
-            severity="danger"
-            aria-label="Cancel"
-            onClick={() =>
-              updateForumPostStatus(rowData?.forumPostId, "Inactive")
-            }
-          />
-        )}
-        {status === "Pending" && (
+        <Button
+          rounded
+          outlined
+          severity="info"
+          icon="pi pi-align-justify"
+          onClick={() => setSelectedPost(rowData)}
+        />
+        {status != "Inactive" &&
+          status != "Deleted" && ( // inactive and deleted posts should not be "deleted"
+            <Button
+              icon="pi pi-times"
+              rounded
+              outlined
+              severity="danger"
+              aria-label="Cancel"
+              onClick={() =>
+                updateForumPostStatus(rowData?.forumPostId, "Inactive")
+              }
+            />
+          )}
+        {(status === "Pending" || status === "Inactive") && ( // only pending and inactive can become "active" again
           <Button
             icon="pi pi-check"
             rounded
@@ -141,19 +156,40 @@ const CategoryPage = () => {
     if (category) {
       if (currentTab?.label === "All Posts") {
         setForumPosts([...category?.forumPosts]);
-      } else {
+      } else if (currentTab?.label === "Pending") {
         setForumPosts([
           ...category?.forumPosts?.filter(
             (forumPost) => forumPost?.forumPostStatus === "Pending"
           ),
         ]);
+      } else {
+        setForumPosts([
+          ...category?.forumPosts?.filter(
+            (forumPost) => forumPost?.forumPostStatus === "Reported"
+          ),
+        ]);
       }
     }
-  }, [currentTab, category]);
+    if (searchId != "") {
+      setForumPosts([
+        ...category?.forumPosts?.filter((forumPost) => {
+          return forumPost?.forumPostId.toString().includes(searchId);
+        }),
+      ]);
+    }
+  }, [currentTab, category, searchId]);
 
   return (
     <div>
       {isLoading && <ProgressSpinner />}
+      {selectedPost != null && (
+        <DialogBox
+          isOpen={selectedPost != null}
+          setVisible={() => setSelectedPost(null)}
+        >
+          <h2>{selectedPost?.forumPostTitle}</h2>
+        </DialogBox>
+      )}
       {!isLoading && (
         <div className={styles.content}>
           <div className={styles.heading}>
@@ -171,12 +207,22 @@ const CategoryPage = () => {
 
           <Card className={styles.card}>
             <div className={styles.container}>
-              <TabMenu
-                className={styles.tabMenu}
-                model={tabs}
-                onTabChange={(e) => setCurrentTab(e.value)}
-                activeIndex={currentTab?.index}
-              />
+              <div className={styles.tableHeader}>
+                <TabMenu
+                  className={styles.tabMenu}
+                  model={tabs}
+                  onTabChange={(e) => setCurrentTab(e.value)}
+                  activeIndex={currentTab?.index}
+                />
+                <InputText
+                  placeholder="Search by Post ID"
+                  onChange={(e) => setSearchId(e.target.value)}
+                />
+              </div>
+
+              {forumPosts.length === 0 && (
+                <h2 className={styles.text}>No posts available.</h2>
+              )}
               {forumPosts.length > 0 && (
                 <DataTable
                   className={styles.dataTable}
@@ -186,28 +232,34 @@ const CategoryPage = () => {
                   rowsPerPageOptions={[5, 10, 25, 50]}
                   tableStyle={{ minWidth: "50rem" }}
                   scrollable
+                  removableSort
                   scrollHeight="45vh"
+                  gloablFilterFields={["status"]}
                 >
                   <Column
                     field="forumPostId"
                     header="Post ID"
                     style={{ width: "10%" }}
+                    sortable
                   />
                   <Column
                     field="forumPostTitle"
                     header="Title"
                     style={{ width: "55%" }}
+                    sortable
                   />
                   <Column
                     field="createdAt"
                     header="Date Created"
                     style={{ width: "15%" }}
+                    sortable
                     body={dateCreatedColumn}
                   />
                   <Column
                     field="forumPostStatus"
                     header="Status"
                     style={{ width: "5%" }}
+                    sortable
                     body={statusColumn}
                   />
                   <Column
