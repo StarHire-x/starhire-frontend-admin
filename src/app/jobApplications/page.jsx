@@ -1,42 +1,42 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import { useSearchParams } from "next/navigation";
-import { Tag } from "primereact/tag";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
+import { useSearchParams } from 'next/navigation';
+import { Tag } from 'primereact/tag';
 import {
   updateJobApplicationStatus,
   viewAllJobApplicationsByJobListingId,
-} from "../api/jobApplications/route";
-import { Dropdown } from "primereact/dropdown";
-import { Button } from "primereact/button";
-import { DialogBox } from "../../components/DialogBox/DialogBox";
-import { ProgressSpinner } from "primereact/progressspinner";
-import Image from "next/image";
-import HumanIcon from "../../../public/icon.png";
-import styles from "./page.module.css";
-import { viewOneJobListing } from "../api/jobListings/route";
+} from '../api/jobApplications/route';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { DialogBox } from '../../components/DialogBox/DialogBox';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import Image from 'next/image';
+import HumanIcon from '../../../public/icon.png';
+import styles from './page.module.css';
+import { viewOneJobListing } from '../api/jobListings/route';
 
 export default function CustomersDemo() {
   const session = useSession();
   const router = useRouter();
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
+  if (session.status === 'unauthenticated') {
+    router?.push('/login');
   }
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId = session.data && session.data.user?.userId;
 
   const params = useSearchParams();
-  const jobListingId = params.get("id");
+  const jobListingId = params.get('id');
 
   const [isLoading, setIsLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -68,35 +68,43 @@ export default function CustomersDemo() {
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
   });
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const statuses = [
-    "Rejected",
-    "Accepted",
-    "Submitted",
-    "Processing",
-    "Waiting_For_Interview",
-    "To_Be_Submitted",
+    'Rejected',
+    'Offered',
+    'Offer_Rejected',
+    'Offer_Accepted',
+    'Submitted',
+    'Processing',
+    'Waiting_For_Interview',
+    'To_Be_Submitted',
   ];
   const getSeverity = (status) => {
     switch (status) {
-      case "Rejected":
-        return "danger";
+      case 'Rejected':
+        return 'danger';
 
-      case "Accepted":
-        return "success";
+      case 'Offered':
+        return 'success';
 
-      case "Submitted":
-        return "info";
+      case 'Offer_Rejected':
+        return 'danger';
 
-      case "Processing":
-        return "warning";
+      case 'Offer_Accepted':
+        return 'success';
 
-      case "To_Be_Submitted":
-        return "null";
+      case 'Submitted':
+        return 'info';
 
-      case "Waiting_For_Interview":
-        return "null";
+      case 'Processing':
+        return 'warning';
+
+      case 'To_Be_Submitted':
+        return 'null';
+
+      case 'Waiting_For_Interview':
+        return 'null';
     }
   };
 
@@ -121,15 +129,15 @@ export default function CustomersDemo() {
   }, [jobListingId, currentUserId, accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatDate = (value) => {
-    return value.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+    return value.toLocaleDateString('en-US', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     });
   };
 
   const filterData = (value) => {
-    if (value === "") {
+    if (value === '') {
       setFilteredJobApplications([]);
     } else {
       const filteredApplications = jobApplications.filter((application) => {
@@ -161,7 +169,7 @@ export default function CustomersDemo() {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters["global"].value = value;
+    _filters['global'].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -173,9 +181,9 @@ export default function CustomersDemo() {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <h2 className="m-0">Job Applications for {jobListing?.title}</h2>
@@ -194,7 +202,7 @@ export default function CustomersDemo() {
   const usernameBodyTemplate = (rowData) => {
     return (
       <div className={styles.userDetails}>
-        {rowData?.jobSeeker?.profilePictureUrl === "" ? (
+        {rowData?.jobSeeker?.profilePictureUrl === '' ? (
           <Image
             src={HumanIcon}
             alt="Profile Picture"
@@ -223,7 +231,7 @@ export default function CustomersDemo() {
   const statusBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData?.jobApplicationStatus?.replaceAll("_", " ")}
+        value={rowData?.jobApplicationStatus?.replaceAll('_', ' ')}
         severity={getSeverity(rowData?.jobApplicationStatus)}
       />
     );
@@ -252,7 +260,7 @@ export default function CustomersDemo() {
   };
 
   const sendCorporateButtons = (rowData) => {
-    return rowData?.jobApplicationStatus === "Submitted" ? (
+    return rowData?.jobApplicationStatus === 'Submitted' ? (
       <Button
         rounded
         outlined
@@ -309,12 +317,12 @@ export default function CustomersDemo() {
 
   const handleOnBackClick = () => {
     // router.back();
-    router.push("/jobListings");
+    router.push('/jobListings');
   };
 
   const updateStatus = async () => {
     const request = {
-      jobApplicationStatus: "Processing",
+      jobApplicationStatus: 'Processing',
     };
     try {
       await updateJobApplicationStatus(
@@ -336,7 +344,7 @@ export default function CustomersDemo() {
         header="Send to Corporate?"
         content={`Send ${jobApplicationToSend?.jobSeeker?.userName}'s for ${
           jobListing?.title
-        } role to ${jobListing?.corporate?.userName || "corporate"}?`}
+        } role to ${jobListing?.corporate?.userName || 'corporate'}?`}
         footerContent={footerButtons}
         isOpen={openDialog}
         setVisible={setOpenDialog}
@@ -345,10 +353,10 @@ export default function CustomersDemo() {
         <div className="card flex justify-content-center">
           <ProgressSpinner
             style={{
-              display: "flex",
-              height: "100vh",
-              "justify-content": "center",
-              "align-items": "center",
+              display: 'flex',
+              height: '100vh',
+              'justify-content': 'center',
+              'align-items': 'center',
             }}
           />
         </div>
@@ -359,7 +367,7 @@ export default function CustomersDemo() {
             scrollable
             scrollHeight="400px"
             value={
-              globalFilterValue != ""
+              globalFilterValue != ''
                 ? filteredJobApplications
                 : jobApplications
             }
@@ -376,11 +384,11 @@ export default function CustomersDemo() {
             // filters={filters}
             filterDisplay="menu"
             globalFilterFields={[
-              "userName",
-              "email",
-              "contactNo",
-              "jobApplicationStatus",
-              "submissionDate",
+              'userName',
+              'email',
+              'contactNo',
+              'jobApplicationStatus',
+              'submissionDate',
             ]}
             emptyMessage="No job applications found."
             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -389,28 +397,28 @@ export default function CustomersDemo() {
               field="userName"
               header="Username"
               sortable
-              style={{ minWidth: "12rem" }}
+              style={{ minWidth: '12rem' }}
               body={usernameBodyTemplate}
             />
             <Column
               field="email"
               header="Email"
               sortable
-              style={{ minWidth: "12rem" }}
+              style={{ minWidth: '12rem' }}
               body={emailBodyTemplate}
             />
             <Column
               field="contactNo"
               header="Contact Number"
               sortable
-              style={{ minWidth: "12rem" }}
+              style={{ minWidth: '12rem' }}
               body={contactNumberBodyTemplate}
             />
             <Column
               field="jobApplicationStatus"
               header="Status"
-              filterMenuStyle={{ width: "14rem" }}
-              style={{ minWidth: "12rem" }}
+              filterMenuStyle={{ width: '14rem' }}
+              style={{ minWidth: '12rem' }}
               body={statusBodyTemplate}
               sortable
               filter
@@ -420,7 +428,7 @@ export default function CustomersDemo() {
               field="submissionDate"
               header="Submitted Date"
               sortable
-              style={{ minWidth: "12rem" }}
+              style={{ minWidth: '12rem' }}
               body={submittedDateBodyTemplate}
             />
             <Column body={sendCorporateButtons} />
