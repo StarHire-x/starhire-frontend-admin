@@ -1,27 +1,20 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import { Button } from "primereact/button";
-import { InputNumber } from "primereact/inputnumber";
-import { ProgressBar } from "primereact/progressbar";
-import { Calendar } from "primereact/calendar";
-import { MultiSelect } from "primereact/multiselect";
-import { Slider } from "primereact/slider";
-import { Dialog } from "primereact/dialog";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { Tag } from "primereact/tag";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-// import "./styles.css";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Tag } from 'primereact/tag';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import styles from './jobListings.module.css';
-import { viewAllJobListings } from "@/app/api/jobListings/route";
-import { getUserByUserId } from "../api/auth/user/route";
-import Enums from "@/common/enums/enums";
-import { Badge } from "primereact/badge";
+import { viewAllJobListings } from '@/app/api/jobListings/route';
+import Enums from '@/common/enums/enums';
+import { Badge } from 'primereact/badge';
 
 export default function JobListings() {
   const session = useSession();
@@ -29,15 +22,15 @@ export default function JobListings() {
   const router = useRouter();
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === "authenticated" && session.data.user.userId;
+    session.status === 'authenticated' && session.data.user.userId;
 
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
+  if (session.status === 'unauthenticated') {
+    router?.push('/login');
   }
 
   const [refreshData, setRefreshData] = useState(false);
@@ -59,22 +52,22 @@ export default function JobListings() {
     },
   });
 
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [jobListingStatuses] = useState([
-    "Approved",
-    "Unverified",
-    "Rejected",
-    "Archived",
+    'Approved',
+    'Unverified',
+    'Rejected',
+    'Archived',
   ]);
 
   const getStatus = (status) => {
     switch (status) {
-      case "Approved":
-        return "success";
-      case "Unverified":
-        return "danger";
-      case "Rejected":
-        return "danger";
+      case 'Approved':
+        return 'success';
+      case 'Unverified':
+        return 'danger';
+      case 'Rejected':
+        return 'danger';
     }
   };
 
@@ -82,7 +75,7 @@ export default function JobListings() {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters["global"].value = value;
+    _filters['global'].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -140,9 +133,14 @@ export default function JobListings() {
     // `/jobListings/viewJobListingRecruiter?id=${id}`;
   };
 
-  const getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter = (jobListing) => {
-    return jobListing?.jobApplications.filter((jobApp) => jobApp.jobApplicationStatus === Enums.SUBMITTED && jobApp?.recruiter.userId === currentUserId).length;
-  }
+  const getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter =
+    (jobListing) => {
+      return jobListing?.jobApplications.filter(
+        (jobApp) =>
+          jobApp.jobApplicationStatus === Enums.SUBMITTED &&
+          jobApp?.recruiter.userId === currentUserId
+      ).length;
+    };
 
   const actionRecruiterBodyTemplate = (rowData) => {
     return (
@@ -155,7 +153,12 @@ export default function JobListings() {
             size="small"
             onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
           >
-            <Badge severity="danger" value={getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(rowData)} />
+            <Badge
+              severity="danger"
+              value={getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(
+                rowData
+              )}
+            />
           </Button>
           <div className={styles.spacer}></div>
           <Button
@@ -187,7 +190,15 @@ export default function JobListings() {
   };
 
   const sortJobListingsByNumberOfProcessingJobApps = (jobListings) => {
-    return jobListings.sort((x, y) => getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(y) - getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(x));
+    return jobListings.sort(
+      (x, y) =>
+        getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(
+          y
+        ) -
+        getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(
+          x
+        )
+    );
   };
 
   const saveStatusChange = async (rowData) => {
@@ -198,14 +209,14 @@ export default function JobListings() {
         let link = createLink(jobListingId);
         router.push(link);
       } catch (error) {
-        console.error("Error changing status:", error);
+        console.error('Error changing status:', error);
       }
     } else {
       try {
         let link = createRecruiterLink(jobListingId);
         router.push(link);
       } catch (error) {
-        console.error("Error changing status:", error);
+        console.error('Error changing status:', error);
       }
     }
   };
@@ -221,9 +232,9 @@ export default function JobListings() {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <h2 className="m-0">Job Listings</h2>
@@ -241,7 +252,7 @@ export default function JobListings() {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -251,7 +262,7 @@ export default function JobListings() {
         .then((data) => {
           if (session.data.user.role === Enums.RECRUITER) {
             const activeJobListing = data.filter(
-              (jobListing) => jobListing.jobListingStatus === "Approved"
+              (jobListing) => jobListing.jobListingStatus === 'Approved'
             );
             setJobListings(activeJobListing);
           } else {
@@ -260,7 +271,7 @@ export default function JobListings() {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching job listings:", error);
+          console.error('Error fetching job listings:', error);
           setIsLoading(false);
         });
     }
@@ -295,15 +306,15 @@ export default function JobListings() {
   const header = renderHeader();
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data.user.role !== Enums.ADMIN &&
     session.data.user.role !== Enums.RECRUITER
   ) {
-    router?.push("/dashboard");
+    router?.push('/dashboard');
   }
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     (session.data.user.role === Enums.ADMIN ||
       session.data.user.role === Enums.RECRUITER)
   ) {
@@ -312,10 +323,10 @@ export default function JobListings() {
         {isLoading ? (
           <ProgressSpinner
             style={{
-              display: "flex",
-              height: "100vh",
-              "justify-content": "center",
-              "align-items": "center",
+              display: 'flex',
+              height: '100vh',
+              'justify-content': 'center',
+              'align-items': 'center',
             }}
           />
         ) : (
@@ -334,12 +345,12 @@ export default function JobListings() {
               filters={filters}
               filterDisplay="menu"
               globalFilterFields={[
-                "jobListingId",
-                "title",
-                "corporate.userName",
-                "jobLocation",
-                "listingDate",
-                "jobListingStatus",
+                'jobListingId',
+                'title',
+                'corporate.userName',
+                'jobLocation',
+                'listingDate',
+                'jobListingStatus',
               ]}
               emptyMessage="No Job Listings found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -391,8 +402,8 @@ export default function JobListings() {
 
             <Dialog
               visible={userDialog}
-              style={{ width: "32rem" }}
-              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              style={{ width: '32rem' }}
+              breakpoints={{ '960px': '75vw', '641px': '90vw' }}
               header="Change Status"
               className="p-fluid"
               footer={userDialogFooter}

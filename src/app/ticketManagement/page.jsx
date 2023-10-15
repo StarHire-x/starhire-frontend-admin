@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
+import { Dialog } from 'primereact/dialog';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { viewAllTickets } from '../api/ticket/route';
+import { viewAllTickets, resolveTicket } from '../api/ticket/route';
 import Image from 'next/image';
 import HumanIcon from '../../../public/icon.png';
+import Enums from '@/common/enums/enums';
 import styles from './page.module.css';
 
 export default function TicketManagement() {
@@ -36,6 +38,8 @@ export default function TicketManagement() {
   const [tickets, setTickets] = useState([]);
   const [refreshData, setRefreshData] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [selectedTicketId, setSelectedTicketId] = useState(null);
 
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [ticketStatuses] = useState([
@@ -46,6 +50,42 @@ export default function TicketManagement() {
     'Forum',
     'SubscriptionBilling',
   ]);
+
+  const resolvedBodyTemplate = (rowData) => {
+    return <span>{rowData.isResolved ? 'Yes' : 'No'}</span>;
+  };
+
+  const handleResolveTicket = (ticketId) => {
+    setSelectedTicketId(ticketId); // Store the ticketId temporarily
+    setConfirmDialogVisible(true); // Show the confirmation dialog
+  };
+
+  const confirmResolveTicket = async () => {
+    if (!selectedTicketId) return;
+
+    try {
+      setLoading(true);
+      await resolveTicket(selectedTicketId, accessToken);
+      setRefreshData(!refreshData);
+    } catch (error) {
+      console.error('Error resolving the ticket:', error);
+    } finally {
+      setLoading(false);
+      setConfirmDialogVisible(false); // Close the dialog after resolution
+    }
+  };
+
+  const resolveButtonBodyTemplate = (rowData) => {
+    if (!rowData.isResolved) {
+      return (
+        <button onClick={() => handleResolveTicket(rowData.ticketId)}>
+          Resolve
+        </button>
+      );
+    } else {
+      return <span>Resolved</span>;
+    }
+  };
 
   // const usernameBodyTemplate = (rowData) => {
   //   let user;
@@ -117,12 +157,21 @@ export default function TicketManagement() {
   }
 
   return (
-    <>
+    <div className={styles.pageContainer}>
       <h2>Tickets</h2>
-      <DataTable value={tickets}>
+      <DataTable
+        className={`${styles.dataTableHeader} ${styles.dataTableRow}`}
+        value={tickets}
+      >
         <Column field="ticketId" header="Ticket ID"></Column>
         <Column field="ticketName" header="Problem Title"></Column>
         <Column field="ticketDescription" header="Problem Description"></Column>
+        <Column
+          field="isResolved"
+          header="Resolved?"
+          sortable
+          body={resolvedBodyTemplate}
+        ></Column>
         {/* <Column
           field="user.userName"
           header="User Name"
@@ -131,11 +180,32 @@ export default function TicketManagement() {
         ></Column> */}
         <Column
           field="user.email"
-          header="Email"
-          sortable
+          header="Contact Email"
           body={emailBodyTemplate}
         ></Column>
+        <Column
+          rounded
+          size="small"
+          className="mr-2"
+          body={resolveButtonBodyTemplate}
+        ></Column>{' '}
+        {/* New column for Resolve button */}
       </DataTable>
-    </>
+
+      <Dialog
+        visible={confirmDialogVisible}
+        header="Confirm Ticket Resolution"
+        modal
+        onHide={() => setConfirmDialogVisible(false)}
+        footer={
+          <>
+            <button onClick={() => setConfirmDialogVisible(false)}>No</button>
+            <button onClick={confirmResolveTicket}>Yes</button>
+          </>
+        }
+      >
+        Are you sure you want to resolve this ticket?
+      </Dialog>
+    </div>
   );
 }

@@ -1,17 +1,64 @@
+.body {
+  font-family: 'Arial', sans-serif;
+}
+
+.pageContainer {
+  padding: 20px 40px;
+  background-color: #f9f9f9; /* A subtle background color */
+  min-height: 100vh; /* Full viewport height */
+}
+
+.h2 {
+  font-weight: 600; /* Semi-bold */
+  margin-bottom: 20px;
+  color: #333; /* Dark text color */
+  border-bottom: 2px solid #ddd; /* Underline to distinguish headers */
+  padding-bottom: 10px;
+}
+
+.dataTableHeader {
+  background-color: #f5f5f5; /* Example */
+}
+.dataTableRow {
+  border-bottom: 1px solid #e0e0e0; /* Example */
+}
+
+.DataTable {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.DataTable th,
+.DataTable td {
+  padding: 15px;
+  border-bottom: 1px solid #ddd; /* Borders for cells */
+}
+
+.DataTable th {
+  background-color: #f5f5f5; /* A lighter header color */
+  font-weight: 500; /* Slightly bold headers */
+}
+
+/* Hover effect for rows */
+.DataTable tr:hover {
+  background-color: #f1f1f1;
+}
+
 .avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%; /* To make it circular */
   object-fit: cover; /* To ensure the image maintains its aspect ratio */
-  margin-bottom: 10px; /* Add some spacing below the image */
+  margin-bottom: 10px;
 }
 
 .imageContainer {
   display: flex;
   flex-direction: column; /* To ensure children are stacked vertically */
-  align-items: center; /* Horizontally center the children */
-  justify-content: center; /* Vertically center the children (though it's optional here) */
-  gap: 1px; /* Gives a little space between the image and the h6 */
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
 }
 
 .avatarImageContainer {
@@ -19,5 +66,11 @@
   height: 40px;
   border-radius: 50%; /* To make it circular */
   object-fit: cover; /* To ensure the image maintains its aspect ratio */
-  margin-bottom: 0px; /* Add some spacing below the image */
+  margin-bottom: 0px;
+}
+
+.customButton {
+  background-color: #007bff; /* Primary color */
+  border: none;
+  border-radius: 4px;
 }
