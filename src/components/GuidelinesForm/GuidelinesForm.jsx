@@ -29,18 +29,27 @@ const GuidelinesDisplay = ({ category, accessToken, closeDialog }) => {
   };
 
   const saveGuidelines = async () => {
-    setIsLoading(true);
-    if (checkValidity(guidelines)) {
-      setIsLoading(false);
-      return;
-    }
+    try {
+      setIsLoading(true);
+      if (checkValidity(guidelines)) {
+        setIsLoading(false);
+        return;
+      }
 
-    const request = {
-      forumGuidelines: guidelines.join("~"),
-    };
-    await updateForumCategory(request, category?.forumCategoryId, accessToken);
-    setIsLoading(false);
-    closeDialog();
+      const request = {
+        forumGuidelines: guidelines.join("~"),
+      };
+      await updateForumCategory(
+        request,
+        category?.forumCategoryId,
+        accessToken
+      );
+      setIsLoading(false);
+      closeDialog(true);
+    } catch (error) {
+      console.log(error);
+      closeDialog(close);
+    }
   };
 
   const checkValidity = (guidelines) => {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import styles from "./page.module.css";
 import { Card } from "primereact/card";
@@ -12,6 +12,7 @@ import { DialogBox } from "@/components/DialogBox/DialogBox";
 import GuidelinesDisplay from "@/components/GuidelinesForm/GuidelinesForm";
 import { InputText } from "primereact/inputtext";
 import { addForumCategory } from "../api/forum/route";
+import { Toast } from "primereact/toast";
 
 const ForumPage = () => {
   const session = useSession();
@@ -25,6 +26,7 @@ const ForumPage = () => {
     session.data &&
     session.data.user.accessToken;
 
+  const toast = useRef(null);
   const [forumCategories, setForumCategories] = useState([]);
   const [filteredForumCategories, setFilteredForumCategories] = useState(null);
   const [selectedState, setSelectedState] = useState({
@@ -59,8 +61,21 @@ const ForumPage = () => {
       await initializeForumCategories();
       setIsLoading(false);
       setIsArchiveDialog(false);
+      console.log("toast here");
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Successfully updated forum category status!",
+        life: 5000,
+      });
     } catch (error) {
       console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to update forum post status.",
+        life: 5000,
+      });
     }
   };
 
@@ -81,6 +96,12 @@ const ForumPage = () => {
       await initializeForumCategories();
       setIsLoading(false);
       setIsAddCategoryDialog(false);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Successfully added new category!",
+        life: 5000,
+      });
     } catch (error) {
       setIsLoading(false);
       setAddCategoryError(error.message);
@@ -181,6 +202,7 @@ const ForumPage = () => {
 
   return (
     <>
+      <Toast ref={toast} />
       {isGuidelinesDialog && (
         <DialogBox
           header={`Guidelines for ${selectedCategory?.forumCategoryTitle}`}
@@ -190,8 +212,24 @@ const ForumPage = () => {
           <GuidelinesDisplay
             category={selectedCategory}
             accessToken={accessToken}
-            closeDialog={() => {
-              initializeForumCategories();
+            closeDialog={(success) => {
+              if (success) {
+                initializeForumCategories();
+                toast.current.show({
+                  severity: "success",
+                  summary: "Success",
+                  detail: "Successfully updated forum guidelines!",
+                  life: 5000,
+                });
+              } else {
+                toast.current.show({
+                  severity: "error",
+                  summary: "Error",
+                  detail: "Failed to update forum guidelines!",
+                  life: 5000,
+                });
+              }
+
               setIsGuidelinesDialog(false);
             }}
           />

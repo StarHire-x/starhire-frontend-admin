@@ -1,9 +1,13 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./page.module.css";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getOneForumCategory, updateForumPost } from "@/app/api/forum/route";
+import {
+  getOneForumCategory,
+  updateForumCategory,
+  updateForumPost,
+} from "@/app/api/forum/route";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { TabMenu } from "primereact/tabmenu";
 import { Button } from "primereact/button";
@@ -15,6 +19,7 @@ import { InputText } from "primereact/inputtext";
 import { DialogBox } from "@/components/DialogBox/DialogBox";
 import { ForumPostDetail } from "../components/ForumPostDetail/ForumPostDetail";
 import GuidelinesDisplay from "@/components/GuidelinesForm/GuidelinesForm";
+import { Toast } from "primereact/toast";
 
 export const formatDate = (value) => {
   return value?.toLocaleDateString("en-US", {
@@ -61,6 +66,7 @@ const CategoryPage = () => {
     { label: "Reported", icon: "", index: 2 },
   ];
 
+  const toast = useRef(null);
   const [category, setCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState(tabs[0]);
@@ -68,6 +74,7 @@ const CategoryPage = () => {
   const [searchId, setSearchId] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
   const [isGuidelinesDialog, setIsGuidelinesDialog] = useState(false);
+  const [isActiveArchiveCategory, setIsActiveArchiveCategory] = useState(false);
 
   const initialiseCategory = async () => {
     try {
@@ -89,9 +96,49 @@ const CategoryPage = () => {
       await updateForumPost(request, forumPostId, accessToken);
       await initialiseCategory();
       setIsLoading(false);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Successfully updated forum post status!",
+        life: 5000,
+      });
     } catch (error) {
       console.log(error);
       setIsLoading(false);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to update forum post status.",
+        life: 5000,
+      });
+    }
+  };
+
+  const updateCategoryStatus = async (toArchiveCategory, categoryId) => {
+    try {
+      setIsLoading(true);
+      const request = {
+        isArchived: toArchiveCategory,
+      };
+      await updateForumCategory(request, categoryId, accessToken);
+      await initialiseCategory();
+      setIsLoading(false);
+      setIsActiveArchiveCategory(false);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Successfully updated forum category status!",
+        life: 5000,
+      });
+    } catch (error) {
+      console.log(error);
+      setIsActiveArchiveCategory(false);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to update forum category status!",
+        life: 5000,
+      });
     }
   };
 
@@ -147,7 +194,29 @@ const CategoryPage = () => {
     );
   };
 
-  const rowButtons = (rowData) => {};
+  const activeArchiveDialogButtons = (
+    <div className="flex-container space-between">
+      <Button
+        label="No"
+        icon="pi pi-times"
+        outlined
+        onClick={() => setIsActiveArchiveCategory(false)}
+        className="p-button-text"
+      />
+      <Button
+        label="Yes"
+        icon="pi pi-check"
+        onClick={async () => {
+          await updateCategoryStatus(
+            category?.isArchived ? false : true,
+            category?.forumCategoryId
+          );
+        }}
+        loading={isLoading}
+        autoFocus
+      />
+    </div>
+  );
 
   useEffect(() => {
     // Initial load for categoryId
@@ -183,6 +252,7 @@ const CategoryPage = () => {
 
   return (
     <div>
+      <Toast ref={toast} />
       {isLoading && <ProgressSpinner />}
       {isGuidelinesDialog && (
         <DialogBox
@@ -193,12 +263,41 @@ const CategoryPage = () => {
           <GuidelinesDisplay
             category={category}
             accessToken={accessToken}
-            closeDialog={() => {
-              initialiseCategory();
+            closeDialog={(success) => {
+              if (success) {
+                initialiseCategory();
+                toast.current.show({
+                  severity: "success",
+                  summary: "Success",
+                  detail: "Successfully updated forum guidelines!",
+                  life: 5000,
+                });
+              } else {
+                toast.current.show({
+                  severity: "error",
+                  summary: "Error",
+                  detail: "Failed to update forum guidelines!",
+                  life: 5000,
+                });
+              }
+
               setIsGuidelinesDialog(false);
             }}
           />
         </DialogBox>
+      )}
+      {isActiveArchiveCategory && (
+        <DialogBox
+          header={
+            category?.isArchived ? "Re-activate category?" : "Archive category?"
+          }
+          content={`Are you sure you would like to ${
+            category?.isArchived ? "re-activate" : "archive"
+          } this forum category?`}
+          footerContent={activeArchiveDialogButtons}
+          isOpen={isActiveArchiveCategory}
+          setVisible={setIsActiveArchiveCategory}
+        />
       )}
       {selectedPost != null && (
         <DialogBox
@@ -224,7 +323,7 @@ const CategoryPage = () => {
                 className={styles.statusButton}
                 label={category?.isArchived ? "Archived" : "Active"}
                 severity={category?.isArchived ? "secondary" : "success"}
-                onClick={() => console.log("hello")}
+                onClick={() => setIsActiveArchiveCategory(true)}
               />
             </div>
 
