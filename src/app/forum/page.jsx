@@ -115,17 +115,19 @@ const ForumPage = () => {
     return (
       <div className={styles.footerButtons}>
         <Button
+          text
           size="small"
           label="Details"
-          severity="info"
+          severity="secondary"
           onClick={() =>
             router.push(`/forum/category?id=${forumCategory?.forumCategoryId}`)
           }
         />
         <Button
+          text
           size="small"
           label="Guidelines"
-          severity="success"
+          severity="info"
           onClick={() => {
             setSelectedCategory(forumCategory);
             setIsGuidelinesDialog(true);

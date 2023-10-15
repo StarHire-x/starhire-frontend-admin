@@ -8,9 +8,11 @@ export const DialogBox = ({
   isOpen,
   setVisible,
   children,
+  className,
 }) => {
   return (
     <Dialog
+      className={className}
       header={header}
       visible={isOpen}
       style={{ width: "50vw" }}

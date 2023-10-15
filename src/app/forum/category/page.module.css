@@ -15,6 +15,22 @@
   width: 100%;
   padding: 10px;
   height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.categoryName {
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+}
+
+.statusButton {
+  height: 10px;
+  font-size: 12px;
+  text-align: center;
+  align-items: center;
 }
 
 .container {
@@ -47,4 +63,9 @@
 .actionButtons {
   display: flex;
   gap: 5px;
+}
+
+.backButton {
+  margin: 10px 10px 10px 0px;
+  max-width: 100px;
 }

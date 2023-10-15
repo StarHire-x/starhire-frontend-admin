@@ -13,7 +13,35 @@ import { Card } from "primereact/card";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
 import { DialogBox } from "@/components/DialogBox/DialogBox";
+import { ForumPostDetail } from "../components/ForumPostDetail/ForumPostDetail";
+import GuidelinesDisplay from "@/components/GuidelinesForm/GuidelinesForm";
 
+export const formatDate = (value) => {
+  return value?.toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
+export const getSeverity = (status) => {
+  switch (status) {
+    case "Reported":
+      return "danger";
+
+    case "Active":
+      return "success";
+
+    case "Pending":
+      return "warning";
+
+    case "Inactive":
+      return "primary";
+
+    case "Deleted":
+      return "null";
+  }
+};
 const CategoryPage = () => {
   const session = useSession();
   const router = useRouter();
@@ -39,25 +67,7 @@ const CategoryPage = () => {
   const [forumPosts, setForumPosts] = useState([]);
   const [searchId, setSearchId] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
-
-  const getSeverity = (status) => {
-    switch (status) {
-      case "Reported":
-        return "danger";
-
-      case "Active":
-        return "success";
-
-      case "Pending":
-        return "warning";
-
-      case "Inactive":
-        return "primary";
-
-      case "Deleted":
-        return "null";
-    }
-  };
+  const [isGuidelinesDialog, setIsGuidelinesDialog] = useState(false);
 
   const initialiseCategory = async () => {
     try {
@@ -77,20 +87,12 @@ const CategoryPage = () => {
         forumPostStatus: updatedStatus,
       };
       await updateForumPost(request, forumPostId, accessToken);
-      initialiseCategory();
+      await initialiseCategory();
       setIsLoading(false);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
     }
-  };
-
-  const formatDate = (value) => {
-    return value.toLocaleDateString("en-US", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
   };
 
   const dateCreatedColumn = (rowData) => {
@@ -182,26 +184,54 @@ const CategoryPage = () => {
   return (
     <div>
       {isLoading && <ProgressSpinner />}
+      {isGuidelinesDialog && (
+        <DialogBox
+          header={`Guidelines for ${category?.forumCategoryTitle}`}
+          isOpen={isGuidelinesDialog}
+          setVisible={setIsGuidelinesDialog}
+        >
+          <GuidelinesDisplay
+            category={category}
+            accessToken={accessToken}
+            closeDialog={() => {
+              initialiseCategory();
+              setIsGuidelinesDialog(false);
+            }}
+          />
+        </DialogBox>
+      )}
       {selectedPost != null && (
         <DialogBox
+          header={`Post Details`}
           isOpen={selectedPost != null}
           setVisible={() => setSelectedPost(null)}
+          className={styles.modal}
         >
-          <h2>{selectedPost?.forumPostTitle}</h2>
+          <div className={styles.modal}>
+            <ForumPostDetail
+              forumPost={selectedPost}
+              forumComments={selectedPost?.forumComments}
+            />
+          </div>
         </DialogBox>
       )}
       {!isLoading && (
         <div className={styles.content}>
           <div className={styles.heading}>
-            <h2>{category?.forumCategoryTitle} Details</h2>
+            <div className={styles.categoryName}>
+              <h2>{category?.forumCategoryTitle} Details</h2>
+              <Button
+                className={styles.statusButton}
+                label={category?.isArchived ? "Archived" : "Active"}
+                severity={category?.isArchived ? "secondary" : "success"}
+                onClick={() => console.log("hello")}
+              />
+            </div>
+
             <Button
-              className={styles.backButton}
-              icon="pi pi-arrow-left"
-              rounded
-              text
               severity="info"
-              aria-label="Search"
-              onClick={() => router.push("/forum")}
+              label={"Guidelines"}
+              onClick={() => setIsGuidelinesDialog(true)}
             />
           </div>
 
@@ -214,10 +244,15 @@ const CategoryPage = () => {
                   onTabChange={(e) => setCurrentTab(e.value)}
                   activeIndex={currentTab?.index}
                 />
-                <InputText
-                  placeholder="Search by Post ID"
-                  onChange={(e) => setSearchId(e.target.value)}
-                />
+                <span className="p-input-icon-left">
+                  <i className="pi pi-search" />
+                  <InputText
+                    className={styles.input}
+                    placeholder="Search Post ID"
+                    value={searchId}
+                    onChange={(e) => setSearchId(e.target.value)}
+                  />
+                </span>
               </div>
 
               {forumPosts.length === 0 && (
@@ -234,7 +269,7 @@ const CategoryPage = () => {
                   scrollable
                   removableSort
                   scrollHeight="45vh"
-                  gloablFilterFields={["status"]}
+                  globalFilterFields={["status"]}
                 >
                   <Column
                     field="forumPostId"
@@ -272,6 +307,14 @@ const CategoryPage = () => {
               )}
             </div>
           </Card>
+          <Button
+            label="Back"
+            className={styles.backButton}
+            icon="pi pi-chevron-left"
+            rounded
+            severity="info"
+            onClick={() => router.push("/forum")}
+          />
         </div>
       )}
     </div>

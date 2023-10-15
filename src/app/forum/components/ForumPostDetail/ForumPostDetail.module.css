@@ -1,0 +1,49 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+}
+
+.tags {
+  display: flex;
+  gap: 20px;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.legendTag {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dateTag {
+  background-color: #808080;
+  max-width: 150px;
+}
+
+.commentSection {
+  display: flex;
+  width: 42vw;
+  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
+}
