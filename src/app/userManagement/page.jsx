@@ -1,37 +1,28 @@
-"use client";
-import React, { useState, useEffect, useRef } from "react";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from "primereact/dropdown";
-import { InputNumber } from "primereact/inputnumber";
-import { Button } from "primereact/button";
-import { ProgressBar } from "primereact/progressbar";
-import { Calendar } from "primereact/calendar";
-import { MultiSelect } from "primereact/multiselect";
-import { Slider } from "primereact/slider";
-import { Dialog } from "primereact/dialog";
-import { Tag } from "primereact/tag";
-import { ProgressSpinner } from "primereact/progressspinner";
+'use client';
+import React, { useState, useEffect, useRef } from 'react';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { Tag } from 'primereact/tag';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   updateUser,
   getUsers,
   deleteUser,
   getUserByUserId,
-} from "../api/auth/user/route";
-import {
-  assignJobListing,
-  viewOneJobListing,
-} from "../api/jobListings/route";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import Image from "next/image";
-import HumanIcon from "../../../public/icon.png";
-import styles from "./page.module.css";
-import Link from "next/link";
-import Enums from "@/common/enums/enums";
+} from '../api/auth/user/route';
+import { assignJobListing, viewOneJobListing } from '../api/jobListings/route';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+import HumanIcon from '../../../public/icon.png';
+import styles from './page.module.css';
+import Enums from '@/common/enums/enums';
 
 export default function AccountManagement() {
   const session = useSession();
@@ -39,25 +30,25 @@ export default function AccountManagement() {
   const router = useRouter();
 
   const params = useSearchParams();
-  const id = params.get("jobListingId");
+  const id = params.get('jobListingId');
 
   const userIdRef =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.userId;
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserRole =
-  session.status === "authenticated" &&
-  session.data &&
-  session.data.user.role;
+    session.status === 'authenticated' &&
+    session.data &&
+    session.data.user.role;
 
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
+  if (session.status === 'unauthenticated') {
+    router?.push('/login');
   }
 
   const [refreshData, setRefreshData] = useState(false);
@@ -80,16 +71,16 @@ export default function AccountManagement() {
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
     },
   });
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [statuses] = useState([Enums.ACTIVE, Enums.INACTIVE]);
   const dt = useRef(null);
 
   const getStatus = (status) => {
     switch (status) {
       case Enums.ACTIVE:
-        return "success";
+        return 'success';
       case Enums.INACTIVE:
-        return "danger";
+        return 'danger';
     }
   };
 
@@ -97,7 +88,7 @@ export default function AccountManagement() {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters["global"].value = value;
+    _filters['global'].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -138,7 +129,6 @@ export default function AccountManagement() {
   };
 
   const actionAdminBodyTemplate = (rowData) => {
-
     // If session.status.user.userId matches rowData.userId, return null or an empty fragment.
     if (userIdRef === rowData.userId) {
       return (
@@ -206,7 +196,7 @@ export default function AccountManagement() {
   };
 
   const statusRoleTemplate = (rowData) => {
-    return <Tag value={rowData?.role?.replaceAll("_", " ")} />;
+    return <Tag value={rowData?.role?.replaceAll('_', ' ')} />;
   };
 
   const saveStatusChange = async () => {
@@ -222,10 +212,10 @@ export default function AccountManagement() {
         selectedRowData.userId,
         accessToken
       );
-      console.log("Status changed successfully:", response);
+      console.log('Status changed successfully:', response);
       setRefreshData((prev) => !prev);
     } catch (error) {
-      console.error("Error changing status:", error);
+      console.error('Error changing status:', error);
     }
     setSelectedRowData();
     setUserDialog(false);
@@ -241,10 +231,10 @@ export default function AccountManagement() {
         selectedRowData.userId,
         accessToken
       );
-      console.log("User is deleted", response);
+      console.log('User is deleted', response);
       setRefreshData((prev) => !prev);
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error('Error deleting user:', error);
     }
     setSelectedRowData();
     setDeleteDialog(false);
@@ -279,7 +269,7 @@ export default function AccountManagement() {
 
     return (
       <div className={styles.imageContainer}>
-        {avatar !== "" ? (
+        {avatar !== '' ? (
           <img
             alt={avatar}
             src={avatar}
@@ -298,7 +288,7 @@ export default function AccountManagement() {
   };
 
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -306,9 +296,9 @@ export default function AccountManagement() {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <h2 className="m-0">Users</h2>
@@ -337,7 +327,7 @@ export default function AccountManagement() {
           setJobListing(data);
         })
         .catch((error) => {
-          console.error("Error fetching job listings:", error);
+          console.error('Error fetching job listings:', error);
         });
     }
   }, [accessToken, id]);
@@ -349,7 +339,7 @@ export default function AccountManagement() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching user:", error);
+        console.error('Error fetching user:', error);
         setIsLoading(false);
       });
   }, [refreshData, accessToken, jobListing]);
@@ -359,14 +349,14 @@ export default function AccountManagement() {
   };
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data.user.role !== Enums.ADMIN
   ) {
-    router?.push("/dashboard");
+    router?.push('/dashboard');
   }
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data.user.role === Enums.ADMIN
   ) {
     return (
@@ -374,10 +364,10 @@ export default function AccountManagement() {
         {isLoading ? (
           <ProgressSpinner
             style={{
-              display: "flex",
-              height: "100vh",
-              "justify-content": "center",
-              "align-items": "center",
+              display: 'flex',
+              height: '100vh',
+              'justify-content': 'center',
+              'align-items': 'center',
             }}
           />
         ) : (
@@ -398,11 +388,11 @@ export default function AccountManagement() {
                 filters={filters}
                 filterDisplay="menu"
                 globalFilterFields={[
-                  "userName",
-                  "email",
-                  "contactNo",
-                  "status",
-                  "role",
+                  'userName',
+                  'email',
+                  'contactNo',
+                  'status',
+                  'role',
                 ]}
                 emptyMessage="No users found."
                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -435,7 +425,7 @@ export default function AccountManagement() {
                 <Column
                   body={actionAdminBodyTemplate}
                   exportable={false}
-                  style={{ minWidth: "12rem" }}
+                  style={{ minWidth: '12rem' }}
                 ></Column>
 
                 <Column
@@ -447,8 +437,8 @@ export default function AccountManagement() {
               </DataTable>
               <Dialog
                 visible={userDialog}
-                style={{ width: "32rem" }}
-                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                style={{ width: '32rem' }}
+                breakpoints={{ '960px': '75vw', '641px': '90vw' }}
                 header="Change Status"
                 className="p-fluid"
                 footer={userDialogFooter}
@@ -459,8 +449,8 @@ export default function AccountManagement() {
 
               <Dialog
                 visible={deleteDialog}
-                style={{ width: "32rem" }}
-                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                style={{ width: '32rem' }}
+                breakpoints={{ '960px': '75vw', '641px': '90vw' }}
                 header="Delete user"
                 className="p-fluid"
                 footer={deleteUserDialogFooter}
@@ -471,8 +461,8 @@ export default function AccountManagement() {
 
               <Dialog
                 visible={viewUserDialog}
-                style={{ width: "32rem" }}
-                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+                style={{ width: '32rem' }}
+                breakpoints={{ '960px': '75vw', '641px': '90vw' }}
                 header="User Details"
                 modal
                 className="p-fluid"
