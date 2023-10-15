@@ -1,4 +1,5 @@
 import { Dialog } from "primereact/dialog";
+import styles from "./dialogBox.module.css";
 
 export const DialogBox = ({
   header,
@@ -7,9 +8,11 @@ export const DialogBox = ({
   isOpen,
   setVisible,
   children,
+  className,
 }) => {
   return (
     <Dialog
+      className={className}
       header={header}
       visible={isOpen}
       style={{ width: "50vw" }}

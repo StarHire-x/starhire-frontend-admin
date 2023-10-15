@@ -10,6 +10,7 @@ const GuidelinesDisplay = ({ category, accessToken, closeDialog }) => {
     category?.forumGuidelines?.split("~")
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [validityChecker, setValidityChecker] = useState({});
 
   const editGuidelines = (updatedGuideline, index) => {
     let newGuidelines = guidelines;
@@ -28,25 +29,75 @@ const GuidelinesDisplay = ({ category, accessToken, closeDialog }) => {
   };
 
   const saveGuidelines = async () => {
-    setIsLoading(true);
-    const request = {
-      forumGuidelines: guidelines.join("~"),
-    };
-    await updateForumCategory(request, category?.forumCategoryId, accessToken);
-    setIsLoading(false);
-    closeDialog();
+    try {
+      setIsLoading(true);
+      if (checkValidity(guidelines)) {
+        setIsLoading(false);
+        return;
+      }
+
+      const request = {
+        forumGuidelines: guidelines.join("~"),
+      };
+      await updateForumCategory(
+        request,
+        category?.forumCategoryId,
+        accessToken
+      );
+      setIsLoading(false);
+      closeDialog(true);
+    } catch (error) {
+      console.log(error);
+      closeDialog(close);
+    }
+  };
+
+  const checkValidity = (guidelines) => {
+    setValidityChecker({});
+    let newValidityChecker = {};
+    let hasInvalid = false;
+    for (let i = 0; i < guidelines.length; i++) {
+      newValidityChecker[i] = [];
+      if (guidelines[i].length > 1000) {
+        newValidityChecker[i].push("Too long! Max 1000 characters.");
+        hasInvalid = true;
+      }
+      if (guidelines[i].length === 0) {
+        newValidityChecker[i].push("Guideline cannot be empty!");
+        hasInvalid = true;
+      }
+      if (guidelines[i].includes("~")) {
+        newValidityChecker[i].push(
+          "Contains invalid characters! Do not use `~`. "
+        );
+        hasInvalid = true;
+      }
+    }
+    console.log(newValidityChecker);
+    setValidityChecker(newValidityChecker);
+    return hasInvalid;
   };
   return (
     <>
       {guidelines?.map((guideline, index) => (
         <div className={styles.forumGuideline}>
           <h3>{index + 1}.</h3>
-          <InputTextarea
-            autoResize
-            className={styles.forumGuidelineInput}
-            value={guideline}
-            onChange={(e) => editGuidelines(e.target.value, index)}
-          />
+          <div className={styles.inputText}>
+            <InputTextarea
+              className={validityChecker[index]?.length > 0 ? "p-invalid" : ""}
+              autoResize
+              value={guideline}
+              onChange={(e) => editGuidelines(e.target.value, index)}
+            />
+            {validityChecker[index]?.length > 0 &&
+              validityChecker[index].map((errorMessage) => {
+                return (
+                  <small className="p-invalid" id="username-help">
+                    {errorMessage}
+                  </small>
+                );
+              })}
+          </div>
           <Button
             className={styles.cancelButton}
             size="small"
