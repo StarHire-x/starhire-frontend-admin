@@ -81,7 +81,11 @@ const ForumPage = () => {
 
   const addCategory = async (categoryTitle) => {
     if (categoryTitle.length >= 20) {
-      setAddCategoryError("Title too long! Max 20 characters");
+      setAddCategoryError("Category title too long! Max 20 characters");
+      return;
+    }
+    if (categoryTitle.length == 0) {
+      setAddCategoryError("Category title cannot be empty!");
       return;
     }
     try {

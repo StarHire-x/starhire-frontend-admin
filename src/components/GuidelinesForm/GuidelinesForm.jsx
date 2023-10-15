@@ -62,6 +62,10 @@ const GuidelinesDisplay = ({ category, accessToken, closeDialog }) => {
         newValidityChecker[i].push("Too long! Max 1000 characters.");
         hasInvalid = true;
       }
+      if (guidelines[i].length === 0) {
+        newValidityChecker[i].push("Guideline cannot be empty!");
+        hasInvalid = true;
+      }
       if (guidelines[i].includes("~")) {
         newValidityChecker[i].push(
           "Contains invalid characters! Do not use `~`. "
