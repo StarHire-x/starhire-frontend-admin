@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import styles from "./page.module.css";
 import { Card } from "primereact/card";
@@ -10,6 +10,9 @@ import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { DialogBox } from "@/components/DialogBox/DialogBox";
 import GuidelinesDisplay from "@/components/GuidelinesForm/GuidelinesForm";
+import { InputText } from "primereact/inputtext";
+import { addForumCategory } from "../api/forum/route";
+import { Toast } from "primereact/toast";
 
 const ForumPage = () => {
   const session = useSession();
@@ -23,6 +26,7 @@ const ForumPage = () => {
     session.data &&
     session.data.user.accessToken;
 
+  const toast = useRef(null);
   const [forumCategories, setForumCategories] = useState([]);
   const [filteredForumCategories, setFilteredForumCategories] = useState(null);
   const [selectedState, setSelectedState] = useState({
@@ -34,6 +38,9 @@ const ForumPage = () => {
   const [isArchiveDialog, setIsArchiveDialog] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isGuidelinesDialog, setIsGuidelinesDialog] = useState(false);
+  const [isAddCategoryDialog, setIsAddCategoryDialog] = useState(false);
+  const [addCategoryTitle, setAddCategoryTitle] = useState("");
+  const [addCategoryError, setAddCategoryError] = useState("");
 
   const initializeForumCategories = async (state) => {
     try {
@@ -54,8 +61,54 @@ const ForumPage = () => {
       await initializeForumCategories();
       setIsLoading(false);
       setIsArchiveDialog(false);
+      console.log("toast here");
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Successfully updated forum category status!",
+        life: 5000,
+      });
     } catch (error) {
       console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Failed to update forum post status.",
+        life: 5000,
+      });
+    }
+  };
+
+  const addCategory = async (categoryTitle) => {
+    if (categoryTitle.length >= 20) {
+      setAddCategoryError("Category title too long! Max 20 characters");
+      return;
+    }
+    if (categoryTitle.length == 0) {
+      setAddCategoryError("Category title cannot be empty!");
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setAddCategoryError("");
+      const request = {
+        forumCategoryTitle: categoryTitle,
+        isArchived: false,
+        forumGuidelines: "",
+      };
+      await addForumCategory(request, accessToken);
+      await initializeForumCategories();
+      setIsLoading(false);
+      setIsAddCategoryDialog(false);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Successfully added new category!",
+        life: 5000,
+      });
+    } catch (error) {
+      setIsLoading(false);
+      setAddCategoryError(error.message);
     }
   };
 
@@ -86,11 +139,20 @@ const ForumPage = () => {
   const footerButtons = (forumCategory) => {
     return (
       <div className={styles.footerButtons}>
-        <Button size="small" label="Details" severity="info" />
         <Button
+          text
+          size="small"
+          label="Details"
+          severity="secondary"
+          onClick={() =>
+            router.push(`/forum/category?id=${forumCategory?.forumCategoryId}`)
+          }
+        />
+        <Button
+          text
           size="small"
           label="Guidelines"
-          severity="success"
+          severity="info"
           onClick={() => {
             setSelectedCategory(forumCategory);
             setIsGuidelinesDialog(true);
@@ -121,8 +183,30 @@ const ForumPage = () => {
     </div>
   );
 
+  const addCategoryDialogButtons = (
+    <div>
+      <Button
+        label="Cancel"
+        icon="pi pi-times"
+        outlined
+        onClick={() => setIsAddCategoryDialog(false)}
+        className="p-button-text"
+      />
+      <Button
+        label="Add"
+        icon="pi pi-check"
+        onClick={async () => {
+          await addCategory(addCategoryTitle);
+        }}
+        loading={isLoading}
+        autoFocus
+      />
+    </div>
+  );
+
   return (
     <>
+      <Toast ref={toast} />
       {isGuidelinesDialog && (
         <DialogBox
           header={`Guidelines for ${selectedCategory?.forumCategoryTitle}`}
@@ -132,11 +216,50 @@ const ForumPage = () => {
           <GuidelinesDisplay
             category={selectedCategory}
             accessToken={accessToken}
-            closeDialog={() => {
-              initializeForumCategories();
+            closeDialog={(success) => {
+              if (success) {
+                initializeForumCategories();
+                toast.current.show({
+                  severity: "success",
+                  summary: "Success",
+                  detail: "Successfully updated forum guidelines!",
+                  life: 5000,
+                });
+              } else {
+                toast.current.show({
+                  severity: "error",
+                  summary: "Error",
+                  detail: "Failed to update forum guidelines!",
+                  life: 5000,
+                });
+              }
+
               setIsGuidelinesDialog(false);
             }}
           />
+        </DialogBox>
+      )}
+      {isAddCategoryDialog && (
+        <DialogBox
+          header={"Add Forum Category"}
+          isOpen={isAddCategoryDialog}
+          setVisible={setIsAddCategoryDialog}
+          footerContent={addCategoryDialogButtons}
+        >
+          <div className={styles.inputText}>
+            <InputText
+              id="categoryName"
+              placeholder="Category Name"
+              type="text"
+              onChange={(e) => setAddCategoryTitle(e.target.value)}
+              className={addCategoryError != "" ? "p-invalid" : ""}
+            />
+            {addCategoryError != "" && (
+              <small className="p-error" id="categoryName-help">
+                {addCategoryError}
+              </small>
+            )}
+          </div>
         </DialogBox>
       )}
       {isArchiveDialog && (
@@ -148,7 +271,7 @@ const ForumPage = () => {
           footerContent={archiveDialogButtons}
           isOpen={isArchiveDialog}
           setVisible={setIsArchiveDialog}
-        ></DialogBox>
+        />
       )}
       {isLoading && <ProgressSpinner />}
       {!isLoading && (
@@ -163,6 +286,14 @@ const ForumPage = () => {
               optionLabel="name"
             />
           </div>
+          <Button
+            outlined
+            severity={"info"}
+            className={styles.addButton}
+            label={"Add"}
+            icon="pi pi-plus"
+            onClick={() => setIsAddCategoryDialog(true)}
+          />
           <div className={styles.container}>
             {filteredForumCategories &&
               filteredForumCategories.map((forumCategory, index) => (
@@ -172,7 +303,6 @@ const ForumPage = () => {
                       ? styles.archivedCardBox
                       : styles.cardBox
                   }
-                  onClick={() => console.log("hello")}
                   onMouseOver={() => setFocusCategory(index)}
                   onMouseLeave={() => setFocusCategory(null)}
                 >
