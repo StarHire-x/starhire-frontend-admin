@@ -37,6 +37,7 @@ export default function TicketManagement() {
   const [refreshData, setRefreshData] = useState(false);
   const [loading, setLoading] = useState(true);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [selectedTicketId, setSelectedTicketId] = useState(null);
 
   const [filters, setFilters] = useState({
@@ -149,6 +150,10 @@ export default function TicketManagement() {
     }
   };
 
+  const handleOpenDetailsDialog = () => {
+    setDetailsDialogOpen(true);
+  };
+
   const resolveButtonBodyTemplate = (rowData) => {
     if (!rowData.isResolved) {
       return (
@@ -168,7 +173,8 @@ export default function TicketManagement() {
             size="small"
             className="mr-2"
             onClick={() => {
-              // saveStatusChange(rowData);
+              setSelectedTicketId(rowData);
+              handleOpenDetailsDialog();
             }}
           />
         </React.Fragment>
@@ -183,7 +189,8 @@ export default function TicketManagement() {
             size="small"
             className="mr-2"
             onClick={() => {
-              // saveStatusChange(rowData);
+              setSelectedTicketId(rowData);
+              handleOpenDetailsDialog();
             }}
           />
         </React.Fragment>
@@ -287,17 +294,6 @@ export default function TicketManagement() {
 
   const header = renderHeader();
 
-  // if (
-  //   session.status === 'authenticated' &&
-  //   session.data.user.role !== Enums.ADMIN
-  // ) {
-  //   router?.push('/dashboard');
-  // }
-
-  // if (
-  //   session.status === 'authenticated' &&
-  //   session.data.user.role === Enums.ADMIN
-  // ) {
   return (
     <div className={styles.ticketCard}>
       {loading ? (
@@ -336,10 +332,6 @@ export default function TicketManagement() {
               sortable
             ></Column>
             <Column field="ticketName" header="Problem Title"></Column>
-            {/* <Column
-                field="ticketDescription"
-                header="Problem Description"
-              ></Column> */}
             <Column
               field="isResolved"
               header="Resolved?"
@@ -387,6 +379,75 @@ export default function TicketManagement() {
             }
           >
             Are you sure you want to resolve this ticket?
+          </Dialog>
+
+          <Dialog
+            visible={detailsDialogOpen}
+            header="Ticket Details"
+            style={{ width: '64rem', height: '36rem' }}
+            onHide={() => setDetailsDialogOpen(false)}
+          >
+            <div className={styles.dialogContent}>
+              <div className={styles.detailRow}>
+                <strong>
+                  <span className={styles.icon}>
+                    <i className="pi pi-tag"></i>
+                  </span>
+                  Ticket ID:
+                </strong>
+                <span>{selectedTicketId && selectedTicketId.ticketId}</span>
+              </div>
+              <div className={styles.divider}></div>
+              <div className={styles.detailRow}>
+                <strong>
+                  <span className={styles.icon}>
+                    <i className="icon pi pi-calendar"></i>
+                  </span>
+                  Submission Date:
+                </strong>
+                <span>
+                  {selectedTicketId &&
+                    formatDate(selectedTicketId.submissionDate)}
+                </span>
+              </div>
+              <div className={styles.divider}></div>
+              <div className={styles.detailRow}>
+                <strong>
+                  <span className={styles.icon}>
+                    <i className="icon pi pi-folder"></i>
+                  </span>
+                  Category:
+                </strong>
+                <span>
+                  {selectedTicketId && selectedTicketId.ticketCategory}
+                </span>
+              </div>
+              <div className={styles.divider}></div>
+              <div className={styles.detailRow}>
+                <strong>
+                  <span className={styles.icon}>
+                    <i className="icon pi pi-question"></i>
+                  </span>
+                  Problem Title:
+                </strong>
+                <span>{selectedTicketId && selectedTicketId.ticketName}</span>
+              </div>
+              <div className={styles.divider}></div>
+              <div
+                className={styles.detailRow}
+                style={{ flexDirection: 'column' }}
+              >
+                <strong>
+                  <span className={styles.icon}>
+                    <i className="icon pi pi-info-circle"></i>
+                  </span>
+                  Problem Description:
+                </strong>
+                <span>
+                  {selectedTicketId && selectedTicketId.ticketDescription}
+                </span>
+              </div>
+            </div>
           </Dialog>
         </>
       )}

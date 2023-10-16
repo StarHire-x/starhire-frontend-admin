@@ -10,3 +10,30 @@
   display: flex;
   align-items: center;
 }
+
+.dialogContent {
+  padding: 1rem;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.detailRow strong {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.divider {
+  height: 1px;
+  background-color: #ccc; /* Adjust this color as per your theme */
+  margin: 1rem 0;
+}
+
+.icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
