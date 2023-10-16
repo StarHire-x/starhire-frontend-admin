@@ -421,10 +421,6 @@ export default function ViewJobListingRecruiter() {
     return percentageSimilarity;
   };
 
-  const similarityTemplate = (rowData) => {
-    return <span>{calculateSimilarity(rowData, selectedCorporateJP)}</span>;
-  } 
-
   const header = () => {
     return renderRecruiterHeader();
   };
@@ -548,7 +544,6 @@ export default function ViewJobListingRecruiter() {
               <Column
                 field="similarity"
                 header="Similarity Score (%)"
-                body={similarityTemplate}
                 sortable
               ></Column>
               <Column
