@@ -116,7 +116,7 @@ export default function JobListings() {
     return (
       <React.Fragment>
         <Button
-          label="View More Details"
+          label="View Details"
           rounded
           size="small"
           className="mr-2"
@@ -221,13 +221,6 @@ export default function JobListings() {
     }
   };
 
-  const userDialogFooter = (
-    <React.Fragment>
-      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Yes" icon="pi pi-check" onClick={saveStatusChange} />
-    </React.Fragment>
-  );
-
   const renderHeader = () => {
     return (
       <div
@@ -255,6 +248,13 @@ export default function JobListings() {
     const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
+  const userDialogFooter = (
+    <React.Fragment>
+      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="Yes" icon="pi pi-check" onClick={saveStatusChange} />
+    </React.Fragment>
+  );
 
   useEffect(() => {
     if (accessToken) {

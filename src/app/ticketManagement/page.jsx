@@ -167,10 +167,32 @@ export default function TicketManagement() {
               handleResolveTicket(rowData.ticketId);
             }}
           />
+          <Button
+            label="View Details"
+            rounded
+            size="small"
+            className="mr-2"
+            onClick={() => {
+              // saveStatusChange(rowData);
+            }}
+          />
         </React.Fragment>
       );
     } else {
-      return <span style={{ fontSize: '24px' }}>✔️</span>;
+      return (
+        <React.Fragment>
+          <span style={{ fontSize: '24px' }}>✔️</span>
+          <Button
+            label="View Details"
+            rounded
+            size="small"
+            className="mr-2"
+            onClick={() => {
+              // saveStatusChange(rowData);
+            }}
+          />
+        </React.Fragment>
+      );
     }
   };
 
@@ -356,13 +378,12 @@ export default function TicketManagement() {
               onHide={() => setConfirmDialogVisible(false)}
               footer={
                 <div className={styles.ticketButtonContainer}>
-                  <button
+                  <Button
+                    label="No"
                     className={styles.ticketSpacer}
                     onClick={() => setConfirmDialogVisible(false)}
-                  >
-                    No
-                  </button>
-                  <button onClick={confirmResolveTicket}>Yes</button>
+                  />
+                  <Button label="Yes" onClick={confirmResolveTicket} />
                 </div>
               }
             >
