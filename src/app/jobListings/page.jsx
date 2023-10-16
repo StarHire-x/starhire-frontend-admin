@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { Badge } from 'primereact/badge';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
@@ -11,10 +12,9 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { Tag } from 'primereact/tag';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import styles from './jobListings.module.css';
 import { viewAllJobListings } from '@/app/api/jobListings/route';
 import Enums from '@/common/enums/enums';
-import { Badge } from 'primereact/badge';
+import styles from './jobListings.module.css';
 
 export default function JobListings() {
   const session = useSession();

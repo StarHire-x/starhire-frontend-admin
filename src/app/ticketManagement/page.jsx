@@ -24,11 +24,6 @@ export default function TicketManagement() {
   const params = useSearchParams();
   const id = params.get('ticketId');
 
-  const userIdRef =
-    session.status === 'authenticated' &&
-    session.data &&
-    session.data.user.userId;
-
   const accessToken =
     session.status === 'authenticated' &&
     session.data &&
@@ -136,7 +131,7 @@ export default function TicketManagement() {
 
   const handleResolveTicket = (ticketId) => {
     setSelectedTicketId(ticketId); // Store the ticketId temporarily
-    setConfirmDialogVisible(true); // Show the confirmation dialog
+    setConfirmDialogVisible(true);
   };
 
   const confirmResolveTicket = async () => {
@@ -150,7 +145,7 @@ export default function TicketManagement() {
       console.error('Error resolving the ticket:', error);
     } finally {
       setLoading(false);
-      setConfirmDialogVisible(false); // Close the dialog after resolution
+      setConfirmDialogVisible(false);
     }
   };
 
@@ -277,121 +272,125 @@ export default function TicketManagement() {
   };
 
   useEffect(() => {
-    viewAllTickets(accessToken)
-      .then((data) => {
-        console.log('Received tickets:', data);
-        setTickets(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching tickets:', error);
-        setLoading(false);
-      });
-  }, [refreshData, accessToken]);
+    if (accessToken) {
+      viewAllTickets(accessToken)
+        .then((data) => {
+          setTickets(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching tickets:', error);
+          setLoading(false);
+        });
+    }
+  }, [accessToken]);
 
   const header = renderHeader();
 
-  if (
-    session.status === 'authenticated' &&
-    session.data.user.role !== Enums.ADMIN
-  ) {
-    router?.push('/dashboard');
-  }
+  // if (
+  //   session.status === 'authenticated' &&
+  //   session.data.user.role !== Enums.ADMIN
+  // ) {
+  //   router?.push('/dashboard');
+  // }
 
-  if (
-    session.status === 'authenticated' &&
-    session.data.user.role === Enums.ADMIN
-  ) {
-    return (
-      <div className={styles.ticketCard}>
-        {loading ? (
-          <ProgressSpinner
-            style={{
-              display: 'flex',
-              height: '100vh',
-              'justify-content': 'center',
-              'align-items': 'center',
-            }}
-          />
-        ) : (
-          <>
-            <DataTable
-              value={tickets}
-              paginator
-              header={header}
-              rows={10}
-              rowsPerPageOptions={[10, 25, 50]}
-              globalFilter={globalFilterValue}
-              emptyMessage="No tickets currently"
-            >
-              <Column field="ticketId" header="Ticket ID" sortable></Column>
-              <Column
-                field="submissionDate"
-                header="Submission Date"
-                body={(rowData) => formatDate(rowData.submissionDate)}
-                sortable
-              ></Column>
-              <Column
-                field="ticketCategory"
-                header="Category"
-                body={statusBodyTemplate}
-                filter
-                filterElement={statusFilterTemplate}
-                sortable
-              ></Column>
-              <Column field="ticketName" header="Problem Title"></Column>
-              {/* <Column
+  // if (
+  //   session.status === 'authenticated' &&
+  //   session.data.user.role === Enums.ADMIN
+  // ) {
+  return (
+    <div className={styles.ticketCard}>
+      {loading ? (
+        <ProgressSpinner
+          style={{
+            display: 'flex',
+            height: '100vh',
+            'justify-content': 'center',
+            'align-items': 'center',
+          }}
+        />
+      ) : (
+        <>
+          <DataTable
+            value={tickets}
+            paginator
+            header={header}
+            rows={10}
+            rowsPerPageOptions={[10, 25, 50]}
+            globalFilter={globalFilterValue}
+            emptyMessage="No tickets currently"
+          >
+            <Column field="ticketId" header="Ticket ID" sortable></Column>
+            <Column
+              field="submissionDate"
+              header="Submission Date"
+              body={(rowData) => formatDate(rowData.submissionDate)}
+              sortable
+            ></Column>
+            <Column
+              field="ticketCategory"
+              header="Category"
+              body={statusBodyTemplate}
+              filter
+              filterElement={statusFilterTemplate}
+              sortable
+            ></Column>
+            <Column field="ticketName" header="Problem Title"></Column>
+            {/* <Column
                 field="ticketDescription"
                 header="Problem Description"
               ></Column> */}
-              <Column
-                field="isResolved"
-                header="Resolved?"
-                sortable
-                body={resolvedBodyTemplate}
-              ></Column>
-              {/* <Column
+            <Column
+              field="isResolved"
+              header="Resolved?"
+              sortable
+              body={resolvedBodyTemplate}
+            ></Column>
+            {/* <Column
           field="user.userName"
           header="User Name"
           sortable
           body={usernameBodyTemplate}
         ></Column> */}
-              <Column
-                field="user.email"
-                header="Contact Email"
-                body={emailBodyTemplate}
-              ></Column>
-              <Column
-                rounded
-                size="small"
-                className="mr-2"
-                body={resolveButtonBodyTemplate}
-              ></Column>{' '}
-              {/* New column for Resolve button */}
-            </DataTable>
+            <Column
+              field="user.email"
+              header="Contact Email"
+              body={emailBodyTemplate}
+            ></Column>
+            <Column
+              rounded
+              size="small"
+              className="mr-2"
+              body={resolveButtonBodyTemplate}
+            ></Column>{' '}
+          </DataTable>
 
-            <Dialog
-              visible={confirmDialogVisible}
-              header="Confirm Ticket Resolution"
-              style={{ width: '32rem' }}
-              className={styles.centerTicketContent}
-              onHide={() => setConfirmDialogVisible(false)}
-              footer={
-                <div className={styles.ticketButtonContainer}>
-                  <Button
-                    label="No"
-                    className={styles.ticketSpacer}
-                    onClick={() => setConfirmDialogVisible(false)}
-                  />
-                  <Button label="Yes" onClick={confirmResolveTicket} />
-                </div>
-              }
-            >
-              Are you sure you want to resolve this ticket?
-            </Dialog>
-          </>
-        )}
-      </div>
-    );
-  }
+          <Dialog
+            visible={confirmDialogVisible}
+            header="Confirm Ticket Resolution"
+            style={{ width: '32rem' }}
+            className="p-fluid"
+            onHide={() => setConfirmDialogVisible(false)}
+            footer={
+              <div className={styles.ticketButtonContainer}>
+                <Button
+                  label="No"
+                  icon="pi pi-times"
+                  onClick={() => setConfirmDialogVisible(false)}
+                />
+                <Button
+                  label="Yes"
+                  icon="pi pi-check"
+                  onClick={confirmResolveTicket}
+                />
+              </div>
+            }
+          >
+            Are you sure you want to resolve this ticket?
+          </Dialog>
+        </>
+      )}
+    </div>
+  );
 }
+//}

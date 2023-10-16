@@ -13,13 +13,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%; /* or you can set to a specific height if needed */
+  height: 100%;
   padding: 20px;
 }
 
 .buttonContainer {
-  display: flex; /* Use flexbox to arrange buttons horizontally */
-  align-items: center; /* Align buttons vertically in the center */
+  display: flex;
+  align-items: center;
 }
 
 .spacer {
@@ -59,7 +59,7 @@
   display: flex;
   flex-direction: column; /* To ensure children are stacked vertically */
   align-items: center; /* Horizontally center the children */
-  justify-content: center; /* Vertically center the children (though it's optional here) */
+  justify-content: center;
   gap: 1px; /* Gives a little space between the image and the h6 */
 }
 
@@ -82,22 +82,6 @@
   ) !important;
   background-color: #e29578 !important;
 }
-
-/* .loading-animation {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-} */
-
-/* .spinner {
-  border: 5px solid rgba(0, 0, 0, 0.3);
-  border-top: 5px solid #007bff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-} */
 
 @keyframes spin {
   0% {
