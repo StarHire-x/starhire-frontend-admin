@@ -170,29 +170,35 @@ const Chat = () => {
   }
 
   const selectCurrentChat = async (chatId) => {
-    socket.off(currentChat?.chatId);
-    socket.on(chatId, (message) => {
-      receiveMessage(message);
-    });
-    const chatMessagesByCurrentChatId = await getOneUserChat(
-      chatId,
-      accessToken
-    );
-    setCurrentChat(chatMessagesByCurrentChatId);
+    if (accessToken) {
+      socket.off(currentChat?.chatId);
+      socket.on(chatId, (message) => {
+        receiveMessage(message);
+      });
+      const chatMessagesByCurrentChatId = await getOneUserChat(
+        chatId,
+        accessToken
+      );
+      setCurrentChat(chatMessagesByCurrentChatId);
+    }
   };
 
   useEffect(() => {
-    const findChatId = async () => {
-      return await getOneUserChat(chatId, accessToken);
-    };
-    if (chatId) {
-      findChatId().then((chat) => setCurrentChat(chat));
+    if (accessToken) {
+      const findChatId = async () => {
+        return await getOneUserChat(chatId, accessToken);
+      };
+      if (chatId) {
+        findChatId().then((chat) => setCurrentChat(chat));
+      }
     }
   }, [chatId]);
 
   useEffect(() => {
-    if (session.status === "authenticated") {
-      getUserChats(currentUserId, accessToken);
+    if (accessToken) {
+      if (session.status === "authenticated") {
+        getUserChats(currentUserId, accessToken);
+      }
     }
   }, [session.status, currentUserId, accessToken]);
 
