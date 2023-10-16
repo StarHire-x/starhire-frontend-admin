@@ -8,6 +8,7 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Tag } from 'primereact/tag';
@@ -65,6 +66,23 @@ export default function TicketManagement() {
     'SubscriptionBilling',
   ]);
 
+  const getStatus = (status) => {
+    switch (status) {
+      case 'General':
+        return 'warning';
+      case 'Account':
+        return 'warning';
+      case 'Jobs':
+        return 'info';
+      case 'Events':
+        return 'info';
+      case 'Forum':
+        return 'info';
+      case 'SubscriptionBilling':
+        return 'warning';
+    }
+  };
+
   const onGlobalFilterChange = (e) => {
     const value = e.target.value;
     let _filters = { ...filters };
@@ -77,6 +95,33 @@ export default function TicketManagement() {
 
   const getSeverity = (isResolved) => {
     return isResolved ? 'success' : 'danger';
+  };
+
+  const statusBodyTemplate = (rowData) => {
+    return (
+      <Tag
+        value={rowData.ticketCategory}
+        severity={getStatus(rowData.ticketCategory)}
+      />
+    );
+  };
+
+  const statusFilterTemplate = (options) => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={ticketStatuses}
+        onChange={(e) => options.filterCallback(e.value, options.index)}
+        itemTemplate={statusItemTemplate}
+        placeholder="Select One"
+        className="p-column-filter"
+        showClear
+      />
+    );
+  };
+
+  const statusItemTemplate = (option) => {
+    return <Tag value={option} severity={getStatus(option)} />;
   };
 
   const resolvedBodyTemplate = (rowData) => {
@@ -203,6 +248,12 @@ export default function TicketManagement() {
     );
   };
 
+  // Function to format date in "day-month-year" format
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   useEffect(() => {
     viewAllTickets(accessToken)
       .then((data) => {
@@ -252,11 +303,25 @@ export default function TicketManagement() {
               emptyMessage="No tickets currently"
             >
               <Column field="ticketId" header="Ticket ID" sortable></Column>
-              <Column field="ticketName" header="Problem Title"></Column>
               <Column
+                field="submissionDate"
+                header="Submission Date"
+                body={(rowData) => formatDate(rowData.submissionDate)}
+                sortable
+              ></Column>
+              <Column
+                field="ticketCategory"
+                header="Category"
+                body={statusBodyTemplate}
+                filter
+                filterElement={statusFilterTemplate}
+                sortable
+              ></Column>
+              <Column field="ticketName" header="Problem Title"></Column>
+              {/* <Column
                 field="ticketDescription"
                 header="Problem Description"
-              ></Column>
+              ></Column> */}
               <Column
                 field="isResolved"
                 header="Resolved?"
