@@ -46,6 +46,7 @@ export default function ViewAssignedJobSeekers() {
 
   const params = useSearchParams();
   const id = params.get("id");
+  const jobListingTitle = params.get("title");
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -100,7 +101,7 @@ export default function ViewAssignedJobSeekers() {
 
   // useEffect(() => {
   //   console.log("SEEHERE!");
-  //   console.log(users);
+  //   console.log(jobListingTitle);
   // });
 
   const renderRecruiterHeader = () => {
@@ -112,7 +113,7 @@ export default function ViewAssignedJobSeekers() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Job Assignment Details for Job Listing {id}</h2>
+        <h2 className="m-0">Job Assignment Details for Job Listing {id} - {jobListingTitle}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText

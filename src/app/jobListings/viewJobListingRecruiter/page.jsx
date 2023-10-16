@@ -253,7 +253,7 @@ export default function ViewJobListingRecruiter() {
   };
 
   const handleViewAssignedJobSeekersClick = () => {
-    router.push(`/jobListings/viewJobListingRecruiter/viewAssignedJobSeekers?id=${id}`)
+    router.push(`/jobListings/viewJobListingRecruiter/viewAssignedJobSeekers?id=${id}&title=${jobListing.title}`)
   }
 
   const actionRecruiterBodyTemplate = (rowData) => {
