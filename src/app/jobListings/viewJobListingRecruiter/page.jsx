@@ -91,7 +91,6 @@ export default function ViewJobListingRecruiter() {
       viewOneJobListing(id, accessToken)
         .then((data) => {
           setJobListing(data);
-          setIsLoading(false);
 
           //Get corporate details
           getCorporateDetails(data.corporate.userId, accessToken)
@@ -102,6 +101,7 @@ export default function ViewJobListingRecruiter() {
               console.error("Error fetching corporate:", error);
             });
           
+          console.log("Corporate Job Preference", selectedCorporateJP);
           getUsers(accessToken)
             .then((user) => {
               // user.data.map(
@@ -138,7 +138,7 @@ export default function ViewJobListingRecruiter() {
           setIsLoading(false);
         });
     }
-  }, [refreshData, accessToken, id]);
+  }, [refreshData, selectedCorporateJP, accessToken, id]);
 
   const handleRefresh = () => {
     router.push(`/jobListings`); // This will refresh the current page
@@ -360,9 +360,7 @@ export default function ViewJobListingRecruiter() {
   };
 
   const calculateSimilarity = (userData, corporateData) => {
-    // console.log("User Data", userData?.jobPreference);
-    // console.log("Corporate Info", corporateData?.benefitPreference);
-
+  
     let userBenefits =
       getValueOrDefault(userData.jobPreference?.benefitPreference) * 20;
     let userWLBalance =
@@ -381,6 +379,7 @@ export default function ViewJobListingRecruiter() {
     let corporateSalary =
       getValueOrDefault(corporateData?.salaryPreference) * 20;
 
+    console.log("Hello there")
     console.log(userBenefits);
     console.log(userWLBalance);
     console.log(userSalary);
