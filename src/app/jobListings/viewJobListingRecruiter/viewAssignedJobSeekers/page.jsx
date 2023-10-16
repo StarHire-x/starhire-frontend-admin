@@ -18,6 +18,10 @@ import Enums from "@/common/enums/enums";
 import { viewAssignedJobSeekersByJobListing } from "@/app/api/jobListings/route";
 import { InputText } from "primereact/inputtext";
 import { getUserByUserId, getUsers } from "@/app/api/auth/user/route";
+import {
+  createNewChatByRecruiter,
+  getAllUserChats,
+} from "@/app/api/chat/route";
 
 export default function ViewAssignedJobSeekers() {
   const session = useSession();
@@ -94,10 +98,10 @@ export default function ViewAssignedJobSeekers() {
     }
   }, [id, currentUserId, accessToken]);
 
-  useEffect(() => {
-    console.log("SEEHERE!");
-    console.log(users);
-  });
+  // useEffect(() => {
+  //   console.log("SEEHERE!");
+  //   console.log(users);
+  // });
 
   const renderRecruiterHeader = () => {
     return (
@@ -129,6 +133,37 @@ export default function ViewAssignedJobSeekers() {
     router.back();
   };
 
+  const handleChatClick = async (jobSeeker) => {
+    // Check if chat exists already
+    if (accessToken) {
+      try {
+        const jobSeekerChats = await getAllUserChats(
+          jobSeeker?.userId,
+          accessToken
+        );
+        const matchingChats = jobSeekerChats.filter(
+          (chat) => chat?.recruiter?.userId === currentUserId
+        );
+        console.log(jobSeekerChats, matchingChats);
+        let chatId = null;
+        if (matchingChats.length === 0) {
+          const request = {
+            recruiterId: currentUserId,
+            jobSeekerId: jobSeeker?.userId,
+            lastUpdated: new Date(),
+          };
+          const response = await createNewChatByRecruiter(request, accessToken);
+          chatId = response?.chatId;
+        } else {
+          chatId = matchingChats[0]?.chatId;
+        }
+        router.push(`/chat?id=${chatId}`);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   const usernameBodyTemplate = (rowData) => {
     const userName = rowData.userName;
     const avatar = rowData.profilePictureUrl;
@@ -150,6 +185,22 @@ export default function ViewAssignedJobSeekers() {
         )}
         <span>{userName}</span>
       </div>
+    );
+  };
+
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <div className={styles.buttonContainer}>
+          <Button
+            outlined
+            rounded
+            size="small"
+            icon="pi pi-comments"
+            onClick={() => handleChatClick(rowData)}
+          />
+        </div>
+      </React.Fragment>
     );
   };
 
@@ -194,6 +245,11 @@ export default function ViewAssignedJobSeekers() {
               ></Column>
               <Column field="email" header="Email" sortable></Column>
               <Column field="contactNo" header="Contact No" sortable></Column>
+              <Column
+                body={actionBodyTemplate}
+                exportable={false}
+                style={{ minWidth: "12rem" }}
+              ></Column>
             </DataTable>
 
             <div className={styles.bottomButtonContainer}>

@@ -360,8 +360,8 @@ export default function ViewJobListingRecruiter() {
   };
 
   const calculateSimilarity = (userData, corporateData) => {
-    console.log("User Data", userData?.jobPreference);
-    console.log("Corporate Info", corporateData?.benefitPreference);
+    // console.log("User Data", userData?.jobPreference);
+    // console.log("Corporate Info", corporateData?.benefitPreference);
 
     let userBenefits =
       getValueOrDefault(userData.jobPreference?.benefitPreference) * 20;
