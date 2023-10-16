@@ -564,21 +564,21 @@ export default function ViewJobListingRecruiter() {
                 icon="pi pi-chevron-left"
                 rounded
                 size="medium"
-                className="p-button-warning"
+                className="p-button-info"
                 onClick={() => handleOnBackClick()}
               />
               <Button
                 label="View Assigned Job Seekers"
                 rounded
                 size="medium"
-                className="p-button-info"
+                className="p-button-success"
                 onClick={() => handleViewAssignedJobSeekersClick()}
               />
               <Button
                 label="View Job Applications"
                 rounded
                 size="medium"
-                className="p-button-info"
+                className="p-button-warning"
                 onClick={() => handleViewJobApplicationClick()}
               />
             </div>

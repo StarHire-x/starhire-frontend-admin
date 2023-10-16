@@ -133,6 +133,11 @@ export default function ViewAssignedJobSeekers() {
     router.back();
   };
 
+  const handleViewJobApplicationClick = () => {
+    router.push(`/jobApplications?id=${id}`);
+  };
+
+
   const handleChatClick = async (jobSeeker) => {
     // Check if chat exists already
     if (accessToken) {
@@ -248,7 +253,7 @@ export default function ViewAssignedJobSeekers() {
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
-                style={{ minWidth: "12rem" }}
+                style={{ minWidth: "1rem" }}
               ></Column>
             </DataTable>
 
@@ -258,8 +263,15 @@ export default function ViewAssignedJobSeekers() {
                 icon="pi pi-chevron-left"
                 rounded
                 size="medium"
-                className="p-button-warning"
+                className="p-button-info"
                 onClick={() => handleOnBackClick()}
+              />
+              <Button
+                label="View Job Applications"
+                rounded
+                size="medium"
+                className="p-button-warning"
+                onClick={() => handleViewJobApplicationClick()}
               />
             </div>
           </div>

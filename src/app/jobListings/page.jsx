@@ -149,7 +149,7 @@ export default function JobListings() {
           <Button
             label="View Job Applications"
             rounded
-            className="p-button-info"
+            className="p-button-warning"
             size="small"
             onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
           >
