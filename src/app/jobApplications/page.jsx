@@ -186,7 +186,7 @@ export default function CustomersDemo() {
           alignItems: 'center',
         }}
       >
-        <h2 className="m-0">Job Applications for {jobListing?.title}</h2>
+        <h2 className="m-0">Job Applications for Job Listing {jobListing?.jobListingId} - {jobListing?.title}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText

@@ -253,7 +253,7 @@ export default function ViewJobListingRecruiter() {
   };
 
   const handleViewAssignedJobSeekersClick = () => {
-    router.push(`/jobListings/viewJobListingRecruiter/viewAssignedJobSeekers?id=${id}`)
+    router.push(`/jobListings/viewJobListingRecruiter/viewAssignedJobSeekers?id=${id}&title=${jobListing.title}`)
   }
 
   const actionRecruiterBodyTemplate = (rowData) => {
@@ -360,8 +360,8 @@ export default function ViewJobListingRecruiter() {
   };
 
   const calculateSimilarity = (userData, corporateData) => {
-    console.log("User Data", userData?.jobPreference);
-    console.log("Corporate Info", corporateData?.benefitPreference);
+    // console.log("User Data", userData?.jobPreference);
+    // console.log("Corporate Info", corporateData?.benefitPreference);
 
     let userBenefits =
       getValueOrDefault(userData.jobPreference?.benefitPreference) * 20;
@@ -564,21 +564,21 @@ export default function ViewJobListingRecruiter() {
                 icon="pi pi-chevron-left"
                 rounded
                 size="medium"
-                className="p-button-warning"
+                className="p-button-info"
                 onClick={() => handleOnBackClick()}
               />
               <Button
                 label="View Assigned Job Seekers"
                 rounded
                 size="medium"
-                className="p-button-info"
+                className="p-button-success"
                 onClick={() => handleViewAssignedJobSeekersClick()}
               />
               <Button
                 label="View Job Applications"
                 rounded
                 size="medium"
-                className="p-button-info"
+                className="p-button-warning"
                 onClick={() => handleViewJobApplicationClick()}
               />
             </div>
