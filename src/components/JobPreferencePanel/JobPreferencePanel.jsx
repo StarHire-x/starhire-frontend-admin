@@ -7,6 +7,7 @@ import { Chart } from "primereact/chart";
 import styles from "./JobPreferencePanel.module.css";
 
 const JobPreferencePanel = ({
+  selectedUser,
   jobPreference,
   selectedCorporateJP,
 }) => {
@@ -111,13 +112,21 @@ const JobPreferencePanel = ({
 
   return (
     <Panel headerTemplate={headerTemplate}>
-      <Chart
-        type="radar"
-        data={chartData}
-        options={chartOptions}
-        className="w-20rem h-20rem"
-      />
-      
+      <div className={styles.spanContainer}>
+        <span>
+          Job seeker <strong>{selectedUser.fullName}</strong> has a{" "}
+          <strong>{selectedUser.similarity}%</strong> similarity with corporate
+        </span>
+      </div>
+      <div className={styles.chartContainer}>
+        <Chart
+          type="radar"
+          data={chartData}
+          options={chartOptions}
+          className="w-30rem h-30rem"
+        />
+      </div>
+
       {/* Original Code, dont delete first  */}
       {/* <div className={styles.dialogueContainer}>
         <Dialog

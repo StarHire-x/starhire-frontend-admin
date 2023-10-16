@@ -89,16 +89,19 @@ export default function ViewJobListingRecruiter() {
   useEffect(() => {
     if (accessToken) {
       viewOneJobListing(id, accessToken)
-        .then((data) => {
+        .then(async (data) => {
           setJobListing(data);
+          setIsLoading(false);
 
           //Get corporate details
-          getCorporateDetails(data.corporate.userId, accessToken)
+          await getCorporateDetails(data.corporate.userId, accessToken)
             .then((response) => {
               setSelectedCorporateJP(response.data.jobPreference);
+              setIsLoading(false);
             })
             .catch((error) => {
               console.error("Error fetching corporate:", error);
+              setIsLoading(false);
             });
           
           console.log("Corporate Job Preference", selectedCorporateJP);
