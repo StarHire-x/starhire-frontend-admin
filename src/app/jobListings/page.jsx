@@ -366,11 +366,7 @@ export default function JobListings() {
                 header="Company Name"
                 sortable
               />
-              <Column
-                field="jobLocation"
-                header="Job Location"
-                sortable
-              ></Column>
+              <Column field="jobLocation" header="Job Location"></Column>
               <Column
                 field="listingDate"
                 header="List Date"

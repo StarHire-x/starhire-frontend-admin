@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
@@ -7,10 +8,10 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { InputText } from 'primereact/inputtext';
 import { ProgressSpinner } from 'primereact/progressspinner';
+import { Tag } from 'primereact/tag';
 import { viewAllTickets, resolveTicket } from '../api/ticket/route';
-import Image from 'next/image';
-import HumanIcon from '../../../public/icon.png';
 import Enums from '@/common/enums/enums';
 import styles from './page.module.css';
 
@@ -42,6 +43,18 @@ export default function TicketManagement() {
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [selectedTicketId, setSelectedTicketId] = useState(null);
 
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    // role: {
+    //   operator: FilterOperator.OR,
+    //   constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+    // },
+    ticketStatus: {
+      operator: FilterOperator.OR,
+      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+    },
+  });
+
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [ticketStatuses] = useState([
     'General',
@@ -52,8 +65,28 @@ export default function TicketManagement() {
     'SubscriptionBilling',
   ]);
 
+  const onGlobalFilterChange = (e) => {
+    const value = e.target.value;
+    let _filters = { ...filters };
+
+    _filters['global'].value = value;
+
+    setFilters(_filters);
+    setGlobalFilterValue(value);
+  };
+
+  const getSeverity = (isResolved) => {
+    return isResolved ? 'success' : 'danger';
+  };
+
   const resolvedBodyTemplate = (rowData) => {
-    return <span>{rowData.isResolved ? 'Yes' : 'No'}</span>;
+    return (
+      <Tag
+        value={rowData.isResolved ? 'Yes' : 'No'}
+        severity={getSeverity(rowData.isResolved)}
+        style={{ fontSize: '0.8em' }}
+      />
+    );
   };
 
   const handleResolveTicket = (ticketId) => {
@@ -79,12 +112,20 @@ export default function TicketManagement() {
   const resolveButtonBodyTemplate = (rowData) => {
     if (!rowData.isResolved) {
       return (
-        <Button rounded onClick={() => handleResolveTicket(rowData.ticketId)}>
-          Resolve
-        </Button>
+        <React.Fragment>
+          <Button
+            label="Resolve"
+            rounded
+            size="small"
+            className="mr-2"
+            onClick={() => {
+              handleResolveTicket(rowData.ticketId);
+            }}
+          />
+        </React.Fragment>
       );
     } else {
-      return <span>Resolved</span>;
+      return <span style={{ fontSize: '24px' }}>✔️</span>;
     }
   };
 
@@ -140,6 +181,28 @@ export default function TicketManagement() {
     return <span>{user?.email}</span>;
   };
 
+  const renderHeader = () => {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <h2 className="m-0">Tickets</h2>
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            value={globalFilterValue}
+            onChange={onGlobalFilterChange}
+            placeholder="Keyword Search"
+          />
+        </span>
+      </div>
+    );
+  };
+
   useEffect(() => {
     viewAllTickets(accessToken)
       .then((data) => {
@@ -153,61 +216,96 @@ export default function TicketManagement() {
       });
   }, [refreshData, accessToken]);
 
-  if (loading) {
-    return <h2>Loading tickets...</h2>;
+  const header = renderHeader();
+
+  if (
+    session.status === 'authenticated' &&
+    session.data.user.role !== Enums.ADMIN
+  ) {
+    router?.push('/dashboard');
   }
 
-  return (
-    <div className={styles.pageContainer}>
-      <h2>Tickets</h2>
-      <DataTable
-        className={`${styles.dataTableHeader} ${styles.dataTableRow}`}
-        value={tickets}
-      >
-        <Column field="ticketId" header="Ticket ID"></Column>
-        <Column field="ticketName" header="Problem Title"></Column>
-        <Column field="ticketDescription" header="Problem Description"></Column>
-        <Column
-          field="isResolved"
-          header="Resolved?"
-          sortable
-          body={resolvedBodyTemplate}
-        ></Column>
-        {/* <Column
+  if (
+    session.status === 'authenticated' &&
+    session.data.user.role === Enums.ADMIN
+  ) {
+    return (
+      <div className={styles.ticketCard}>
+        {loading ? (
+          <ProgressSpinner
+            style={{
+              display: 'flex',
+              height: '100vh',
+              'justify-content': 'center',
+              'align-items': 'center',
+            }}
+          />
+        ) : (
+          <>
+            <DataTable
+              value={tickets}
+              paginator
+              header={header}
+              rows={10}
+              rowsPerPageOptions={[10, 25, 50]}
+              globalFilter={globalFilterValue}
+              emptyMessage="No tickets currently"
+            >
+              <Column field="ticketId" header="Ticket ID" sortable></Column>
+              <Column field="ticketName" header="Problem Title"></Column>
+              <Column
+                field="ticketDescription"
+                header="Problem Description"
+              ></Column>
+              <Column
+                field="isResolved"
+                header="Resolved?"
+                sortable
+                body={resolvedBodyTemplate}
+              ></Column>
+              {/* <Column
           field="user.userName"
           header="User Name"
           sortable
           body={usernameBodyTemplate}
         ></Column> */}
-        <Column
-          field="user.email"
-          header="Contact Email"
-          body={emailBodyTemplate}
-        ></Column>
-        <Column
-          rounded
-          size="small"
-          className="mr-2"
-          body={resolveButtonBodyTemplate}
-        ></Column>{' '}
-        {/* New column for Resolve button */}
-      </DataTable>
+              <Column
+                field="user.email"
+                header="Contact Email"
+                body={emailBodyTemplate}
+              ></Column>
+              <Column
+                rounded
+                size="small"
+                className="mr-2"
+                body={resolveButtonBodyTemplate}
+              ></Column>{' '}
+              {/* New column for Resolve button */}
+            </DataTable>
 
-      <Dialog
-        visible={confirmDialogVisible}
-        header="Confirm Ticket Resolution"
-        modal
-        className="p-fluid"
-        onHide={() => setConfirmDialogVisible(false)}
-        footer={
-          <>
-            <button onClick={() => setConfirmDialogVisible(false)}>No</button>
-            <button onClick={confirmResolveTicket}>Yes</button>
+            <Dialog
+              visible={confirmDialogVisible}
+              header="Confirm Ticket Resolution"
+              style={{ width: '32rem' }}
+              className={styles.centerTicketContent}
+              onHide={() => setConfirmDialogVisible(false)}
+              footer={
+                <div className={styles.ticketButtonContainer}>
+                  <button
+                    className={styles.ticketSpacer}
+                    onClick={() => setConfirmDialogVisible(false)}
+                  >
+                    No
+                  </button>
+                  <button onClick={confirmResolveTicket}>Yes</button>
+                </div>
+              }
+            >
+              Are you sure you want to resolve this ticket?
+            </Dialog>
           </>
-        }
-      >
-        Are you sure you want to resolve this ticket?
-      </Dialog>
-    </div>
-  );
+        )}
+      </div>
+    );
+  }
 }
