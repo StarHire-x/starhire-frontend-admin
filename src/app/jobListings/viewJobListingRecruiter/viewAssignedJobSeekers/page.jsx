@@ -17,6 +17,7 @@ import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
 import { viewAssignedJobSeekersByJobListing } from "@/app/api/jobListings/route";
 import { InputText } from "primereact/inputtext";
+import { getUserByUserId, getUsers } from "@/app/api/auth/user/route";
 
 export default function ViewAssignedJobSeekers() {
   const session = useSession();
@@ -44,7 +45,7 @@ export default function ViewAssignedJobSeekers() {
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [details, setDetails] = useState({});
+  const [users, setUsers] = useState({});
   const [selectedRow, setSelectedRow] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -72,8 +73,18 @@ export default function ViewAssignedJobSeekers() {
   useEffect(() => {
     if (accessToken) {
       viewAssignedJobSeekersByJobListing(id, currentUserId, accessToken)
-        .then((data) => { //can do another map here to call another api fetch to fetch all the job seeker details based on the job seeker id.
-          setDetails(data);
+        .then(async (data) => {
+          //can do another map here to call another api fetch to fetch all the job seeker details based on the job seeker id.
+          const assignedJobSeekers = [];
+          for (const x of data) {
+            const jobSeeker = await getUserByUserId(
+              x.jobSeekerId,
+              "Job_Seeker",
+              accessToken
+            );
+            assignedJobSeekers.push(jobSeeker.data);
+          }
+          setUsers(assignedJobSeekers);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -85,8 +96,8 @@ export default function ViewAssignedJobSeekers() {
 
   useEffect(() => {
     console.log("SEEHERE!");
-    console.log(details);
-  })
+    console.log(users);
+  });
 
   const renderRecruiterHeader = () => {
     return (
@@ -118,6 +129,30 @@ export default function ViewAssignedJobSeekers() {
     router.back();
   };
 
+  const usernameBodyTemplate = (rowData) => {
+    const userName = rowData.userName;
+    const avatar = rowData.profilePictureUrl;
+
+    return (
+      <div className={styles.imageContainer}>
+        {avatar !== "" ? (
+          <img
+            alt={avatar}
+            src={avatar}
+            className={styles.avatarImageContainer}
+          />
+        ) : (
+          <Image
+            src={HumanIcon}
+            alt="Icon"
+            className={styles.avatarImageContainer}
+          />
+        )}
+        <span>{userName}</span>
+      </div>
+    );
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -133,7 +168,7 @@ export default function ViewAssignedJobSeekers() {
         <div className={styles.contentContainer}>
           <div>
             <DataTable
-              value={details}
+              value={users}
               paginator
               ref={dt}
               header={header}
@@ -150,7 +185,16 @@ export default function ViewAssignedJobSeekers() {
               emptyMessage="No job assignments found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               style={{ minWidth: "50vw" }}
-            ></DataTable>
+            >
+              <Column
+                field="userName"
+                header="User Name"
+                sortable
+                body={usernameBodyTemplate}
+              ></Column>
+              <Column field="email" header="Email" sortable></Column>
+              <Column field="contactNo" header="Contact No" sortable></Column>
+            </DataTable>
 
             <div className={styles.bottomButtonContainer}>
               <Button

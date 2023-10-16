@@ -23,7 +23,7 @@ const JobPreferencePanel = ({
         <span className={titleClassName} style={style}>
           Job Preferences
         </span>
-        <Button
+        {/* <Button
           style={{
             width: "30px",
             height: "30px",
@@ -32,7 +32,7 @@ const JobPreferencePanel = ({
           onClick={() => setVisible(true)}
           icon="pi pi-info"
           outlined
-        ></Button>
+        ></Button> */}
       </div>
     );
   };
