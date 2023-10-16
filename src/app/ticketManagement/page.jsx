@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
+import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
@@ -78,9 +79,9 @@ export default function TicketManagement() {
   const resolveButtonBodyTemplate = (rowData) => {
     if (!rowData.isResolved) {
       return (
-        <button onClick={() => handleResolveTicket(rowData.ticketId)}>
+        <Button rounded onClick={() => handleResolveTicket(rowData.ticketId)}>
           Resolve
-        </button>
+        </Button>
       );
     } else {
       return <span>Resolved</span>;
@@ -196,6 +197,7 @@ export default function TicketManagement() {
         visible={confirmDialogVisible}
         header="Confirm Ticket Resolution"
         modal
+        className="p-fluid"
         onHide={() => setConfirmDialogVisible(false)}
         footer={
           <>
