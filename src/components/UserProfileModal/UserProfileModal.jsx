@@ -113,6 +113,7 @@ const UserProfileModal = ({
         </div>
         <div className={styles.jobPreferenceSection}>
           <JobPreferencePanel
+            selectedUser={selectedUser}
             jobPreference={selectedUser?.jobPreference}
             selectedCorporateJP={selectedCorporateJP}
           />
