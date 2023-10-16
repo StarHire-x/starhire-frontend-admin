@@ -167,35 +167,29 @@ export default function TicketManagement() {
               handleResolveTicket(rowData.ticketId);
             }}
           />
-          <Button
-            label="View Details"
-            rounded
-            size="small"
-            className="mr-2"
-            onClick={() => {
-              setSelectedTicketId(rowData);
-              handleOpenDetailsDialog();
-            }}
-          />
         </React.Fragment>
       );
     } else {
       return (
         <React.Fragment>
           <span style={{ fontSize: '24px' }}>✔️</span>
-          <Button
-            label="View Details"
-            rounded
-            size="small"
-            className="mr-2"
-            onClick={() => {
-              setSelectedTicketId(rowData);
-              handleOpenDetailsDialog();
-            }}
-          />
         </React.Fragment>
       );
     }
+  };
+
+  const viewDetailsButtonBodyTemplate = (rowData) => {
+    return (
+      <Button
+        label="View Details"
+        rounded
+        size="small"
+        onClick={() => {
+          setSelectedTicketId(rowData);
+          handleOpenDetailsDialog();
+        }}
+      />
+    );
   };
 
   // const usernameBodyTemplate = (rowData) => {
@@ -290,7 +284,7 @@ export default function TicketManagement() {
           setLoading(false);
         });
     }
-  }, [accessToken]);
+  }, [refreshData, accessToken]);
 
   const header = renderHeader();
 
@@ -323,6 +317,12 @@ export default function TicketManagement() {
               body={(rowData) => formatDate(rowData.submissionDate)}
               sortable
             ></Column>
+            {/* <Column
+          field="user.userName"
+          header="User Name"
+          sortable
+          body={usernameBodyTemplate}
+        ></Column> */}
             <Column
               field="ticketCategory"
               header="Category"
@@ -338,12 +338,6 @@ export default function TicketManagement() {
               sortable
               body={resolvedBodyTemplate}
             ></Column>
-            {/* <Column
-          field="user.userName"
-          header="User Name"
-          sortable
-          body={usernameBodyTemplate}
-        ></Column> */}
             <Column
               field="user.email"
               header="Contact Email"
@@ -355,6 +349,12 @@ export default function TicketManagement() {
               className="mr-2"
               body={resolveButtonBodyTemplate}
             ></Column>{' '}
+            <Column
+              rounded
+              size="small"
+              className="mr-2"
+              body={viewDetailsButtonBodyTemplate}
+            ></Column>
           </DataTable>
 
           <Dialog
