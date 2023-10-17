@@ -34,7 +34,6 @@ export default function TicketManagement() {
   }
 
   const [tickets, setTickets] = useState([]);
-  const [refreshData, setRefreshData] = useState(false);
   const [loading, setLoading] = useState(true);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
@@ -141,7 +140,15 @@ export default function TicketManagement() {
     try {
       setLoading(true);
       await resolveTicket(selectedTicketId, accessToken);
-      setRefreshData(!refreshData);
+
+      // Update the local tickets state
+      const updatedTickets = tickets.map((ticket) => {
+        if (ticket.ticketId === selectedTicketId) {
+          return { ...ticket, isResolved: true }; // mark the ticket as resolved
+        }
+        return ticket;
+      });
+      setTickets(updatedTickets);
     } catch (error) {
       console.error('Error resolving the ticket:', error);
     } finally {
@@ -268,7 +275,7 @@ export default function TicketManagement() {
           setLoading(false);
         });
     }
-  }, [refreshData, accessToken]);
+  }, [accessToken]);
 
   const header = renderHeader();
 
@@ -434,4 +441,3 @@ export default function TicketManagement() {
     </div>
   );
 }
-//}
