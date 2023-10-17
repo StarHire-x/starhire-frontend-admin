@@ -228,22 +228,6 @@ export default function TicketManagement() {
   //   );
   // };
 
-  const emailBodyTemplate = (rowData) => {
-    let user;
-
-    if (rowData.administrator) {
-      user = rowData.administrator;
-    } else if (rowData.corporate) {
-      user = rowData.corporate;
-    } else if (rowData.recruiter) {
-      user = rowData.recruiter;
-    } else if (rowData.jobSeeker) {
-      user = rowData.jobSeeker;
-    }
-
-    return <span>{user?.email}</span>;
-  };
-
   const renderHeader = () => {
     return (
       <div
@@ -338,11 +322,7 @@ export default function TicketManagement() {
               sortable
               body={resolvedBodyTemplate}
             ></Column>
-            <Column
-              field="user.email"
-              header="Contact Email"
-              body={emailBodyTemplate}
-            ></Column>
+            <Column field="email" header="Contact Email"></Column>
             <Column
               rounded
               size="small"
