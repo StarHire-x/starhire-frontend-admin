@@ -14,7 +14,7 @@ import { Dialog } from "primereact/dialog";
 import { useSession } from "next-auth/react";
 import { viewOneJobListing } from "@/app/api/jobListings/route";
 import { updateJobListing } from "@/app/api/jobListings/route";
-import { getCorporateDetails, getUsers } from "../../api/auth/user/route";
+import { getAllJobSeekersWithSimilarityScore, getCorporateDetails, getUsers } from "../../api/auth/user/route";
 import { assignJobListing } from "@/app/api/jobListings/route";
 import HumanIcon from "../../../../public/icon.png";
 import { DataTable } from "primereact/datatable";
@@ -51,7 +51,6 @@ export default function ViewJobListingRecruiter() {
   const params = useSearchParams();
   const id = params.get("id");
 
-  const [selectedCorporateJP, setSelectedCorporateJP] = useState(null);
   const [jobListing, setJobListing] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [assignDialog, setAssignDialog] = useState(false);
@@ -78,14 +77,6 @@ export default function ViewJobListingRecruiter() {
   const [globalFilterValue, setGlobalFilterValue] = useState("");
   const dt = useRef(null);
 
-  //Compute similarity for user
-  const computeSimilarityForUsers = (userList) => {
-    return userList.map((u) => ({
-      ...u,
-      similarity: calculateSimilarity(u, selectedCorporateJP),
-    }));
-  };
-
   useEffect(() => {
     if (accessToken) {
       viewOneJobListing(id, accessToken)
@@ -94,23 +85,50 @@ export default function ViewJobListingRecruiter() {
           setIsLoading(false);
 
           //Get corporate details
-          await getCorporateDetails(data.corporate.userId, accessToken)
-            .then((response) => {
-              setSelectedCorporateJP(response.data.jobPreference);
-              setIsLoading(false);
-            })
-            .catch((error) => {
-              console.error("Error fetching corporate:", error);
-              setIsLoading(false);
-            });
+          // await getCorporateDetails(data.corporate.userId, accessToken)
+          //   .then((response) => {
+          //     setSelectedCorporateJP(response.data.jobPreference);
+          //     setIsLoading(false);
+          //   })
+          //   .catch((error) => {
+          //     console.error("Error fetching corporate:", error);
+          //     setIsLoading(false);
+          //   });
           
-          console.log("Corporate Job Preference", selectedCorporateJP);
-          getUsers(accessToken)
-            .then((user) => {
-              // user.data.map(
-              //   (x) => x.role === Enums.JOBSEEKER && console.log(x.jobListings)
-              // );
+          // console.log("Corporate Job Preference", selectedCorporateJP);
+          // getUsers(accessToken)
+          //   .then((user) => {
+          //     // user.data.map(
+          //     //   (x) => x.role === Enums.JOBSEEKER && console.log(x.jobListings)
+          //     // );
 
+          //     const activeJobSeekers = user.data.filter(
+          //       (x) =>
+          //         x.role === Enums.JOBSEEKER &&
+          //         x.status === Enums.ACTIVE &&
+          //         !x.jobListings
+          //           .map((jobListing) => jobListing.jobListingId)
+          //           .includes(data.jobListingId)
+          //     );
+
+          //     const sortedUsers = computeSimilarityForUsers(
+          //       activeJobSeekers
+          //     ).sort(
+          //       (a, b) => b.similarity - a.similarity // Sorting in descending order
+          //     );
+
+          //     setUser(sortedUsers);
+
+          //     // setUser(activeJobSeekers);
+          //     setIsLoading(false);
+          //   })
+          //   .catch((error) => {
+          //     console.error("Error fetching user:", error);
+          //     setIsLoading(false);
+          //   });
+
+          getAllJobSeekersWithSimilarityScore(accessToken, id)
+            .then((user) => {
               const activeJobSeekers = user.data.filter(
                 (x) =>
                   x.role === Enums.JOBSEEKER &&
@@ -119,16 +137,7 @@ export default function ViewJobListingRecruiter() {
                     .map((jobListing) => jobListing.jobListingId)
                     .includes(data.jobListingId)
               );
-
-              const sortedUsers = computeSimilarityForUsers(
-                activeJobSeekers
-              ).sort(
-                (a, b) => b.similarity - a.similarity // Sorting in descending order
-              );
-
-              setUser(sortedUsers);
-
-              // setUser(activeJobSeekers);
+              setUser(activeJobSeekers);
               setIsLoading(false);
             })
             .catch((error) => {
@@ -141,7 +150,7 @@ export default function ViewJobListingRecruiter() {
           setIsLoading(false);
         });
     }
-  }, [refreshData, selectedCorporateJP, accessToken, id]);
+  }, [refreshData, accessToken, id]);
 
   const handleRefresh = () => {
     router.push(`/jobListings`); // This will refresh the current page
@@ -358,71 +367,6 @@ export default function ViewJobListingRecruiter() {
     );
   };
 
-  const getValueOrDefault = (value, defaultValue = 0) => {
-    return value == null ? defaultValue : value; // using '==' will check for both null and undefined
-  };
-
-  const calculateSimilarity = (userData, corporateData) => {
-  
-    let userBenefits =
-      getValueOrDefault(userData.jobPreference?.benefitPreference) * 20;
-    let userWLBalance =
-      getValueOrDefault(userData.jobPreference?.workLifeBalancePreference) * 20;
-    let userSalary =
-      getValueOrDefault(userData.jobPreference?.salaryPreference) * 20;
-
-    if (userBenefits === 0 && userWLBalance === 0 && userSalary === 0) {
-      return Number(0).toFixed(2);
-    }
-
-    let corporateBenefits =
-      getValueOrDefault(corporateData?.benefitPreference) * 20;
-    let corporateWLBalance =
-      getValueOrDefault(corporateData?.workLifeBalancePreference) * 20;
-    let corporateSalary =
-      getValueOrDefault(corporateData?.salaryPreference) * 20;
-
-    console.log("Hello there")
-    console.log(userBenefits);
-    console.log(userWLBalance);
-    console.log(userSalary);
-    console.log("--------------------------");
-    console.log(corporateBenefits);
-    console.log(corporateWLBalance);
-    console.log(corporateSalary);
-
-    let dotProduct =
-      userBenefits * corporateBenefits +
-      userWLBalance * corporateWLBalance +
-      userSalary * corporateSalary;
-
-    let userMagnitude = Math.sqrt(
-      Math.pow(userBenefits, 2) +
-        Math.pow(userWLBalance, 2) +
-        Math.pow(userSalary, 2)
-    );
-    let corporateMagnitude = Math.sqrt(
-      Math.pow(corporateBenefits, 2) +
-        Math.pow(corporateWLBalance, 2) +
-        Math.pow(corporateSalary, 2)
-    );
-
-    // Ensure we don't divide by zero and handle NaN case
-    let similarity;
-    if (userMagnitude === 0 || corporateMagnitude === 0) {
-      similarity = 0;
-    } else {
-      similarity = dotProduct / (userMagnitude * corporateMagnitude);
-    }
-
-    // Convert similarity to percentage
-    let percentageSimilarity = parseFloat(((similarity + 1) / 2) * 100).toFixed(
-      2
-    );
-
-    return percentageSimilarity;
-  };
-
   const header = () => {
     return renderRecruiterHeader();
   };
@@ -547,6 +491,7 @@ export default function ViewJobListingRecruiter() {
                 field="similarity"
                 header="Similarity Score (%)"
                 sortable
+                body={(rowData) => parseFloat(rowData.similarity).toFixed(2)}
               ></Column>
               <Column
                 body={actionRecruiterBodyTemplate}
@@ -589,7 +534,6 @@ export default function ViewJobListingRecruiter() {
             <UserProfileModal
               selectedUser={selectedUser}
               currentUserRole={currentUserRole}
-              selectedCorporateJP={selectedCorporateJP}
             />
           </Dialog>
 

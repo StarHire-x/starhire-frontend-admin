@@ -9,7 +9,7 @@ import styles from "./JobPreferencePanel.module.css";
 const JobPreferencePanel = ({
   selectedUser,
   jobPreference,
-  selectedCorporateJP,
+  corporatePreference,
 }) => {
   // Job Preference informaton Dialog Box
   const [visible, setVisible] = useState(false);
@@ -48,9 +48,6 @@ const JobPreferencePanel = ({
       "--text-color-secondary"
     );
 
-    console.log(jobPreference);
-    console.log(selectedCorporateJP);
-
     const data = {
       labels: ["Benefit", "Salary", "Work-life Balance"],
       datasets: [
@@ -77,9 +74,9 @@ const JobPreferencePanel = ({
           pointHoverBackgroundColor: textColor,
           pointHoverBorderColor: documentStyle.getPropertyValue("--pink-600"),
           data: [
-            selectedCorporateJP?.benefitPreference,
-            selectedCorporateJP?.salaryPreference,
-            selectedCorporateJP?.workLifeBalancePreference,
+            corporatePreference?.benefitPreference,
+            corporatePreference?.salaryPreference,
+            corporatePreference?.workLifeBalancePreference,
           ],
         },
       ],

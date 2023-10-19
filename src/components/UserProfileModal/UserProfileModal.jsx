@@ -16,7 +16,6 @@ const formatDate = (dateString) => {
 const UserProfileModal = ({
   selectedUser,
   currentUserRole,
-  selectedCorporateJP,
 }) => {
   return (
     <div className={styles.container}>
@@ -115,7 +114,7 @@ const UserProfileModal = ({
           <JobPreferencePanel
             selectedUser={selectedUser}
             jobPreference={selectedUser?.jobPreference}
-            selectedCorporateJP={selectedCorporateJP}
+            corporatePreference={selectedUser?.corporatePreference}
           />
         </div>
         <div className={styles.jobExperienceSection}>
