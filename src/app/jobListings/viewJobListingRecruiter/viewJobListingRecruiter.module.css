@@ -15,6 +15,10 @@
     rgba(255, 255, 255, 0.2) 100%
   ) !important;
   background-color: #e29578 !important;
+  display: flex; /* Activate Flexbox */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center; /* Center text */
 }
 
 .bottomButtonContainer {
