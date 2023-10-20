@@ -37,7 +37,8 @@ export default function TicketManagement() {
   const [loading, setLoading] = useState(true);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
-  const [selectedTicketId, setSelectedTicketId] = useState(null);
+  const [selectedTicketId, setSelectedTicketId] = useState({});
+  const [selectedDocuments, setSelectedDocuments] = useState([]);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -90,6 +91,18 @@ export default function TicketManagement() {
 
   const getSeverity = (isResolved) => {
     return isResolved ? 'success' : 'danger';
+  };
+
+  const onDocumentChange = (e) => {
+    let _selectedDocuments = [...selectedDocuments];
+
+    if (e.checked) _selectedDocuments.push(e.value);
+    else
+      _selectedDocuments = _selectedDocuments.filter(
+        (document) => document.documentId !== e.value.documentId
+      );
+
+    setSelectedDocuments(_selectedDocuments);
   };
 
   const statusBodyTemplate = (rowData) => {
@@ -199,42 +212,6 @@ export default function TicketManagement() {
     );
   };
 
-  // const usernameBodyTemplate = (rowData) => {
-  //   let user;
-
-  //   if (rowData.administrator) {
-  //     user = rowData.administrator;
-  //   } else if (rowData.corporate) {
-  //     user = rowData.corporate;
-  //   } else if (rowData.recruiter) {
-  //     user = rowData.recruiter;
-  //   } else if (rowData.jobSeeker) {
-  //     user = rowData.jobSeeker;
-  //   }
-
-  //   const userName = user?.userName;
-  //   const avatar = user?.profilePictureUrl;
-
-  //   return (
-  //     <div className={styles.imageContainer}>
-  //       {avatar !== '' ? (
-  //         <img
-  //           alt={avatar}
-  //           src={avatar}
-  //           className={styles.avatarImageContainer}
-  //         />
-  //       ) : (
-  //         <Image
-  //           src={HumanIcon}
-  //           alt="Icon"
-  //           className={styles.avatarImageContainer}
-  //         />
-  //       )}
-  //       <span>{userName}</span>
-  //     </div>
-  //   );
-  // };
-
   const renderHeader = () => {
     return (
       <div
@@ -308,12 +285,6 @@ export default function TicketManagement() {
               body={(rowData) => formatDate(rowData.submissionDate)}
               sortable
             ></Column>
-            {/* <Column
-          field="user.userName"
-          header="User Name"
-          sortable
-          body={usernameBodyTemplate}
-        ></Column> */}
             <Column
               field="ticketCategory"
               header="Category"
@@ -418,6 +389,36 @@ export default function TicketManagement() {
                   Problem Title:
                 </strong>
                 <span>{selectedTicketId && selectedTicketId.ticketName}</span>
+              </div>
+              <div className={styles.divider}></div>
+
+              <div className={styles.detailRow}>
+                {selectedTicketId.documents &&
+                  selectedTicketId.documents.map((document, index) => (
+                    <React.Fragment key={index}>
+                      <div className={styles.cardRow}>
+                        <strong>
+                          <span className={styles.icon}>
+                            <i className="icon pi pi-file"></i>
+                          </span>
+                          Document Title:
+                        </strong>
+                        <span>{document.documentName}</span>
+                      </div>
+                      <div className={styles.cardRow}>
+                        <Button
+                          type="button"
+                          icon="pi pi-file-pdf"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(document.documentLink, '_blank');
+                          }}
+                          className="p-button-rounded p-button-danger"
+                          aria-label="Open PDF"
+                        />
+                      </div>
+                    </React.Fragment>
+                  ))}
               </div>
               <div className={styles.divider}></div>
               <div
