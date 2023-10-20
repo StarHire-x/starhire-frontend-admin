@@ -5,7 +5,7 @@ export const viewAllJobApplicationsByJobListingId = async (
 ) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/job-application/job-listing/${jobListingId}/${recruiterId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-application/job-listing/${jobListingId}/${recruiterId}`,
       {
         method: "GET",
         headers: {
@@ -30,14 +30,17 @@ export const viewAllJobApplicationsByJobListingId = async (
 
 export const updateJobApplicationStatus = async (request, id, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/job-application/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(request),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-application/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(request),
+      }
+    );
 
     if (res.ok) {
       return;
@@ -52,14 +55,17 @@ export const updateJobApplicationStatus = async (request, id, accessToken) => {
 
 export const viewJobApplicationDetails = async (id, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/job-application/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-application/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 export const createUser = async (userData) => {
   try {
-    const response = await fetch(`http://localhost:8080/users`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const createUser = async (userData) => {
 export const getUsersForChat = async (userId, accessToken) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/users/can-create-chat/${userId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/users/can-create-chat/${userId}`,
       {
         method: "GET",
         headers: {
@@ -48,7 +48,7 @@ export const getUsersForChat = async (userId, accessToken) => {
 
 export const getUsers = async (accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/users/all`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users/all`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -68,10 +68,13 @@ export const getUsers = async (accessToken) => {
   }
 };
 
-export const getAllJobSeekersWithSimilarityScore = async (accessToken, jobListingId) => {
+export const getAllJobSeekersWithSimilarityScore = async (
+  accessToken,
+  jobListingId
+) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/job-seeker/similarity/${jobListingId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-seeker/similarity/${jobListingId}`,
       {
         method: "GET",
         headers: {
@@ -94,7 +97,7 @@ export const getAllJobSeekersWithSimilarityScore = async (accessToken, jobListin
 
 export const updateUser = async (request, id, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/users/${id}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/users/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +123,7 @@ export const updateUser = async (request, id, accessToken) => {
 export const deleteUser = async (request, id, accessToken) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/users/${id}?role=${request}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/users/${id}?role=${request}`,
       {
         method: "DELETE",
         headers: {
@@ -147,7 +150,7 @@ export const deleteUser = async (request, id, accessToken) => {
 export const getUserByEmailRole = async (email, role) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/users/find?email=${email}&role=${role}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/users/find?email=${email}&role=${role}`,
       {
         method: "GET",
         headers: {
@@ -171,7 +174,7 @@ export const getUserByEmailRole = async (email, role) => {
 export const getUserByUserId = async (userId, role, accessToken) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/users/search?userId=${userId}&role=${role}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/users/search?userId=${userId}&role=${role}`,
       {
         method: "GET",
         headers: {
@@ -195,14 +198,17 @@ export const getUserByUserId = async (userId, role, accessToken) => {
 
 export const getCorporateDetails = async (userId, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/corporate/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/corporate/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
     const response = await res.json();
     if (response.statusCode === 200) {
       return response;

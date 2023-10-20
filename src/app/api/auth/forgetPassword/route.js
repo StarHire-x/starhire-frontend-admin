@@ -1,5 +1,5 @@
 const fetchUserData = async (email, role) => {
-  const url = `http://localhost:8080/users/find?email=${email}&role=${role}`;
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/users/find?email=${email}&role=${role}`;
   const response = await fetch(url, {
     method: "GET",
     headers: {
@@ -43,7 +43,7 @@ export const forgetPassword = async (email, role) => {
 
 export const sendEmail = async (request) => {
   try {
-    const res = await fetch(`http://localhost:8080/email/reset`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/email/reset`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -62,13 +62,16 @@ export const sendEmail = async (request) => {
 
 export const updateUserPassword = async (request, id) => {
   try {
-    const res = await fetch(`http://localhost:8080/users/reset/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(request),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/users/reset/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request),
+      }
+    );
 
     if (res.ok) {
       return;

@@ -60,7 +60,7 @@ const Chat = () => {
 
   useEffect(() => {
     // WebSocket functions
-    const socket = io("http://localhost:8080");
+    const socket = io("${process.env.NEXT_PUBLIC_BASE_URL}");
     setSocket(socket);
 
     // Clean-up logic when the component unmounts (if needed)
