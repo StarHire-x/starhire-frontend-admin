@@ -39,13 +39,13 @@ const Step1 = ({ formData, setFormData, onNext }) => {
       <h2 className={styles.subTitle}>Recruiter Information</h2>
       {errorMessage && <p className={styles.error}>{errorMessage}</p>}
       <form className={styles.form}>
-        {/* <div className={styles.userRole}>
+        <div className={styles.userRole}>
           <div>
             <p>I am registering as a:</p>
           </div>
 
           <div className={styles.radio}>
-            <RadioButton
+            {/* <RadioButton
               inputId={Enums.ADMIN}
               name="role"
               value={Enums.ADMIN}
@@ -55,19 +55,21 @@ const Step1 = ({ formData, setFormData, onNext }) => {
             <label htmlFor={Enums.ADMIN} className="ml-2">
               Administrator
             </label>
-            <br />
+            <br /> */}
             <RadioButton
               inputId={Enums.RECRUITER}
               name="role"
               value={Enums.RECRUITER}
               onChange={handleInputChange}
               checked={formData.role === Enums.RECRUITER}
+              checked={true} // Auto-checked
+              readOnly={true}
             />
             <label htmlFor={Enums.RECRUITER} className="ml-2">
               Recruiter
             </label>
           </div>
-        </div> */}
+        </div>
 
         <div className={styles.inputFields}>
           <input
