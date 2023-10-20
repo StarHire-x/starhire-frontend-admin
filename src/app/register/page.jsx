@@ -62,7 +62,6 @@ const Step1 = ({ formData, setFormData, onNext }) => {
               value={Enums.RECRUITER}
               onChange={handleInputChange}
               checked={formData.role === Enums.RECRUITER}
-              checked={true} // Auto-checked
               readOnly={true}
             />
             <label htmlFor={Enums.RECRUITER} className="ml-2">
