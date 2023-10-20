@@ -1,6 +1,6 @@
 export const viewAllJobListings = async (accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/job-listing`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/job-listing`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const viewAllJobListings = async (accessToken) => {
 export const viewOneJobListing = async (jobListingId, accessToken) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/job-listing/${jobListingId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-listing/${jobListingId}`,
       {
         method: "GET",
         headers: {
@@ -47,16 +47,23 @@ export const viewOneJobListing = async (jobListingId, accessToken) => {
   }
 };
 
-export const viewAssignedJobSeekersByJobListing = async (jobListingId, recruiterId, accessToken) => {
+export const viewAssignedJobSeekersByJobListing = async (
+  jobListingId,
+  recruiterId,
+  accessToken
+) => {
   try {
-    const res = await fetch(`http://localhost:8080/job-assignment/${jobListingId}/${recruiterId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-assignment/${jobListingId}/${recruiterId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();
@@ -65,21 +72,27 @@ export const viewAssignedJobSeekersByJobListing = async (jobListingId, recruiter
     }
     return await res.json();
   } catch (error) {
-    console.log("There was a problem fetching the assigned job seekers and job listing details", error);
+    console.log(
+      "There was a problem fetching the assigned job seekers and job listing details",
+      error
+    );
     throw error;
   }
 };
 
 export const updateJobListing = async (accessToken, request, id) => {
   try {
-    const res = await fetch(`http://localhost:8080/job-listing/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(request),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-listing/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(request),
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();
@@ -93,16 +106,23 @@ export const updateJobListing = async (accessToken, request, id) => {
   }
 };
 
-export const assignJobListing = async ( jobSeekerId, jobListingId, recruiterId, accessToken) => {
+export const assignJobListing = async (
+  jobSeekerId,
+  jobListingId,
+  recruiterId,
+  accessToken
+) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/job-listing/assignJobListing/${jobSeekerId}/${jobListingId}/${recruiterId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-listing/assignJobListing/${jobSeekerId}/${jobListingId}/${recruiterId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();
@@ -111,26 +131,31 @@ export const assignJobListing = async ( jobSeekerId, jobListingId, recruiterId, 
     }
     return await res.json();
   } catch (error) {
-    console.log("There was a problem assigning job listing to job seekers and assigning job listing to job seekers", error);
+    console.log(
+      "There was a problem assigning job listing to job seekers and assigning job listing to job seekers",
+      error
+    );
     throw error;
   }
 };
 
 export const informJobListingStatus = async (jobListingId, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/email/inform-status/${jobListingId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      /*
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/email/inform-status/${jobListingId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        /*
       body: JSON.stringify({
         jobListingId: jobListingId, 
       }),
       */
-
-    });
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();
@@ -144,4 +169,3 @@ export const informJobListingStatus = async (jobListingId, accessToken) => {
     throw error;
   }
 };
-

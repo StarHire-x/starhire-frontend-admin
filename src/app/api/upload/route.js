@@ -3,7 +3,7 @@ export const uploadFile = async (file, accessToken) => {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res = await fetch(`http://localhost:8080/upload`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/upload`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,

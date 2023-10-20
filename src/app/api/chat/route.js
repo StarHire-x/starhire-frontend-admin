@@ -1,13 +1,16 @@
 export const getAllUserChats = async (userId, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/chat/user-chats/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/chat/user-chats/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
     if (!res.ok) {
       const errorData = await res.json();
       console.log(errorData);
@@ -22,14 +25,17 @@ export const getAllUserChats = async (userId, accessToken) => {
 
 export const getOneUserChat = async (chatId, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/chat/${chatId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/chat/${chatId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
     if (!res.ok) {
       const errorData = await res.json();
       console.log(errorData);
@@ -47,11 +53,11 @@ export const getOneUserChat = async (chatId, accessToken) => {
 
 export const createNewChatByRecruiter = async (newChat, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/chat`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/chat`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(newChat),
       cache: "no-store",

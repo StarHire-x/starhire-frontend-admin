@@ -1,13 +1,16 @@
 export const getAllForumCategories = async (accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/forum-categories`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
     if (!res.ok) {
       const errorData = await res.json();
       console.log(errorData);
@@ -23,7 +26,7 @@ export const getAllForumCategories = async (accessToken) => {
 export const getOneForumCategory = async (categoryId, accessToken) => {
   try {
     const res = await fetch(
-      `http://localhost:8080/forum-categories/${categoryId}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories/${categoryId}`,
       {
         method: "GET",
         headers: {
@@ -47,14 +50,17 @@ export const getOneForumCategory = async (categoryId, accessToken) => {
 
 export const updateForumCategory = async (request, id, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/forum-categories/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(request),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(request),
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();
@@ -68,14 +74,17 @@ export const updateForumCategory = async (request, id, accessToken) => {
 
 export const addForumCategory = async (request, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/forum-categories`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(request),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(request),
+      }
+    );
     if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message);
@@ -88,14 +97,17 @@ export const addForumCategory = async (request, accessToken) => {
 
 export const updateForumPost = async (request, id, accessToken) => {
   try {
-    const res = await fetch(`http://localhost:8080/forum-posts/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(request),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-posts/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(request),
+      }
+    );
 
     if (!res.ok) {
       const errorData = await res.json();

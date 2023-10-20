@@ -7,7 +7,7 @@ export const hashing = async (password) => {
 
 export const registerUser = async (request) => {
   try {
-    const res = await fetch("http://localhost:8080/users", {
+    const res = await fetch("${process.env.NEXT_PUBLIC_BASE_URL}/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -16,7 +16,10 @@ export const registerUser = async (request) => {
     });
     if (!res.ok) {
       const errorData = await res.json();
-      return NextResponse.json({ error: errorData.message }, { status: errorData.statusCode });
+      return NextResponse.json(
+        { error: errorData.message },
+        { status: errorData.statusCode }
+      );
       // throw new Error(errorData.message);
     }
     return await res;

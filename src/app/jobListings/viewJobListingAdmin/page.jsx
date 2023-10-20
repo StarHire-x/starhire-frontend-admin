@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
-import { Card } from 'primereact/card';
-import { Button } from 'primereact/button';
-import styles from './viewJobListingAdmin.module.css';
-import { Jolly_Lodger } from 'next/font/google';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import { Dialog } from 'primereact/dialog';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { viewOneJobListing } from '@/app/api/jobListings/route';
-import { updateJobListing } from '@/app/api/jobListings/route';
-import { informJobListingStatus } from '@/app/api/jobListings/route';
-import HumanIcon from '../../../../public/icon.png';
-import Enums from '@/common/enums/enums';
-import { Toast } from 'primereact/toast';
+import React, { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import styles from "./viewJobListingAdmin.module.css";
+import { Jolly_Lodger } from "next/font/google";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { Dialog } from "primereact/dialog";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { viewOneJobListing } from "@/app/api/jobListings/route";
+import { updateJobListing } from "@/app/api/jobListings/route";
+import { informJobListingStatus } from "@/app/api/jobListings/route";
+import HumanIcon from "../../../../public/icon.png";
+import Enums from "@/common/enums/enums";
+import { Toast } from "primereact/toast";
 
 export default function ViewJobListingAdmin() {
   const session = useSession();
@@ -24,15 +24,15 @@ export default function ViewJobListingAdmin() {
   const toast = useRef(null);
 
   const accessToken =
-    session.status === 'authenticated' &&
+    session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === 'authenticated' && session.data.user.userId;
+    session.status === "authenticated" && session.data.user.userId;
 
   const params = useSearchParams();
-  const id = params.get('id');
+  const id = params.get("id");
 
   const [jobListing, setJobListing] = useState({});
 
@@ -43,8 +43,8 @@ export default function ViewJobListingAdmin() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    if (session.status === 'unauthenticated' || session.status === 'loading') {
-      router.push('/login');
+    if (session.status === "unauthenticated" || session.status === "loading") {
+      router.push("/login");
     }
     if (accessToken) {
       viewOneJobListing(id, accessToken)
@@ -53,7 +53,7 @@ export default function ViewJobListingAdmin() {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.error('Error fetching job listings:', error);
+          console.error("Error fetching job listings:", error);
           setIsLoading(false);
         });
     }
@@ -61,7 +61,7 @@ export default function ViewJobListingAdmin() {
 
   /*
   useEffect(() => {
-    fetch(`http://localhost:8080/job-listing/${id}`, {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/job-listing/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -109,7 +109,7 @@ export default function ViewJobListingAdmin() {
   /*
   const updateJobListingStatusAPICall = async (accessToken, request, id) => {
     try {
-      const res = await fetch(`http://localhost:8080/job-listing/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/job-listing/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -134,7 +134,7 @@ export default function ViewJobListingAdmin() {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -151,15 +151,15 @@ export default function ViewJobListingAdmin() {
         handleRefresh();
       } else {
         toast.current.show({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Something went wrong! ERROR CODE:' + response.statusCode,
+          severity: "error",
+          summary: "Error",
+          detail: "Something went wrong! ERROR CODE:" + response.statusCode,
           life: 5000,
         });
       }
-      console.log('Status changed successfully:', response);
+      console.log("Status changed successfully:", response);
     } catch (error) {
-      console.error('Error changing status:', error);
+      console.error("Error changing status:", error);
     }
   };
 
@@ -170,14 +170,14 @@ export default function ViewJobListingAdmin() {
       const response = await informJobListingStatus(jobListingId, accessToken);
 
       if (response.status === 200) {
-        console.log('Job listing status email sent successfully');
+        console.log("Job listing status email sent successfully");
       } else {
         console.error(
-          'Failed to send job listing status email' + JSON.stringify(response)
+          "Failed to send job listing status email" + JSON.stringify(response)
         );
       }
     } catch (error) {
-      console.error('Error sending job listing status email:', error);
+      console.error("Error sending job listing status email:", error);
     }
   };
 
@@ -265,34 +265,34 @@ export default function ViewJobListingAdmin() {
         className={`${styles.backButton} p-button-outlined p-button-secondary`}
         onClick={() => handleOnBackClick()}
       />
-      {(jobListing.jobListingStatus === 'Unverified' ||
-        jobListing.jobListingStatus === 'Rejected' ||
-        jobListing.jobListingStatus === 'Archived') && (
+      {(jobListing.jobListingStatus === "Unverified" ||
+        jobListing.jobListingStatus === "Rejected" ||
+        jobListing.jobListingStatus === "Archived") && (
         <Button
           label="Approve"
           icon="pi pi-check"
           rounded
           className={`${styles.approveButton} p-button-outlined p-button-secondary`}
-          onClick={() => showUserDialog('Approved')}
+          onClick={() => showUserDialog("Approved")}
         />
       )}
-      {jobListing.jobListingStatus === 'Unverified' && (
+      {jobListing.jobListingStatus === "Unverified" && (
         <Button
           label="Reject"
           icon="pi pi-times"
           rounded
           className={`${styles.rejectButton} p-button-outlined p-button-secondary`}
-          onClick={() => showUserDialog('Rejected')}
+          onClick={() => showUserDialog("Rejected")}
         />
       )}
-      {(jobListing.jobListingStatus === 'Approved' ||
-        jobListing.jobListingStatus === 'Rejected') && (
+      {(jobListing.jobListingStatus === "Approved" ||
+        jobListing.jobListingStatus === "Rejected") && (
         <Button
           label="Archive"
           icon="pi pi-folder"
           rounded
           className={`${styles.archiveButton} p-button-outlined p-button-secondary`}
-          onClick={() => showUserDialog('Archived')}
+          onClick={() => showUserDialog("Archived")}
         />
       )}
     </div>
@@ -305,10 +305,10 @@ export default function ViewJobListingAdmin() {
         {isLoading ? (
           <ProgressSpinner
             style={{
-              display: 'flex',
-              height: '100vh',
-              'justify-content': 'center',
-              'align-items': 'center',
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
             }}
           />
         ) : (
@@ -318,11 +318,11 @@ export default function ViewJobListingAdmin() {
               subTitle={jobListing.jobLocation}
               footer={footer}
               className={styles.myCard}
-              style={{ borderRadius: '0' }}
+              style={{ borderRadius: "0" }}
             >
               <div className={styles.pCardContent}>
                 <div className={styles.companyInfo}>
-                  {jobListing.corporate.profilePictureUrl === '' ? (
+                  {jobListing.corporate.profilePictureUrl === "" ? (
                     <Image
                       src={HumanIcon}
                       alt="User"
@@ -348,7 +348,7 @@ export default function ViewJobListingAdmin() {
                 <strong>Required Documents</strong>
                 <p>{jobListing.requiredDocuments}</p>
                 <strong>Average Salary</strong>
-                <p>{'$' + jobListing.averageSalary + ' SGD'}</p>
+                <p>{"$" + jobListing.averageSalary + " SGD"}</p>
                 <strong>Job Start Date</strong>
                 <p>{formatDate(jobListing.jobStartDate)}</p>
 
@@ -362,24 +362,24 @@ export default function ViewJobListingAdmin() {
 
                 <strong>Corporate Details</strong>
                 <p>
-                  {'UEN Number: ' + jobListing.corporate.companyRegistrationId}
+                  {"UEN Number: " + jobListing.corporate.companyRegistrationId}
                 </p>
                 <p className={styles.secondP}>
-                  {'Address: ' + jobListing.corporate.companyAddress}
+                  {"Address: " + jobListing.corporate.companyAddress}
                 </p>
 
                 <strong>Job Listing Details</strong>
                 <p>{formatDate(jobListing.listingDate)}</p>
 
-                <p>{'Job Listing ID: ' + jobListing.jobListingId}</p>
+                <p>{"Job Listing ID: " + jobListing.jobListingId}</p>
 
                 <strong>Current Status of Job</strong>
                 <p
                   style={{
                     color:
-                      jobListing.jobListingStatus === 'Approved'
-                        ? 'green'
-                        : 'red',
+                      jobListing.jobListingStatus === "Approved"
+                        ? "green"
+                        : "red",
                   }}
                 >
                   {jobListing.jobListingStatus}
@@ -389,8 +389,8 @@ export default function ViewJobListingAdmin() {
 
             <Dialog
               visible={userDialog}
-              style={{ width: '32rem' }}
-              breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+              style={{ width: "32rem" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
               header="Confirm?"
               className="p-fluid"
               footer={userDialogFooter}

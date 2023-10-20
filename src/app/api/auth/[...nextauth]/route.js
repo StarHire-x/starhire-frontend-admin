@@ -21,10 +21,10 @@ const handler = NextAuth({
       async authorize(credentials) {
         const { email, password, role } = credentials;
         console.log(
-          `http://localhost:8080/users/login?email=${email}&password=${password}&role=${role}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/users/login?email=${email}&password=${password}&role=${role}`
         );
         const res = await fetch(
-          `http://localhost:8080/users/login?email=${email}&password=${password}&role=${role}`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/users/login?email=${email}&password=${password}&role=${role}`,
           {
             method: "GET",
             headers: {
