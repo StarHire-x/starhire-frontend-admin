@@ -80,7 +80,7 @@ const GuidelinesDisplay = ({ category, accessToken, closeDialog }) => {
   return (
     <>
       {guidelines?.map((guideline, index) => (
-        <div className={styles.forumGuideline}>
+        <div key={index} className={styles.forumGuideline}>
           <h3>{index + 1}.</h3>
           <div className={styles.inputText}>
             <InputTextarea
@@ -90,9 +90,13 @@ const GuidelinesDisplay = ({ category, accessToken, closeDialog }) => {
               onChange={(e) => editGuidelines(e.target.value, index)}
             />
             {validityChecker[index]?.length > 0 &&
-              validityChecker[index].map((errorMessage) => {
+              validityChecker[index].map((errorMessage, errorMessageIndex) => {
                 return (
-                  <small className="p-invalid" id="username-help">
+                  <small
+                    key={errorMessageIndex}
+                    className="p-invalid"
+                    id="username-help"
+                  >
                     {errorMessage}
                   </small>
                 );

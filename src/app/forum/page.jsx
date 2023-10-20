@@ -298,6 +298,7 @@ const ForumPage = () => {
             {filteredForumCategories &&
               filteredForumCategories.map((forumCategory, index) => (
                 <Card
+                  key={index}
                   className={
                     forumCategory?.isArchived
                       ? styles.archivedCardBox
