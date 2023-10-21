@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 import Enums from "@/common/enums/enums";
 import { Chart } from "primereact/chart";
 import { Dropdown } from "primereact/dropdown";
-import { getUserStatistics } from "@/app/api/auth/user/route";
+import { getUserBreakdown, getUserStatistics } from "@/app/api/auth/user/route";
 
 const UserStatisticsModal = ({ accessToken }) => {
   const [chartData, setChartData] = useState({});
@@ -18,11 +18,14 @@ const UserStatisticsModal = ({ accessToken }) => {
   const [chartData1, setChartData1] = useState({});
   const [chartOptions1, setChartOptions1] = useState({});
 
-  const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("total");
+  const [userPercentage, setUserPercentage] = useState({});
   const filterOptions = [
-    { label: "Filter 1", value: "filter1" },
-    { label: "Filter 2", value: "filter2" },
-    // ... (other filter options)
+    { label: "All users", value: "total" },
+    { label: "Job Seeker", value: "jobSeeker" },
+    { label: "Corporate", value: "corporate" },
+    { label: "Recrutier", value: "recruiter" },
+    { label: "Administrator", value: "administrator" },
   ];
 
   useEffect(async () => {
@@ -100,35 +103,62 @@ const UserStatisticsModal = ({ accessToken }) => {
 
     setChartData(data);
     setChartOptions(options);
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     const documentStyle = getComputedStyle(document.documentElement);
-    const data = {
-      labels: ["A", "B", "C"],
-      datasets: [
-        {
-          data: [300, 50, 100],
-          backgroundColor: [
-            documentStyle.getPropertyValue("--blue-500"),
-            documentStyle.getPropertyValue("--yellow-500"),
-            documentStyle.getPropertyValue("--green-500"),
-          ],
-          hoverBackgroundColor: [
-            documentStyle.getPropertyValue("--blue-400"),
-            documentStyle.getPropertyValue("--yellow-400"),
-            documentStyle.getPropertyValue("--green-400"),
-          ],
+
+    const fetchBreakdown = async () => {
+      const breakdownInfo = await getUserBreakdown(accessToken);
+
+      const activeData = breakdownInfo.active[selectedFilter];
+      const inactiveData = breakdownInfo.inactive[selectedFilter];
+
+      const sum = inactiveData + activeData;
+      const total = breakdownInfo.active['total'] + breakdownInfo.inactive['total'];
+
+      const activePercentage = Number(((activeData / sum) * 100).toFixed(2));
+      const inactivePercentage = Number(
+        ((inactiveData / sum) * 100).toFixed(2)
+      );
+      const proportion = Number(((sum / total) * 100).toFixed(2));
+      setUserPercentage({
+        active: activePercentage,
+        inactive: inactivePercentage,
+        proportion: proportion,
+      });
+      const data = {
+        labels: ["Active", "Inactive"],
+        datasets: [
+          {
+            data: [activeData, inactiveData],
+            backgroundColor: [
+              documentStyle.getPropertyValue("--blue-500"),
+              documentStyle.getPropertyValue("--red-500"),
+            ],
+            hoverBackgroundColor: [
+              documentStyle.getPropertyValue("--blue-400"),
+              documentStyle.getPropertyValue("--red-400"),
+            ],
+          },
+        ],
+      };
+      const options = {
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: true,
+            },
+          },
         },
-      ],
-    };
-    const options = {
-      cutout: "60%",
+      };
+
+      setChartData1(data);
+      setChartOptions1(options);
     };
 
-    setChartData1(data);
-    setChartOptions1(options);
-  }, []);
+    fetchBreakdown();
+  }, [accessToken, selectedFilter]);
 
   return (
     <div className={styles.mainContainer}>
@@ -195,7 +225,7 @@ const UserStatisticsModal = ({ accessToken }) => {
           <h2
             style={{ textAlign: "center", marginTop: "0", marginBottom: "0" }}
           >
-            Account Creation Analaysis
+            Account Creation Analysis
           </h2>
           <Chart type="line" data={chartData} options={chartOptions} />
         </Card>
@@ -203,10 +233,15 @@ const UserStatisticsModal = ({ accessToken }) => {
           <h2
             style={{ textAlign: "center", marginTop: "0", marginBottom: "0" }}
           >
-            User Status Statistics
+            {selectedFilter.charAt(0).toUpperCase() +
+              selectedFilter.slice(1).toLowerCase()}{" "}
+            Status Breakdown
           </h2>
+          <br />
+          <br />
           <div className={styles.filterContainer}>
             <div className={styles.filterColumn}>
+              <h2>Select Role</h2>
               <Dropdown
                 value={selectedFilter}
                 options={filterOptions}
@@ -215,16 +250,16 @@ const UserStatisticsModal = ({ accessToken }) => {
               />
               <br />
               <br />
-              <h2>User Proportion: 50%</h2>
+              <h2>User Proportion: {userPercentage.proportion}%</h2>
               <br />
               <br />
-              <h2>Active users: 45%</h2>
+              <h2>Active users: {userPercentage.active}%</h2>
               <br />
               <br />
-              <h2>Inactive users: 55%</h2>
+              <h2>Inactive users: {userPercentage.inactive}%</h2>
             </div>
             <Chart
-              type="doughnut"
+              type="pie"
               data={chartData1}
               options={chartOptions1}
               className={styles.doughnutChart}
