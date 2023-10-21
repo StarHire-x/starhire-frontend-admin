@@ -54,7 +54,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         {
           type: "bar",
           label: "Recruiter",
-          backgroundColor: documentStyle.getPropertyValue("--prrple-500"),
+          backgroundColor: documentStyle.getPropertyValue("--pink-500"),
           data: information.dataRecruiter,
         },
         {
