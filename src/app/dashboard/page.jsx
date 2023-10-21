@@ -38,8 +38,9 @@ const Dashboard = () => {
           <h2 className={styles.header}>
             Welcome Back {session.data.user.name}!
           </h2>
-          if(role === "Administrator")
-          {<UserStatisticsModal accessToken={accessToken} />}
+          {role === "Administrator" && (
+            <UserStatisticsModal accessToken={accessToken} />
+          )}
         </div>
       </>
     );
