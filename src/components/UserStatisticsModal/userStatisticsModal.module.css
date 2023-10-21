@@ -1,0 +1,64 @@
+.userStatisticsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.graphContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.mainContainer {
+    flex-direction: column;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.statisticsColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cardLayout {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.customCard {
+  width: 25rem;
+  overflow: auto;
+}
+
+.customCardGraph {
+    width: 50rem;
+    height: 40rem;
+    overflow: auto;
+}
+
+.doughnutChart {
+  width: 300px; /* Adjust as needed */
+  height: 300px; 
+}
+
+.filterContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filterColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+

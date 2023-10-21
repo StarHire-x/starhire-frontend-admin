@@ -4,6 +4,8 @@ import styles from "./page.module.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { Card } from "primereact/card";
+import UserStatisticsModal from "@/components/UserStatisticsModal/UserStatisticsModal";
 
 
 const Dashboard = () => {
@@ -11,7 +13,15 @@ const Dashboard = () => {
 
   const router = useRouter();
 
-  console.log(session);
+  const accessToken =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.accessToken;
+
+  const role =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.role;
 
   if (session.status === "loading") {
     return <ProgressSpinner />;
@@ -28,6 +38,8 @@ const Dashboard = () => {
           <h2 className={styles.header}>
             Welcome Back {session.data.user.name}!
           </h2>
+          if(role === "Administrator")
+          {<UserStatisticsModal accessToken={accessToken} />}
         </div>
       </>
     );
