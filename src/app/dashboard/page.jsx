@@ -18,6 +18,11 @@ const Dashboard = () => {
     session.data &&
     session.data.user.accessToken;
 
+  const role =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.role;
+
   if (session.status === "loading") {
     return <ProgressSpinner />;
   }
@@ -33,8 +38,8 @@ const Dashboard = () => {
           <h2 className={styles.header}>
             Welcome Back {session.data.user.name}!
           </h2>
-
-          <UserStatisticsModal accessToken={accessToken}/>
+          if(role === "Administrator")
+          {<UserStatisticsModal accessToken={accessToken} />}
         </div>
       </>
     );
