@@ -151,7 +151,7 @@ const UserStatisticsModal = ({ accessToken }) => {
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
               <h1>{overallStats.recruiter}</h1>
-              <h2>Recrutier</h2>
+              <h2>Recruiter</h2>
             </div>
             <div className={styles.statisticsColumn}>
               <i
