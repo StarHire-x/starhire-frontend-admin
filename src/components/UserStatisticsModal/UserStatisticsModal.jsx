@@ -166,8 +166,10 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1>{overallStats.jobSeeker}</h1>
-              <h2>Job Seeker</h2>
+              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+                {overallStats.jobSeeker}
+              </h1>
+              <h2 className="montserrat">Job Seeker</h2>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -180,8 +182,10 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1>{overallStats.recruiter}</h1>
-              <h2>Recruiter</h2>
+              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+                {overallStats.recruiter}
+              </h1>
+              <h2 className="montserrat">Recruiter</h2>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -194,8 +198,10 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1>{overallStats.corporate}</h1>
-              <h2>Corporate</h2>
+              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+                {overallStats.corporate}
+              </h1>
+              <h2 className="montserrat">Corporate</h2>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -208,8 +214,10 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1>{overallStats.administrator}</h1>
-              <h2>Administrator</h2>
+              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+                {overallStats.administrator}
+              </h1>
+              <h2 className="montserrat">Administrator</h2>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -224,6 +232,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCardGraph}>
           <h2
             style={{ textAlign: "center", marginTop: "0", marginBottom: "0" }}
+            className="montserrat"
           >
             Account Creation Analysis
           </h2>
@@ -232,6 +241,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCardGraph}>
           <h2
             style={{ textAlign: "center", marginTop: "0", marginBottom: "0" }}
+            className="montserrat"
           >
             {selectedFilter.charAt(0).toUpperCase() +
               selectedFilter.slice(1).toLowerCase()}{" "}
@@ -241,7 +251,7 @@ const UserStatisticsModal = ({ accessToken }) => {
           <br />
           <div className={styles.filterContainer}>
             <div className={styles.filterColumn}>
-              <h2>Select Role</h2>
+              <h2 className="montserrat">Select Role</h2>
               <Dropdown
                 value={selectedFilter}
                 options={filterOptions}
@@ -250,13 +260,19 @@ const UserStatisticsModal = ({ accessToken }) => {
               />
               <br />
               <br />
-              <h2>User Proportion: {userPercentage.proportion}%</h2>
+              <h2 className="montserrat">
+                User Ratio: {userPercentage.proportion}%
+              </h2>
               <br />
               <br />
-              <h2>Active users: {userPercentage.active}%</h2>
+              <h2 className="montserrat">
+                Active users: {userPercentage.active}%
+              </h2>
               <br />
               <br />
-              <h2>Inactive users: {userPercentage.inactive}%</h2>
+              <h2 className="montserrat">
+                Inactive users: {userPercentage.inactive}%
+              </h2>
             </div>
             <Chart
               type="pie"

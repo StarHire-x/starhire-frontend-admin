@@ -1,6 +1,6 @@
 import Navbar from '@/components/navbar/Navbar'
 import './globals.css'
-import { Inter, Roboto, Poppins  } from 'next/font/google';
+import { Inter, Roboto, Poppins, Montserrat  } from 'next/font/google';
 import Footer from '@/components/footer/Footer';
 import { ThemeProvider } from '@/context/ThemeContext';
 import AuthProvider from '@/components/AuthProvider/AuthProvider';
@@ -10,6 +10,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
 const inter = Inter({ subsets: ['latin'] })
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata = {
   title: 'StarHire Adminstrative Portal',

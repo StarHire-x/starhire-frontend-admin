@@ -40,3 +40,7 @@ a {
   flex-direction: column;
   justify-content: space-between;
 }
+
+.montserrat {
+    font-family: 'Montserrat', sans-serif;
+}
