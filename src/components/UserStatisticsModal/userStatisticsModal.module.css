@@ -37,12 +37,14 @@
 .customCard {
   width: 25rem;
   overflow: auto;
+  background-color: #87CEEB;
 }
 
 .customCardGraph {
     width: 50rem;
     height: 40rem;
     overflow: auto;
+    background-color: #87CEEB;
 }
 
 .doughnutChart {
