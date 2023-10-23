@@ -28,81 +28,85 @@ const UserStatisticsModal = ({ accessToken }) => {
     { label: "Administrator", value: "administrator" },
   ];
 
-  useEffect(async () => {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue("--text-color");
-    const textColorSecondary = documentStyle.getPropertyValue(
-      "--text-color-secondary"
-    );
-    const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+  useEffect(() => {
+    const fetchData = async () => {
+      const documentStyle = getComputedStyle(document.documentElement);
+      const textColor = documentStyle.getPropertyValue("--text-color");
+      const textColorSecondary = documentStyle.getPropertyValue(
+        "--text-color-secondary"
+      );
+      const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
 
-    const information = await getUserStatistics(accessToken);
-    setOverallStats(information.overall)
+      const information = await getUserStatistics(accessToken);
+      setOverallStats(information.overall);
 
-    const data = {
-      labels: information.labels,
-      datasets: [
-        {
-          type: "bar",
-          label: "Job Seeker",
-          backgroundColor: documentStyle.getPropertyValue("--blue-500"),
-          data: information.dataJobSeeker,
+      const data = {
+        labels: information.labels,
+        datasets: [
+          {
+            type: "bar",
+            label: "Job Seeker",
+            backgroundColor: documentStyle.getPropertyValue("--blue-500"),
+            data: information.dataJobSeeker,
+          },
+          {
+            type: "bar",
+            label: "Corporate",
+            backgroundColor: documentStyle.getPropertyValue("--orange-500"),
+            data: information.dataCorporate,
+          },
+          {
+            type: "bar",
+            label: "Recruiter",
+            backgroundColor: documentStyle.getPropertyValue("--pink-500"),
+            data: information.dataRecruiter,
+          },
+          {
+            type: "bar",
+            label: "Administrator",
+            backgroundColor: documentStyle.getPropertyValue("--gray-500"),
+            data: information.dataAdmin,
+          },
+        ],
+      };
+
+      const options = {
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+          legend: {
+            labels: {
+              color: textColor,
+            },
+          },
         },
-        {
-          type: "bar",
-          label: "Corporate",
-          backgroundColor: documentStyle.getPropertyValue("--orange-500"),
-          data: information.dataCorporate,
+        scales: {
+          x: {
+            stacked: true,
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+          },
+          y: {
+            stacked: true,
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+          },
         },
-        {
-          type: "bar",
-          label: "Recruiter",
-          backgroundColor: documentStyle.getPropertyValue("--pink-500"),
-          data: information.dataRecruiter,
-        },
-        {
-          type: "bar",
-          label: "Administrator",
-          backgroundColor: documentStyle.getPropertyValue("--gray-500"),
-          data: information.dataAdmin,
-        },
-      ],
+      };
+
+      setChartData(data);
+      setChartOptions(options);
     };
 
-    const options = {
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      plugins: {
-        legend: {
-          labels: {
-            color: textColor,
-          },
-        },
-      },
-      scales: {
-        x: {
-          stacked: true,
-          ticks: {
-            color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-          },
-        },
-        y: {
-          stacked: true,
-          ticks: {
-            color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-          },
-        },
-      },
-    };
-
-    setChartData(data);
-    setChartOptions(options);
+    fetchData();
   }, [accessToken]);
 
   useEffect(() => {
