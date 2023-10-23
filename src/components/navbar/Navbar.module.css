@@ -34,13 +34,23 @@
     border-radius: 3px;
 }
 
-.linkContainer {
+.linkContainerAdmin {    
+    position: relative;
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.linkContainerRecruiter {    
     position: relative;
     display: inline-block;
     margin-right: 20px;
+    font-size: 18px;
 }
   
-.linkContainer:hover .dropdown {
+  
+.linkContainerAdmin:hover .dropdown,
+.linkContainerRecruiter:hover .dropdown {
     display: block;
 }  
  

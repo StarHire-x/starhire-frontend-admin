@@ -42,6 +42,16 @@ const adminLinks = [
     title: 'Ticket Management',
     url: '/ticketManagement',
   },
+  {
+    id: 7,
+    title: 'Invoice',
+    url: '/invoice',
+  },
+  {
+    id: 8,
+    title: 'Commission',
+    url: '/commission',
+  },
 ];
 
 const recruiterLinks = [
@@ -112,7 +122,7 @@ const Navbar = () => {
           adminLinks.map((link) => (
             <div
               key={link.id}
-              className={styles.linkContainer}
+              className={styles.linkContainerAdmin}
               onMouseEnter={() => handleLinkMouseEnter(link.id)}
               onMouseLeave={handleLinkMouseLeave}
             >
@@ -139,7 +149,7 @@ const Navbar = () => {
           recruiterLinks.map((link) => (
             <div
               key={link.id}
-              className={styles.linkContainer}
+              className={styles.linkContainerRecruiter}
               onMouseEnter={() => handleLinkMouseEnter(link.id)}
               onMouseLeave={handleLinkMouseLeave}
             >
