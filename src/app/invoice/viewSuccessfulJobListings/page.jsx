@@ -16,11 +16,9 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
-import {
-  getAllCorporates,
-  getCorporateDetails,
-} from "../../api/auth/user/route";
+import { getCorporateDetails } from "../../api/auth/user/route";
 import moment from "moment";
+import { createInvoice } from "@/app/api/invoice/route";
 
 export default function ViewSuccessfulJobListings() {
   const session = useSession();
@@ -50,6 +48,7 @@ export default function ViewSuccessfulJobListings() {
   const [corporate, setCorporate] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [expandedRows, setExpandedRows] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -83,15 +82,6 @@ export default function ViewSuccessfulJobListings() {
         try {
           const corporate = await getCorporateDetails(corporateId, accessToken);
           setCorporate(corporate.data);
-
-          // const jobListings = corporate.data.jobListings.filter(
-          //   (jobListing) => {
-          //     return jobListing.jobApplications.some(
-          //       (jobApplication) =>
-          //         jobApplication.jobApplicationStatus === "Offer_Accepted"
-          //     );
-          //   }
-          // );
           setSuccessfulJobListings(corporate.data.jobListings);
         } catch (error) {
           console.log("There was a problem fetching the corporate user", error);
@@ -100,12 +90,12 @@ export default function ViewSuccessfulJobListings() {
       fetchOneCorporate();
     }
     setIsLoading(false);
-  }, [accessToken]);
+  }, [refreshData, accessToken]);
 
-  useEffect(() => {
-    console.log("SEEHERE!");
-    console.log(selectedRows);
-  });
+  // useEffect(() => {
+  //   console.log("SEEHERE!");
+  //   console.log(selectedRows);
+  // });
 
   const renderAdminHeader = () => {
     return (
@@ -151,19 +141,43 @@ export default function ViewSuccessfulJobListings() {
     return renderRowExpansionHeader();
   };
 
-  const handleSuccessfulJobListings = (rowData) => {
-    if (accessToken) {
-      return;
-    }
-  };
-
   const handleOnBackClick = () => {
     router.back();
   };
 
-  const handleCreateClick = () => {
-    console.log("selected rows");
-    console.log(selectedRows);
+  const handleCreateClick = async () => {
+    let totalCommission = 0;
+    let jobApplicationIdsArray = [];
+    for (let i = 0; i < selectedRows.length; i++) {
+      const jobApplication = selectedRows[i];
+      totalCommission =
+        totalCommission + jobApplication.jobListing.averageSalary;
+      jobApplicationIdsArray.push(jobApplication.jobApplicationId);
+    }
+
+    const startDate = new Date();
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + 14);
+
+    const request = {
+      invoiceDate: startDate,
+      dueDate: endDate,
+      billingAddress: corporate.companyAddress,
+      totalAmount: totalCommission,
+      isPaid: false,
+      administratorId: currentUserId,
+      corporateId: corporate.userId,
+      jobApplicationIds: jobApplicationIdsArray,
+    };
+
+    try {
+      const response = await createInvoice(request, accessToken);
+      console.log("Invoice has been created successfully!" + response);
+      setRefreshData((prev) => !prev);
+      setSelectedRows([]);
+    } catch (error) {
+      console.error("Error creating invoice:", error);
+    }
   };
 
   //Row Expansion Codes
@@ -201,7 +215,7 @@ export default function ViewSuccessfulJobListings() {
             // field="averageSalary"
             header="Commission"
             sortable
-            body={(rowData) => `$${averageSalary}`} 
+            body={(rowData) => `$${averageSalary}`}
           ></Column>
         </DataTable>
       </div>
@@ -230,7 +244,8 @@ export default function ViewSuccessfulJobListings() {
                 rowExpansionTemplate({
                   jobApplications: data.jobApplications.filter(
                     (jobApplication) =>
-                      jobApplication.jobApplicationStatus === "Offer_Accepted"
+                      jobApplication.jobApplicationStatus ===
+                        "Offer_Accepted" && jobApplication.invoice === null
                   ),
                   averageSalary: data.averageSalary,
                 })
