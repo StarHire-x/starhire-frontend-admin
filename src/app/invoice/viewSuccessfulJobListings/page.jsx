@@ -1,5 +1,5 @@
 "use client";
-import styles from "./invoice.module.css";
+import styles from "./viewSuccessfulJobListings.module.css";
 
 import React, { useEffect, useState, useRef } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
@@ -11,15 +11,17 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { Dialog } from "primereact/dialog";
 import { useSession } from "next-auth/react";
-import HumanIcon from "../../../public/icon.png";
+import HumanIcon from "../../../../public/icon.png";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
-import { getAllCorporates } from "../api/auth/user/route";
+import {
+  getAllCorporates,
+  getCorporateDetails,
+} from "../../api/auth/user/route";
 
-
-export default function InvoicePage() {
+export default function ViewSuccessfulJobListings() {
   const session = useSession();
   const router = useRouter();
 
@@ -44,6 +46,7 @@ export default function InvoicePage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState([]);
+  const [corporate, setCorporate] = useState([]);
   const [selectedRow, setSelectedRow] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -68,6 +71,10 @@ export default function InvoicePage() {
     setGlobalFilterValue(value);
   };
 
+  const params = useSearchParams();
+  const corporateId = params.get("corporateId");
+
+  //Fetch all corporates
   useEffect(() => {
     if (accessToken) {
       const fetchAllCorporates = async () => {
@@ -86,9 +93,25 @@ export default function InvoicePage() {
     setIsLoading(false);
   }, [accessToken]);
 
+  //Fetch the corporate details
+  useEffect(() => {
+    if (accessToken) {
+      const fetchOneCorporate = async () => {
+        try {
+          const corporate = await getCorporateDetails(corporateId, accessToken);
+          setCorporate(corporate.data);
+        } catch (error) {
+          console.log("There was a problem fetching the corporate user", error);
+        }
+      };
+      fetchOneCorporate();
+    }
+    setIsLoading(false);
+  }, [accessToken]);
+
   useEffect(() => {
     console.log("SEEHERE!");
-    console.log(users);
+    console.log(corporate);
   });
 
   const renderAdminHeader = () => {
@@ -100,7 +123,7 @@ export default function InvoicePage() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">All Corporate Users</h2>
+        <h2 className="m-0">Corporate User - {corporate.userName}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -118,7 +141,13 @@ export default function InvoicePage() {
   };
 
   const handleSuccessfulJobListings = (rowData) => {
-    router.push(`/invoice/viewSuccessfulJobListings?corporateId=${rowData.userId}`);
+    if (accessToken) {
+      return;
+    }
+  };
+
+  const handleOnBackClick = () => {
+    router.back();
   };
 
   const usernameBodyTemplate = (rowData) => {
@@ -208,6 +237,16 @@ export default function InvoicePage() {
                 style={{ minWidth: "1rem" }}
               ></Column>
             </DataTable>
+            <div className={styles.bottomButtonContainer}>
+              <Button
+                label="Back"
+                icon="pi pi-chevron-left"
+                rounded
+                size="medium"
+                className="p-button-info"
+                onClick={() => handleOnBackClick()}
+              />
+            </div>
           </div>
         </div>
       )}

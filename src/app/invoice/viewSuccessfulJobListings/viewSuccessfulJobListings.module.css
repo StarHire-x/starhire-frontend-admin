@@ -1,0 +1,62 @@
+.buttonContainer {
+  display: flex; /* Use flexbox to arrange buttons horizontally */
+  align-items: center; /* Align buttons vertically in the center */
+}
+
+.bottomButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.back-button {
+  border: none !important;
+  color: white !important;
+  background-color: #007bff !important;
+  transition: all 0.3s !important;
+  margin-right: 30px;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.2) 100%
+  ) !important;
+}
+
+.back-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.transparent-circle:before {
+  content: "";
+  display: inline-block;
+  width: 16px; /* Adjust the circle's width to your preference */
+  height: 16px; /* Adjust the circle's height to your preference */
+  border: 2px solid currentColor; /* Uses the current font color for the border */
+  border-radius: 50%; /* Makes it a circle */
+  vertical-align: middle; /* Aligns it with the text */
+  margin-right: 5px; /* Space between the circle and label */
+}
+
+.container {
+  padding: 0;
+}
+
+.contentContainer {
+}
+
+.imageContainer {
+  display: flex;
+  flex-direction: column; /* To ensure children are stacked vertically */
+  align-items: center; /* Horizontally center the children */
+  justify-content: center; /* Vertically center the children (though it's optional here) */
+  gap: 1px; /* Gives a little space between the image and the h6 */
+}
+
+.avatarImageContainer {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* To make it circular */
+  object-fit: cover; /* To ensure the image maintains its aspect ratio */
+  margin-bottom: 0px; /* Add some spacing below the image */
+}
