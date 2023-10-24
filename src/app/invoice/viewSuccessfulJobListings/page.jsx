@@ -19,10 +19,12 @@ import { InputText } from "primereact/inputtext";
 import { getCorporateDetails } from "../../api/auth/user/route";
 import moment from "moment";
 import { createInvoice } from "@/app/api/invoice/route";
+import { Toast } from "primereact/toast";
 
 export default function ViewSuccessfulJobListings() {
   const session = useSession();
   const router = useRouter();
+  const toast = useRef(null);
 
   if (session.status === "unauthenticated") {
     router.push("/login");
@@ -175,8 +177,20 @@ export default function ViewSuccessfulJobListings() {
       console.log("Invoice has been created successfully!" + response);
       setRefreshData((prev) => !prev);
       setSelectedRows([]);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Invoice created successfully!",
+        life: 5000,
+      });
     } catch (error) {
       console.error("Error creating invoice:", error);
+      toast.current.show({
+        severity: "error",
+        summary: "error",
+        detail: "Error creating invoice!",
+        life: 5000,
+      });
     }
   };
 
@@ -224,6 +238,7 @@ export default function ViewSuccessfulJobListings() {
 
   return (
     <div>
+      <Toast ref={toast} />
       {isLoading ? (
         <ProgressSpinner
           style={{
