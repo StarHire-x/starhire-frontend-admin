@@ -1,28 +1,3 @@
-/* CSS */
-.buttonContainer {
-  display: flex; /* Use flexbox to arrange buttons horizontally */
-  align-items: center; /* Align buttons vertically in the center */
-}
-
-.bottomButtonContainer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-}
-
-.back-button {
-  border: none !important;
-  color: white !important;
-  background-color: #007bff !important;
-  transition: all 0.3s !important;
-  margin-right: 30px;
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.2) 100%
-  ) !important;
-}
-
 .transparent-circle:before {
   content: "";
   display: inline-block;
@@ -32,11 +7,6 @@
   border-radius: 50%; /* Makes it a circle */
   vertical-align: middle; /* Aligns it with the text */
   margin-right: 5px; /* Space between the circle and label */
-}
-
-.back-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
 .container {

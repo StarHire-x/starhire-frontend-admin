@@ -1,9 +1,7 @@
-//feel free to change the api route as you need.
-
-// export const getAll = async (accessToken) => {
+// export const getAllCorporates = async (accessToken) => {
 //   try {
 //     const res = await fetch(
-//       `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories`,
+//       `${process.env.NEXT_PUBLIC_BASE_URL}/corporate/all`,
 //       {
 //         method: "GET",
 //         headers: {
@@ -20,7 +18,7 @@
 //     }
 //     return await res.json();
 //   } catch (error) {
-//     console.log("There was a problem fetching the forum categories", error);
+//     console.log("There was a problem fetching the corporate users", error);
 //     throw error;
 //   }
 // };

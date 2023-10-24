@@ -15,9 +15,9 @@ import HumanIcon from "../../../public/icon.png";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
-import { viewAssignedJobSeekersByJobListing } from "@/app/api/jobListings/route";
 import { InputText } from "primereact/inputtext";
-import { getUserByUserId, getUsers } from "@/app/api/auth/user/route";
+import { getAllCorporates } from "../api/auth/user/route";
+
 
 export default function InvoicePage() {
   const session = useSession();
@@ -40,13 +40,10 @@ export default function InvoicePage() {
     session.data &&
     session.data.user.role;
 
-  const params = useSearchParams();
-  const id = params.get("id");
-  const jobListingTitle = params.get("title");
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [users, setUsers] = useState({});
+  const [users, setUsers] = useState([]);
   const [selectedRow, setSelectedRow] = useState([]);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -73,32 +70,26 @@ export default function InvoicePage() {
 
   useEffect(() => {
     if (accessToken) {
-      viewAssignedJobSeekersByJobListing(id, currentUserId, accessToken)
-        .then(async (data) => {
-          //can do another map here to call another api fetch to fetch all the job seeker details based on the job seeker id.
-          const assignedJobSeekers = [];
-          for (const x of data) {
-            const jobSeeker = await getUserByUserId(
-              x.jobSeekerId,
-              "Job_Seeker",
-              accessToken
-            );
-            assignedJobSeekers.push(jobSeeker.data);
-          }
-          setUsers(assignedJobSeekers);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching job assignment details:", error);
-          setIsLoading(false);
-        });
+      const fetchAllCorporates = async () => {
+        try {
+          const allCorporates = await getAllCorporates(accessToken);
+          setUsers(allCorporates.data);
+        } catch (error) {
+          console.log(
+            "There was a problem fetching the corporate users",
+            error
+          );
+        }
+      };
+      fetchAllCorporates();
     }
-  }, [id, currentUserId, accessToken]);
+    setIsLoading(false);
+  }, [accessToken]);
 
-  // useEffect(() => {
-  //   console.log("SEEHERE!");
-  //   console.log(jobListingTitle);
-  // });
+  useEffect(() => {
+    console.log("SEEHERE!");
+    console.log(users);
+  });
 
   const renderAdminHeader = () => {
     return (
@@ -200,7 +191,7 @@ export default function InvoicePage() {
               onSelectionChange={(e) => setSelectedRow(e.value)}
               filters={filters}
               filterDisplay="menu"
-              globalFilterFields={["userName", "email", "contactNo", "role"]}
+              globalFilterFields={["userName", "email", "contactNo"]}
               emptyMessage="No corporate users found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               style={{ minWidth: "50vw" }}
