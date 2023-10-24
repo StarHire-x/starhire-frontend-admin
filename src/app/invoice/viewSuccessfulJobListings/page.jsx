@@ -48,7 +48,8 @@ export default function ViewSuccessfulJobListings() {
   const [isLoading, setIsLoading] = useState(true);
   const [successfulJobListings, setSuccessfulJobListings] = useState([]);
   const [corporate, setCorporate] = useState([]);
-  const [selectedRow, setSelectedRow] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [expandedRows, setExpandedRows] = useState(null);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -82,6 +83,15 @@ export default function ViewSuccessfulJobListings() {
         try {
           const corporate = await getCorporateDetails(corporateId, accessToken);
           setCorporate(corporate.data);
+
+          // const jobListings = corporate.data.jobListings.filter(
+          //   (jobListing) => {
+          //     return jobListing.jobApplications.some(
+          //       (jobApplication) =>
+          //         jobApplication.jobApplicationStatus === "Offer_Accepted"
+          //     );
+          //   }
+          // );
           setSuccessfulJobListings(corporate.data.jobListings);
         } catch (error) {
           console.log("There was a problem fetching the corporate user", error);
@@ -94,7 +104,7 @@ export default function ViewSuccessfulJobListings() {
 
   useEffect(() => {
     console.log("SEEHERE!");
-    console.log(corporate);
+    console.log(selectedRows);
   });
 
   const renderAdminHeader = () => {
@@ -106,7 +116,7 @@ export default function ViewSuccessfulJobListings() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Successful Job Listings for {corporate.userName}</h2>
+        <h2 className="m-0">Job Listings of {corporate.userName}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -119,8 +129,26 @@ export default function ViewSuccessfulJobListings() {
     );
   };
 
+  const renderRowExpansionHeader = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="m-0">Successful Job Applications</h2>
+      </div>
+    );
+  };
+
   const header = () => {
     return renderAdminHeader();
+  };
+
+  const rowExpansionHeader = () => {
+    return renderRowExpansionHeader();
   };
 
   const handleSuccessfulJobListings = (rowData) => {
@@ -133,19 +161,50 @@ export default function ViewSuccessfulJobListings() {
     router.back();
   };
 
-  const actionBodyTemplate = (rowData) => {
+  const handleCreateClick = () => {
+    console.log("selected rows");
+    console.log(selectedRows);
+  };
+
+  //Row Expansion Codes
+  const allowExpansion = (rowData) => {
+    return rowData.jobApplications.length > 0;
+  };
+
+  const rowExpansionTemplate = (data) => {
+    const { jobApplications, averageSalary } = data;
     return (
-      <React.Fragment>
-        <div className={styles.buttonContainer}>
-          <Button
-            label="View More Details"
-            outlined
-            rounded
-            size="small"
-            onClick={() => handleSuccessfulJobListings(rowData)}
-          />
-        </div>
-      </React.Fragment>
+      <div className="p-3">
+        <DataTable
+          header={rowExpansionHeader}
+          value={jobApplications}
+          emptyMessage="No successful job listings found."
+          selection={selectedRows}
+          onSelectionChange={(e) => setSelectedRows(e.value)}
+          style={{ margin: "10px", border: "1px solid #000" }}
+        >
+          <Column
+            selectionMode="multiple"
+            headerStyle={{ width: "3rem" }}
+          ></Column>
+          <Column
+            field="jobApplicationId"
+            header="Job Application ID"
+            sortable
+          ></Column>
+          <Column
+            field="recruiter.userName"
+            header="Assigned By"
+            sortable
+          ></Column>
+          <Column
+            // field="averageSalary"
+            header="Commission"
+            sortable
+            body={(rowData) => `$${averageSalary}`} 
+          ></Column>
+        </DataTable>
+      </div>
     );
   };
 
@@ -165,23 +224,32 @@ export default function ViewSuccessfulJobListings() {
           <div>
             <DataTable
               value={successfulJobListings}
+              expandedRows={expandedRows}
+              onRowToggle={(e) => setExpandedRows(e.data)}
+              rowExpansionTemplate={(data) =>
+                rowExpansionTemplate({
+                  jobApplications: data.jobApplications.filter(
+                    (jobApplication) =>
+                      jobApplication.jobApplicationStatus === "Offer_Accepted"
+                  ),
+                  averageSalary: data.averageSalary,
+                })
+              }
               paginator
               ref={dt}
               header={header}
               rows={10}
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
               rowsPerPageOptions={[10, 25, 50]}
-              dataKey="id"
-              selectionMode="checkbox"
-              selection={selectedRow}
-              onSelectionChange={(e) => setSelectedRow(e.value)}
+              dataKey="jobListingId"
               filters={filters}
               filterDisplay="menu"
-              globalFilterFields={["userName", "email", "contactNo"]}
+              globalFilterFields={["jobListingId", "title"]}
               emptyMessage="No corporate users found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               style={{ minWidth: "50vw" }}
             >
+              <Column expander={allowExpansion} style={{ width: "5rem" }} />
               <Column
                 field="jobListingId"
                 header="Job Listing ID"
@@ -192,12 +260,9 @@ export default function ViewSuccessfulJobListings() {
                 field="listingDate"
                 header="Posted On"
                 sortable
-                body={(rowData) => moment(rowData.listingDate).format("YYYY/MM/DD")}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                exportable={false}
-                style={{ minWidth: "1rem" }}
+                body={(rowData) =>
+                  moment(rowData.listingDate).format("YYYY/MM/DD")
+                }
               ></Column>
             </DataTable>
             <div className={styles.bottomButtonContainer}>
@@ -208,6 +273,13 @@ export default function ViewSuccessfulJobListings() {
                 size="medium"
                 className="p-button-info"
                 onClick={() => handleOnBackClick()}
+              />
+              <Button
+                label="Create Invoice"
+                rounded
+                size="medium"
+                className="p-button-warning"
+                onClick={() => handleCreateClick()}
               />
             </div>
           </div>
