@@ -206,7 +206,7 @@ export default function ViewSuccessfulJobListings() {
         <DataTable
           header={rowExpansionHeader}
           value={jobApplications}
-          emptyMessage="No successful job listings found."
+          emptyMessage="No job applications found."
           selection={selectedRows}
           onSelectionChange={(e) => setSelectedRows(e.value)}
           style={{ margin: "10px", border: "1px solid #000" }}
