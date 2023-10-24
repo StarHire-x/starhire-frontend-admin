@@ -20,6 +20,7 @@ import {
   getAllCorporates,
   getCorporateDetails,
 } from "../../api/auth/user/route";
+import moment from "moment";
 
 export default function ViewSuccessfulJobListings() {
   const session = useSession();
@@ -45,7 +46,7 @@ export default function ViewSuccessfulJobListings() {
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [users, setUsers] = useState([]);
+  const [successfulJobListings, setSuccessfulJobListings] = useState([]);
   const [corporate, setCorporate] = useState([]);
   const [selectedRow, setSelectedRow] = useState([]);
   const [filters, setFilters] = useState({
@@ -74,25 +75,6 @@ export default function ViewSuccessfulJobListings() {
   const params = useSearchParams();
   const corporateId = params.get("corporateId");
 
-  //Fetch all corporates
-  useEffect(() => {
-    if (accessToken) {
-      const fetchAllCorporates = async () => {
-        try {
-          const allCorporates = await getAllCorporates(accessToken);
-          setUsers(allCorporates.data);
-        } catch (error) {
-          console.log(
-            "There was a problem fetching the corporate users",
-            error
-          );
-        }
-      };
-      fetchAllCorporates();
-    }
-    setIsLoading(false);
-  }, [accessToken]);
-
   //Fetch the corporate details
   useEffect(() => {
     if (accessToken) {
@@ -100,6 +82,7 @@ export default function ViewSuccessfulJobListings() {
         try {
           const corporate = await getCorporateDetails(corporateId, accessToken);
           setCorporate(corporate.data);
+          setSuccessfulJobListings(corporate.data.jobListings);
         } catch (error) {
           console.log("There was a problem fetching the corporate user", error);
         }
@@ -123,7 +106,7 @@ export default function ViewSuccessfulJobListings() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Corporate User - {corporate.userName}</h2>
+        <h2 className="m-0">Successful Job Listings for {corporate.userName}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -148,30 +131,6 @@ export default function ViewSuccessfulJobListings() {
 
   const handleOnBackClick = () => {
     router.back();
-  };
-
-  const usernameBodyTemplate = (rowData) => {
-    const userName = rowData.userName;
-    const avatar = rowData.profilePictureUrl;
-
-    return (
-      <div className={styles.imageContainer}>
-        {avatar !== "" ? (
-          <img
-            alt={avatar}
-            src={avatar}
-            className={styles.avatarImageContainer}
-          />
-        ) : (
-          <Image
-            src={HumanIcon}
-            alt="Icon"
-            className={styles.avatarImageContainer}
-          />
-        )}
-        <span>{userName}</span>
-      </div>
-    );
   };
 
   const actionBodyTemplate = (rowData) => {
@@ -205,7 +164,7 @@ export default function ViewSuccessfulJobListings() {
         <div className={styles.contentContainer}>
           <div>
             <DataTable
-              value={users}
+              value={successfulJobListings}
               paginator
               ref={dt}
               header={header}
@@ -224,13 +183,17 @@ export default function ViewSuccessfulJobListings() {
               style={{ minWidth: "50vw" }}
             >
               <Column
-                field="userName"
-                header="User Name"
+                field="jobListingId"
+                header="Job Listing ID"
                 sortable
-                body={usernameBodyTemplate}
               ></Column>
-              <Column field="email" header="Email" sortable></Column>
-              <Column field="contactNo" header="Contact No" sortable></Column>
+              <Column field="title" header="Title" sortable></Column>
+              <Column
+                field="listingDate"
+                header="Posted On"
+                sortable
+                body={(rowData) => moment(rowData.listingDate).format("YYYY/MM/DD")}
+              ></Column>
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
