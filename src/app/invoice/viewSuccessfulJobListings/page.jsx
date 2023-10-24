@@ -46,7 +46,7 @@ export default function ViewSuccessfulJobListings() {
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [successfulJobListings, setSuccessfulJobListings] = useState([]);
+  const [jobListings, setJobListings] = useState([]);
   const [corporate, setCorporate] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [expandedRows, setExpandedRows] = useState(null);
@@ -84,7 +84,7 @@ export default function ViewSuccessfulJobListings() {
         try {
           const corporate = await getCorporateDetails(corporateId, accessToken);
           setCorporate(corporate.data);
-          setSuccessfulJobListings(corporate.data.jobListings);
+          setJobListings(corporate.data.jobListings);
         } catch (error) {
           console.log("There was a problem fetching the corporate user", error);
         }
@@ -252,7 +252,7 @@ export default function ViewSuccessfulJobListings() {
         <div className={styles.contentContainer}>
           <div>
             <DataTable
-              value={successfulJobListings}
+              value={jobListings}
               expandedRows={expandedRows}
               onRowToggle={(e) => setExpandedRows(e.data)}
               rowExpansionTemplate={(data) =>
