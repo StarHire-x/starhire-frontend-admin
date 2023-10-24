@@ -61,6 +61,10 @@
 .filterColumn {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 }
 
+.headerGraph {
+  display: flex;
+  justify-content: space-between;
+}
