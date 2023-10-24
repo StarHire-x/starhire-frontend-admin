@@ -16,7 +16,7 @@ import { viewAllTickets, resolveTicket } from '../api/ticket/route';
 import Enums from '@/common/enums/enums';
 import styles from './page.module.css';
 
-export default function TicketManagement() {
+const TicketManagement = () => {
   const session = useSession();
 
   const router = useRouter();
@@ -442,3 +442,5 @@ export default function TicketManagement() {
     </div>
   );
 }
+
+export default TicketManagement;
