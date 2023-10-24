@@ -28,86 +28,101 @@ const UserStatisticsModal = ({ accessToken }) => {
     { label: "Administrator", value: "administrator" },
   ];
 
+  const [selectedFilter1, setSelectedFilter1] = useState("week");
+  const filterOptions1 = [
+    { label: "Month", value: "month" },
+    { label: "Week", value: "week" },
+    { label: "Day", value: "day" },
+  ];
+
   useEffect(() => {
     const fetchData = async () => {
       const documentStyle = getComputedStyle(document.documentElement);
-      const textColor = documentStyle.getPropertyValue("--text-color");
-      const textColorSecondary = documentStyle.getPropertyValue(
-        "--text-color-secondary"
-      );
-      const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
 
-      const information = await getUserStatistics(accessToken);
-      setOverallStats(information.overall);
+      const fetchBreakdown = async () => {
+        const textColor = documentStyle.getPropertyValue("--text-color");
+        const textColorSecondary = documentStyle.getPropertyValue(
+          "--text-color-secondary"
+        );
+        const surfaceBorder =
+          documentStyle.getPropertyValue("--surface-border");
 
-      const data = {
-        labels: information.labels,
-        datasets: [
-          {
-            type: "bar",
-            label: "Job Seeker",
-            backgroundColor: documentStyle.getPropertyValue("--blue-500"),
-            data: information.dataJobSeeker,
+        const information = await getUserStatistics(accessToken);
+        setOverallStats(information.overall);
+
+        const data = {
+          labels: information[selectedFilter1].labels,
+          datasets: [
+            {
+              label: "Job Seeker",
+              borderColor: documentStyle.getPropertyValue("--blue-500"),
+              tension: 0.4,
+              fill: false,
+              data: information[selectedFilter1].dataJobSeeker,
+            },
+            {
+              label: "Corporate",
+              borderColor: documentStyle.getPropertyValue("--orange-500"),
+              tension: 0.4,
+              fill: false,
+              data: information[selectedFilter1].dataCorporate,
+            },
+            {
+              label: "Recruiter",
+              backgroundColor: documentStyle.getPropertyValue("--pink-500"),
+              tension: 0.4,
+              fill: false,
+              data: information[selectedFilter1].dataRecruiter,
+            },
+            {
+              label: "Administrator",
+              backgroundColor: documentStyle.getPropertyValue("--gray-500"),
+              tension: 0.4,
+              fill: false,
+              data: information[selectedFilter1].dataAdmin,
+            },
+          ],
+        };
+
+        const options = {
+          maintainAspectRatio: false,
+          aspectRatio: 0.6,
+          plugins: {
+            legend: {
+              labels: {
+                color: textColor,
+              },
+            },
           },
-          {
-            type: "bar",
-            label: "Corporate",
-            backgroundColor: documentStyle.getPropertyValue("--orange-500"),
-            data: information.dataCorporate,
+          scales: {
+            x: {
+              ticks: {
+                color: textColorSecondary,
+              },
+              grid: {
+                color: surfaceBorder,
+              },
+            },
+            y: {
+              ticks: {
+                stepSize: 1,
+                color: textColorSecondary,
+              },
+              grid: {
+                color: surfaceBorder,
+              },
+            },
           },
-          {
-            type: "bar",
-            label: "Recruiter",
-            backgroundColor: documentStyle.getPropertyValue("--pink-500"),
-            data: information.dataRecruiter,
-          },
-          {
-            type: "bar",
-            label: "Administrator",
-            backgroundColor: documentStyle.getPropertyValue("--gray-500"),
-            data: information.dataAdmin,
-          },
-        ],
+        };
+
+        setChartData(data);
+        setChartOptions(options);
       };
-
-      const options = {
-        maintainAspectRatio: false,
-        aspectRatio: 0.6,
-        plugins: {
-          legend: {
-            labels: {
-              color: textColor,
-            },
-          },
-        },
-        scales: {
-          x: {
-            stacked: true,
-            ticks: {
-              color: textColorSecondary,
-            },
-            grid: {
-              color: surfaceBorder,
-            },
-          },
-          y: {
-            stacked: true,
-            ticks: {
-              color: textColorSecondary,
-            },
-            grid: {
-              color: surfaceBorder,
-            },
-          },
-        },
-      };
-
-      setChartData(data);
-      setChartOptions(options);
+      fetchBreakdown();
     };
 
     fetchData();
-  }, [accessToken]);
+  }, [accessToken, selectedFilter1]);
 
   useEffect(() => {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -119,7 +134,8 @@ const UserStatisticsModal = ({ accessToken }) => {
       const inactiveData = breakdownInfo.inactive[selectedFilter];
 
       const sum = inactiveData + activeData;
-      const total = breakdownInfo.active['total'] + breakdownInfo.inactive['total'];
+      const total =
+        breakdownInfo.active["total"] + breakdownInfo.inactive["total"];
 
       const activePercentage = Number(((activeData / sum) * 100).toFixed(2));
       const inactivePercentage = Number(
@@ -234,56 +250,58 @@ const UserStatisticsModal = ({ accessToken }) => {
       </div>
       <div className={styles.graphContainer}>
         <Card className={styles.customCardGraph}>
-          <h2
-            style={{ textAlign: "center", marginTop: "0", marginBottom: "0" }}
-            className="montserrat"
-          >
-            Account Creation Analysis
-          </h2>
+          <div className={styles.headerGraph}>
+            <h2 className="montserrat">
+              Account Creation Analysis by {selectedFilter1}
+            </h2>
+            <Dropdown
+              value={selectedFilter1}
+              options={filterOptions1}
+              onChange={(e) => setSelectedFilter1(e.value)}
+              placeholder="Select a role"
+            />
+          </div>
           <Chart type="line" data={chartData} options={chartOptions} />
         </Card>
         <Card className={styles.customCardGraph}>
-          <h2
-            style={{ textAlign: "center", marginTop: "0", marginBottom: "0" }}
-            className="montserrat"
-          >
-            {selectedFilter.charAt(0).toUpperCase() +
-              selectedFilter.slice(1).toLowerCase()}{" "}
-            Status Breakdown
-          </h2>
+          <div className={styles.headerGraph}>
+            <h2 className="montserrat">
+              {selectedFilter.charAt(0).toUpperCase() +
+                selectedFilter.slice(1).toLowerCase()}{" "}
+              Status Breakdown
+            </h2>
+            <Dropdown
+              value={selectedFilter}
+              options={filterOptions}
+              onChange={(e) => setSelectedFilter(e.value)}
+              placeholder="Select a role"
+            />
+          </div>
+          <br />
+          <br />
+          <br />
           <br />
           <br />
           <div className={styles.filterContainer}>
-            <div className={styles.filterColumn}>
-              <h2 className="montserrat">Select Role</h2>
-              <Dropdown
-                value={selectedFilter}
-                options={filterOptions}
-                onChange={(e) => setSelectedFilter(e.value)}
-                placeholder="Select a role"
-              />
-              <br />
-              <br />
-              <h2 className="montserrat">
-                User Ratio: {userPercentage.proportion}%
-              </h2>
-              <br />
-              <br />
-              <h2 className="montserrat">
-                Active users: {userPercentage.active}%
-              </h2>
-              <br />
-              <br />
-              <h2 className="montserrat">
-                Inactive users: {userPercentage.inactive}%
-              </h2>
-            </div>
             <Chart
               type="pie"
               data={chartData1}
               options={chartOptions1}
               className={styles.doughnutChart}
             />
+            <div className={styles.filterColumn}>
+              <h2 className="montserrat">
+                User Ratio: {userPercentage.proportion}%
+              </h2>
+              <br />
+              <h2 className="montserrat">
+                Active users: {userPercentage.active}%
+              </h2>
+              <br />
+              <h2 className="montserrat">
+                Inactive users: {userPercentage.inactive}%
+              </h2>
+            </div>
           </div>
         </Card>
       </div>
