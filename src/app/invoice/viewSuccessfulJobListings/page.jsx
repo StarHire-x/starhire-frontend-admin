@@ -51,6 +51,7 @@ export default function ViewSuccessfulJobListings() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [expandedRows, setExpandedRows] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
+  const [userDialog, setUserDialog] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -177,10 +178,11 @@ export default function ViewSuccessfulJobListings() {
       console.log("Invoice has been created successfully!" + response);
       setRefreshData((prev) => !prev);
       setSelectedRows([]);
+      setUserDialog(false);
       toast.current.show({
         severity: "success",
         summary: "Success",
-        detail: "Invoice created successfully!",
+        detail: "Invoice created and sent to Corporate successfully!",
         life: 5000,
       });
     } catch (error) {
@@ -194,9 +196,25 @@ export default function ViewSuccessfulJobListings() {
     }
   };
 
-  //Row Expansion Codes
+  //Dialog codes
+  const showUserDialog = () => {
+    setUserDialog(true);
+  };
+
+  const hideDialog = () => {
+    setUserDialog(false);
+  };
+
+  const userDialogFooter = (
+    <React.Fragment>
+      <Button label="No" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="Yes" icon="pi pi-check" onClick={handleCreateClick} />
+    </React.Fragment>
+  );
+
+  //Row Expansion codes
   const allowExpansion = (rowData) => {
-    return rowData.jobApplications.length > 0;
+    return rowData.jobApplications.length >= 0;
   };
 
   const rowExpansionTemplate = (data) => {
@@ -309,9 +327,22 @@ export default function ViewSuccessfulJobListings() {
                 rounded
                 size="medium"
                 className="p-button-warning"
-                onClick={() => handleCreateClick()}
+                onClick={() => showUserDialog()}
               />
             </div>
+            <Dialog
+            visible={userDialog}
+            style={{ width: "40vw", height: "40vh" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header={"Bill Invoice to Corporate User " + corporate.userName}
+            className="p-fluid"
+            footer={userDialogFooter}
+            onHide={hideDialog}
+          >
+            <div className={styles.dialogTextContainer}>
+                <h5>Do take note that once you select "Yes", an invoice will be generated for the following successful job applications, and this invoice will be billed to {corporate.userName}</h5>
+            </div>
+          </Dialog>
           </div>
         </div>
       )}
