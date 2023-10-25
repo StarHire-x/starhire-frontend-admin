@@ -14,7 +14,7 @@ import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
 import { getCorporateDetails } from "../../api/auth/user/route";
 import moment from "moment";
-import { createInvoice } from "@/app/api/invoice/route";
+import { createInvoice, deleteInvoice } from "@/app/api/invoice/route";
 import { Toast } from "primereact/toast";
 import { Tag } from "primereact/tag";
 
@@ -127,8 +127,29 @@ export default function ViewAllInvoicesPage() {
     router.back();
   };
 
-  const handleDeleteInvoice = (rowData) => {
-    console.log(selectedRow);
+  const handleDeleteInvoice = async () => {
+    try {
+      const invoiceId = selectedRow.invoiceId;
+      const response = await deleteInvoice(invoiceId, accessToken);
+      setRefreshData((prev) => !prev);
+      setSelectedRow([]);
+      setUserDialog(false);
+      console.log("Invoice deleted successfully", response);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Invoice deleted successfully",
+        life: 5000,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Error deleting invoice",
+        life: 5000,
+      });
+    }
   };
 
   const getSeverity = (isPaid) => {

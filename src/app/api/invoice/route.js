@@ -21,6 +21,29 @@ export const createInvoice = async (request, accessToken) => {
   }
 };
 
+export const deleteInvoice = async (id, accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/invoice/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: 'no-store',
+      }
+    );
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message);
+    }
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+};
+
 // export const getAllCorporates = async (accessToken) => {
 //   try {
 //     const res = await fetch(
