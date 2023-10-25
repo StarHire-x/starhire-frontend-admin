@@ -20,7 +20,19 @@ const adminLinks = [
   {
     id: 2,
     title: 'User Management',
-    url: '/userManagement',
+    url: '',
+    submenu: [
+      {
+        id: 1,
+        title: 'Manage Users',
+        url: '/userManagement',
+      },
+      {
+        id: 2,
+        title: 'Manage Promotion Request',
+        url: '/userManagement',
+      },
+    ],
   },
   {
     id: 3,
