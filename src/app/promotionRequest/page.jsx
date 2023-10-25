@@ -13,10 +13,11 @@ import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { viewAllJobListings } from "@/app/api/jobListings/route";
+import { viewAllPromotionRequest } from "@/app/api/promotionRequest/route"
 import Enums from "@/common/enums/enums";
 import styles from "./promotionRequest.module.css";
 
-export default function JobListings() {
+export default function PromotionRequest() {
   const session = useSession();
 
   const router = useRouter();
@@ -33,8 +34,9 @@ export default function JobListings() {
     router?.push("/login");
   }
 
-  const [refreshData, setRefreshData] = useState(false);
-  const [jobListings, setJobListings] = useState([]);
+  //const [refreshData, setRefreshData] = useState(false);
+  //const [jobListings, setJobListings] = useState([]);
+  const [promotionRequest, setPromotionRequest] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,10 +44,6 @@ export default function JobListings() {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    // role: {
-    //   operator: FilterOperator.OR,
-    //   constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    // },
     jobListingStatus: {
       operator: FilterOperator.OR,
       constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
@@ -53,6 +51,7 @@ export default function JobListings() {
   });
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
+
   const [jobListingStatuses] = useState([
     "Approved",
     "Unverified",
@@ -62,8 +61,8 @@ export default function JobListings() {
 
   const getStatus = (status) => {
     switch (status) {
-      case "Approved":
-        return "success";
+      case "Requested":
+        return "danger";
       case "Unverified":
         return "danger";
       case "Rejected":
@@ -88,8 +87,8 @@ export default function JobListings() {
   const statusBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData.jobListingStatus}
-        severity={getStatus(rowData.jobListingStatus)}
+        value={rowData.corporatePromotionStatus}
+        severity={getStatus(rowData.corporatePromotionStatus)}
       />
     );
   };
@@ -124,53 +123,15 @@ export default function JobListings() {
             saveStatusChange(rowData);
           }}
         />
-      </React.Fragment>
-    );
-  };
-
-  const handleViewSubmissionsClick = (jobListingId) => {
-    router.push(`/jobApplications?id=${jobListingId}`);
-    // `/jobListings/viewJobListingRecruiter?id=${id}`;
-  };
-
-  const getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter =
-    (jobListing) => {
-      return jobListing?.jobApplications.filter(
-        (jobApp) =>
-          jobApp.jobApplicationStatus === Enums.SUBMITTED &&
-          jobApp?.recruiter.userId === currentUserId
-      ).length;
-    };
-
-  const actionRecruiterBodyTemplate = (rowData) => {
-    return (
-      <React.Fragment>
-        <div className={styles.buttonContainer}>
-          <Button
-            label="View Job Applications"
-            rounded
-            className="p-button-warning"
-            size="small"
-            onClick={() => handleViewSubmissionsClick(rowData?.jobListingId)}
-          >
-            <Badge
-              severity="danger"
-              value={getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(
-                rowData
-              )}
-            />
-          </Button>
-          <div className={styles.spacer}></div>
-          <Button
-            label="View Details"
-            rounded
-            className="mr-2"
-            size="small"
-            onClick={() => {
-              saveStatusChange(rowData);
-            }}
-          />
-        </div>
+        <Button
+          label="Approve"
+          rounded
+          size="small"
+          className="mr-2"
+          onClick={() => {
+            saveStatusChange(rowData);
+          }}
+        />
       </React.Fragment>
     );
   };
@@ -180,46 +141,22 @@ export default function JobListings() {
   };
 
   const createLink = (id) => {
-    const link = `/jobListings/viewJobListingAdmin?id=${id}`;
+    const link = `/promotionRequest/viewAPromotionRequest?id=${id}`;
     return link;
-  };
-
-  const createRecruiterLink = (id) => {
-    const link = `/jobListings/viewJobListingRecruiter?id=${id}`;
-    return link;
-  };
-
-  const sortJobListingsByNumberOfProcessingJobApps = (jobListings) => {
-    return jobListings.sort(
-      (x, y) =>
-        getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(
-          y
-        ) -
-        getNumberOfRequiredAttentionJobApplicationsByJobListingByCurrentRecruiter(
-          x
-        )
-    );
   };
 
   const saveStatusChange = async (rowData) => {
-    const jobListingId = rowData.jobListingId;
-    if (session.data.user.role === Enums.ADMIN) {
-      try {
-        // Use router.push to navigate to another page with a query parameter
-        let link = createLink(jobListingId);
-        router.push(link);
-      } catch (error) {
-        console.error("Error changing status:", error);
-      }
-    } else {
-      try {
-        let link = createRecruiterLink(jobListingId);
-        router.push(link);
-      } catch (error) {
-        console.error("Error changing status:", error);
-      }
-    }
+    const id = rowData.userId;
+    let link = createLink(id);
+    router.push(link);
   };
+
+  const approveRequest = async (rowData) => {
+    const id = rowData.userId;
+    let link = createLink(id);
+    router.push(link);
+  };
+
 
   const renderHeader = () => {
     return (
@@ -230,7 +167,7 @@ export default function JobListings() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Job Listings</h2>
+        <h2 className="m-0">Promotion Request</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -258,50 +195,23 @@ export default function JobListings() {
 
   useEffect(() => {
     if (accessToken) {
-      viewAllJobListings(accessToken)
+      viewAllPromotionRequest(accessToken)
         .then((data) => {
-          if (session.data.user.role === Enums.RECRUITER) {
-            const activeJobListing = data.filter(
-              (jobListing) => jobListing.jobListingStatus === "Approved"
-            );
-            setJobListings(activeJobListing);
-          } else {
-            setJobListings(data);
-          }
-          setIsLoading(false);
-        })
+            if (Array.isArray(data)) {
+              setPromotionRequest(data);
+            } else {
+              console.error("Data is not an array:", data);
+              setPromotionRequest(data.data);
+            }
+            setIsLoading(false);
+          })
+          
         .catch((error) => {
-          console.error("Error fetching job listings:", error);
+          console.error("Error fetching Promotion Request:", error);
           setIsLoading(false);
         });
     }
   }, [accessToken]);
-
-  /* Old implementation, dont delete for now
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/job-listing`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      cache: "no-store",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setJobListings(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
-      });
-  }, [accessToken]);
-  */
 
   const header = renderHeader();
 
@@ -332,7 +242,7 @@ export default function JobListings() {
         ) : (
           <>
             <DataTable
-              value={sortJobListingsByNumberOfProcessingJobApps(jobListings)}
+              value={promotionRequest}
               paginator
               header={header}
               rows={10}
@@ -352,31 +262,19 @@ export default function JobListings() {
                 "listingDate",
                 "jobListingStatus",
               ]}
-              emptyMessage="No Job Listings found."
+              emptyMessage="No Promotion Request found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
               <Column
-                field="jobListingId"
-                header="Listing ID"
+                field="userId"
+                header="Corporate User ID"
                 sortable
               ></Column>
-              <Column field="title" header="Title" sortable></Column>
-              <Column
-                field="corporate.userName"
-                header="Company Name"
-                sortable
-              />
-              <Column field="jobLocation" header="Job Location"></Column>
-              <Column
-                field="listingDate"
-                header="List Date"
-                body={(rowData) => formatDate(rowData.listingDate)}
-                sortable
-              ></Column>
+              <Column field="userName" header="Corporate Name" sortable />
               {session.data.user.role === Enums.ADMIN ? (
                 <Column
-                  field="jobListingStatus"
-                  header="Job Listing Status"
+                  field="corporatePromotionStatus"
+                  header="Corporate Promotion Status"
                   body={statusBodyTemplate}
                   filter
                   filterElement={statusFilterTemplate}
@@ -395,18 +293,6 @@ export default function JobListings() {
                 <Column body={actionRecruiterBodyTemplate} />
               )}
             </DataTable>
-
-            <Dialog
-              visible={userDialog}
-              style={{ width: "32rem" }}
-              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-              header="Change Status"
-              className="p-fluid"
-              footer={userDialogFooter}
-              onHide={hideDialog}
-            >
-              <h3>{selectedRowData && selectedRowData.userName}</h3>
-            </Dialog>
           </>
         )}
       </div>
