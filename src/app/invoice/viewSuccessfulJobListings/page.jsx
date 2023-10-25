@@ -342,7 +342,6 @@ export default function ViewSuccessfulJobListings() {
                 label="Create Invoice"
                 rounded
                 size="medium"
-                className="p-button-warning"
                 onClick={() => showUserDialog()}
               />
             </div>
