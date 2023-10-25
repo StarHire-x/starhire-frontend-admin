@@ -3,15 +3,12 @@ import styles from "./viewSuccessfulJobListings.module.css";
 
 import React, { useEffect, useState, useRef } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
-import Image from "next/image";
-import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { Dialog } from "primereact/dialog";
 import { useSession } from "next-auth/react";
-import HumanIcon from "../../../../public/icon.png";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
@@ -50,6 +47,7 @@ export default function ViewSuccessfulJobListings() {
   const [corporate, setCorporate] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [expandedRows, setExpandedRows] = useState(null);
+  const [totalCommission, setTotalCommission] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
   const [userDialog, setUserDialog] = useState(false);
   const [filters, setFilters] = useState({
@@ -149,12 +147,9 @@ export default function ViewSuccessfulJobListings() {
   };
 
   const handleCreateClick = async () => {
-    let totalCommission = 0;
     let jobApplicationIdsArray = [];
     for (let i = 0; i < selectedRows.length; i++) {
       const jobApplication = selectedRows[i];
-      totalCommission =
-        totalCommission + jobApplication.jobListing.averageSalary;
       jobApplicationIdsArray.push(jobApplication.jobApplicationId);
     }
 
@@ -173,12 +168,26 @@ export default function ViewSuccessfulJobListings() {
       jobApplicationIds: jobApplicationIdsArray,
     };
 
+    if (selectedRows.length === 0) {
+      console.error(
+        "You have not selected any successful job application."
+      );
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Please select at least a successful job application",
+        life: 5000,
+      });
+      return;
+    }
+
     try {
       const response = await createInvoice(request, accessToken);
       console.log("Invoice has been created successfully!" + response);
       setRefreshData((prev) => !prev);
       setSelectedRows([]);
       setUserDialog(false);
+      setTotalCommission(0);
       toast.current.show({
         severity: "success",
         summary: "Success",
@@ -189,7 +198,7 @@ export default function ViewSuccessfulJobListings() {
       console.error("Error creating invoice:", error);
       toast.current.show({
         severity: "error",
-        summary: "error",
+        summary: "Error",
         detail: "Error creating invoice!",
         life: 5000,
       });
@@ -199,6 +208,13 @@ export default function ViewSuccessfulJobListings() {
   //Dialog codes
   const showUserDialog = () => {
     setUserDialog(true);
+    let totalCommissionCalculated = 0;
+    for (let i = 0; i < selectedRows.length; i++) {
+      const jobApplication = selectedRows[i];
+      totalCommissionCalculated =
+        totalCommissionCalculated + jobApplication.jobListing.averageSalary;
+    }
+    setTotalCommission(totalCommissionCalculated);
   };
 
   const hideDialog = () => {
@@ -244,10 +260,10 @@ export default function ViewSuccessfulJobListings() {
             sortable
           ></Column>
           <Column
-            // field="averageSalary"
+            field="averageSalary"
             header="Commission"
             sortable
-            body={(rowData) => `$${averageSalary}`}
+            body={`$${averageSalary}`}
           ></Column>
         </DataTable>
       </div>
@@ -331,18 +347,47 @@ export default function ViewSuccessfulJobListings() {
               />
             </div>
             <Dialog
-            visible={userDialog}
-            style={{ width: "40vw", height: "40vh" }}
-            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-            header={"Bill Invoice to Corporate User " + corporate.userName}
-            className="p-fluid"
-            footer={userDialogFooter}
-            onHide={hideDialog}
-          >
-            <div className={styles.dialogTextContainer}>
-                <h5>Do take note that once you select "Yes", an invoice will be generated for the following successful job applications, and this invoice will be billed to {corporate.userName}</h5>
-            </div>
-          </Dialog>
+              visible={userDialog}
+              style={{ width: "40vw", height: "50vh" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              header={"Bill Invoice to Corporate User " + corporate.userName}
+              className="p-fluid"
+              footer={userDialogFooter}
+              onHide={hideDialog}
+            >
+              <div className={styles.dialogTextContainer}>
+                <h5>
+                  Do take note that once you select "Yes", an invoice will be
+                  generated for the following successful job applications, and
+                  this invoice will be billed to {corporate.userName}.
+                </h5>
+                <DataTable
+                  value={selectedRows}
+                  showGridlines
+                  tableStyle={{ width: "35vw", marginTop: "10px" }}
+                >
+                  <Column
+                    field="jobApplicationId"
+                    header="Job Application ID"
+                  ></Column>
+                  <Column
+                    field="recruiter.userName"
+                    header="Assigned By"
+                  ></Column>
+                  <Column
+                    field="jobListing.averageSalary"
+                    header="Commission"
+                    body={(rowData) => `$${rowData.jobListing.averageSalary}`}
+                  ></Column>
+                </DataTable>
+                <div className={styles.dialogTotalAmountContainer}>
+                  <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
+                    Total Commission:
+                  </span>
+                  <span style={{ fontWeight: "bold" }}>${totalCommission}</span>
+                </div>
+              </div>
+            </Dialog>
           </div>
         </div>
       )}
