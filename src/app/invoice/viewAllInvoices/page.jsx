@@ -14,7 +14,11 @@ import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
 import { getCorporateDetails } from "../../api/auth/user/route";
 import moment from "moment";
-import { createInvoice, deleteInvoice } from "@/app/api/invoice/route";
+import {
+  createInvoice,
+  deleteInvoice,
+  updateInvoicePaymentStatus,
+} from "@/app/api/invoice/route";
 import { Toast } from "primereact/toast";
 import { Tag } from "primereact/tag";
 
@@ -49,6 +53,7 @@ export default function ViewAllInvoicesPage() {
   const [expandedRows, setExpandedRows] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
   const [userDialog, setUserDialog] = useState(false);
+  const [paymentStatusDialog, setPaymentStatusDialog] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -152,6 +157,37 @@ export default function ViewAllInvoicesPage() {
     }
   };
 
+  const handlePaymentStatus = async () => {
+    try {
+      const request = {
+        isPaid: true,
+      };
+      const response = await updateInvoicePaymentStatus(
+        request,
+        selectedRow.invoiceId,
+        accessToken
+      );
+      setRefreshData((prev) => !prev);
+      setSelectedRow([]);
+      setPaymentStatusDialog(false);
+      console.log("Invoice payment status updated successfully", response);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Invoice payment status updated successfully",
+        life: 5000,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Error updating invoice payment status",
+        life: 5000,
+      });
+    }
+  };
+
   const getSeverity = (isPaid) => {
     return isPaid ? "success" : "danger";
   };
@@ -190,6 +226,19 @@ export default function ViewAllInvoicesPage() {
               }}
             />
           )}
+          {!rowData.isPaid && (
+            <Button
+              className="p-button-success"
+              style={{ marginLeft: "10px" }}
+              label="Mark as Paid"
+              rounded
+              size="small"
+              onClick={() => {
+                showPaymentStatusDialog();
+                setSelectedRow(rowData);
+              }}
+            />
+          )}
         </div>
       </React.Fragment>
     );
@@ -203,10 +252,30 @@ export default function ViewAllInvoicesPage() {
     setUserDialog(false);
   };
 
+  const showPaymentStatusDialog = (rowData) => {
+    setPaymentStatusDialog(true);
+  };
+
+  const hidePaymentStatusDialog = (rowData) => {
+    setPaymentStatusDialog(false);
+  };
+
   const userDialogFooter = (
     <React.Fragment>
       <Button label="No" icon="pi pi-times" outlined onClick={hideDialog} />
       <Button label="Yes" icon="pi pi-check" onClick={handleDeleteInvoice} />
+    </React.Fragment>
+  );
+
+  const paymentStatusDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        outlined
+        onClick={hidePaymentStatusDialog}
+      />
+      <Button label="Yes" icon="pi pi-check" onClick={handlePaymentStatus} />
     </React.Fragment>
   );
 
@@ -292,6 +361,19 @@ export default function ViewAllInvoicesPage() {
             >
               <h5 style={{ color: "red" }}>
                 Do take note that the deletion of an invoice is irreversible.
+              </h5>
+            </Dialog>
+            <Dialog
+              visible={paymentStatusDialog}
+              style={{ width: "20vw" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              header={"Mark Invoice " + selectedRow.invoiceId + " as paid?"}
+              className="p-fluid"
+              footer={paymentStatusDialogFooter}
+              onHide={hidePaymentStatusDialog}
+            >
+              <h5 style={{ color: "red" }}>
+                Do take note that this action is irreversible.
               </h5>
             </Dialog>
             <div className={styles.bottomButtonContainer}>

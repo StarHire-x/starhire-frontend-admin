@@ -1,16 +1,13 @@
 export const createInvoice = async (request, accessToken) => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/invoice`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(request),
-      }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/invoice`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(request),
+    });
     if (!res.ok) {
       const errorData = await res.json();
       throw new Error(errorData.message);
@@ -31,7 +28,7 @@ export const deleteInvoice = async (id, accessToken) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        cache: 'no-store',
+        cache: "no-store",
       }
     );
     if (!res.ok) {
@@ -40,6 +37,30 @@ export const deleteInvoice = async (id, accessToken) => {
     }
   } catch (error) {
     console.log(error.message);
+    throw error;
+  }
+};
+
+export const updateInvoicePaymentStatus = async (request, id, accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/invoice/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(request),
+      }
+    );
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message);
+    }
+  } catch (error) {
+    console.log("There was a problem updating the invoice payment status", error);
     throw error;
   }
 };
@@ -92,4 +113,3 @@ export const deleteInvoice = async (id, accessToken) => {
 //     throw error;
 //   }
 // };
-
