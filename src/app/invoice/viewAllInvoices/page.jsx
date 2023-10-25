@@ -42,7 +42,7 @@ export default function ViewAllInvoicesPage() {
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [jobListings, setJobListings] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [corporate, setCorporate] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [expandedRows, setExpandedRows] = useState(null);
@@ -82,7 +82,7 @@ export default function ViewAllInvoicesPage() {
         try {
           const corporate = await getCorporateDetails(corporateId, accessToken);
           setCorporate(corporate.data);
-          setJobListings(corporate.data.jobListings);
+          setInvoices(corporate.data.invoices);
         } catch (error) {
           console.log("There was a problem fetching the corporate user", error);
         }
@@ -92,10 +92,10 @@ export default function ViewAllInvoicesPage() {
     setIsLoading(false);
   }, [refreshData, accessToken]);
 
-  // useEffect(() => {
-  //   console.log("SEEHERE!");
-  //   console.log(selectedRows);
-  // });
+  useEffect(() => {
+    console.log("SEEHERE!");
+    console.log(corporate);
+  });
 
   const renderAdminHeader = () => {
     return (
@@ -106,7 +106,7 @@ export default function ViewAllInvoicesPage() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Job Listings of {corporate.userName}</h2>
+        <h2 className="m-0">All Invoices of {corporate.userName}</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
@@ -119,154 +119,12 @@ export default function ViewAllInvoicesPage() {
     );
   };
 
-  const renderRowExpansionHeader = () => {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h2 className="m-0">Successful Job Applications</h2>
-      </div>
-    );
-  };
-
   const header = () => {
     return renderAdminHeader();
   };
 
-  const rowExpansionHeader = () => {
-    return renderRowExpansionHeader();
-  };
-
   const handleOnBackClick = () => {
     router.back();
-  };
-
-  const handleCreateClick = async () => {
-    let jobApplicationIdsArray = [];
-    for (let i = 0; i < selectedRows.length; i++) {
-      const jobApplication = selectedRows[i];
-      jobApplicationIdsArray.push(jobApplication.jobApplicationId);
-    }
-
-    const startDate = new Date();
-    const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 14);
-
-    const request = {
-      invoiceDate: startDate,
-      dueDate: endDate,
-      billingAddress: corporate.companyAddress,
-      totalAmount: totalCommission,
-      isPaid: false,
-      administratorId: currentUserId,
-      corporateId: corporate.userId,
-      jobApplicationIds: jobApplicationIdsArray,
-    };
-
-    if (selectedRows.length === 0) {
-      console.error(
-        "You have not selected any successful job application."
-      );
-      toast.current.show({
-        severity: "warn",
-        summary: "Warning",
-        detail: "Please select at least a successful job application",
-        life: 5000,
-      });
-      return;
-    }
-
-    try {
-      const response = await createInvoice(request, accessToken);
-      console.log("Invoice has been created successfully!" + response);
-      setRefreshData((prev) => !prev);
-      setSelectedRows([]);
-      setUserDialog(false);
-      setTotalCommission(0);
-      toast.current.show({
-        severity: "success",
-        summary: "Success",
-        detail: "Invoice created and sent to Corporate successfully!",
-        life: 5000,
-      });
-    } catch (error) {
-      console.error("Error creating invoice:", error);
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Error creating invoice!",
-        life: 5000,
-      });
-    }
-  };
-
-  //Dialog codes
-  const showUserDialog = () => {
-    setUserDialog(true);
-    let totalCommissionCalculated = 0;
-    for (let i = 0; i < selectedRows.length; i++) {
-      const jobApplication = selectedRows[i];
-      totalCommissionCalculated =
-        totalCommissionCalculated + jobApplication.jobListing.averageSalary;
-    }
-    setTotalCommission(totalCommissionCalculated);
-  };
-
-  const hideDialog = () => {
-    setUserDialog(false);
-  };
-
-  const userDialogFooter = (
-    <React.Fragment>
-      <Button label="No" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Yes" icon="pi pi-check" onClick={handleCreateClick} />
-    </React.Fragment>
-  );
-
-  //Row Expansion codes
-  const allowExpansion = (rowData) => {
-    return rowData.jobApplications.length >= 0;
-  };
-
-  const rowExpansionTemplate = (data) => {
-    const { jobApplications, averageSalary } = data;
-    return (
-      <div className="p-3">
-        <DataTable
-          header={rowExpansionHeader}
-          value={jobApplications}
-          emptyMessage="No job applications found."
-          selection={selectedRows}
-          onSelectionChange={(e) => setSelectedRows(e.value)}
-          style={{ margin: "10px", border: "1px solid #000" }}
-        >
-          <Column
-            selectionMode="multiple"
-            headerStyle={{ width: "3rem" }}
-          ></Column>
-          <Column
-            field="jobApplicationId"
-            header="Job Application ID"
-            sortable
-          ></Column>
-          <Column
-            field="recruiter.userName"
-            header="Assigned By"
-            sortable
-          ></Column>
-          <Column
-            field="averageSalary"
-            header="Commission"
-            sortable
-            body={`$${averageSalary}`}
-          ></Column>
-        </DataTable>
-      </div>
-    );
   };
 
   return (
@@ -285,34 +143,23 @@ export default function ViewAllInvoicesPage() {
         <div className={styles.contentContainer}>
           <div>
             <DataTable
-              value={jobListings}
+              value={invoices}
               expandedRows={expandedRows}
               onRowToggle={(e) => setExpandedRows(e.data)}
-              rowExpansionTemplate={(data) =>
-                rowExpansionTemplate({
-                  jobApplications: data.jobApplications.filter(
-                    (jobApplication) =>
-                      jobApplication.jobApplicationStatus ===
-                        "Offer_Accepted" && jobApplication.invoice === null
-                  ),
-                  averageSalary: data.averageSalary,
-                })
-              }
               paginator
               ref={dt}
               header={header}
               rows={10}
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
               rowsPerPageOptions={[10, 25, 50]}
-              dataKey="jobListingId"
+              dataKey="invoiceId"
               filters={filters}
               filterDisplay="menu"
               globalFilterFields={["jobListingId", "title"]}
-              emptyMessage="No corporate users found."
+              emptyMessage="No invoices found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               style={{ minWidth: "50vw" }}
             >
-              <Column expander={allowExpansion} style={{ width: "5rem" }} />
               <Column
                 field="jobListingId"
                 header="Job Listing ID"
@@ -337,55 +184,7 @@ export default function ViewAllInvoicesPage() {
                 className="p-button-info"
                 onClick={() => handleOnBackClick()}
               />
-              <Button
-                label="Create Invoice"
-                rounded
-                size="medium"
-                onClick={() => showUserDialog()}
-              />
             </div>
-            <Dialog
-              visible={userDialog}
-              style={{ width: "40vw", height: "50vh" }}
-              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-              header={"Bill Invoice to Corporate User " + corporate.userName}
-              className="p-fluid"
-              footer={userDialogFooter}
-              onHide={hideDialog}
-            >
-              <div className={styles.dialogTextContainer}>
-                <h5>
-                  Do take note that once you select "Yes", an invoice will be
-                  generated for the following successful job applications, and
-                  this invoice will be billed to {corporate.userName}.
-                </h5>
-                <DataTable
-                  value={selectedRows}
-                  showGridlines
-                  tableStyle={{ width: "35vw", marginTop: "10px" }}
-                >
-                  <Column
-                    field="jobApplicationId"
-                    header="Job Application ID"
-                  ></Column>
-                  <Column
-                    field="recruiter.userName"
-                    header="Assigned By"
-                  ></Column>
-                  <Column
-                    field="jobListing.averageSalary"
-                    header="Commission"
-                    body={(rowData) => `$${rowData.jobListing.averageSalary}`}
-                  ></Column>
-                </DataTable>
-                <div className={styles.dialogTotalAmountContainer}>
-                  <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    Total Commission:
-                  </span>
-                  <span style={{ fontWeight: "bold" }}>${totalCommission}</span>
-                </div>
-              </div>
-            </Dialog>
           </div>
         </div>
       )}
