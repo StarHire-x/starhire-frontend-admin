@@ -45,9 +45,8 @@ export default function ViewAllInvoicesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [invoices, setInvoices] = useState([]);
   const [corporate, setCorporate] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRow, setSelectedRow] = useState([]);
   const [expandedRows, setExpandedRows] = useState(null);
-  const [totalCommission, setTotalCommission] = useState(null);
   const [refreshData, setRefreshData] = useState(false);
   const [userDialog, setUserDialog] = useState(false);
   const [filters, setFilters] = useState({
@@ -129,7 +128,7 @@ export default function ViewAllInvoicesPage() {
   };
 
   const handleDeleteInvoice = (rowData) => {
-    alert("deleted");
+    console.log(selectedRow);
   };
 
   const getSeverity = (isPaid) => {
@@ -153,7 +152,7 @@ export default function ViewAllInvoicesPage() {
           <Button
             className="p-button-warning"
             style={{ marginRight: "10px" }}
-            label="View More"
+            label="View Details"
             rounded
             size="small"
             // onClick={}
@@ -164,13 +163,31 @@ export default function ViewAllInvoicesPage() {
               label="Delete Invoice"
               rounded
               size="small"
-              onClick={() => handleDeleteInvoice(rowData)}
+              onClick={() => {
+                showUserDialog();
+                setSelectedRow(rowData);
+              }}
             />
           )}
         </div>
       </React.Fragment>
     );
   };
+
+  const showUserDialog = (rowData) => {
+    setUserDialog(true);
+  };
+
+  const hideDialog = () => {
+    setUserDialog(false);
+  };
+
+  const userDialogFooter = (
+    <React.Fragment>
+      <Button label="No" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="Yes" icon="pi pi-check" onClick={handleDeleteInvoice} />
+    </React.Fragment>
+  );
 
   return (
     <div>
@@ -243,6 +260,19 @@ export default function ViewAllInvoicesPage() {
                 style={{ minWidth: "1rem" }}
               ></Column>
             </DataTable>
+            <Dialog
+              visible={userDialog}
+              style={{ width: "20vw" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              header={"Delete Invoice " + selectedRow.invoiceId}
+              className="p-fluid"
+              footer={userDialogFooter}
+              onHide={hideDialog}
+            >
+              <h5 style={{ color: "red" }}>
+                Do take note that the deletion of an invoice is irreversible.
+              </h5>
+            </Dialog>
             <div className={styles.bottomButtonContainer}>
               <Button
                 label="Back"
