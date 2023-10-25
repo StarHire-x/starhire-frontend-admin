@@ -4,12 +4,9 @@ import styles from "./invoice.module.css";
 import React, { useEffect, useState, useRef } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import Image from "next/image";
-import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { Dialog } from "primereact/dialog";
 import { useSession } from "next-auth/react";
 import HumanIcon from "../../../public/icon.png";
 import { DataTable } from "primereact/datatable";
@@ -17,7 +14,6 @@ import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
 import { getAllCorporates } from "../api/auth/user/route";
-
 
 export default function InvoicePage() {
   const session = useSession();
@@ -118,7 +114,9 @@ export default function InvoicePage() {
   };
 
   const handleSuccessfulJobListings = (rowData) => {
-    router.push(`/invoice/viewSuccessfulJobListings?corporateId=${rowData.userId}`);
+    router.push(
+      `/invoice/viewSuccessfulJobListings?corporateId=${rowData.userId}`
+    );
   };
 
   const usernameBodyTemplate = (rowData) => {
@@ -150,11 +148,18 @@ export default function InvoicePage() {
       <React.Fragment>
         <div className={styles.buttonContainer}>
           <Button
-            label="View More Details"
-            outlined
+          className={styles.billingButton}
+            label="Create Invoice"
             rounded
             size="small"
             onClick={() => handleSuccessfulJobListings(rowData)}
+          />
+          <Button
+            className="p-button-warning"
+            label="View All Invoices"
+            rounded
+            size="small"
+            // onClick={}
           />
         </div>
       </React.Fragment>

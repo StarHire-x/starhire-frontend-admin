@@ -1,3 +1,7 @@
+.billingButton {
+ margin-right: 10px;  
+}
+
 .transparent-circle:before {
   content: "";
   display: inline-block;
