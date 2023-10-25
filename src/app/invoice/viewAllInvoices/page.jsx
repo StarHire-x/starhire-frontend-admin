@@ -16,6 +16,7 @@ import { getCorporateDetails } from "../../api/auth/user/route";
 import moment from "moment";
 import { createInvoice } from "@/app/api/invoice/route";
 import { Toast } from "primereact/toast";
+import { Tag } from "primereact/tag";
 
 export default function ViewAllInvoicesPage() {
   const session = useSession();
@@ -92,10 +93,10 @@ export default function ViewAllInvoicesPage() {
     setIsLoading(false);
   }, [refreshData, accessToken]);
 
-  useEffect(() => {
-    console.log("SEEHERE!");
-    console.log(corporate);
-  });
+  // useEffect(() => {
+  //   console.log("SEEHERE!");
+  //   console.log(invoices);
+  // });
 
   const renderAdminHeader = () => {
     return (
@@ -127,6 +128,20 @@ export default function ViewAllInvoicesPage() {
     router.back();
   };
 
+  const getSeverity = (isPaid) => {
+    return isPaid ? 'success' : 'danger';
+  };
+
+  const paidBodyTemplate = (rowData) => {
+    return (
+      <Tag
+        value={rowData.isPaid? 'Paid' : 'Not Paid'}
+        severity={getSeverity(rowData.isPaid)}
+        style={{ fontSize: '0.8em' }}
+      />
+    );
+  };
+
   return (
     <div>
       <Toast ref={toast} />
@@ -155,24 +170,42 @@ export default function ViewAllInvoicesPage() {
               dataKey="invoiceId"
               filters={filters}
               filterDisplay="menu"
-              globalFilterFields={["jobListingId", "title"]}
+              globalFilterFields={[
+                "invoiceId",
+                "invoiceDate",
+                "dueDate",
+                "totalAmount",
+              ]}
               emptyMessage="No invoices found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               style={{ minWidth: "50vw" }}
             >
+              <Column field="invoiceId" header="Invoice ID" sortable></Column>
               <Column
-                field="jobListingId"
-                header="Job Listing ID"
-                sortable
-              ></Column>
-              <Column field="title" header="Title" sortable></Column>
-              <Column
-                field="listingDate"
-                header="Posted On"
+                field="invoiceDate"
+                header="Billed On"
                 sortable
                 body={(rowData) =>
-                  moment(rowData.listingDate).format("YYYY/MM/DD")
+                  moment(rowData.invoiceDate).format("YYYY/MM/DD")
                 }
+              ></Column>
+              <Column
+                field="dueDate"
+                header="Due On"
+                sortable
+                body={(rowData) => moment(rowData.dueDate).format("YYYY/MM/DD")}
+              ></Column>
+              <Column
+                field="amount"
+                header="Amount"
+                sortable
+                body={(rowData) => `$${rowData.totalAmount}`}
+              ></Column>
+              <Column
+                field="isPaid"
+                header="Payment Status"
+                sortable
+                body={paidBodyTemplate}
               ></Column>
             </DataTable>
             <div className={styles.bottomButtonContainer}>
