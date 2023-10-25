@@ -128,17 +128,45 @@ export default function ViewAllInvoicesPage() {
     router.back();
   };
 
+  const handleDeleteInvoice = (rowData) => {
+    alert("deleted");
+  }
+
   const getSeverity = (isPaid) => {
-    return isPaid ? 'success' : 'danger';
+    return isPaid ? "success" : "danger";
   };
 
   const paidBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData.isPaid? 'Paid' : 'Not Paid'}
+        value={rowData.isPaid ? "Paid" : "Not Paid"}
         severity={getSeverity(rowData.isPaid)}
-        style={{ fontSize: '0.8em' }}
+        style={{ fontSize: "0.8em" }}
       />
+    );
+  };
+
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <div className={styles.buttonContainer}>
+          <Button
+            className="p-button-danger"
+            style={{marginRight: "10px"}}
+            label="Delete Invoice"
+            rounded
+            size="small"
+            onClick={() => handleDeleteInvoice(rowData)}
+          />
+          <Button
+            className="p-button-warning"
+            label="View More"
+            rounded
+            size="small"
+            // onClick={}
+          />
+        </div>
+      </React.Fragment>
     );
   };
 
@@ -206,6 +234,11 @@ export default function ViewAllInvoicesPage() {
                 header="Payment Status"
                 sortable
                 body={paidBodyTemplate}
+              ></Column>
+              <Column
+                body={actionBodyTemplate}
+                exportable={false}
+                style={{ minWidth: "1rem" }}
               ></Column>
             </DataTable>
             <div className={styles.bottomButtonContainer}>
