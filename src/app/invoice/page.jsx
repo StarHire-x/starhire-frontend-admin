@@ -113,9 +113,15 @@ export default function InvoicePage() {
     return renderAdminHeader();
   };
 
-  const handleSuccessfulJobListings = (rowData) => {
+  const handleCreateInvoice = (rowData) => {
     router.push(
       `/invoice/viewSuccessfulJobListings?corporateId=${rowData.userId}`
+    );
+  };
+
+  const handleViewAllInvoices = (rowData) => {
+    router.push(
+      `/invoice/viewAllInvoices?corporateId=${rowData.userId}`
     );
   };
 
@@ -152,14 +158,14 @@ export default function InvoicePage() {
             label="Create Invoice"
             rounded
             size="small"
-            onClick={() => handleSuccessfulJobListings(rowData)}
+            onClick={() => handleCreateInvoice(rowData)}
           />
           <Button
             className="p-button-warning"
             label="View All Invoices"
             rounded
             size="small"
-            // onClick={}
+            onClick={() => handleViewAllInvoices(rowData)}
           />
         </div>
       </React.Fragment>
