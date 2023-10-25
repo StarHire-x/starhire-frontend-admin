@@ -130,7 +130,7 @@ export default function ViewAllInvoicesPage() {
 
   const handleDeleteInvoice = (rowData) => {
     alert("deleted");
-  }
+  };
 
   const getSeverity = (isPaid) => {
     return isPaid ? "success" : "danger";
@@ -151,20 +151,22 @@ export default function ViewAllInvoicesPage() {
       <React.Fragment>
         <div className={styles.buttonContainer}>
           <Button
-            className="p-button-danger"
-            style={{marginRight: "10px"}}
-            label="Delete Invoice"
-            rounded
-            size="small"
-            onClick={() => handleDeleteInvoice(rowData)}
-          />
-          <Button
             className="p-button-warning"
+            style={{ marginRight: "10px" }}
             label="View More"
             rounded
             size="small"
             // onClick={}
           />
+          {!rowData.isPaid && (
+            <Button
+              className="p-button-danger"
+              label="Delete Invoice"
+              rounded
+              size="small"
+              onClick={() => handleDeleteInvoice(rowData)}
+            />
+          )}
         </div>
       </React.Fragment>
     );
