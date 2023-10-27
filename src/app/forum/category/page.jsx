@@ -183,7 +183,9 @@ const CategoryPage = () => {
               tooltipOptions={{ position: "top" }}
             />
           )}
-        {(status === "Pending" || status === "Inactive") && ( // only pending and inactive can become "active" again
+        {(status === "Pending" ||
+          status === "Inactive" ||
+          status === "Reported") && ( // only pending and inactive can become "active" again
           <Button
             icon="pi pi-check"
             rounded
