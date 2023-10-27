@@ -165,6 +165,8 @@ const CategoryPage = () => {
           severity="info"
           icon="pi pi-align-justify"
           onClick={() => setSelectedPost(rowData)}
+          tooltip="View details"
+          tooltipOptions={{ position: "top" }}
         />
         {status != "Inactive" &&
           status != "Deleted" && ( // inactive and deleted posts should not be "deleted"
@@ -177,6 +179,8 @@ const CategoryPage = () => {
               onClick={() =>
                 updateForumPostStatus(rowData?.forumPostId, "Inactive")
               }
+              tooltip="Inactivate forum post"
+              tooltipOptions={{ position: "top" }}
             />
           )}
         {(status === "Pending" || status === "Inactive") && ( // only pending and inactive can become "active" again
@@ -188,6 +192,8 @@ const CategoryPage = () => {
             onClick={() =>
               updateForumPostStatus(rowData?.forumPostId, "Active")
             }
+            tooltip="Activate forum post"
+            tooltipOptions={{ position: "top" }}
           />
         )}
       </div>
@@ -324,6 +330,8 @@ const CategoryPage = () => {
                 label={category?.isArchived ? "Archived" : "Active"}
                 severity={category?.isArchived ? "secondary" : "success"}
                 onClick={() => setIsActiveArchiveCategory(true)}
+                tooltip="Update category status"
+                tooltipOptions={{ position: "top" }}
               />
             </div>
 
