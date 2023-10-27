@@ -111,6 +111,8 @@ const UserStatisticsModal = ({ accessToken }) => {
               grid: {
                 color: surfaceBorder,
               },
+              beginAtZero: true, // ensures the scale starts at 0
+              min: 0,
             },
           },
         };
@@ -251,9 +253,10 @@ const UserStatisticsModal = ({ accessToken }) => {
       <div className={styles.graphContainer}>
         <Card className={styles.customCardGraph}>
           <div className={styles.headerGraph}>
-            <h2 className="montserrat">
+            <h3 className="montserrat">
               Account Creation Analysis by {selectedFilter1}
-            </h2>
+            </h3>
+            <br/>
             <Dropdown
               value={selectedFilter1}
               options={filterOptions1}
@@ -263,13 +266,13 @@ const UserStatisticsModal = ({ accessToken }) => {
           </div>
           <Chart type="line" data={chartData} options={chartOptions} />
         </Card>
-        <Card className={styles.customCardGraph}>
-          <div className={styles.headerGraph}>
-            <h2 className="montserrat">
+        <Card className={styles.customCardGraph1}>
+          <div className={styles.headerGraph1}>
+            <h3 className="montserrat">
               {selectedFilter.charAt(0).toUpperCase() +
                 selectedFilter.slice(1).toLowerCase()}{" "}
               Status Breakdown
-            </h2>
+            </h3>
             <Dropdown
               value={selectedFilter}
               options={filterOptions}
@@ -278,17 +281,15 @@ const UserStatisticsModal = ({ accessToken }) => {
             />
           </div>
           <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <div className={styles.filterContainer}>
+          <div className={styles.filterContainer1}>
             <Chart
               type="pie"
               data={chartData1}
               options={chartOptions1}
               className={styles.doughnutChart}
             />
+            <br />
+            <br />
             <div className={styles.filterColumn}>
               <h2 className="montserrat">
                 User Ratio: {userPercentage.proportion}%
