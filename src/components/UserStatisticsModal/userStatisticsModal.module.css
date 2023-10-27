@@ -1,18 +1,19 @@
 .userStatisticsContainer {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 10px;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .graphContainer {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 10px;
   align-items: center;
   justify-content: center;
+  margin-bottom: 10px;
 }
 
 .mainContainer {
@@ -41,15 +42,22 @@
 }
 
 .customCardGraph {
-    width: 50rem;
+    width: 74rem;
+    height: 40rem;
+    overflow: auto;
+    background-color: #87CEEB;
+}
+
+.customCardGraph1 {
+    width: 24rem;
     height: 40rem;
     overflow: auto;
     background-color: #87CEEB;
 }
 
 .doughnutChart {
-  width: 300px; /* Adjust as needed */
-  height: 300px; 
+  width: 250px; /* Adjust as needed */
+  height: 250px; 
 }
 
 .filterContainer {
@@ -61,10 +69,23 @@
 .filterColumn {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
 }
 
 .headerGraph {
   display: flex;
   justify-content: space-between;
+}
+
+.headerGraph1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.filterContainer1 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
