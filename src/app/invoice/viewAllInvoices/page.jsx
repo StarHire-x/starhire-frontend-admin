@@ -220,22 +220,10 @@ export default function ViewAllInvoicesPage() {
             size="small"
             // onClick={}
           />
-          {!rowData.isPaid && (
-            <Button
-              className="p-button-danger"
-              label="Delete Invoice"
-              rounded
-              size="small"
-              onClick={() => {
-                showUserDialog();
-                setSelectedRow(rowData);
-              }}
-            />
-          )}
           {!rowData.isPaid ? (
             <Button
               className="p-button-success"
-              style={{ marginLeft: "10px" }}
+              style={{ marginRight: "10px" }}
               label="Mark as Paid"
               rounded
               size="small"
@@ -247,12 +235,24 @@ export default function ViewAllInvoicesPage() {
           ) : (
             <Button
               className="p-button-info"
-              style={{ marginLeft: "10px" }}
+              style={{ marginRight: "10px" }}
               label="Mark as Unpaid"
               rounded
               size="small"
               onClick={() => {
                 showPaymentStatusDialog();
+                setSelectedRow(rowData);
+              }}
+            />
+          )}
+          {!rowData.isPaid && (
+            <Button
+              className="p-button-danger"
+              label="Delete Invoice"
+              rounded
+              size="small"
+              onClick={() => {
+                showUserDialog();
                 setSelectedRow(rowData);
               }}
             />
