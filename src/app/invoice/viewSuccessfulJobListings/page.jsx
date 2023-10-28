@@ -356,9 +356,10 @@ export default function ViewSuccessfulJobListings() {
             >
               <div className={styles.dialogTextContainer}>
                 <h5>
-                  Do take note that once you select "Yes", an invoice will be
-                  generated for the following successful job applications, and
-                  this invoice will be billed to {corporate.userName}.
+                  Do take note that once you select &quot;Yes&quot;, an invoice
+                  will be generated for the following successful job
+                  applications, and this invoice will be billed to{" "}
+                  {corporate.userName}.
                 </h5>
                 <DataTable
                   value={selectedRows}
