@@ -159,8 +159,14 @@ export default function ViewAllInvoicesPage() {
 
   const handlePaymentStatus = async () => {
     try {
+      let status = null;
+      if (selectedRow.isPaid) {
+        status = false;
+      } else {
+        status = true;
+      }
       const request = {
-        isPaid: true,
+        isPaid: status,
       };
       const response = await updateInvoicePaymentStatus(
         request,
@@ -226,11 +232,23 @@ export default function ViewAllInvoicesPage() {
               }}
             />
           )}
-          {!rowData.isPaid && (
+          {!rowData.isPaid ? (
             <Button
               className="p-button-success"
               style={{ marginLeft: "10px" }}
               label="Mark as Paid"
+              rounded
+              size="small"
+              onClick={() => {
+                showPaymentStatusDialog();
+                setSelectedRow(rowData);
+              }}
+            />
+          ) : (
+            <Button
+              className="p-button-info"
+              style={{ marginLeft: "10px" }}
+              label="Mark as Unpaid"
               rounded
               size="small"
               onClick={() => {
@@ -367,15 +385,13 @@ export default function ViewAllInvoicesPage() {
               visible={paymentStatusDialog}
               style={{ width: "20vw" }}
               breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-              header={"Mark Invoice " + selectedRow.invoiceId + " as paid?"}
+              header={
+                "Change payment status for Invoice " + selectedRow.invoiceId
+              }
               className="p-fluid"
               footer={paymentStatusDialogFooter}
               onHide={hidePaymentStatusDialog}
-            >
-              <h5 style={{ color: "red" }}>
-                Do take note that this action is irreversible.
-              </h5>
-            </Dialog>
+            ></Dialog>
             <div className={styles.bottomButtonContainer}>
               <Button
                 label="Back"
