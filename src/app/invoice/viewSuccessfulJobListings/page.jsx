@@ -162,7 +162,7 @@ export default function ViewSuccessfulJobListings() {
       dueDate: endDate,
       billingAddress: corporate.companyAddress,
       totalAmount: totalCommission,
-      isPaid: false,
+      invoiceStatus: "Not_Paid",
       administratorId: currentUserId,
       corporateId: corporate.userId,
       jobApplicationIds: jobApplicationIdsArray,

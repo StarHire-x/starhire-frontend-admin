@@ -160,20 +160,20 @@ export default function ViewAllInvoicesPage() {
 
   const handlePaymentStatus = async () => {
     try {
-      // let status = null;
-      // if (selectedRow.isPaid) {
-      //   status = false;
-      // } else {
-      //   status = true;
-      // }
-      // const request = {
-      //   isPaid: status,
-      // };
-      // const response = await updateInvoicePaymentStatus(
-      //   request,
-      //   selectedRow.invoiceId,
-      //   accessToken
-      // );
+      let status = null;
+      if (selectedRow.invoiceStatus === "Indicated_Paid") {
+        status = "Confirmed_Paid";
+      } else {
+        status = "Indicated_Paid";
+      }
+      const request = {
+        invoiceStatus: status,
+      };
+      const response = await updateInvoicePaymentStatus(
+        request,
+        selectedRow.invoiceId,
+        accessToken
+      );
       setRefreshData((prev) => !prev);
       setSelectedRow([]);
       setPaymentStatusDialog(false);
@@ -195,15 +195,21 @@ export default function ViewAllInvoicesPage() {
     }
   };
 
-  const getSeverity = (isPaid) => {
-    return isPaid ? "success" : "danger";
+  const getSeverity = (invoiceStatus) => {
+    if (invoiceStatus === "Not_Paid") {
+      return "danger";
+    } else if (invoiceStatus === "Indicated_Paid") {
+      return "warning";
+    } else if (invoiceStatus === "Confirmed_Paid") {
+      return "success";
+    }
   };
 
   const paidBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData.isPaid ? "Paid" : "Not Paid"}
-        severity={getSeverity(rowData.isPaid)}
+        value={rowData.invoiceStatus.replace("_", " ")}
+        severity={getSeverity(rowData.invoiceStatus)}
         style={{ fontSize: "0.8em" }}
       />
     );
@@ -214,7 +220,7 @@ export default function ViewAllInvoicesPage() {
       <React.Fragment>
         <div className={styles.buttonContainer}>
           <Button
-            className="p-button-warning"
+            className="p-button-info"
             style={{ marginRight: "10px" }}
             label="View Details"
             rounded
@@ -224,8 +230,7 @@ export default function ViewAllInvoicesPage() {
               setSelectedRow(rowData);
             }}
           />
-          {/* commented out codes for future edit */}
-          {/* {!rowData.isPaid ? (
+          {rowData.invoiceStatus === "Indicated_Paid" ? (
             <Button
               className="p-button-success"
               style={{ marginRight: "10px" }}
@@ -237,11 +242,11 @@ export default function ViewAllInvoicesPage() {
                 setSelectedRow(rowData);
               }}
             />
-          ) : (
+          ) : rowData.invoiceStatus === "Confirmed_Paid" ? (
             <Button
-              className="p-button-info"
+              className="p-button-warning"
               style={{ marginRight: "10px" }}
-              label="Mark as Unpaid"
+              label="Mark as Indicated Paid"
               rounded
               size="small"
               onClick={() => {
@@ -249,8 +254,8 @@ export default function ViewAllInvoicesPage() {
                 setSelectedRow(rowData);
               }}
             />
-          )}
-          {!rowData.isPaid && (
+          ) : null}
+          {rowData.invoiceStatus === "Not_Paid" && (
             <Button
               className="p-button-danger"
               label="Delete Invoice"
@@ -261,7 +266,7 @@ export default function ViewAllInvoicesPage() {
                 setSelectedRow(rowData);
               }}
             />
-          )} */}
+          )}
         </div>
       </React.Fragment>
     );
@@ -438,7 +443,9 @@ export default function ViewAllInvoicesPage() {
                   <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
                     Total Commission:
                   </span>
-                  <span style={{ fontWeight: "bold" }}>${selectedRow.totalAmount}</span>
+                  <span style={{ fontWeight: "bold" }}>
+                    ${selectedRow.totalAmount}
+                  </span>
                 </div>
               </div>
             </Dialog>
