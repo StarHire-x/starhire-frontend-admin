@@ -160,20 +160,20 @@ export default function ViewAllInvoicesPage() {
 
   const handlePaymentStatus = async () => {
     try {
-      let status = null;
-      if (selectedRow.isPaid) {
-        status = false;
-      } else {
-        status = true;
-      }
-      const request = {
-        isPaid: status,
-      };
-      const response = await updateInvoicePaymentStatus(
-        request,
-        selectedRow.invoiceId,
-        accessToken
-      );
+      // let status = null;
+      // if (selectedRow.isPaid) {
+      //   status = false;
+      // } else {
+      //   status = true;
+      // }
+      // const request = {
+      //   isPaid: status,
+      // };
+      // const response = await updateInvoicePaymentStatus(
+      //   request,
+      //   selectedRow.invoiceId,
+      //   accessToken
+      // );
       setRefreshData((prev) => !prev);
       setSelectedRow([]);
       setPaymentStatusDialog(false);
@@ -224,7 +224,8 @@ export default function ViewAllInvoicesPage() {
               setSelectedRow(rowData);
             }}
           />
-          {!rowData.isPaid ? (
+          {/* commented out codes for future edit */}
+          {/* {!rowData.isPaid ? (
             <Button
               className="p-button-success"
               style={{ marginRight: "10px" }}
@@ -260,7 +261,7 @@ export default function ViewAllInvoicesPage() {
                 setSelectedRow(rowData);
               }}
             />
-          )}
+          )} */}
         </div>
       </React.Fragment>
     );
