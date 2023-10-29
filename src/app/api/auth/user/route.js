@@ -196,6 +196,31 @@ export const getUserByUserId = async (userId, role, accessToken) => {
   }
 };
 
+export const getAllCorporates = async (accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/corporate/all`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the corporate users", error);
+    throw error;
+  }
+};
+
 export const getCorporateDetails = async (userId, accessToken) => {
   try {
     const res = await fetch(
@@ -254,6 +279,60 @@ export const getUserBreakdown = async (accessToken) => {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/users/getBreakdown`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+    const response = await res.json();
+    if (response.statusCode === 200) {
+      return response.data;
+    } else {
+      return NextResponse.json(
+        { error: response.message },
+        { status: response.statusCode }
+      );
+    }
+  } catch (error) {
+    console.log("There was a problem fetching the users", error.message);
+  }
+};
+
+export const getCorporateJobListingStatistics = async (accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/corporate/getStats`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+    const response = await res.json();
+    if (response.statusCode === 200) {
+      return response.data;
+    } else {
+      return NextResponse.json(
+        { error: response.message },
+        { status: response.statusCode }
+      );
+    }
+  } catch (error) {
+    console.log("There was a problem fetching the corproate job listings", error.message);
+  }
+};
+
+export const getCorporateJobListingBreakdown = async (accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/corporate/getBreakdown`,
       {
         method: "GET",
         headers: {

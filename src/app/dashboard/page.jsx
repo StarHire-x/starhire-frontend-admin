@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Card } from "primereact/card";
 import UserStatisticsModal from "@/components/UserStatisticsModal/UserStatisticsModal";
+import JobStatisticsModal from "@/components/JobStatisticsModal/JobStatisticsModal";
 
 
 const Dashboard = () => {
@@ -39,7 +40,10 @@ const Dashboard = () => {
             Welcome Back {session.data.user.name}!
           </h2>
           {role === "Administrator" && (
-            <UserStatisticsModal accessToken={accessToken} />
+            <>
+              <UserStatisticsModal accessToken={accessToken} />
+              <JobStatisticsModal accessToken={accessToken} />
+            </>
           )}
         </div>
       </>
