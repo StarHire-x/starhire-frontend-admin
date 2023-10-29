@@ -54,6 +54,7 @@ export default function ViewAllInvoicesPage() {
   const [refreshData, setRefreshData] = useState(false);
   const [userDialog, setUserDialog] = useState(false);
   const [paymentStatusDialog, setPaymentStatusDialog] = useState(false);
+  const [detailDialog, setDetailDialog] = useState(false);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: {
@@ -97,10 +98,10 @@ export default function ViewAllInvoicesPage() {
     setIsLoading(false);
   }, [refreshData, accessToken]);
 
-  // useEffect(() => {
-  //   console.log("SEEHERE!");
-  //   console.log(invoices);
-  // });
+  useEffect(() => {
+    console.log("SEEHERE!");
+    console.log(selectedRow);
+  });
 
   const renderAdminHeader = () => {
     return (
@@ -218,7 +219,10 @@ export default function ViewAllInvoicesPage() {
             label="View Details"
             rounded
             size="small"
-            // onClick={}
+            onClick={() => {
+              showDetailDialog();
+              setSelectedRow(rowData);
+            }}
           />
           {!rowData.isPaid ? (
             <Button
@@ -276,6 +280,14 @@ export default function ViewAllInvoicesPage() {
 
   const hidePaymentStatusDialog = (rowData) => {
     setPaymentStatusDialog(false);
+  };
+
+  const showDetailDialog = (rowData) => {
+    setDetailDialog(true);
+  };
+
+  const hideDetailDialog = (rowData) => {
+    setDetailDialog(false);
   };
 
   const userDialogFooter = (
@@ -392,6 +404,44 @@ export default function ViewAllInvoicesPage() {
               footer={paymentStatusDialogFooter}
               onHide={hidePaymentStatusDialog}
             ></Dialog>
+
+            <Dialog
+              visible={detailDialog}
+              style={{ width: "40vw", height: "50vh" }}
+              breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+              header={"Details for Invoice " + selectedRow.invoiceId}
+              className="p-fluid"
+              onHide={hideDetailDialog}
+            >
+              <div className={styles.dialogTextContainer}>
+                <DataTable
+                  value={selectedRow.jobApplications}
+                  showGridlines
+                  tableStyle={{ width: "35vw", marginTop: "10px" }}
+                >
+                  <Column
+                    field="jobApplicationId"
+                    header="Job Application ID"
+                  ></Column>
+                  <Column
+                    field="recruiter.userName"
+                    header="Assigned By"
+                  ></Column>
+                  <Column
+                    field="jobListing.averageSalary"
+                    header="Commission"
+                    body={(rowData) => `$${rowData.jobListing.averageSalary}`}
+                  ></Column>
+                </DataTable>
+                <div className={styles.dialogTotalAmountContainer}>
+                  <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
+                    Total Commission:
+                  </span>
+                  <span style={{ fontWeight: "bold" }}>${selectedRow.totalAmount}</span>
+                </div>
+              </div>
+            </Dialog>
+
             <div className={styles.bottomButtonContainer}>
               <Button
                 label="Back"
