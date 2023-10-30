@@ -188,6 +188,7 @@ const ViewSuccessfulJobAppsPage = () => {
 
     const request = {
       commissionDate: commissionDate,
+      commissionRate: commissionRate,
       commissionAmount: totalCommission,
       administratorId: currentUserId,
       recruiterId: recruiterId,
