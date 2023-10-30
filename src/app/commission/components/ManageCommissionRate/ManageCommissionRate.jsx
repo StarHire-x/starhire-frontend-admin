@@ -9,8 +9,8 @@ import {
 } from "@/app/api/commission/route";
 import { Toast } from "primereact/toast";
 
-const ManageCommissionRateModal = ({ accessToken }) => {
-  const [commissionRateObj, setCommissionRateObj] = useState({});
+const ManageCommissionRateModal = ({ accessToken, commissionRateObj, setCommissionRateObj }) => {
+  // const [commissionRateObj, setCommissionRateObj] = useState({});
   const toast = useRef(null);
 
   const handleUpdateCommissionRate = async () => {
@@ -39,13 +39,13 @@ const ManageCommissionRateModal = ({ accessToken }) => {
     }
   };
 
-  useEffect(() => {
-    getAllCommissionRates(accessToken).then((response) => {
-      if (response.length > 0) {
-        setCommissionRateObj(response[0]);
-      }
-    });
-  }, [accessToken]);
+  // useEffect(() => {
+  //   getAllCommissionRates(accessToken).then((response) => {
+  //     if (response.length > 0) {
+  //       setCommissionRateObj(response[0]);
+  //     }
+  //   });
+  // }, [accessToken]);
 
   return (
     <>

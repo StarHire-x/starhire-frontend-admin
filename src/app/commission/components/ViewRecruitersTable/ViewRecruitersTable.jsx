@@ -89,7 +89,7 @@ const ViewRecruitersTable = ({ router, accessToken }) => {
 
   const handleCreateCommission = (rowData) => {
     router.push(
-      `/commission/ViewSuccessfulJobAppsPage?recruiterId=${rowData.userId}`
+      `/commission/ViewSuccessfulJobAppsPage?recruiterId=${rowData.userId}&recruiterUserName=${rowData.userName}`
     );
   };
 
