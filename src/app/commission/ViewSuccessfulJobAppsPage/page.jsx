@@ -85,7 +85,6 @@ const ViewSuccessfulJobAppsPage = () => {
   const params = useSearchParams();
   const recruiterId = params.get("recruiterId");
   const recruiterUserName = params.get("recruiterUserName");
- 
 
   const [commissionRate, setCommissionRate] = useState({});
 
@@ -150,57 +149,97 @@ const ViewSuccessfulJobAppsPage = () => {
     return renderAdminHeader();
   };
 
+  const handleOnBackClick = () => {
+    router.back();
+  };
+
   return (
     <>
-      <DataTable
-        value={yetCommissionedSuccessfulJobApps}
-        selectionMode={"checkbox"}
-        selection={selectedJobApps}
-        onSelectionChange={(e) => setSelectedJobApps(e.value)}
-        dataKey="jobApplicationId"
-        tableStyle={{ minWidth: "50rem" }}
-        emptyMessage="No commissions to be handled for this recruiter"
-        paginator
-        ref={dt}
-        header={header}
-        rows={10}
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        rowsPerPageOptions={[10, 25, 50]}
-        filters={filters}
-        filterDisplay="menu"
-        globalFilterFields={["jobApplicationId", "jobListing.title"]}
-        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-      >
-        <Column
-          selectionMode="multiple"
-          headerStyle={{ width: "3rem" }}
-        ></Column>
-        <Column field="jobApplicationId" header="jobApplicationId"></Column>
-        <Column field="jobListing.jobListingId" header="JobListingId"></Column>
-        <Column field="jobListing.title" header="JobListing Title"></Column>
-        <Column
-          field="submissionDate"
-          header="Job Application Submitted On"
-          sortable
-          body={(rowData) => moment(rowData.submissionDate).format("YYYY/MM/DD")}
-        ></Column>
-        <Column
-          field="jobListing.averageSalary"
-          header="Listed Salary"
-          sortable
-          body={(rowData) => `$${rowData.jobListing.averageSalary}`}
-        ></Column>
-        <Column
-          field="jobListing.averageSalary"
-          header={`Commission (${commissionRate}% of Listed Salary)`}
-          sortable
-          body={(rowData) =>
-            `$${
-              (Number(commissionRate) / 100) * rowData.jobListing.averageSalary
-            }`
-          }
-        ></Column>
-      </DataTable>
+      <Toast ref={toast} />
+      {isLoading ? (
+        <ProgressSpinner
+          style={{
+            display: "flex",
+            height: "100vh",
+            "justifyContent": "center",
+            "alignItems": "center",
+          }}
+        />
+      ) : (
+        <>
+          <DataTable
+            value={yetCommissionedSuccessfulJobApps}
+            selectionMode={"checkbox"}
+            selection={selectedJobApps}
+            onSelectionChange={(e) => setSelectedJobApps(e.value)}
+            dataKey="jobApplicationId"
+            tableStyle={{ minWidth: "50rem" }}
+            emptyMessage="No commissions to be handled for this recruiter"
+            paginator
+            ref={dt}
+            header={header}
+            rows={10}
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+            rowsPerPageOptions={[10, 25, 50]}
+            filters={filters}
+            filterDisplay="menu"
+            globalFilterFields={["jobApplicationId", "jobListing.title"]}
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          >
+            <Column
+              selectionMode="multiple"
+              headerStyle={{ width: "3rem" }}
+            ></Column>
+            <Column field="jobApplicationId" header="jobApplicationId"></Column>
+            <Column
+              field="jobListing.jobListingId"
+              header="JobListingId"
+            ></Column>
+            <Column field="jobListing.title" header="JobListing Title"></Column>
+            <Column
+              field="submissionDate"
+              header="Job Application Submitted On"
+              sortable
+              body={(rowData) =>
+                moment(rowData.submissionDate).format("YYYY/MM/DD")
+              }
+            ></Column>
+            <Column
+              field="jobListing.averageSalary"
+              header="Listed Salary"
+              sortable
+              body={(rowData) => `$${rowData.jobListing.averageSalary}`}
+            ></Column>
+            <Column
+              field="jobListing.averageSalary"
+              header={`Commission (${commissionRate}% of Listed Salary)`}
+              sortable
+              body={(rowData) =>
+                `$${
+                  (Number(commissionRate) / 100) *
+                  rowData.jobListing.averageSalary
+                }`
+              }
+            ></Column>
+          </DataTable>
+          <div className={styles.bottomButtonContainer}>
+            <Button
+              label="Back"
+              icon="pi pi-chevron-left"
+              rounded
+              size="medium"
+              className="p-button-info"
+              onClick={() => handleOnBackClick()}
+            />
+            <Button
+              label="Create Invoice"
+              rounded
+              size="medium"
+              // onClick={() => showUserDialog()}
+            />
+          </div>
+        </>
+      )}
     </>
   );
 };
