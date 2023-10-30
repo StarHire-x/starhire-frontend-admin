@@ -7,6 +7,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Card } from "primereact/card";
 import UserStatisticsModal from "@/components/UserStatisticsModal/UserStatisticsModal";
 import JobStatisticsModal from "@/components/JobStatisticsModal/JobStatisticsModal";
+import JobAssignmentModal from "@/components/JobAssignmentModal/JobAssignmentModal";
 
 
 const Dashboard = () => {
@@ -23,6 +24,11 @@ const Dashboard = () => {
     session.status === "authenticated" &&
     session.data &&
     session.data.user.role;
+
+  const userId =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.userId;
 
   if (session.status === "loading") {
     return <ProgressSpinner />;
@@ -43,6 +49,11 @@ const Dashboard = () => {
             <>
               <UserStatisticsModal accessToken={accessToken} />
               <JobStatisticsModal accessToken={accessToken} />
+            </>
+          )}
+          {role === "Recruiter" && (
+            <>
+              <JobAssignmentModal accessToken={accessToken} userId={userId} />
             </>
           )}
         </div>
