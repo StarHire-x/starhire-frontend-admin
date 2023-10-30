@@ -121,3 +121,26 @@ export const getAllCommissionsByRecruiterIdAndAdminId= async (recruiterId, admin
     throw error;
   }
 };
+
+export const deleteCommission = async (id, accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/commission/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message);
+    }
+  } catch (error) {
+    console.log(error.message);
+    throw error;
+  }
+};
