@@ -13,6 +13,7 @@ import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
 import { getAllRecruiters } from "@/app/api/auth/user/route";
+import { Badge } from "primereact/badge";
 
 const ViewRecruitersTable = ({ router, accessToken }) => {
   const dt = useRef(null);
@@ -47,11 +48,23 @@ const ViewRecruitersTable = ({ router, accessToken }) => {
     if (accessToken) {
       const fetchAllRecruiters = async () => {
         try {
-          const allCorporates = await getAllRecruiters(accessToken);
-          setUsers(allCorporates.data);
+          const allRecruiters = await getAllRecruiters(accessToken);
+          allRecruiters?.data?.map((recruiter) => {
+            let updatedRecruiter = recruiter;
+            updatedRecruiter.pendingCommissionsLength =
+              updatedRecruiter.jobApplications.filter(
+                (jobApp) =>
+                  jobApp.jobApplicationStatus === "Offer_Accepted" &&
+                  !jobApp.commission
+              ).length;
+            return updatedRecruiter;
+          });
+          const sortedRecruitersByPendingCommissionsLength = allRecruiters.data?.sort((x, y) => y?.pendingCommissionsLength - x?.pendingCommissionsLength);
+          // console.log(allRecruiters.data);
+          setUsers(sortedRecruitersByPendingCommissionsLength);
         } catch (error) {
           console.log(
-            "There was a problem fetching the corporate users",
+            "There was a problem fetching the recruiter users",
             error
           );
         }
@@ -94,7 +107,9 @@ const ViewRecruitersTable = ({ router, accessToken }) => {
   };
 
   const handleViewAllInvoices = (rowData) => {
-    router.push(`/commission/ViewAllCommissions?recruiterId=${rowData.userId}&recruiterUserName=${rowData.userName}`);
+    router.push(
+      `/commission/ViewAllCommissions?recruiterId=${rowData.userId}&recruiterUserName=${rowData.userName}`
+    );
   };
 
   const usernameBodyTemplate = (rowData) => {
@@ -131,7 +146,12 @@ const ViewRecruitersTable = ({ router, accessToken }) => {
             rounded
             size="small"
             onClick={() => handleCreateCommission(rowData)}
-          />
+          >
+            <Badge
+              value={rowData?.pendingCommissionsLength}
+              severity="danger"
+            ></Badge>
+          </Button>
           <Button
             className="p-button-warning"
             label="View All Commissions"
@@ -151,8 +171,8 @@ const ViewRecruitersTable = ({ router, accessToken }) => {
           style={{
             display: "flex",
             height: "100vh",
-            "justifyContent": "center",
-            "alignItems": "center",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         />
       ) : (
