@@ -6,12 +6,26 @@ import ManageCommissionRateModal from "./components/ManageCommissionRate/ManageC
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Enums from "@/common/enums/enums";
 
 const CommissionPage = () => {
   const session = useSession();
   const router = useRouter();
+
+  const currentUserRole =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.role;
+
   if (session.status === "unauthenticated") {
     router?.push("/login");
+  }
+
+  if (
+    session.status === "authenticated" &&
+    currentUserRole !== Enums.ADMIN
+  ) {
+    router.push("/dashboard");
   }
 
   const accessToken =
