@@ -56,7 +56,7 @@ const CommissionPage = () => {
           <ManageCommissionRateModal accessToken={accessToken} />
         </Dialog>
       </div>
-      <ViewRecruitersTable accessToken={accessToken} />
+      <ViewRecruitersTable router={router} accessToken={accessToken} />
     </>
   );
 };

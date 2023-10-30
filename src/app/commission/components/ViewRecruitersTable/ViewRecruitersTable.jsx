@@ -14,7 +14,7 @@ import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
 import { getAllRecruiters } from "@/app/api/auth/user/route";
 
-const ViewRecruitersTable = ({ accessToken }) => {
+const ViewRecruitersTable = ({ router, accessToken }) => {
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -87,9 +87,9 @@ const ViewRecruitersTable = ({ accessToken }) => {
     return renderAdminHeader();
   };
 
-  const handleCreateInvoice = (rowData) => {
+  const handleCreateCommission = (rowData) => {
     router.push(
-      `/invoice/viewSuccessfulJobListings?corporateId=${rowData.userId}`
+      `/commission/ViewSuccessfulJobAppsPage?recruiterId=${rowData.userId}`
     );
   };
 
@@ -130,7 +130,7 @@ const ViewRecruitersTable = ({ accessToken }) => {
             label="Create Commission"
             rounded
             size="small"
-            onClick={() => handleCreateInvoice(rowData)}
+            onClick={() => handleCreateCommission(rowData)}
           />
           <Button
             className="p-button-warning"
