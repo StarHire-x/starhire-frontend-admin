@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Enums from "@/common/enums/enums";
+import ViewRecruitersTable from "./components/ViewRecruitersTable/ViewRecruitersTable";
 
 const CommissionPage = () => {
   const session = useSession();
@@ -55,6 +56,7 @@ const CommissionPage = () => {
           <ManageCommissionRateModal accessToken={accessToken} />
         </Dialog>
       </div>
+      <ViewRecruitersTable accessToken={accessToken} />
     </>
   );
 };
