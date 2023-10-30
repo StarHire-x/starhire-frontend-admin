@@ -74,10 +74,10 @@ export const getAllYetCommissionedSuccessfulJobAppsByRecruiterId = async (userId
 };
 
 
-export const add = async (request, accessToken) => {
+export const createCommission = async (request, accessToken) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/commission`,
       {
         method: "POST",
         headers: {
