@@ -96,3 +96,28 @@ export const createCommission = async (request, accessToken) => {
     throw error;
   }
 };
+
+export const getAllCommissionsByRecruiterIdAndAdminId= async (recruiterId, adminId, accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/commission/recruiter/${recruiterId}/admin/${adminId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the commissions by recruiter id and admin id", error);
+    throw error;
+  }
+};

@@ -94,7 +94,7 @@ const ViewRecruitersTable = ({ router, accessToken }) => {
   };
 
   const handleViewAllInvoices = (rowData) => {
-    router.push(`/invoice/viewAllInvoices?corporateId=${rowData.userId}`);
+    router.push(`/commission/ViewAllCommissions?recruiterId=${rowData.userId}&recruiterUserName=${rowData.userName}`);
   };
 
   const usernameBodyTemplate = (rowData) => {
