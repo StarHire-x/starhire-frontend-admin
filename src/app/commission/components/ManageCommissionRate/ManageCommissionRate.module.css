@@ -1,0 +1,21 @@
+.commissionSaveBtnContainer {
+    display: flex;
+    margin-top: 5%;
+    justify-content: space-around;
+}
+
+
+.commissionRateInput {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.commissionRateLabel {
+    margin-right: 2%;
+}
+
+.commissionRateNote {
+    color: red;
+    margin-bottom: 5%;
+}

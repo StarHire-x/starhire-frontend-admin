@@ -456,6 +456,8 @@ export default function ViewJobListingRecruiter() {
           <div>
             <DataTable
               value={user}
+              sortField="similarity"
+              sortOrder={-1}
               paginator
               ref={dt}
               header={header}

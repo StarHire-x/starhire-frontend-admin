@@ -19,8 +19,17 @@ export default function InvoicePage() {
   const session = useSession();
   const router = useRouter();
 
+  const currentUserRole =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.role;
+
   if (session.status === "unauthenticated") {
     router.push("/login");
+  }
+
+  if (session.status === "authenticated" && currentUserRole !== Enums.ADMIN) {
+    router.push("/dashboard");
   }
 
   const accessToken =
@@ -30,11 +39,6 @@ export default function InvoicePage() {
 
   const currentUserId =
     session.status === "authenticated" && session.data.user.userId;
-
-  const currentUserRole =
-    session.status === "authenticated" &&
-    session.data &&
-    session.data.user.role;
 
   const dt = useRef(null);
 
@@ -120,9 +124,7 @@ export default function InvoicePage() {
   };
 
   const handleViewAllInvoices = (rowData) => {
-    router.push(
-      `/invoice/viewAllInvoices?corporateId=${rowData.userId}`
-    );
+    router.push(`/invoice/viewAllInvoices?corporateId=${rowData.userId}`);
   };
 
   const usernameBodyTemplate = (rowData) => {
@@ -154,7 +156,7 @@ export default function InvoicePage() {
       <React.Fragment>
         <div className={styles.buttonContainer}>
           <Button
-          className={styles.billingButton}
+            className={styles.billingButton}
             label="Create Invoice"
             rounded
             size="small"

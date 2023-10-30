@@ -23,8 +23,17 @@ export default function ViewSuccessfulJobListings() {
   const router = useRouter();
   const toast = useRef(null);
 
+  const currentUserRole =
+    session.status === "authenticated" &&
+    session.data &&
+    session.data.user.role;
+
   if (session.status === "unauthenticated") {
     router.push("/login");
+  }
+
+  if (session.status === "authenticated" && currentUserRole !== Enums.ADMIN) {
+    router.push("/dashboard");
   }
 
   const accessToken =
@@ -34,11 +43,6 @@ export default function ViewSuccessfulJobListings() {
 
   const currentUserId =
     session.status === "authenticated" && session.data.user.userId;
-
-  const currentUserRole =
-    session.status === "authenticated" &&
-    session.data &&
-    session.data.user.role;
 
   const dt = useRef(null);
 
@@ -169,9 +173,7 @@ export default function ViewSuccessfulJobListings() {
     };
 
     if (selectedRows.length === 0) {
-      console.error(
-        "You have not selected any successful job application."
-      );
+      console.error("You have not selected any successful job application.");
       toast.current.show({
         severity: "warn",
         summary: "Warning",

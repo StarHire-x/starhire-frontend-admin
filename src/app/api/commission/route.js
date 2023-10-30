@@ -1,7 +1,7 @@
-export const getAll = async (accessToken) => {
+export const getAllCommissionRates = async (accessToken) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/commission-rate`,
       {
         method: "GET",
         headers: {
@@ -18,15 +18,15 @@ export const getAll = async (accessToken) => {
     }
     return await res.json();
   } catch (error) {
-    console.log("There was a problem fetching the forum categories", error);
+    console.log("There was a problem fetching the commission rates", error);
     throw error;
   }
 };
 
-export const update = async (request, id, accessToken) => {
+export const updateCommissionRate = async (request, id, accessToken) => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/forum-categories/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/commission-rate/${id}`,
       {
         method: "PUT",
         headers: {
