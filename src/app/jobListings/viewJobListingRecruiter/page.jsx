@@ -491,7 +491,7 @@ export default function ViewJobListingRecruiter() {
               ></Column> */}
               <Column
                 field="similarity"
-                header="Similarity Score (%)"
+                header="Match Rate (%)"
                 sortable
                 body={(rowData) => parseFloat(rowData.similarity).toFixed(2)}
               ></Column>
