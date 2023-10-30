@@ -21,7 +21,7 @@ import {
 } from "@/app/api/invoice/route";
 import { Toast } from "primereact/toast";
 import { Tag } from "primereact/tag";
-import { getAllCommissionsByRecruiterIdAndAdminId } from "@/app/api/commission/route";
+import { deleteCommission, getAllCommissionsByRecruiterIdAndAdminId } from "@/app/api/commission/route";
 
 const ViewAllCommissions = () => {
   const session = useSession();
@@ -57,7 +57,6 @@ const ViewAllCommissions = () => {
   const [deleteCommissionDialog, setDeleteCommissionDialog] = useState(false);
   const [commissionDetailDialog, setCommissionDetailDialog] = useState(false);
   const [selectedCommission, setSelectedCommission] = useState([]);
-
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -167,10 +166,10 @@ const ViewAllCommissions = () => {
             size="small"
             onClick={() => {
               showCommissionDetailDialog(rowData);
-            //   setSelectedRow(rowData);
+              //   setSelectedRow(rowData);
             }}
           />
-          {rowData.invoiceStatus === "Indicated_Paid" && (
+          {rowData.commissionStatus === "Indicated_Paid" && (
             <Button
               className="p-button-danger"
               label="Delete Commission"
@@ -204,7 +203,7 @@ const ViewAllCommissions = () => {
       updatedSelectedJobApp.commissionAmt =
         (commissionRate / 100) * updatedSelectedJobApp.jobListing.averageSalary;
       return updatedSelectedJobApp;
-    });    
+    });
     setSelectedCommission(rowData);
   };
 
@@ -212,10 +211,39 @@ const ViewAllCommissions = () => {
     setCommissionDetailDialog(false);
   };
 
+  const handleDeleteCommission = async () => {
+    const commissionId = selectedCommission.commissionId;
+    try {
+      const response = await deleteCommission(commissionId, accessToken);
+      setRefreshData((prev) => !prev);
+      setSelectedCommission([]);
+      setDeleteCommissionDialog(false);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: `Commission ID ${commissionId} deleted successfully`,
+        life: 5000,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: `Error deleting Commission ID ${commissionId}`,
+        life: 5000,
+      });
+    }
+  };
+
   const deleteCommissionDialogFooter = (
     <React.Fragment>
-      <Button label="No" icon="pi pi-times" outlined onClick={hideDeleteCommissionDialog} />
-      <Button label="Yes" icon="pi pi-check" />
+      <Button
+        label="No"
+        icon="pi pi-times"
+        outlined
+        onClick={hideDeleteCommissionDialog}
+      />
+      <Button label="Yes" icon="pi pi-check" onClick={handleDeleteCommission} />
     </React.Fragment>
   );
 
@@ -227,8 +255,8 @@ const ViewAllCommissions = () => {
           style={{
             display: "flex",
             height: "100vh",
-            "justifyContent": "center",
-            "alignItems": "center",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         />
       ) : (
@@ -254,7 +282,11 @@ const ViewAllCommissions = () => {
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               style={{ minWidth: "50vw" }}
             >
-              <Column field="commissionId" header="Commission ID" sortable></Column>
+              <Column
+                field="commissionId"
+                header="Commission ID"
+                sortable
+              ></Column>
               <Column
                 field="commissionDate"
                 header="Generated On"
@@ -298,7 +330,9 @@ const ViewAllCommissions = () => {
               visible={commissionDetailDialog}
               style={{ width: "40vw", height: "50vh" }}
               breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-              header={"Details for Commission " + selectedCommission.commissionId}
+              header={
+                "Details for Commission " + selectedCommission.commissionId
+              }
               className="p-fluid"
               onHide={hideCommissionDetailDialog}
             >
@@ -316,16 +350,16 @@ const ViewAllCommissions = () => {
                     field="jobListing.jobListingId"
                     header="Job Listing ID"
                   ></Column>
-                   <Column
+                  <Column
                     field="jobListing.title"
                     header="Job Listing Title"
                   ></Column>
-                   <Column
+                  <Column
                     field="jobListing.averageSalary"
                     header="Listed Salary"
                     body={(rowData) => `$${rowData.jobListing.averageSalary}`}
                   ></Column>
-                   <Column
+                  <Column
                     field="commissionRate"
                     header="Commission Rate"
                     body={(rowData) => `${rowData.commissionRate}%`}
