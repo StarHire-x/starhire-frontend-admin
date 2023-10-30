@@ -47,6 +47,33 @@ export const updateCommissionRate = async (request, id, accessToken) => {
   }
 };
 
+
+export const getAllYetCommissionedSuccessfulJobAppsByRecruiterId = async (userId, accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/job-application/yet-commission/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.log(errorData);
+      throw new Error(errorData.message);
+    }
+    return await res.json();
+  } catch (error) {
+    console.log("There was a problem fetching the yet commissioned successful job apps", error);
+    throw error;
+  }
+};
+
+
 export const add = async (request, accessToken) => {
   try {
     const res = await fetch(
