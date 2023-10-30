@@ -1,12 +1,14 @@
 "use client";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "primereact/button";
 import styles from "./commission.module.css";
 import { Dialog } from "primereact/dialog";
 import ManageCommissionRateModal from "./components/ManageCommissionRate/ManageCommissionRate";
-import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Enums from "@/common/enums/enums";
+import ViewRecruitersTable from "./components/ViewRecruitersTable/ViewRecruitersTable";
+import { getAllCommissionRates } from "../api/commission/route";
 
 const CommissionPage = () => {
   const session = useSession();
@@ -21,10 +23,7 @@ const CommissionPage = () => {
     router?.push("/login");
   }
 
-  if (
-    session.status === "authenticated" &&
-    currentUserRole !== Enums.ADMIN
-  ) {
+  if (session.status === "authenticated" && currentUserRole !== Enums.ADMIN) {
     router.push("/dashboard");
   }
 
@@ -37,6 +36,18 @@ const CommissionPage = () => {
     manageCommissionRateModalVisibility,
     setManageCommissionRateModalVisibility,
   ] = useState(false);
+
+  const [commissionRateObj, setCommissionRateObj] = useState({});
+
+  useEffect(() => {
+    if (accessToken) {
+      getAllCommissionRates(accessToken).then((response) => {
+        if (response.length > 0) {
+          setCommissionRateObj(response[0]);
+        }
+      });
+    }
+  }, [accessToken]);
 
   return (
     <>
@@ -52,9 +63,17 @@ const CommissionPage = () => {
           visible={manageCommissionRateModalVisibility}
           onHide={() => setManageCommissionRateModalVisibility(false)}
         >
-          <ManageCommissionRateModal accessToken={accessToken} />
+          <ManageCommissionRateModal
+            accessToken={accessToken}
+            commissionRateObj={commissionRateObj}
+            setCommissionRateObj={setCommissionRateObj}
+          />
         </Dialog>
       </div>
+      <ViewRecruitersTable
+        router={router}
+        accessToken={accessToken}
+      />
     </>
   );
 };
