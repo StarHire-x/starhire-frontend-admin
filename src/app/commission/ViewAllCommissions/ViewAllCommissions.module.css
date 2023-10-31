@@ -17,3 +17,8 @@
   justify-content: "flex-start";
   align-items: "center";
 }
+
+.dialogTextContainer a {
+  text-decoration: underline;
+  color: blue;
+}

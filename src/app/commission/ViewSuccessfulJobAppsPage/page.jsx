@@ -22,6 +22,7 @@ import {
   getAllCommissionRates,
   getAllYetCommissionedSuccessfulJobAppsByRecruiterId,
 } from "@/app/api/commission/route";
+import { uploadFile } from "@/app/api/upload/route";
 
 const ViewSuccessfulJobAppsPage = () => {
   const session = useSession();
@@ -59,6 +60,7 @@ const ViewSuccessfulJobAppsPage = () => {
   ] = useState([]);
   const [commissionDialog, setCommissionDialog] = useState(false);
   const [totalCommission, setTotalCommission] = useState(null);
+  const [commissionPaymentURL, setCommissionPaymentURL] = useState(null);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -176,7 +178,7 @@ const ViewSuccessfulJobAppsPage = () => {
     setTotalCommission(totalCommissionCalculated);
   };
 
-   const handleCreateCommission = async () => {
+  const handleCreateCommission = async () => {
     let jobApplicationIdsArray = [];
     for (let i = 0; i < selectedJobApps.length; i++) {
       const jobApplication = selectedJobApps[i];
@@ -184,7 +186,17 @@ const ViewSuccessfulJobAppsPage = () => {
     }
 
     const commissionDate = new Date();
-    
+
+    if (!commissionPaymentURL) {
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail:
+          "Please upload a payment document proof for this commission paid!",
+        life: 5000,
+      });
+      return;
+    }
 
     const request = {
       commissionDate: commissionDate,
@@ -193,6 +205,7 @@ const ViewSuccessfulJobAppsPage = () => {
       administratorId: currentUserId,
       recruiterId: recruiterId,
       jobApplicationIds: jobApplicationIdsArray,
+      paymentDocumentURL: commissionPaymentURL
     };
 
     if (selectedJobApps.length === 0) {
@@ -230,17 +243,39 @@ const ViewSuccessfulJobAppsPage = () => {
     }
   };
 
+  const hideCommissionDialog = () => {
+      setCommissionDialog(false);
+      setCommissionPaymentURL(null);
+  };
+
   const commissionDialogFooter = (
     <React.Fragment>
       <Button
         label="No"
         icon="pi pi-times"
         outlined
-        onClick={() => setCommissionDialog(false)}
+        onClick={() => hideCommissionDialog()}
       />
       <Button label="Yes" icon="pi pi-check" onClick={handleCreateCommission} />
     </React.Fragment>
   );
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    // const inputId = e.target.id; // Get the ID of the input that triggered the event
+    if (!file) return;
+    try {
+      const response = await uploadFile(file, accessToken);
+      setCommissionPaymentURL(response.url);
+    } catch (error) {
+      console.error("There was an error uploading the file", error);
+    }
+  };
+
+  const removePdf = (e) => {
+    setCommissionPaymentURL(null);
+    e.target.value = null;
+  };
 
   return (
     <>
@@ -258,7 +293,7 @@ const ViewSuccessfulJobAppsPage = () => {
         <>
           <DataTable
             value={yetCommissionedSuccessfulJobApps}
-            selectionMode={rowClick ? null : 'checkbox'}
+            selectionMode={rowClick ? null : "checkbox"}
             selection={selectedJobApps}
             onSelectionChange={(e) => setSelectedJobApps(e.value)}
             dataKey="jobApplicationId"
@@ -336,7 +371,7 @@ const ViewSuccessfulJobAppsPage = () => {
             header={"Create Commission for Recruiter User " + recruiterUserName}
             className="p-fluid"
             footer={commissionDialogFooter}
-            onHide={() => setCommissionDialog(false)}
+            onHide={() => hideCommissionDialog()}
           >
             <div className={styles.dialogTextContainer}>
               <h5>
@@ -372,6 +407,38 @@ const ViewSuccessfulJobAppsPage = () => {
                   Total Commission:
                 </span>
                 <span style={{ fontWeight: "bold" }}>${totalCommission}</span>
+              </div>
+
+              <div className={styles.field}>
+                <label htmlFor="paymentPdf">
+                  Upload Commission Payment Document:
+                </label>
+                <input
+                  type="file"
+                  id="paymentPdf"
+                  onChange={handleFileChange}
+                />
+                {commissionPaymentURL && (
+                  <div className={styles.pdfButtons}>
+                    <Button
+                      type="button"
+                      icon="pi pi-file-pdf"
+                      onClick={(e) => {
+                        e.stopPropagation(); // This stops the event from propagating up
+                        window.open(commissionPaymentURL, "_blank");
+                      }}
+                      className="p-button-rounded p-button-danger"
+                      aria-label="Open PDF"
+                    />
+                    <Button
+                      type="button"
+                      label="X"
+                      onClick={removePdf}
+                      className={`p-button-rounded p-button-danger ${styles.smallButton}`}
+                      aria-label="Remove PDF"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </Dialog>
