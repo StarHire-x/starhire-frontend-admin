@@ -205,7 +205,7 @@ const ViewSuccessfulJobAppsPage = () => {
       administratorId: currentUserId,
       recruiterId: recruiterId,
       jobApplicationIds: jobApplicationIdsArray,
-      paymentDocumentURL: commissionPaymentURL
+      paymentDocumentURL: commissionPaymentURL,
     };
 
     if (selectedJobApps.length === 0) {
@@ -244,8 +244,8 @@ const ViewSuccessfulJobAppsPage = () => {
   };
 
   const hideCommissionDialog = () => {
-      setCommissionDialog(false);
-      setCommissionPaymentURL(null);
+    setCommissionDialog(false);
+    setCommissionPaymentURL(null);
   };
 
   const commissionDialogFooter = (
@@ -374,11 +374,23 @@ const ViewSuccessfulJobAppsPage = () => {
             onHide={() => hideCommissionDialog()}
           >
             <div className={styles.dialogTextContainer}>
-              <h5>
-                Do take note that once you select &quot;Yes&quot;, a commission
-                will be generated for the following successful job applications,
-                and this commission will be sent to {recruiterUserName}.
-              </h5>
+              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '3%'}}>
+                <h4>Note:</h4>
+                <ol>
+                  <li>
+                    Please ensure you have made the payment offline to{" "}
+                    {recruiterUserName} before continuing.
+                  </li>
+                  <li>
+                    {" "}
+                    A commission will be generated for the following successful
+                    job applications, and this commission will be sent to{" "}
+                    {recruiterUserName} for him/her to acknowledge the
+                    commission payment.
+                  </li>
+                </ol>
+              </div>
+
               <DataTable
                 value={selectedJobApps}
                 showGridlines
@@ -411,7 +423,7 @@ const ViewSuccessfulJobAppsPage = () => {
 
               <div className={styles.field}>
                 <label htmlFor="paymentPdf">
-                  Upload Commission Payment Document:
+                  Upload Proof of Payment Screenshot/pdf for this commission:
                 </label>
                 <input
                   type="file"
