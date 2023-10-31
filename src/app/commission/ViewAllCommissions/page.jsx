@@ -340,7 +340,7 @@ const ViewAllCommissions = () => {
               onHide={hideCommissionDetailDialog}
             >
               <div className={styles.dialogTextContainer}>
-                <a href={selectedCommission.paymentDocumentURL} target="_blank">Click to view your uploaded Proof of Payment for this Commission {selectedCommission.commissionId}</a>
+                <a href={selectedCommission.paymentDocumentURL} target="_blank">View your uploaded Proof of Payment for this Commission {selectedCommission.commissionId}</a>
                 <DataTable
                   value={selectedCommission.jobApplications}
                   showGridlines
