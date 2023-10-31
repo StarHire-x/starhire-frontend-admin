@@ -423,7 +423,7 @@ const ViewSuccessfulJobAppsPage = () => {
 
               <div className={styles.field}>
                 <label htmlFor="paymentPdf">
-                  Upload Proof of Payment Screenshot/pdf for this commission:
+                  Upload 1 Proof of Payment Screenshot/pdf for this commission:
                 </label>
                 <input
                   type="file"
