@@ -8,6 +8,7 @@ import { Card } from "primereact/card";
 import UserStatisticsModal from "@/components/UserStatisticsModal/UserStatisticsModal";
 import JobStatisticsModal from "@/components/JobStatisticsModal/JobStatisticsModal";
 import JobAssignmentModal from "@/components/JobAssignmentModal/JobAssignmentModal";
+import JobApplicationModal from "@/components/JobApplicationModal/JobApplicationModal";
 
 
 const Dashboard = () => {
@@ -54,6 +55,7 @@ const Dashboard = () => {
           {role === "Recruiter" && (
             <>
               <JobAssignmentModal accessToken={accessToken} userId={userId} />
+              <JobApplicationModal accessToken={accessToken} userId={userId} />
             </>
           )}
         </div>
