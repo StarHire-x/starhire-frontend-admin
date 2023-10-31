@@ -45,3 +45,25 @@
   justify-content: "flex-start";
   align-items: "center";
 }
+
+.field {
+    display: flex;
+    flex-direction: column; /* Set the direction to column to stack label above input */
+    width: 100%; /* Take the full width */
+    margin-bottom: 10px;
+}
+
+.pdfButtons {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.smallButton {
+    font-size: 10px;     /* Smaller font size */
+    padding: 4px 8px;    /* Less padding for a smaller overall size */
+    width: auto !important;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+}
