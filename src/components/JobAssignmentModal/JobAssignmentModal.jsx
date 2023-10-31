@@ -42,12 +42,14 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
   };
 
   useEffect(() => {
-    
     const fetchData = async () => {
-        const information = await getRecrutierJobListingMatchingStatictics(accessToken, userId)
-        setOverallStats(information.stats);
-        setAssignments(information.response);
-    }
+      const information = await getRecrutierJobListingMatchingStatictics(
+        accessToken,
+        userId
+      );
+      setOverallStats(information.stats);
+      setAssignments(information.response);
+    };
 
     fetchData();
   }, [accessToken, userId]);
@@ -210,10 +212,9 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
                 "jobListingTitle",
               ]}
               tableStyle={{ minWidth: "50rem" }}
-              rows={5}
+              rows={4}
               paginator
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              rowsPerPageOptions={[5, 10, 20]}
               emptyMessage="No job assignments found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >

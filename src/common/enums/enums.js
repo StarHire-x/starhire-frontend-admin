@@ -6,7 +6,9 @@ const Enums = {
     INACTIVE: 'Inactive',
     ACTIVE: 'Active',
     PROCESSING: 'Processing',
-    SUBMITTED: 'Submitted'
+    SUBMITTED: 'Submitted',
+    WAITINGFORINTERVIEW: 'Waiting_For_Interview',
+    TOBESUBMITTED: 'To_Be_Submitted',
 };
 
 export default Enums;

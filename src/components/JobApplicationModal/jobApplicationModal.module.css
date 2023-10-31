@@ -1,14 +1,22 @@
-.customCardGraph {
-    width: 75rem;
-    height: 47rem;
-    overflow: auto;
-    background-color: #e4f1f6;
-}
-
 .mainContainer {
     flex-direction: column;
     margin-bottom: 10px;
     gap: 10px;
+}
+
+.customCardGraph {
+    width: 75rem;
+    height: 40rem;
+    overflow: auto;
+    background-color: #e4f1f6;
+}
+
+.layout {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .cardColumnLeft {
@@ -18,7 +26,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
-    flex: 1; /* 25% of the container width */
+    flex: 1;
 }
 
 .cardColumnRight {
@@ -26,13 +34,13 @@
     flex-direction: column;
     gap: 10px;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 10px;
-    flex: 3; /* 75% of the container width */
+    flex: 3;
 }
 
 .customCard {
-  width: 20rem;
+  width: 15rem;
   height: 10rem;
   overflow: auto;
   background-color: #87CEEB;
@@ -43,14 +51,6 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
-}
-
-.layout {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 10px;
 }
 
 .imageContainer {
@@ -72,4 +72,10 @@
 .buttonContainer {
   display: flex; /* Use flexbox to arrange buttons horizontally */
   align-items: center; /* Align buttons vertically in the center */
+}
+
+.tabMenu {
+  display: flex;
+  min-height: 10px;
+  width: 100%;
 }
