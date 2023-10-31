@@ -53,7 +53,7 @@ const ManageCommissionRateModal = ({ accessToken, commissionRateObj, setCommissi
       <Card>
         <div className={styles.manageCommissionRateContainer}>
           <p className={styles.commissionRateNote}>
-            Note that this commission rate is standardized for all recruiter&apos;s
+            Note that this commission rate is standardised for all recruiter&apos;s
             commissions.
           </p>
 

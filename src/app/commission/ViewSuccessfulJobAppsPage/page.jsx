@@ -18,9 +18,11 @@ import moment from "moment";
 import { createInvoice } from "@/app/api/invoice/route";
 import { Toast } from "primereact/toast";
 import {
+  createCommission,
   getAllCommissionRates,
   getAllYetCommissionedSuccessfulJobAppsByRecruiterId,
 } from "@/app/api/commission/route";
+import { uploadFile } from "@/app/api/upload/route";
 
 const ViewSuccessfulJobAppsPage = () => {
   const session = useSession();
@@ -56,6 +58,9 @@ const ViewSuccessfulJobAppsPage = () => {
     yetCommissionedSuccessfulJobApps,
     setYetCommissionedSuccessfulJobApps,
   ] = useState([]);
+  const [commissionDialog, setCommissionDialog] = useState(false);
+  const [totalCommission, setTotalCommission] = useState(null);
+  const [commissionPaymentURL, setCommissionPaymentURL] = useState(null);
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -80,13 +85,14 @@ const ViewSuccessfulJobAppsPage = () => {
     setGlobalFilterValue(value);
   };
 
-  const [selectedJobApps, setSelectedJobApps] = useState(null);
+  const [selectedJobApps, setSelectedJobApps] = useState([]);
 
   const params = useSearchParams();
   const recruiterId = params.get("recruiterId");
   const recruiterUserName = params.get("recruiterUserName");
 
   const [commissionRate, setCommissionRate] = useState({});
+  const [rowClick, setRowClick] = useState(true);
 
   useEffect(() => {
     if (accessToken) {
@@ -108,7 +114,7 @@ const ViewSuccessfulJobAppsPage = () => {
               recruiterId,
               accessToken
             );
-          console.log(yetCommissionedSuccessfulJobApps);
+          // console.log(yetCommissionedSuccessfulJobApps);
           setYetCommissionedSuccessfulJobApps(
             yetCommissionedSuccessfulJobApps?.data
           );
@@ -153,6 +159,124 @@ const ViewSuccessfulJobAppsPage = () => {
     router.back();
   };
 
+  //Dialog codes
+  const showCommissionDialog = () => {
+    setCommissionDialog(true);
+    let totalCommissionCalculated = 0;
+    selectedJobApps?.map((selectedJobApp) => {
+      let updatedSelectedJobApp = selectedJobApp;
+      updatedSelectedJobApp.commissionAmt =
+        (commissionRate / 100) * updatedSelectedJobApp.jobListing.averageSalary;
+      return updatedSelectedJobApp;
+    });
+
+    for (let i = 0; i < selectedJobApps.length; i++) {
+      const jobApplication = selectedJobApps[i];
+      totalCommissionCalculated =
+        totalCommissionCalculated + jobApplication.commissionAmt;
+    }
+    setTotalCommission(totalCommissionCalculated);
+  };
+
+  const handleCreateCommission = async () => {
+    let jobApplicationIdsArray = [];
+    for (let i = 0; i < selectedJobApps.length; i++) {
+      const jobApplication = selectedJobApps[i];
+      jobApplicationIdsArray.push(jobApplication.jobApplicationId);
+    }
+
+    const commissionDate = new Date();
+
+    if (!commissionPaymentURL) {
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail:
+          "Please upload a payment document proof for this commission paid!",
+        life: 5000,
+      });
+      return;
+    }
+
+    const request = {
+      commissionDate: commissionDate,
+      commissionRate: commissionRate,
+      commissionAmount: totalCommission,
+      administratorId: currentUserId,
+      recruiterId: recruiterId,
+      jobApplicationIds: jobApplicationIdsArray,
+      paymentDocumentURL: commissionPaymentURL
+    };
+
+    if (selectedJobApps.length === 0) {
+      console.error("You have not selected any successful job application.");
+      toast.current.show({
+        severity: "warn",
+        summary: "Warning",
+        detail: "Please select at least a successful job application",
+        life: 5000,
+      });
+      return;
+    }
+
+    try {
+      const response = await createCommission(request, accessToken);
+      console.log("Commission has been created successfully!" + response);
+      setRefreshData((prev) => !prev);
+      setSelectedJobApps([]);
+      setCommissionDialog(false);
+      setTotalCommission(0);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: `Commission created and sent to Recruiter user ${recruiterUserName} successfully!`,
+        life: 5000,
+      });
+    } catch (error) {
+      console.error("Error creating commission:", error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Error creating commission!",
+        life: 5000,
+      });
+    }
+  };
+
+  const hideCommissionDialog = () => {
+      setCommissionDialog(false);
+      setCommissionPaymentURL(null);
+  };
+
+  const commissionDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        outlined
+        onClick={() => hideCommissionDialog()}
+      />
+      <Button label="Yes" icon="pi pi-check" onClick={handleCreateCommission} />
+    </React.Fragment>
+  );
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    // const inputId = e.target.id; // Get the ID of the input that triggered the event
+    if (!file) return;
+    try {
+      const response = await uploadFile(file, accessToken);
+      setCommissionPaymentURL(response.url);
+    } catch (error) {
+      console.error("There was an error uploading the file", error);
+    }
+  };
+
+  const removePdf = (e) => {
+    setCommissionPaymentURL(null);
+    e.target.value = null;
+  };
+
   return (
     <>
       <Toast ref={toast} />
@@ -161,15 +285,15 @@ const ViewSuccessfulJobAppsPage = () => {
           style={{
             display: "flex",
             height: "100vh",
-            "justifyContent": "center",
-            "alignItems": "center",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         />
       ) : (
         <>
           <DataTable
             value={yetCommissionedSuccessfulJobApps}
-            selectionMode={"checkbox"}
+            selectionMode={rowClick ? null : "checkbox"}
             selection={selectedJobApps}
             onSelectionChange={(e) => setSelectedJobApps(e.value)}
             dataKey="jobApplicationId"
@@ -232,12 +356,92 @@ const ViewSuccessfulJobAppsPage = () => {
               onClick={() => handleOnBackClick()}
             />
             <Button
-              label="Create Invoice"
+              label="Create Commission"
               rounded
+              disabled={selectedJobApps?.length === 0}
               size="medium"
-              // onClick={() => showUserDialog()}
+              onClick={() => showCommissionDialog()}
             />
           </div>
+
+          <Dialog
+            visible={commissionDialog}
+            style={{ width: "40vw", height: "50vh" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header={"Create Commission for Recruiter User " + recruiterUserName}
+            className="p-fluid"
+            footer={commissionDialogFooter}
+            onHide={() => hideCommissionDialog()}
+          >
+            <div className={styles.dialogTextContainer}>
+              <h5>
+                Do take note that once you select &quot;Yes&quot;, a commission
+                will be generated for the following successful job applications,
+                and this commission will be sent to {recruiterUserName}.
+              </h5>
+              <DataTable
+                value={selectedJobApps}
+                showGridlines
+                tableStyle={{ width: "35vw", marginTop: "10px" }}
+              >
+                <Column
+                  field="jobApplicationId"
+                  header="Job Application ID"
+                ></Column>
+                <Column
+                  field="jobListing.jobListingId"
+                  header="Job Listing ID"
+                ></Column>
+                <Column
+                  field="jobListing.title"
+                  header="Job Listing Title"
+                ></Column>
+                <Column
+                  field="commissionAmt"
+                  header="Commission"
+                  body={(rowData) => `$${rowData.commissionAmt}`}
+                ></Column>
+              </DataTable>
+              <div className={styles.dialogTotalAmountContainer}>
+                <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
+                  Total Commission:
+                </span>
+                <span style={{ fontWeight: "bold" }}>${totalCommission}</span>
+              </div>
+
+              <div className={styles.field}>
+                <label htmlFor="paymentPdf">
+                  Upload Commission Payment Document:
+                </label>
+                <input
+                  type="file"
+                  id="paymentPdf"
+                  onChange={handleFileChange}
+                />
+                {commissionPaymentURL && (
+                  <div className={styles.pdfButtons}>
+                    <Button
+                      type="button"
+                      icon="pi pi-file-pdf"
+                      onClick={(e) => {
+                        e.stopPropagation(); // This stops the event from propagating up
+                        window.open(commissionPaymentURL, "_blank");
+                      }}
+                      className="p-button-rounded p-button-danger"
+                      aria-label="Open PDF"
+                    />
+                    <Button
+                      type="button"
+                      label="X"
+                      onClick={removePdf}
+                      className={`p-button-rounded p-button-danger ${styles.smallButton}`}
+                      aria-label="Remove PDF"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </Dialog>
         </>
       )}
     </>
