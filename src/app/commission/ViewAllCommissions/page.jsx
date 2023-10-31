@@ -169,7 +169,7 @@ const ViewAllCommissions = () => {
               //   setSelectedRow(rowData);
             }}
           />
-          {rowData.commissionStatus === "Indicated_Paid" && (
+          {/* {rowData.commissionStatus === "Indicated_Paid" && (
             <Button
               className="p-button-danger"
               label="Delete Commission"
@@ -180,7 +180,7 @@ const ViewAllCommissions = () => {
                 setSelectedCommission(rowData);
               }}
             />
-          )}
+          )} */}
         </div>
       </React.Fragment>
     );
