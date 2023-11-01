@@ -18,7 +18,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
-    flex: 1; /* 25% of the container width */
+    flex: 0.75; /* 25% of the container width */
 }
 
 .cardColumnRight {
@@ -26,13 +26,13 @@
     flex-direction: column;
     gap: 10px;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 10px;
-    flex: 3; /* 75% of the container width */
+    flex: 3.25; /* 75% of the container width */
 }
 
 .customCard {
-  width: 20rem;
+  width: 15rem;
   height: 10rem;
   overflow: auto;
   background-color: #87CEEB;

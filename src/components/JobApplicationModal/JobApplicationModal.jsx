@@ -10,7 +10,7 @@ import { Chart } from "primereact/chart";
 import { Dropdown } from "primereact/dropdown";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { getRecrutierJobApplicationStatictics, getRecrutierJobListingMatchingStatictics } from "@/app/api/auth/user/route";
+import { getRecrutierJobApplicationStatictics } from "@/app/api/auth/user/route";
 import { fetchData } from "next-auth/client/_utils";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { InputText } from "primereact/inputtext";
@@ -244,31 +244,31 @@ const JobApplicationModal = ({ accessToken, userId }) => {
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
                   <h1>{overallStats.Total}</h1>
-                  <h4>Total Application</h4>
+                  <p>Total Application</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
                   <h1>{overallStats.Submitted}</h1>
-                  <h4>Submitted</h4>
+                  <p>Submitted</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
                   <h1>{overallStats.To_Be_Submitted}</h1>
-                  <h4>To be Submitted</h4>
+                  <p>To be Submitted</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
                   <h1>{overallStats.Processing}</h1>
-                  <h4>Processing</h4>
+                  <p>Processing</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
                   <h1>{overallStats.Waiting_For_Interview}</h1>
-                  <h4>Waiting for Interview</h4>
+                  <p>Waiting for Interview</p>
                 </div>
               </Card>
             </div>
@@ -286,7 +286,7 @@ const JobApplicationModal = ({ accessToken, userId }) => {
                   "corporateName",
                   "jobListingTitle",
                 ]}
-                tableStyle={{ minWidth: "50rem" }}
+                tableStyle={{ minWidth: "60rem" }}
                 rows={4}
                 paginator
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"

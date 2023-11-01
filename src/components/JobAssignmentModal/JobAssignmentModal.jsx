@@ -182,20 +182,20 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
           <div className={styles.cardColumnLeft}>
             <Card className={styles.customCard}>
               <div className={styles.cardLayout}>
-                <h1>{overallStats.matched}</h1>
-                <h3>Matches</h3>
+                <h2>{overallStats.matched}</h2>
+                <p>Matches</p>
               </div>
             </Card>
             <Card className={styles.customCard}>
               <div className={styles.cardLayout}>
-                <h1>{overallStats.acceptanceRate}%</h1>
-                <h3>Application Rate</h3>
+                <h2>{overallStats.acceptanceRate}%</h2>
+                <p>Application Rate</p>
               </div>
             </Card>
             <Card className={styles.customCard}>
               <div className={styles.cardLayout}>
-                <h1>{overallStats.duration}</h1>
-                <h3>Match to Application Time</h3>
+                <h2>{overallStats.duration}</h2>
+                <p>Match to Application Time</p>
               </div>
             </Card>
           </div>
@@ -211,7 +211,7 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
                 "corporateName",
                 "jobListingTitle",
               ]}
-              tableStyle={{ minWidth: "50rem" }}
+              tableStyle={{ minWidth: "55rem" }}
               rows={4}
               paginator
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"

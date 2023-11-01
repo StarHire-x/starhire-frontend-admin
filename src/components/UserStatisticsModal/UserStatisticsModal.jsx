@@ -126,6 +126,55 @@ const UserStatisticsModal = ({ accessToken }) => {
     fetchData();
   }, [accessToken, selectedFilter1]);
 
+  const bigCardHeader = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+          Account Creation Analysis by {selectedFilter1}
+        </h2>
+        <Dropdown
+          value={selectedFilter1}
+          options={filterOptions1}
+          style={{ margin: "10px 10px 10px 10px" }}
+          onChange={(e) => setSelectedFilter1(e.value)}
+          placeholder="Select time span"
+        />
+      </div>
+    );
+  };
+
+  const smallCardHeader = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+          {selectedFilter.charAt(0).toUpperCase() +
+            selectedFilter.slice(1).toLowerCase()}{" "}
+          Status Breakdown
+        </h2>
+        <Dropdown
+          value={selectedFilter}
+          options={filterOptions}
+          style={{ margin: "10px 10px 10px 10px" }}
+          onChange={(e) => setSelectedFilter(e.value)}
+          placeholder="Select a role"
+        />
+      </div>
+    );
+  };
+
   useEffect(() => {
     const documentStyle = getComputedStyle(document.documentElement);
 
@@ -191,7 +240,7 @@ const UserStatisticsModal = ({ accessToken }) => {
               <h1 className="montserrat" style={{ fontSize: "3em" }}>
                 {overallStats.jobSeeker}
               </h1>
-              <h2 className="montserrat">Job Seeker</h2>
+              <p className="montserrat">Job Seeker</p>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -207,7 +256,7 @@ const UserStatisticsModal = ({ accessToken }) => {
               <h1 className="montserrat" style={{ fontSize: "3em" }}>
                 {overallStats.recruiter}
               </h1>
-              <h2 className="montserrat">Recruiter</h2>
+              <p className="montserrat">Recruiter</p>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -223,7 +272,7 @@ const UserStatisticsModal = ({ accessToken }) => {
               <h1 className="montserrat" style={{ fontSize: "3em" }}>
                 {overallStats.corporate}
               </h1>
-              <h2 className="montserrat">Corporate</h2>
+              <p className="montserrat">Corporate</p>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -239,7 +288,7 @@ const UserStatisticsModal = ({ accessToken }) => {
               <h1 className="montserrat" style={{ fontSize: "3em" }}>
                 {overallStats.administrator}
               </h1>
-              <h2 className="montserrat">Administrator</h2>
+              <p className="montserrat">Administrator</p>
             </div>
             <div className={styles.statisticsColumn}>
               <i
@@ -251,23 +300,11 @@ const UserStatisticsModal = ({ accessToken }) => {
         </Card>
       </div>
       <div className={styles.graphContainer}>
-        <Card className={styles.customCardGraph}>
-          <div className={styles.headerGraph}>
-            <h3 className="montserrat">
-              Account Creation Analysis by {selectedFilter1}
-            </h3>
-            <br/>
-            <Dropdown
-              value={selectedFilter1}
-              options={filterOptions1}
-              onChange={(e) => setSelectedFilter1(e.value)}
-              placeholder="Select a role"
-            />
-          </div>
+        <Card className={styles.customCardGraph} header={bigCardHeader}>
           <Chart type="line" data={chartData} options={chartOptions} />
         </Card>
-        <Card className={styles.customCardGraph1}>
-          <div className={styles.headerGraph1}>
+        <Card className={styles.customCardGraph1} header={smallCardHeader} >
+          {/* <div className={styles.headerGraph1}>
             <h3 className="montserrat">
               {selectedFilter.charAt(0).toUpperCase() +
                 selectedFilter.slice(1).toLowerCase()}{" "}
@@ -279,7 +316,7 @@ const UserStatisticsModal = ({ accessToken }) => {
               onChange={(e) => setSelectedFilter(e.value)}
               placeholder="Select a role"
             />
-          </div>
+          </div> */}
           <br />
           <div className={styles.filterContainer1}>
             <Chart
@@ -291,17 +328,17 @@ const UserStatisticsModal = ({ accessToken }) => {
             <br />
             <br />
             <div className={styles.filterColumn}>
-              <h2 className="montserrat">
+              <p className="montserrat">
                 User Ratio: {userPercentage.proportion}%
-              </h2>
+              </p>
               <br />
-              <h2 className="montserrat">
+              <p className="montserrat">
                 Active users: {userPercentage.active}%
-              </h2>
+              </p>
               <br />
-              <h2 className="montserrat">
+              <p className="montserrat">
                 Inactive users: {userPercentage.inactive}%
-              </h2>
+              </p>
             </div>
           </div>
         </Card>
