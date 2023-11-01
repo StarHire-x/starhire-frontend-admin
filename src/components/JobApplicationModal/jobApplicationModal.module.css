@@ -26,7 +26,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
-    flex: 1;
+    flex: 0.75;
 }
 
 .cardColumnRight {
@@ -36,7 +36,7 @@
     align-items: center;
     justify-content: flex-start;
     margin-bottom: 10px;
-    flex: 3;
+    flex: 3.25;
 }
 
 .customCard {
