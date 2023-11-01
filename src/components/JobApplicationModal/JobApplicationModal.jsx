@@ -41,7 +41,6 @@ const JobApplicationModal = ({ accessToken, userId }) => {
     const tabs = [
       { label: "All", icon: "pi pi-fw pi-user" },
       { label: "Submitted", icon: "pi pi-fw pi-thumbs-up" },
-      { label: "To Be Submitted", icon: "pi pi-fw pi-info-circle" },
       {
         label: "Waiting for Interview",
         icon: "pi pi-fw pi-stop-circle",
@@ -63,7 +62,6 @@ const JobApplicationModal = ({ accessToken, userId }) => {
           const filteredInformation = information.formatResponse.filter(
             (item) =>
               [
-                "To_Be_Submitted",
                 "Submitted",
                 "Waiting_For_Interview",
               ].includes(item.jobApplicationStatus)
@@ -82,17 +80,10 @@ const JobApplicationModal = ({ accessToken, userId }) => {
             setJobApplications(
               filteredInformation.filter(
                 (application) =>
-                  application.jobApplicationStatus === "To_Be_Submitted"
-              )
-            );
-          } else if (currentTab === 3) {
-            setJobApplications(
-              filteredInformation.filter(
-                (application) =>
                   application.jobApplicationStatus === "Waiting_For_Interview"
               )
             );
-          }
+          } 
 
           setOverallStats(information.statusCount);
         } catch (error) {
