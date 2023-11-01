@@ -411,7 +411,7 @@ export const getRecrutierJobListingMatchingStatictics = async (
   }
 };
 
-export const getRecrutierJobApplicationStatictics = async (
+export const getRecrutierJobApplicationStatistics = async (
   accessToken,
   userId
 ) => {

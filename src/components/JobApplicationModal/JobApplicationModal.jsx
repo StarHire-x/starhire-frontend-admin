@@ -10,7 +10,7 @@ import { Chart } from "primereact/chart";
 import { Dropdown } from "primereact/dropdown";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { getRecrutierJobApplicationStatictics } from "@/app/api/auth/user/route";
+import { getRecrutierJobApplicationStatistics } from "@/app/api/auth/user/route";
 import { fetchData } from "next-auth/client/_utils";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { InputText } from "primereact/inputtext";
@@ -55,7 +55,7 @@ const JobApplicationModal = ({ accessToken, userId }) => {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const information = await getRecrutierJobApplicationStatictics(
+          const information = await getRecrutierJobApplicationStatistics(
             accessToken,
             userId
           );
