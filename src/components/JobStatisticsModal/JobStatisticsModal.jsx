@@ -169,26 +169,53 @@ const JobStatisticsModal = ({ accessToken }) => {
     fetchBreakdown();
   }, [accessToken, selectedFilter1]);
 
+  const bigCardHeader = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+          Total Job Listing Analysis
+        </h2>
+      </div>
+    );
+  };
+
+  const smallCardHeader = () => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+          Job Listings Status
+        </h2>
+        <Dropdown
+          value={selectedFilter1}
+          style={{ margin: "10px 10px 10px 10px" }}
+          options={filterOptions1}
+          onChange={(e) => setSelectedFilter1(e.value)}
+          placeholder="Select a corporate"
+        />
+      </div>
+    );
+  };
+
   return (
     <div className={styles.mainContainer}>
       <div className={styles.graphContainer}>
-        <Card className={styles.customCardGraph}>
-          <div className={styles.headerGraph}>
-            <h3 className="montserrat">Total Job Listing Analysis</h3>
-            <br />
-          </div>
+        <Card className={styles.customCardGraph} header={bigCardHeader}>
           <Chart type="bar" data={chartData} options={chartOptions} />
         </Card>
-        <Card className={styles.customCardGraph1}>
-          <div className={styles.headerGraph1}>
-            <h3 className="montserrat">Job Listings Status</h3>
-            <Dropdown
-              value={selectedFilter1}
-              options={filterOptions1}
-              onChange={(e) => setSelectedFilter1(e.value)}
-              placeholder="Select a corporate"
-            />
-          </div>
+        <Card className={styles.customCardGraph1} header={smallCardHeader}>
           <div className={styles.filterContainer1}>
             <Chart
               type="pie"
@@ -196,27 +223,26 @@ const JobStatisticsModal = ({ accessToken }) => {
               options={chartOptions1}
               className={styles.doughnutChart}
             />
-            <br />
             <div className={styles.filterColumn}>
-              <h3 className="montserrat">
+              <p className="montserrat">
                 Proportion: {corporatePercentage.proportion}%
-              </h3>
+              </p>
               <br />
-              <h3 className="montserrat">
+              <p className="montserrat">
                 Approved: {corporatePercentage.approved}%
-              </h3>
+              </p>
               <br />
-              <h3 className="montserrat">
+              <p className="montserrat">
                 Rejected: {corporatePercentage.rejected}%
-              </h3>
+              </p>
               <br />
-              <h3 className="montserrat">
+              <p className="montserrat">
                 Unverified: {corporatePercentage.unverified}%
-              </h3>
+              </p>
               <br />
-              <h3 className="montserrat">
+              <p className="montserrat">
                 Archived: {corporatePercentage.archived}%
-              </h3>
+              </p>
             </div>
           </div>
         </Card>

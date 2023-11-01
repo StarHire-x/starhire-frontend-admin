@@ -14,6 +14,7 @@ import { Column } from "primereact/column";
 import Enums from "@/common/enums/enums";
 import { InputText } from "primereact/inputtext";
 import { getAllCorporates } from "../api/auth/user/route";
+import { Badge } from "primereact/badge";
 
 export default function InvoicePage() {
   const session = useSession();
@@ -73,7 +74,21 @@ export default function InvoicePage() {
       const fetchAllCorporates = async () => {
         try {
           const allCorporates = await getAllCorporates(accessToken);
-          setUsers(allCorporates.data);
+          allCorporates?.data?.map((corporate) => {
+            let updatedCorporate = corporate;
+            let pendingInvoicesLength = 0;
+            updatedCorporate?.jobListings?.forEach((jobListing) => {
+              let pendingNumOfSuccessfulJobAppsToInvoice = jobListing?.jobApplications?.filter((jobApp) => jobApp.jobApplicationStatus === "Offer_Accepted" && !jobApp.invoice).length;
+              pendingInvoicesLength += pendingNumOfSuccessfulJobAppsToInvoice;
+            });
+
+            updatedCorporate.pendingInvoicesLength = pendingInvoicesLength;
+
+            return updatedCorporate;
+          });
+          const sortedCorporatesByPendingInvoicesLength = allCorporates.data?.sort((x,y) => y?.pendingInvoicesLength - x?.pendingInvoicesLength);
+          setUsers(sortedCorporatesByPendingInvoicesLength);
+          // console.log(sortedCorporatesByPendingInvoicesLength);
         } catch (error) {
           console.log(
             "There was a problem fetching the corporate users",
@@ -161,7 +176,12 @@ export default function InvoicePage() {
             rounded
             size="small"
             onClick={() => handleCreateInvoice(rowData)}
-          />
+          >
+          <Badge
+            value={rowData?.pendingInvoicesLength}
+            severity="danger"
+          ></Badge>
+          </Button>
           <Button
             className="p-button-warning"
             label="View All Invoices"

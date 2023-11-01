@@ -17,6 +17,7 @@ import { getCorporateDetails } from "../../api/auth/user/route";
 import moment from "moment";
 import { createInvoice } from "@/app/api/invoice/route";
 import { Toast } from "primereact/toast";
+import { Badge } from "primereact/badge";
 
 export default function ViewSuccessfulJobListings() {
   const session = useSession();
@@ -87,7 +88,14 @@ export default function ViewSuccessfulJobListings() {
         try {
           const corporate = await getCorporateDetails(corporateId, accessToken);
           setCorporate(corporate.data);
-          setJobListings(corporate.data.jobListings);
+          const allJobListings = corporate.data.jobListings;
+          allJobListings?.map((jobListing) => {
+            let updatedJobListing = jobListing;
+            updatedJobListing.pendingInvoicesLength = updatedJobListing?.jobApplications.filter((jobApp) => jobApp.jobApplicationStatus === "Offer_Accepted" && !jobApp.invoice).length;
+            return updatedJobListing;
+          });
+          const sortedJobListingsByPendingInvoicesLength = allJobListings?.sort((x,y) => y?.pendingInvoicesLength - x?.pendingInvoicesLength);
+          setJobListings(sortedJobListingsByPendingInvoicesLength);
         } catch (error) {
           console.log("There was a problem fetching the corporate user", error);
         }
@@ -272,6 +280,17 @@ export default function ViewSuccessfulJobListings() {
     );
   };
 
+  const jobListingIdBodyTemplate = (rowData) => {
+    const jobListingId = rowData.jobListingId;
+    const pendingNumOfSuccessfulJobAppsToInvoice = rowData?.pendingInvoicesLength;
+    return (
+      <div>
+      {jobListingId} 
+      <Badge style={{marginLeft: '15%'}} value={`${pendingNumOfSuccessfulJobAppsToInvoice} Job App(s) Pending`} severity="danger"></Badge>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Toast ref={toast} />
@@ -320,6 +339,7 @@ export default function ViewSuccessfulJobListings() {
                 field="jobListingId"
                 header="Job Listing ID"
                 sortable
+                body={jobListingIdBodyTemplate}
               ></Column>
               <Column field="title" header="Title" sortable></Column>
               <Column
@@ -378,13 +398,13 @@ export default function ViewSuccessfulJobListings() {
                   ></Column>
                   <Column
                     field="jobListing.averageSalary"
-                    header="Commission"
+                    header="Amount"
                     body={(rowData) => `$${rowData.jobListing.averageSalary}`}
                   ></Column>
                 </DataTable>
                 <div className={styles.dialogTotalAmountContainer}>
                   <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    Total Commission:
+                    Total Amount:
                   </span>
                   <span style={{ fontWeight: "bold" }}>${totalCommission}</span>
                 </div>

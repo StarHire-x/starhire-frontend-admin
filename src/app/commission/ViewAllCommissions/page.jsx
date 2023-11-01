@@ -21,7 +21,10 @@ import {
 } from "@/app/api/invoice/route";
 import { Toast } from "primereact/toast";
 import { Tag } from "primereact/tag";
-import { deleteCommission, getAllCommissionsByRecruiterIdAndAdminId } from "@/app/api/commission/route";
+import {
+  deleteCommission,
+  getAllCommissionsByRecruiterIdAndAdminId,
+} from "@/app/api/commission/route";
 
 const ViewAllCommissions = () => {
   const session = useSession();
@@ -169,7 +172,7 @@ const ViewAllCommissions = () => {
               //   setSelectedRow(rowData);
             }}
           />
-          {rowData.commissionStatus === "Indicated_Paid" && (
+          {/* {rowData.commissionStatus === "Indicated_Paid" && (
             <Button
               className="p-button-danger"
               label="Delete Commission"
@@ -180,7 +183,7 @@ const ViewAllCommissions = () => {
                 setSelectedCommission(rowData);
               }}
             />
-          )}
+          )} */}
         </div>
       </React.Fragment>
     );
@@ -337,6 +340,7 @@ const ViewAllCommissions = () => {
               onHide={hideCommissionDetailDialog}
             >
               <div className={styles.dialogTextContainer}>
+                <a href={selectedCommission.paymentDocumentURL} target="_blank">View your uploaded Proof of Payment for this Commission {selectedCommission.commissionId}</a>
                 <DataTable
                   value={selectedCommission.jobApplications}
                   showGridlines
