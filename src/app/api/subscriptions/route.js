@@ -1,6 +1,6 @@
-export const viewAllPromotionRequest = async (accessToken) => {
+export const viewAllPremiumUsers = async (accessToken) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/corporate/PromotionRequests`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/corporate/premium-users`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

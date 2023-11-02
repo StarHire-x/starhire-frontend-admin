@@ -12,12 +12,11 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { viewAllJobListings } from "@/app/api/jobListings/route";
-import { viewAllPromotionRequest } from "@/app/api/promotionRequest/route"
+import { viewAllPremiumUsers } from "@/app/api/subscriptions/route"
 import Enums from "@/common/enums/enums";
-import styles from "./promotionRequest.module.css";
+import styles from "./subscriptions.module.css";
 
-export default function PromotionRequest() {
+export default function Subscriptions() {
   const session = useSession();
 
   const router = useRouter();
@@ -123,15 +122,6 @@ export default function PromotionRequest() {
             saveStatusChange(rowData);
           }}
         />
-        <Button
-          label="Approve"
-          rounded
-          size="small"
-          className="mr-2"
-          onClick={() => {
-            saveStatusChange(rowData);
-          }}
-        />
       </React.Fragment>
     );
   };
@@ -195,7 +185,7 @@ export default function PromotionRequest() {
 
   useEffect(() => {
     if (accessToken) {
-      viewAllPromotionRequest(accessToken)
+      viewAllPremiumUsers(accessToken)
         .then((data) => {
             if (Array.isArray(data)) {
               setPromotionRequest(data);
@@ -274,7 +264,7 @@ export default function PromotionRequest() {
               {session.data.user.role === Enums.ADMIN ? (
                 <Column
                   field="corporatePromotionStatus"
-                  header="Corporate Promotion Status"
+                  header="Corporate User Type"
                   body={statusBodyTemplate}
                   filter
                   filterElement={statusFilterTemplate}
