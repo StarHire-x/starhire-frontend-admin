@@ -12,7 +12,8 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { viewAllPremiumUsers } from "@/app/api/subscriptions/route"
+import { viewAllPremiumUsers } from "@/app/api/subscriptions/route";
+import { getCorporateNextBillingCycleBySubID } from "@/app/api/subscriptions/route";
 import Enums from "@/common/enums/enums";
 import styles from "./subscriptions.module.css";
 
@@ -35,7 +36,7 @@ export default function Subscriptions() {
 
   //const [refreshData, setRefreshData] = useState(false);
   //const [jobListings, setJobListings] = useState([]);
-  const [promotionRequest, setPromotionRequest] = useState([]);
+  const [premiumUsers, setPremiumUsers] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -51,21 +52,10 @@ export default function Subscriptions() {
 
   const [globalFilterValue, setGlobalFilterValue] = useState("");
 
-  const [jobListingStatuses] = useState([
-    "Approved",
-    "Unverified",
-    "Rejected",
-    "Archived",
-  ]);
-
   const getStatus = (status) => {
     switch (status) {
-      case "Requested":
-        return "danger";
-      case "Unverified":
-        return "danger";
-      case "Rejected":
-        return "danger";
+      case "Premium":
+        return "success";
     }
   };
 
@@ -130,23 +120,17 @@ export default function Subscriptions() {
     setUserDialog(false);
   };
 
-  const createLink = (id) => {
-    const link = `/promotionRequest/viewAPromotionRequest?id=${id}`;
+  const createLink = (id, subId) => {
+    const link = `/subscriptions/viewAPremiumUser?id=${id}&subId=${subId}`;
     return link;
   };
 
   const saveStatusChange = async (rowData) => {
     const id = rowData.userId;
-    let link = createLink(id);
+    const subId = rowData.stripeSubId
+    let link = createLink(id, subId);
     router.push(link);
   };
-
-  const approveRequest = async (rowData) => {
-    const id = rowData.userId;
-    let link = createLink(id);
-    router.push(link);
-  };
-
 
   const renderHeader = () => {
     return (
@@ -188,14 +172,13 @@ export default function Subscriptions() {
       viewAllPremiumUsers(accessToken)
         .then((data) => {
             if (Array.isArray(data)) {
-              setPromotionRequest(data);
+              setPremiumUsers(data)
             } else {
               console.error("Data is not an array:", data);
-              setPromotionRequest(data.data);
+              setPremiumUsers(data.data)
             }
             setIsLoading(false);
           })
-          
         .catch((error) => {
           console.error("Error fetching Promotion Request:", error);
           setIsLoading(false);
@@ -232,7 +215,7 @@ export default function Subscriptions() {
         ) : (
           <>
             <DataTable
-              value={promotionRequest}
+              value={premiumUsers}
               paginator
               header={header}
               rows={10}
@@ -244,14 +227,7 @@ export default function Subscriptions() {
               onSelectionChange={(e) => setSelectedUsers(e.value)}
               filters={filters}
               filterDisplay="menu"
-              globalFilterFields={[
-                "jobListingId",
-                "title",
-                "corporate.userName",
-                "jobLocation",
-                "listingDate",
-                "jobListingStatus",
-              ]}
+              globalFilterFields={["corporate.userName"]}
               emptyMessage="No Promotion Request found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
@@ -261,6 +237,8 @@ export default function Subscriptions() {
                 sortable
               ></Column>
               <Column field="userName" header="Corporate Name" sortable />
+              <Column field="stripeCustId" header="Stripe Customer ID" sortable />
+              <Column field="stripeSubId" header="Stripe Subscription ID" sortable />
               {session.data.user.role === Enums.ADMIN ? (
                 <Column
                   field="corporatePromotionStatus"
@@ -270,13 +248,7 @@ export default function Subscriptions() {
                   filterElement={statusFilterTemplate}
                   sortable
                 ></Column>
-              ) : (
-                <Column
-                  field="jobListingStatus"
-                  header="Job Listing Status"
-                  body={statusBodyTemplate}
-                ></Column>
-              )}
+              ) : null}
               {session.data.user.role === Enums.ADMIN ? (
                 <Column body={actionAdminBodyTemplate} />
               ) : (
