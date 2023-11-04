@@ -158,7 +158,7 @@ export default function Events() {
           <Button
             label="View on Calender"
             icon="pi pi-arrow-right"
-            onClick={navigateToCalender()}
+            onClick={navigateToCalender}
           />
         </div>
       </div>
