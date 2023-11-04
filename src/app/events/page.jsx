@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Badge } from "primereact/badge";
@@ -17,7 +18,7 @@ import { getAllEventListings } from "@/app/api/events/route";
 import Enums from "@/common/enums/enums";
 import styles from "./events.module.css";
 
-export default function Subscriptions() {
+export default function Events() {
 
   const session = useSession();
   const router = useRouter();
@@ -80,6 +81,10 @@ export default function Subscriptions() {
         severity={getStatus(rowData.eventListingStatus)}
       />
     );
+  };
+
+  const navigateToCalender = () => {
+    router.push('/events/viewAllEventsCalender'); 
   };
 
   const statusFilterTemplate = (options) => {
@@ -149,6 +154,13 @@ export default function Subscriptions() {
             placeholder="Keyword Search"
           />
         </span>
+        <div>
+          <Button
+            label="View on Calender"
+            icon="pi pi-arrow-right"
+            onClick={navigateToCalender()}
+          />
+        </div>
       </div>
     );
   };
