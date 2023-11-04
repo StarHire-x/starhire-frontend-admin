@@ -29,8 +29,8 @@ const adminLinks = [
       },
       {
         id: 2,
-        title: 'Manage Promotion Request',
-        url: '/promotionRequest',
+        title: 'View all Premium Users',
+        url: '/subscriptions',
       },
     ],
   },
