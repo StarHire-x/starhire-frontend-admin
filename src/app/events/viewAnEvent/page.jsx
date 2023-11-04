@@ -22,7 +22,7 @@ import { getAEventListing } from "@/app/api/events/route";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 
-const ViewJobApplicationDetails = () => {
+const ViewAnEvent = () => {
   const session = useSession();
   const router = useRouter();
 
@@ -50,6 +50,8 @@ const ViewJobApplicationDetails = () => {
   const [eventRegistrations, setEventRegistrations] = useState(null);
   const [corporate, setCorporate] = useState(null);
 
+  const numberOfEventRegistrations = eventRegistrations ? eventRegistrations.length : 0;
+
   const convertTimestampToDate = (timestamp) => {
     return moment(timestamp).format('DD/MM/YYYY');
   };
@@ -64,7 +66,7 @@ const ViewJobApplicationDetails = () => {
         .then((details) => {
           setEvent(details);
           setCorporate(details.corporate)
-          seteventRegistrations(details.eventRegistrations)
+          setEventRegistrations(details.eventRegistrations)
           setIsLoading(false);
         })
         .catch((error) => {
@@ -125,6 +127,10 @@ const ViewJobApplicationDetails = () => {
                 <b>Details: </b>
                 {event?.details}
               </p>
+              <p className={styles.text}>
+                <b>Number of registrations: </b>
+                {numberOfEventRegistrations}
+              </p>
               <></>
             </Card>
 
@@ -172,8 +178,9 @@ const ViewJobApplicationDetails = () => {
             </Card>
           </div>
 
-          <DataTable value={eventRegistrations}>
-            <Column field="eventName" header="Vin" />
+          <DataTable value={eventRegistrations} header={"All Event Registrations"}>
+          <Column field="eventRegistrationId" header="Event Registration ID" />
+          <Column field="registrationDate" header="Registered on" body={convertTimestampToDate}/>
           </DataTable>
 
           <div className={styles.jobSeekerApplication}></div>
@@ -193,4 +200,4 @@ const ViewJobApplicationDetails = () => {
   );
 };
 
-export default ViewJobApplicationDetails;
+export default ViewAnEvent;
