@@ -20,21 +20,21 @@ export default function CalendarPage() {
   const session = useSession();
   const router = useRouter();
 
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
-  const [eventClicked, setEventClicked] = useState(false);
-  const [warningDialogVisible, setWarningDialogVisible] = useState(false);
-  const [selectedMeetingLink, setSelectedMeetingLink] = useState("");
+  const accessToken =
+  session.status === "authenticated" &&
+  session.data &&
+  session.data.user.accessToken;
+
+if (session.status === "unauthenticated") {
+  router?.push("/login");
+}
+
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [displayEventDialog, setDisplayEventDialog] = useState(false);
 
   const [events, setEvents] = useState(null);
 
   const calendarRef = useRef(null);
-
-  const showEventDialog = () => {
-    setDisplayEventDialog(true);
-  };
 
   const hideEventDialog = () => {
     setDisplayEventDialog(false);
@@ -44,25 +44,10 @@ export default function CalendarPage() {
     router.push(`/events/viewAnEvent?id=${selectedEvent.eventId}`)
   }
 
-  const closeWarningDialog = () => {
-    setWarningDialogVisible(false);
-  };
-
   const viewEventDetails = (event) => {
-    setSelectedEvent(event); // Set the selected event
-    setDisplayEventDialog(true); // Open the event details dialog
-    console.log(event.eventId);
-    //redirectToEvent(event.eventId)
+    setSelectedEvent(event); 
+    setDisplayEventDialog(true); 
   };
-
-  const accessToken =
-    session.status === "authenticated" &&
-    session.data &&
-    session.data.user.accessToken;
-
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
-  }
 
   function renderEventContent(eventInfo) {
     const startTime = eventInfo.event.start;
@@ -81,21 +66,24 @@ export default function CalendarPage() {
     }).format(endTime);
 
     const eventListingStatus = eventInfo.event.extendedProps.eventListingStatus;
+    const eventTime = eventInfo.event.extendedProps.eventTime;
 
     return (
       <div
         style={{
           padding: "2px",
           borderRadius: "4px",
-          color: eventListingStatus === "Upcoming" ? "green" : "red",
-          whiteSpace: "nowrap",
+          //color: eventListingStatus === "Upcoming" ? "green" : "red",
+          whiteSpace: "normal",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          fontSize: "10px",
+          fontSize: "15px",
         }}
       >
         <b className="fc-event-title-container">
-          {formattedStartTime}-{formattedEndTime} {eventInfo.event.title}
+          {formattedStartTime}-{formattedEndTime}
+          <br />
+          {eventInfo.event.title}
         </b>
       </div>
     );
@@ -105,14 +93,20 @@ export default function CalendarPage() {
     if (session.status === "authenticated") {
       getAllEventListings(accessToken)
         .then((data) => {
-          const formattedEvents = data.map((event) => ({
-            title: event.eventName,
-            start: event.eventDate, 
-            end: event.eventDate, 
-            eventListingStatus: event.eventListingStatus,
-            eventId: event.eventListingId
-          }));
-
+          const formattedEvents = data.map((event) => {
+            const endDate = new Date(event.eventDate);
+            
+            endDate.setHours(endDate.getHours() + 4);
+  
+            return {
+              title: event.eventName,
+              start: new Date(event.eventDate),
+              end: endDate,
+              eventListingStatus: event.eventListingStatus,
+              eventId: event.eventListingId
+            };
+          });
+  
           setEvents(formattedEvents);
         })
         .catch((error) => {
@@ -121,22 +115,12 @@ export default function CalendarPage() {
     }
   }, [accessToken]);
 
-  const viewAnEvent = () => {
-    setWarningDialogVisible((false));
-  }
-    
-
-  const closeEventDetails = () => {
-    setSelectedEvent(null); 
-  };
-  
-
   useEffect(() => {
     if (calendarRef.current) {
       const calendarApi = calendarRef.current.getApi();
       calendarApi.on("eventClick", (info) => {
         const event = info.event.extendedProps;
-        viewEventDetails(event); // Call viewEventDetails to show event details
+        viewEventDetails(event); 
       });
     }
   }, []);
