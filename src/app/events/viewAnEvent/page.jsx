@@ -135,6 +135,15 @@ const ViewAnEvent = () => {
             </Card>
 
             <Card className={styles.jobSeekerCard} title="Event Details">
+            {corporate && corporate.profilePictureUrl != "" ? (
+              <img src={corporate.profilePictureUrl} alt="user" className={styles.avatar} />
+            ) : (
+              <Image
+                src={HumanIcon}
+                alt="Profile Picture"
+                className={styles.avatar}
+              />
+            )}
               <p className={styles.text}>
                 <b>Corporate User ID: </b>
                 {corporate?.userId}
