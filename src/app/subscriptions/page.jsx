@@ -141,7 +141,7 @@ export default function Subscriptions() {
           alignItems: "center",
         }}
       >
-        <h2 className="m-0">Promotion Request</h2>
+        <h2 className="m-0">Premium Users</h2>
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <InputText
