@@ -120,15 +120,14 @@ export default function Subscriptions() {
     setUserDialog(false);
   };
 
-  const createLink = (id, subId) => {
-    const link = `/subscriptions/viewAPremiumUser?id=${id}&subId=${subId}`;
+  const createLink = (id) => {
+    const link = `/events/viewAnEvent?id=${id}`;
     return link;
   };
 
   const saveStatusChange = async (rowData) => {
-    const id = rowData.userId;
-    const subId = rowData.stripeSubId
-    let link = createLink(id, subId);
+    const id = rowData.eventListingId;
+    let link = createLink(id);
     router.push(link);
   };
 
@@ -156,7 +155,7 @@ export default function Subscriptions() {
 
   const formatDate = (rowData) => {
     const date = new Date(rowData.eventDate);
-    return date.toLocaleDateString(); // Adjust this to your desired date format
+    return date.toLocaleDateString(); 
   };
   
 
