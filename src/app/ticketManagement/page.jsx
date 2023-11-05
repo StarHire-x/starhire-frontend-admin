@@ -1,20 +1,20 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useSearchParams } from 'next/navigation';
-import { Button } from 'primereact/button';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
-import { InputText } from 'primereact/inputtext';
-import { ProgressSpinner } from 'primereact/progressspinner';
-import { Tag } from 'primereact/tag';
-import { viewAllTickets, resolveTicket } from '../api/ticket/route';
-import Enums from '@/common/enums/enums';
-import styles from './page.module.css';
+"use client";
+import React, { useState, useEffect } from "react";
+import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Button } from "primereact/button";
+import { Column } from "primereact/column";
+import { DataTable } from "primereact/datatable";
+import { Dialog } from "primereact/dialog";
+import { Dropdown } from "primereact/dropdown";
+import { InputText } from "primereact/inputtext";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { Tag } from "primereact/tag";
+import { viewAllTickets, resolveTicket } from "../api/ticket/route";
+import Enums from "@/common/enums/enums";
+import styles from "./page.module.css";
 
 const TicketManagement = () => {
   const session = useSession();
@@ -22,15 +22,15 @@ const TicketManagement = () => {
   const router = useRouter();
 
   const params = useSearchParams();
-  const id = params.get('ticketId');
+  const id = params.get("ticketId");
 
   const accessToken =
-    session.status === 'authenticated' &&
+    session.status === "authenticated" &&
     session.data &&
     session.data.user.accessToken;
 
-  if (session.status === 'unauthenticated') {
-    router?.push('/login');
+  if (session.status === "unauthenticated") {
+    router?.push("/login");
   }
 
   const [tickets, setTickets] = useState([]);
@@ -52,30 +52,30 @@ const TicketManagement = () => {
     },
   });
 
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
   const [ticketStatuses] = useState([
-    'General',
-    'Account',
-    'Jobs',
-    'Events',
-    'Forum',
-    'SubscriptionBilling',
+    "General",
+    "Account",
+    "Jobs",
+    "Events",
+    "Forum",
+    "SubscriptionBilling",
   ]);
 
   const getStatus = (status) => {
     switch (status) {
-      case 'General':
-        return 'warning';
-      case 'Account':
-        return 'warning';
-      case 'Jobs':
-        return 'info';
-      case 'Events':
-        return 'info';
-      case 'Forum':
-        return 'info';
-      case 'SubscriptionBilling':
-        return 'warning';
+      case "General":
+        return "warning";
+      case "Account":
+        return "warning";
+      case "Jobs":
+        return "info";
+      case "Events":
+        return "info";
+      case "Forum":
+        return "info";
+      case "SubscriptionBilling":
+        return "warning";
     }
   };
 
@@ -83,14 +83,14 @@ const TicketManagement = () => {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters['global'].value = value;
+    _filters["global"].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
   };
 
   const getSeverity = (isResolved) => {
-    return isResolved ? 'success' : 'danger';
+    return isResolved ? "success" : "danger";
   };
 
   const onDocumentChange = (e) => {
@@ -135,9 +135,9 @@ const TicketManagement = () => {
   const resolvedBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData.isResolved ? 'Yes' : 'No'}
+        value={rowData.isResolved ? "Yes" : "No"}
         severity={getSeverity(rowData.isResolved)}
-        style={{ fontSize: '0.8em' }}
+        style={{ fontSize: "0.8em" }}
       />
     );
   };
@@ -163,7 +163,7 @@ const TicketManagement = () => {
       });
       setTickets(updatedTickets);
     } catch (error) {
-      console.error('Error resolving the ticket:', error);
+      console.error("Error resolving the ticket:", error);
     } finally {
       setLoading(false);
       setConfirmDialogVisible(false);
@@ -192,7 +192,7 @@ const TicketManagement = () => {
     } else {
       return (
         <React.Fragment>
-          <span style={{ fontSize: '24px' }}>✔️</span>
+          <span style={{ fontSize: "24px" }}>✔️</span>
         </React.Fragment>
       );
     }
@@ -216,9 +216,9 @@ const TicketManagement = () => {
     return (
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <h2 className="m-0">Tickets</h2>
@@ -236,7 +236,7 @@ const TicketManagement = () => {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    const options = { year: "numeric", month: "numeric", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -248,11 +248,16 @@ const TicketManagement = () => {
           setLoading(false);
         })
         .catch((error) => {
-          console.error('Error fetching tickets:', error);
+          console.error("Error fetching tickets:", error);
           setLoading(false);
         });
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    console.log("HERE");
+    console.log(tickets);
+  });
 
   const header = renderHeader();
 
@@ -261,15 +266,15 @@ const TicketManagement = () => {
       {loading ? (
         <ProgressSpinner
           style={{
-            display: 'flex',
-            height: '100vh',
-            'justify-content': 'center',
-            'align-items': 'center',
+            display: "flex",
+            height: "100vh",
+            "justify-content": "center",
+            "align-items": "center",
           }}
         />
       ) : (
         <>
-          <DataTable
+           <DataTable
             value={tickets}
             paginator
             header={header}
@@ -301,12 +306,12 @@ const TicketManagement = () => {
               body={resolvedBodyTemplate}
             ></Column>
             <Column field="email" header="Contact Email"></Column>
-            <Column
+           <Column
               rounded
               size="small"
               className="mr-2"
               body={resolveButtonBodyTemplate}
-            ></Column>{' '}
+            ></Column>
             <Column
               rounded
               size="small"
@@ -318,7 +323,7 @@ const TicketManagement = () => {
           <Dialog
             visible={confirmDialogVisible}
             header="Confirm Ticket Resolution"
-            style={{ width: '32rem' }}
+            style={{ width: "32rem" }}
             className="p-fluid"
             onHide={() => setConfirmDialogVisible(false)}
             footer={
@@ -342,7 +347,7 @@ const TicketManagement = () => {
           <Dialog
             visible={detailsDialogOpen}
             header="Ticket Details"
-            style={{ width: '64rem', height: '36rem' }}
+            style={{ width: "64rem", height: "36rem" }}
             onHide={() => setDetailsDialogOpen(false)}
           >
             <div className={styles.dialogContent}>
@@ -411,7 +416,7 @@ const TicketManagement = () => {
                           icon="pi pi-file-pdf"
                           onClick={(e) => {
                             e.stopPropagation();
-                            window.open(document.documentLink, '_blank');
+                            window.open(document.documentLink, "_blank");
                           }}
                           className="p-button-rounded p-button-danger"
                           aria-label="Open PDF"
@@ -423,7 +428,7 @@ const TicketManagement = () => {
               <div className={styles.divider}></div>
               <div
                 className={styles.detailRow}
-                style={{ flexDirection: 'column' }}
+                style={{ flexDirection: "column" }}
               >
                 <strong>
                   <span className={styles.icon}>
@@ -436,7 +441,7 @@ const TicketManagement = () => {
                 </span>
               </div>
             </div>
-          </Dialog>
+          </Dialog> 
         </>
       )}
     </div>
