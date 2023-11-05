@@ -77,12 +77,12 @@ if (session.status === "unauthenticated") {
           whiteSpace: "normal",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          fontSize: "15px",
+          fontSize: "18px",
         }}
       >
         <b className="fc-event-title-container">
-          {formattedStartTime}-{formattedEndTime}
-          <br />
+          {/* {formattedStartTime}-{formattedEndTime} */}
+          {/* <br /> */}
           {eventInfo.event.title}
         </b>
       </div>
@@ -95,16 +95,18 @@ if (session.status === "unauthenticated") {
         .then((data) => {
           const formattedEvents = data.map((event) => {
   
+            /*
             const startDate = new Date(event.eventDate);
             startDate.setHours(14); 
 
             const endDate = new Date(event.eventDate);
             endDate.setHours(18);
+            */
   
             return {
               title: event.eventName,
-              start: startDate,
-              end: endDate,
+              start: event.eventDate,
+              end: event.eventDate,
               eventListingStatus: event.eventListingStatus,
               eventId: event.eventListingId
             };
