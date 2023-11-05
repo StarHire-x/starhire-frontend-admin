@@ -77,7 +77,7 @@ if (session.status === "unauthenticated") {
           whiteSpace: "normal",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          fontSize: "18px",
+          fontSize: "15px",
         }}
       >
         <b className="fc-event-title-container">
