@@ -81,7 +81,7 @@ if (session.status === "unauthenticated") {
         }}
       >
         <b className="fc-event-title-container">
-         {formattedStartTime}-{formattedEndTime}
+          {formattedStartTime}-{formattedEndTime}
           <br /> 
           {eventInfo.event.title}
         </b>
@@ -94,19 +94,10 @@ if (session.status === "unauthenticated") {
       getAllEventListings(accessToken)
         .then((data) => {
           const formattedEvents = data.map((event) => {
-  
-            /*
-            const startDate = new Date(event.eventDate);
-            startDate.setHours(14); 
-
-            const endDate = new Date(event.eventDate);
-            endDate.setHours(18);
-            */
-  
             return {
               title: event.eventName,
-              start: event.eventDate,
-              end: event.eventDate,
+              start: event.eventStartDateAndTime,
+              end: event.eventEndDateAndTime,
               eventListingStatus: event.eventListingStatus,
               eventId: event.eventListingId
             };
