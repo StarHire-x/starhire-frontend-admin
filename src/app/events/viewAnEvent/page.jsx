@@ -187,11 +187,6 @@ const ViewAnEvent = () => {
             </Card>
           </div>
 
-          <DataTable value={eventRegistrations} header={"All Event Registrations"}>
-          <Column field="eventRegistrationId" header="Event Registration ID" />
-          <Column field="registrationDate" header="Registered on" body={convertTimestampToDate}/>
-          </DataTable>
-
           <div className={styles.jobSeekerApplication}></div>
           <div className={styles.buttons}>
             <Button
