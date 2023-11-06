@@ -52,9 +52,11 @@ const ViewAnEvent = () => {
 
   const numberOfEventRegistrations = eventRegistrations ? eventRegistrations.length : 0;
 
-  const convertTimestampToDate = (timestamp) => {
-    return moment(timestamp).format('DD/MM/YYYY');
+  const convertTimestampToDate = (dateTimeString) => {
+    const formattedDateTime = moment(dateTimeString).format('DD MMM YYYY HH:mm');
+    return formattedDateTime;
   };
+  
 
   const handleOnBackClick = () => {
     router.back();
@@ -121,7 +123,11 @@ const ViewAnEvent = () => {
               </p>
               <p className={styles.text}>
                 <b>Start Date: </b>
-                {convertTimestampToDate(event?.eventDate)}
+                {convertTimestampToDate(event?.eventStartDateAndTime)}
+              </p>
+              <p className={styles.text}>
+                <b>Start Date: </b>
+                {convertTimestampToDate(event?.eventEndDateAndTime)}
               </p>
               <p className={styles.text}>
                 <b>Details: </b>
@@ -186,11 +192,6 @@ const ViewAnEvent = () => {
               <></>
             </Card>
           </div>
-
-          <DataTable value={eventRegistrations} header={"All Event Registrations"}>
-          <Column field="eventRegistrationId" header="Event Registration ID" />
-          <Column field="registrationDate" header="Registered on" body={convertTimestampToDate}/>
-          </DataTable>
 
           <div className={styles.jobSeekerApplication}></div>
           <div className={styles.buttons}>
