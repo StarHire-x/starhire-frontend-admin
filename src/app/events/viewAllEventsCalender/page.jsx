@@ -137,7 +137,7 @@ if (session.status === "unauthenticated") {
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "resourceTimelineWeek,dayGridMonth,timeGridWeek",
+            right: "dayGridMonth,timeGridWeek",
           }}
           initialView="resourceTimelineWeek"
           nowIndicator={true}
