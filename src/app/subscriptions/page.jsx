@@ -240,16 +240,6 @@ export default function Subscriptions() {
               <Column field="stripeCustId" header="Stripe Customer ID" sortable />
               <Column field="stripeSubId" header="Stripe Subscription ID" sortable />
               {session.data.user.role === Enums.ADMIN ? (
-                <Column
-                  field="corporatePromotionStatus"
-                  header="Corporate User Type"
-                  body={statusBodyTemplate}
-                  filter
-                  filterElement={statusFilterTemplate}
-                  sortable
-                ></Column>
-              ) : null}
-              {session.data.user.role === Enums.ADMIN ? (
                 <Column body={actionAdminBodyTemplate} />
               ) : (
                 <Column body={actionRecruiterBodyTemplate} />
