@@ -81,8 +81,8 @@ if (session.status === "unauthenticated") {
         }}
       >
         <b className="fc-event-title-container">
-          {/* {formattedStartTime}-{formattedEndTime} */}
-          {/* <br /> */}
+         {formattedStartTime}-{formattedEndTime}
+          <br /> 
           {eventInfo.event.title}
         </b>
       </div>
