@@ -17,6 +17,8 @@ import { viewAllPremiumUsers } from "@/app/api/subscriptions/route";
 import { getAllEventListings } from "@/app/api/events/route";
 import Enums from "@/common/enums/enums";
 import styles from "./events.module.css";
+import moment from 'moment';
+
 
 export default function Events() {
 
@@ -166,8 +168,14 @@ export default function Events() {
   };
 
   const formatDate = (rowData) => {
-    const date = new Date(rowData.eventDate);
-    return date.toLocaleDateString(); 
+    //const date = new Date(rowData.eventDate);
+    //return date.toLocaleDateString(); 
+    
+  };
+
+  const formatDateTime = (dateTimeString) => {
+    const formattedDateTime = moment(dateTimeString).format('DD MMM YYYY HH:mm');
+    return formattedDateTime;
   };
   
 
@@ -254,7 +262,22 @@ export default function Events() {
               ></Column>
               <Column field="eventName" header="Corporate Name" sortable />
               <Column field="location" header="Location" sortable />
-              <Column field="eventDate" header="Event Date" sortable body={formatDate}></Column>
+              <Column
+                field="eventStartDateAndTime"
+                header="Event Start Details"
+                body={(rowData) =>
+                  formatDateTime(rowData.eventStartDateAndTime)
+                }
+              ></Column>
+
+              <Column
+                field="eventEndDateAndTime"
+                header="Event End Details"
+                body={(rowData) =>
+                  formatDateTime(rowData.eventEndDateAndTime)
+                }
+              ></Column>
+
               {session.data.user.role === Enums.ADMIN ? (
                 <Column
                   field="eventListingStatus"
