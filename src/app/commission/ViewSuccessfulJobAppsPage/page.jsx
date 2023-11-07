@@ -366,7 +366,7 @@ const ViewSuccessfulJobAppsPage = () => {
 
           <Dialog
             visible={commissionDialog}
-            style={{ width: "40vw", height: "50vh" }}
+            style={{ width: "60vw", height: "80vh" }}
             breakpoints={{ "960px": "75vw", "641px": "90vw" }}
             header={"Create Commission for Recruiter User " + recruiterUserName}
             className="p-fluid"
@@ -376,7 +376,7 @@ const ViewSuccessfulJobAppsPage = () => {
             <div className={styles.dialogTextContainer}>
               <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '3%'}}>
                 <h4>Note:</h4>
-                <ol>
+                <ol style={{marginLeft: '15px'}}>
                   <li>
                     Please ensure you have made the payment offline to{" "}
                     {recruiterUserName} before continuing.
