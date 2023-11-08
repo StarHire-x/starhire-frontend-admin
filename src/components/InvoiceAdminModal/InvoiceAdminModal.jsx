@@ -175,6 +175,10 @@ const InvoiceAdminModal = ({ accessToken }) => {
     return formatDate(rowData.invoiceDate);
   };
 
+  const dueDateBodyTemplate = (rowData) => {
+    return formatDate(rowData.dueDate);
+  };
+
   const fileButtonTemplate = (rowData) => {
     return (
       <Button
@@ -297,6 +301,17 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 sortable
               ></Column>
               <Column
+                field="corporateId"
+                header="Company"
+                sortable
+                style={{
+                  textAlign: "center",
+                  verticalAlign: "middle",
+                  width: "200px",
+                }}
+                body={corporateBodyTemplate}
+              ></Column>
+              <Column
                 field="invoiceDate"
                 header="Invoice Date"
                 style={{
@@ -308,15 +323,15 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 sortable
               ></Column>
               <Column
-                field="corporateId"
-                header="Company"
-                sortable
+                field="dueDate"
+                header="Due Date"
                 style={{
                   textAlign: "center",
                   verticalAlign: "middle",
-                  width: "200px",
+                  width: "120px",
                 }}
-                body={corporateBodyTemplate}
+                body={dueDateBodyTemplate}
+                sortable
               ></Column>
               <Column
                 field="invoiceStatus"
