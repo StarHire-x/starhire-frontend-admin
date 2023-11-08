@@ -348,7 +348,7 @@ export default function JobListings() {
                 "jobListingId",
                 "title",
                 "corporate.userName",
-                "jobLocation",
+                "address",
                 "listingDate",
                 "jobListingStatus",
               ]}
@@ -366,7 +366,7 @@ export default function JobListings() {
                 header="Company Name"
                 sortable
               />
-              <Column field="jobLocation" header="Job Location"></Column>
+              <Column field="address" header="Job Location"></Column>
               <Column
                 field="listingDate"
                 header="List Date"

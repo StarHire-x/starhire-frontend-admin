@@ -406,51 +406,62 @@ export default function ViewJobListingRecruiter() {
                 </div>
               </div>
 
-              <strong>Job Overview</strong>
-              <p>{jobListing.overview}</p>
-              <strong>Job Responsibilities</strong>
-              <p>{jobListing.responsibilities}</p>
-              <strong>Job Requirements</strong>
-              <p>{jobListing.requirements}</p>
-              <strong>Required Documents</strong>
-              <p>{jobListing.requiredDocuments}</p>
-              <strong>Average Salary</strong>
-              <p>{"$" + jobListing.averageSalary + " SGD"}</p>
-              <strong>Job Start Date</strong>
-              <p>{formatDate(jobListing.jobStartDate)}</p>
+              <strong>Job Description</strong>
+                <p>{jobListing.description}</p>
 
-              <div className="contact-info">
-                <strong>Contact Information</strong>
-                <p>{jobListing.corporate.email}</p>
-                <p className={styles.secondP}>
-                  {jobListing.corporate.contactNo}
+                <strong>Experience Required</strong>
+                <p>{jobListing.experienceRequired}</p>
+
+                <strong>Address</strong>
+                <p>{jobListing.address}</p>
+
+                <strong>Postal Code</strong>
+                <p>{jobListing.postalCode}</p>
+
+                <strong>Job Listing Date</strong>
+                <p>{formatDate(jobListing.listingDate)}</p>
+
+                <strong>Job Start Date</strong>
+                <p>{formatDate(jobListing.jobStartDate)}</p>
+
+                <strong>Pay Range</strong>
+                <p>{jobListing.payRange + " SGD"}</p>
+
+                <strong>Job Type</strong>
+                <p>{jobListing.jobType}</p>
+
+                <strong>Schedule</strong>
+                <p>{jobListing.schedule}</p>
+
+                <strong>Supplemental Pay</strong>
+                <p>{jobListing.supplementalPay}</p>
+
+                <strong>Other Benefits</strong>
+                <p>{jobListing.otherBenefits}</p>
+
+                <strong>Certifications Required</strong>
+                <p>{jobListing.certificationsRequired}</p>
+
+                <strong>Type Of Workers</strong>
+                <p>{jobListing.typeOfWorkers}</p>
+
+                <strong>Required Languages</strong>
+                <p>{jobListing.requiredLanguages}</p>
+
+                <strong>Other Considerations</strong>
+                <p>{jobListing.otherConsiderations}</p>
+
+                <strong>Current Status of Job</strong>
+                <p
+                  style={{
+                    color:
+                      jobListing.jobListingStatus === "Approved"
+                        ? "green"
+                        : "red",
+                  }}
+                >
+                  {jobListing.jobListingStatus}
                 </p>
-              </div>
-
-              <strong>Corporate Details</strong>
-              <p>
-                {"UEN Number: " + jobListing.corporate.companyRegistrationId}
-              </p>
-              <p className={styles.secondP}>
-                {"Address: " + jobListing.corporate.companyAddress}
-              </p>
-
-              <strong>Job Listing Details</strong>
-              <p>{formatDate(jobListing.listingDate)}</p>
-
-              <p>{"Job Listing ID: " + jobListing.jobListingId}</p>
-
-              <strong>Current Status of Job</strong>
-              <p
-                style={{
-                  color:
-                    jobListing.jobListingStatus === "Approved"
-                      ? "green"
-                      : "red",
-                }}
-              >
-                {jobListing.jobListingStatus}
-              </p>
             </div>
           </Card>
           <div>
