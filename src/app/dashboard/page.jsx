@@ -9,6 +9,7 @@ import UserStatisticsModal from "@/components/UserStatisticsModal/UserStatistics
 import JobStatisticsModal from "@/components/JobStatisticsModal/JobStatisticsModal";
 import JobAssignmentModal from "@/components/JobAssignmentModal/JobAssignmentModal";
 import JobApplicationModal from "@/components/JobApplicationModal/JobApplicationModal";
+import InvoiceAdminModal from "@/components/InvoiceAdminModal/InvoiceAdminModal";
 
 
 const Dashboard = () => {
@@ -50,6 +51,8 @@ const Dashboard = () => {
             <>
               <UserStatisticsModal accessToken={accessToken} />
               <JobStatisticsModal accessToken={accessToken} />
+              <InvoiceAdminModal accessToken={accessToken} />
+              
             </>
           )}
           {role === "Recruiter" && (
