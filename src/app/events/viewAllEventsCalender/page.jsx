@@ -139,7 +139,7 @@ if (session.status === "unauthenticated") {
             center: "title",
             right: "dayGridMonth,timeGridWeek",
           }}
-          initialView="resourceTimelineWeek"
+          initialView="dayGridMonth"
           nowIndicator={true}
           editable={true}
           selectable={true}
