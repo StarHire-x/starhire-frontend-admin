@@ -13,10 +13,7 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-const UserProfileModal = ({
-  selectedUser,
-  currentUserRole,
-}) => {
+const UserProfileModal = ({ selectedUser, currentUserRole }) => {
   return (
     <div className={styles.container}>
       <>
@@ -37,9 +34,9 @@ const UserProfileModal = ({
             <div className={styles.userInformationContainer}>
               <div>
                 <p className={styles.userDetailsTitle}>Personal Information</p>
-                {selectedUser?.fullName ? (
+                {selectedUser?.firstName ? (
                   <p className={styles.userDetails}>
-                    Name: {selectedUser?.fullName}
+                    Name: {selectedUser?.firstName}
                   </p>
                 ) : (
                   <p className={styles.userDetails}>Name: Not specified</p>
@@ -48,14 +45,13 @@ const UserProfileModal = ({
                   Username: {selectedUser.userName}
                 </p>
                 <p className={styles.userDetails}>
-                  Date of Birth: {formatDate(selectedUser?.dateOfBirth)}
-                </p>
-
-                <p className={styles.userDetails}>
                   Email: {selectedUser.email}
                 </p>
                 <p className={styles.userDetails}>
                   Contact Number: {selectedUser.contactNo}
+                </p>
+                <p className={styles.userDetails}>
+                  Country: {selectedUser.country}
                 </p>
                 {selectedUser?.resumePdf &&
                 currentUserRole === Enums.RECRUITER ? (
@@ -75,7 +71,7 @@ const UserProfileModal = ({
               </div>
               <div className={styles.userInformationSecondRow}>
                 {/* display information here in new row */}
-                <p className={styles.userDetailsTitle}>Education</p>
+                <p className={styles.userDetailsTitle}>Bio</p>
                 {selectedUser?.highestEducationStatus ? (
                   <p className={styles.userDetails}>
                     Highest Education: {selectedUser?.highestEducationStatus}
@@ -85,27 +81,48 @@ const UserProfileModal = ({
                     Highest Education: Not specified
                   </p>
                 )}
-
-                {selectedUser?.instituteName ? (
+                {selectedUser?.startDate ? (
                   <p className={styles.userDetails}>
-                    Educational Institution: {selectedUser?.instituteName}
-                  </p>
-                ) : (
-                  <p className={styles.userDetails}>
-                    Educational Institution: Not specified
-                  </p>
-                )}
-
-                {selectedUser?.dateOfGraduation ? (
-                  <p className={styles.userDetails}>
-                    Date of Graduation:{" "}
-                    {formatDate(selectedUser?.dateOfGraduation)}
+                    Avail Start Date: {formatDate(selectedUser?.startDate)}
                   </p>
                 ) : (
                   <p className={styles.userDetails}>
                     Date of Graduation: Not specified
                   </p>
                 )}
+                <p className={styles.userDetails}>
+                  Description: {selectedUser.description}
+                </p>
+                <p className={styles.userDetails}>
+                  Languages: {selectedUser.proficientLanguages}
+                </p>
+                <p className={styles.userDetails}>
+                  Cerifications: {selectedUser.certifications}
+                </p>
+                <p className={styles.userDetails}>
+                  Recent Role: {selectedUser.recentRole}
+                </p>
+                <p className={styles.userDetails}>
+                  Pref. Regions: {selectedUser.preferredRegions}
+                </p>
+                <p className={styles.userDetails}>
+                  Pref. Job Type: {selectedUser.preferredJobType}
+                </p>
+                <p className={styles.userDetails}>
+                  Pref. Schedule: {selectedUser.preferredSchedule}
+                </p>
+                <p className={styles.userDetails}>
+                  Expected Pay: {selectedUser.payRange}
+                </p>
+                <p className={styles.userDetails}>
+                  Visa: {selectedUser.visaRequirements}
+                </p>
+                <p className={styles.userDetails}>
+                  Ranking: {selectedUser.ranking}
+                </p>
+                <p className={styles.userDetails}>
+                  Description: {selectedUser.otherInfo}
+                </p>
               </div>
             </div>
           </Card>
