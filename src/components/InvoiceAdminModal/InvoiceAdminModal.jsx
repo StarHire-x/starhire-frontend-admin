@@ -167,8 +167,8 @@ const InvoiceAdminModal = ({ accessToken }) => {
   };
 
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "numeric", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-GB", options);
   };
 
   const invoiceDateBodyTemplate = (rowData) => {
@@ -277,14 +277,14 @@ const InvoiceAdminModal = ({ accessToken }) => {
               value={invoices}
               showGridlines
               //   filters={filters}
-              globalFilterFields={[
-                "jobApplicationId",
-                "jobSeekerName",
-                "corporateName",
-                "jobListingTitle",
-              ]}
+              // globalFilterFields={[
+              //   "jobApplicationId",
+              //   "jobSeekerName",
+              //   "corporateName",
+              //   "jobListingTitle",
+              // ]}
               tableStyle={{ minWidth: "50rem" }}
-              rows={4}
+              rows={5}
               paginator
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
               emptyMessage="No invoice found."
