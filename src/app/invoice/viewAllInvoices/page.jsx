@@ -209,6 +209,14 @@ export default function ViewAllInvoicesPage() {
     }
   };
 
+  const getPaymentMethodSeverity = (rowData) => {
+    // if (rowData.invoiceLink !== null) {
+    //   return "warning";
+    // } else if (rowData.stripePaymentLink !== null) {
+    //   return "success";
+    // }
+  };
+
   const paidBodyTemplate = (rowData) => {
     return (
       <Tag
@@ -218,6 +226,18 @@ export default function ViewAllInvoicesPage() {
       />
     );
   };
+
+  const paymentMethodBodyTemplate = (rowData) => {
+    //this column will be showing which payment method did the corporate use.
+    return (
+      // <Tag
+      //   value={rowData.invoiceStatus.replace("_", " ")}
+      //   severity={getPaymentMethodSeverity(rowData.invoiceStatus)}
+      //   style={{ fontSize: "0.8em" }}
+      // />
+      <></>
+    )
+  }
 
   const actionBodyTemplate = (rowData) => {
     return (
@@ -379,10 +399,15 @@ export default function ViewAllInvoicesPage() {
                 body={(rowData) => `$${rowData.totalAmount}`}
               ></Column>
               <Column
-                field="isPaid"
+                field="invoiceStatus"
                 header="Payment Status"
                 sortable
                 body={paidBodyTemplate}
+              ></Column>
+              <Column
+                header="Payment Method"
+                sortable
+                body={paymentMethodBodyTemplate}
               ></Column>
               <Column
                 body={actionBodyTemplate}
@@ -439,13 +464,13 @@ export default function ViewAllInvoicesPage() {
                   ></Column>
                   <Column
                     field="jobListing.averageSalary"
-                    header="Commission"
+                    header="Amount"
                     body={(rowData) => `$${rowData.jobListing.averageSalary}`}
                   ></Column>
                 </DataTable>
                 <div className={styles.dialogTotalAmountContainer}>
                   <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    Total Commission:
+                    Total Amount:
                   </span>
                   <span style={{ fontWeight: "bold" }}>
                     ${selectedRow.totalAmount}

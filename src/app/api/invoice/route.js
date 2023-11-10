@@ -90,7 +90,7 @@ export const getCorporatesInvoicesStatistics = async (
       );
     }
   } catch (error) {
-    console.log("There was a problem fetching the users", error.message);
+    console.log("There was a problem fetching the data", error.message);
   }
 };
 

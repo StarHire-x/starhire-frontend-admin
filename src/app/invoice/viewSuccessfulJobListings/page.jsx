@@ -271,7 +271,7 @@ export default function ViewSuccessfulJobListings() {
           ></Column>
           <Column
             field="averageSalary"
-            header="Commission"
+            header="Amount"
             sortable
             body={`$${averageSalary}`}
           ></Column>
