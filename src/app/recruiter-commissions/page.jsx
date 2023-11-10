@@ -6,23 +6,22 @@ import {
 import Enums from "@/common/enums/enums";
 import moment from "moment";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
+import { Button } from "primereact/button";
+import { Card } from "primereact/card";
 import { Column } from "primereact/column";
+import { ConfirmDialog } from "primereact/confirmdialog";
 import { DataTable } from "primereact/datatable";
+import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Tag } from "primereact/tag";
 import { Toast } from "primereact/toast";
 import { useEffect, useRef, useState } from "react";
-import styles from "./page.module.css";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
 import HumanIcon from "../../../public/icon.png";
-import Image from "next/image";
-import { Card } from "primereact/card";
-import { ConfirmPopup, confirmPopup } from "primereact/confirmpopup";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import styles from "./page.module.css";
 
 const ViewRecruiterCommissions = () => {
   const session = useSession();
@@ -77,9 +76,25 @@ const ViewRecruiterCommissions = () => {
       };
       await updateCommissionStatus(request, commissionId, accessToken);
       await loadCommissionsByRecruiterId(accessToken);
+      toast.current.show({
+        severity: "success",
+        summary: "Success",
+        detail: "Payment has been confirmed!",
+        life: 5000,
+      });
     } catch (error) {
       console.log(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Error handling process. Please try again.",
+        life: 5000,
+      });
     }
+  };
+
+  const downloadInvoice = async (rowData) => {
+    window.location.assign(rowData?.paymentDocumentURL);
   };
 
   useEffect(() => {
@@ -88,6 +103,12 @@ const ViewRecruiterCommissions = () => {
         loadCommissionsByRecruiterId(accessToken);
       } catch (error) {
         console.log(error);
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: "Error loading commissions. Please refresh the page.",
+          life: 5000,
+        });
       }
     }
   }, [accessToken]);
@@ -217,10 +238,88 @@ const ViewRecruiterCommissions = () => {
     />
   );
 
+  const SelectedCommissionDialog = () => {
+    const bodyJobListingId = (jobApplication) => {
+      return jobApplication?.jobListing?.jobListingId;
+    };
+
+    const bodyJobListingTitle = (jobApplication) => {
+      return jobApplication?.jobListing?.title;
+    };
+
+    const jobSeekerBodyTemplate = (jobApplication) => {
+      const userName = jobApplication.jobSeeker?.userName;
+      const avatar = jobApplication.jobSeeker?.profilePictureUrl;
+      return (
+        <div className={styles.imageContainer}>
+          {avatar !== "" ? (
+            <img
+              alt={avatar}
+              src={avatar}
+              className={styles.avatarImageContainer}
+            />
+          ) : (
+            <Image
+              src={HumanIcon}
+              alt="Icon"
+              className={styles.avatarImageContainer}
+            />
+          )}
+          <span>{userName}</span>
+        </div>
+      );
+    };
+
+    const bodySalary = (jobApplication) => {
+      return `$${jobApplication?.jobListing?.averageSalary?.toFixed(2)}`;
+    };
+
+    return (
+      <Dialog
+        header={`#${
+          selectedCommission ? selectedCommission.commissionId : ""
+        } Commission`}
+        visible={selectedCommission != null}
+        style={{ width: "60vw" }}
+        onHide={() => setSelectedCommission(null)}
+      >
+        <DataTable
+          value={selectedCommission?.jobApplications}
+          scrollable
+          scrollHeight="45vh"
+          emptyMessage="No job applications found."
+          header="Job Applications"
+        >
+          <Column field="jobApplicationId" header="ID" sortable rowSpan />
+          <Column
+            field="jobListingId"
+            header="Job Listing ID"
+            sortable
+            body={bodyJobListingId}
+          />
+          <Column
+            field="jobListingId"
+            header="Job Listing ID"
+            sortable
+            body={bodyJobListingTitle}
+          />
+          <Column
+            field="jobSeekerDetail"
+            header="Applicant"
+            sortable
+            body={jobSeekerBodyTemplate}
+          />
+          <Column field="salary" header="Salary" sortable body={bodySalary} />
+        </DataTable>
+      </Dialog>
+    );
+  };
+
   return (
     <div>
       <Toast ref={toast} />
       {ConfirmPaymentDialog}
+      {SelectedCommissionDialog()}
       {selectedCommission && <Dialog />}
       {isLoading ? (
         <ProgressSpinner className={styles.progressSpinner} />
