@@ -232,7 +232,7 @@ export default function ViewAllInvoicesPage() {
     return (
       // <Tag
       //   value={rowData.invoiceStatus.replace("_", " ")}
-      //   severity={getSeverity(rowData.invoiceStatus)}
+      //   severity={getPaymentMethodSeverity(rowData.invoiceStatus)}
       //   style={{ fontSize: "0.8em" }}
       // />
       <></>
