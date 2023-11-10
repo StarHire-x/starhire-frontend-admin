@@ -209,6 +209,14 @@ export default function ViewAllInvoicesPage() {
     }
   };
 
+  const getPaymentMethodSeverity = (rowData) => {
+    // if (rowData.invoiceLink !== null) {
+    //   return "warning";
+    // } else if (rowData.stripePaymentLink !== null) {
+    //   return "success";
+    // }
+  };
+
   const paidBodyTemplate = (rowData) => {
     return (
       <Tag
@@ -222,8 +230,12 @@ export default function ViewAllInvoicesPage() {
   const paymentMethodBodyTemplate = (rowData) => {
     //this column will be showing which payment method did the corporate use.
     return (
-      <>
-      </>
+      // <Tag
+      //   value={rowData.invoiceStatus.replace("_", " ")}
+      //   severity={getSeverity(rowData.invoiceStatus)}
+      //   style={{ fontSize: "0.8em" }}
+      // />
+      <></>
     )
   }
 
