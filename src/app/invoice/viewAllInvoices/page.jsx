@@ -219,6 +219,14 @@ export default function ViewAllInvoicesPage() {
     );
   };
 
+  const paymentMethodBodyTemplate = (rowData) => {
+    //this column will be showing which payment method did the corporate use.
+    return (
+      <>
+      </>
+    )
+  }
+
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -379,10 +387,15 @@ export default function ViewAllInvoicesPage() {
                 body={(rowData) => `$${rowData.totalAmount}`}
               ></Column>
               <Column
-                field="isPaid"
+                field="invoiceStatus"
                 header="Payment Status"
                 sortable
                 body={paidBodyTemplate}
+              ></Column>
+              <Column
+                header="Payment Method"
+                sortable
+                body={paymentMethodBodyTemplate}
               ></Column>
               <Column
                 body={actionBodyTemplate}
