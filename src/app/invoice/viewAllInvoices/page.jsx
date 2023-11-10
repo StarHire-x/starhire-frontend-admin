@@ -439,13 +439,13 @@ export default function ViewAllInvoicesPage() {
                   ></Column>
                   <Column
                     field="jobListing.averageSalary"
-                    header="Commission"
+                    header="Amount"
                     body={(rowData) => `$${rowData.jobListing.averageSalary}`}
                   ></Column>
                 </DataTable>
                 <div className={styles.dialogTotalAmountContainer}>
                   <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    Total Commission:
+                    Total Amount:
                   </span>
                   <span style={{ fontWeight: "bold" }}>
                     ${selectedRow.totalAmount}
