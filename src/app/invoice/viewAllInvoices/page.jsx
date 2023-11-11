@@ -210,9 +210,11 @@ export default function ViewAllInvoicesPage() {
   };
 
   const getPaymentMethodSeverity = (paymentMethod) => {
-    if (paymentMethod === "Other Modes Of Payment") { // using manual payment
+    if (paymentMethod === "Others") {
+      // using manual payment
       return "info";
-    } else if (paymentMethod === "Stripe Payment") { // using stripe payment
+    } else if (paymentMethod === "Stripe") {
+      // using stripe payment
       return "warning";
     }
   };
@@ -228,17 +230,24 @@ export default function ViewAllInvoicesPage() {
   };
 
   const paymentMethodBodyTemplate = (rowData) => {
-    const paymentMethod = rowData.stripePaymentLink === null
-      ? "Other Modes of Payment"
-      : "Stripe Payment";
+    const paymentMethod =
+      rowData.stripePaymentLink == null || rowData.stripePaymentLink === ""
+        ? "Others"
+        : "Stripe";
     //this column will be showing which payment method did the corporate use.
     return (
-      // <Tag
-      //   value={paymentMethod}
-      //   severity={getPaymentMethodSeverity(paymentMethod)}
-      //   style={{ fontSize: "0.8em" }}
-      // />
-      <></>
+      <Tag
+        value={paymentMethod}
+        severity={getPaymentMethodSeverity(paymentMethod)}
+        style={{
+          fontSize: "0.8em",
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+          textAlign: "center",
+          width: "100px",
+        }}
+      />
     );
   };
 
@@ -301,8 +310,7 @@ export default function ViewAllInvoicesPage() {
               rounded
               size="small"
               onClick={() => {
-                console.log("Insert the proof of payment link here")
-                // window.open(rowData.invoiceLink, '_blank');
+                downloadProofOfPayment(rowData);
               }}
             />
           )}
@@ -333,6 +341,15 @@ export default function ViewAllInvoicesPage() {
 
   const hideDetailDialog = (rowData) => {
     setDetailDialog(false);
+  };
+
+  const downloadProofOfPayment = (rowData) => {
+    if (rowData?.proofOfPaymentLink) {
+      window.open(rowData?.proofOfPaymentLink, "_blank");
+    } else if (rowData.stripePaymentLink) {
+      window.open(rowData.stripePaymentLink, "_blank");
+    }
+    return;
   };
 
   const userDialogFooter = (
