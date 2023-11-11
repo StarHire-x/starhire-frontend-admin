@@ -210,9 +210,9 @@ export default function ViewAllInvoicesPage() {
   };
 
   const getPaymentMethodSeverity = (rowData) => {
-    // if (rowData.invoiceLink !== null) {
+    // if (rowData.stripePaymentLink === null) { // using manual payment
     //   return "warning";
-    // } else if (rowData.stripePaymentLink !== null) {
+    // } else if (rowData.stripePaymentLink !== null) { // using stripe payment
     //   return "success";
     // }
   };

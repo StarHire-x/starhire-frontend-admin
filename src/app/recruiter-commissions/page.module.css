@@ -1,0 +1,54 @@
+.progressSpinner {
+  display: "flex";
+  height: "100vh";
+  justify-content: "center";
+  align-items: "center";
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.header {
+  position: absolute;
+  top: 15vh;
+  width: 90%;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dataTable {
+  position: absolute;
+  top: 20vh;
+  width: 90%;
+  height: 75%;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  align-content: center;
+  align-items: center;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.avatarImageContainer {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* To make it circular */
+  object-fit: cover; /* To ensure the image maintains its aspect ratio */
+  margin-bottom: 0px; /* Add some spacing below the image */
+}
