@@ -209,12 +209,12 @@ export default function ViewAllInvoicesPage() {
     }
   };
 
-  const getPaymentMethodSeverity = (rowData) => {
-    // if (rowData.stripePaymentLink === null) { // using manual payment
-    //   return "warning";
-    // } else if (rowData.stripePaymentLink !== null) { // using stripe payment
-    //   return "success";
-    // }
+  const getPaymentMethodSeverity = (paymentMethod) => {
+    if (paymentMethod === "Other Modes Of Payment") { // using manual payment
+      return "info";
+    } else if (paymentMethod === "Stripe Payment") { // using stripe payment
+      return "warning";
+    }
   };
 
   const paidBodyTemplate = (rowData) => {
@@ -228,16 +228,19 @@ export default function ViewAllInvoicesPage() {
   };
 
   const paymentMethodBodyTemplate = (rowData) => {
+    const paymentMethod = rowData.stripePaymentLink === null
+      ? "Other Modes of Payment"
+      : "Stripe Payment";
     //this column will be showing which payment method did the corporate use.
     return (
       // <Tag
-      //   value={rowData.invoiceStatus.replace("_", " ")}
-      //   severity={getPaymentMethodSeverity(rowData.invoiceStatus)}
+      //   value={paymentMethod}
+      //   severity={getPaymentMethodSeverity(paymentMethod)}
       //   style={{ fontSize: "0.8em" }}
       // />
       <></>
-    )
-  }
+    );
+  };
 
   const actionBodyTemplate = (rowData) => {
     return (
