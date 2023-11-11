@@ -294,6 +294,18 @@ export default function ViewAllInvoicesPage() {
               }}
             />
           )}
+          {rowData.invoiceStatus !== "Not_Paid" && (
+            <Button
+              className="p-button-help"
+              label="View Proof of Payment"
+              rounded
+              size="small"
+              onClick={() => {
+                console.log("Insert the proof of payment link here")
+                // window.open(rowData.invoiceLink, '_blank');
+              }}
+            />
+          )}
         </div>
       </React.Fragment>
     );
