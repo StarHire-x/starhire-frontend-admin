@@ -209,6 +209,14 @@ export default function ViewAllInvoicesPage() {
     }
   };
 
+  const getPaymentMethodSeverity = (paymentMethod) => {
+    if (paymentMethod === "Other Modes Of Payment") { // using manual payment
+      return "info";
+    } else if (paymentMethod === "Stripe Payment") { // using stripe payment
+      return "warning";
+    }
+  };
+
   const paidBodyTemplate = (rowData) => {
     return (
       <Tag
@@ -216,6 +224,21 @@ export default function ViewAllInvoicesPage() {
         severity={getSeverity(rowData.invoiceStatus)}
         style={{ fontSize: "0.8em" }}
       />
+    );
+  };
+
+  const paymentMethodBodyTemplate = (rowData) => {
+    const paymentMethod = rowData.stripePaymentLink === null
+      ? "Other Modes of Payment"
+      : "Stripe Payment";
+    //this column will be showing which payment method did the corporate use.
+    return (
+      // <Tag
+      //   value={paymentMethod}
+      //   severity={getPaymentMethodSeverity(paymentMethod)}
+      //   style={{ fontSize: "0.8em" }}
+      // />
+      <></>
     );
   };
 
@@ -268,6 +291,18 @@ export default function ViewAllInvoicesPage() {
               onClick={() => {
                 showUserDialog();
                 setSelectedRow(rowData);
+              }}
+            />
+          )}
+          {rowData.invoiceStatus !== "Not_Paid" && (
+            <Button
+              className="p-button-help"
+              label="View Proof of Payment"
+              rounded
+              size="small"
+              onClick={() => {
+                console.log("Insert the proof of payment link here")
+                // window.open(rowData.invoiceLink, '_blank');
               }}
             />
           )}
@@ -379,10 +414,15 @@ export default function ViewAllInvoicesPage() {
                 body={(rowData) => `$${rowData.totalAmount}`}
               ></Column>
               <Column
-                field="isPaid"
+                field="invoiceStatus"
                 header="Payment Status"
                 sortable
                 body={paidBodyTemplate}
+              ></Column>
+              <Column
+                header="Payment Method"
+                sortable
+                body={paymentMethodBodyTemplate}
               ></Column>
               <Column
                 body={actionBodyTemplate}
