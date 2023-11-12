@@ -94,7 +94,8 @@ const ViewRecruiterCommissions = () => {
   };
 
   const downloadInvoice = async (rowData) => {
-    window.location.assign(rowData?.paymentDocumentURL);
+    // window.location.assign(rowData?.paymentDocumentURL);
+    window.open(rowData?.paymentDocumentURL, '_blank');
   };
 
   useEffect(() => {
