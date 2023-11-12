@@ -251,18 +251,7 @@ export default function ViewAllInvoicesPage() {
             }}
           />
         ) : (
-          <Tag
-            value="To Be Confirmed"
-            severity="danger"
-            style={{
-              fontSize: "0.8em",
-              display: "flex",
-              justifyContent: "center",
-              alignContent: "center",
-              textAlign: "center",
-              width: "100px",
-            }}
-          />
+          <p style={{marginLeft: "45px"}}>-</p>
         )}
       </>
     );
