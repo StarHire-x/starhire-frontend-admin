@@ -236,18 +236,35 @@ export default function ViewAllInvoicesPage() {
         : "Stripe";
     //this column will be showing which payment method did the corporate use.
     return (
-      <Tag
-        value={paymentMethod}
-        severity={getPaymentMethodSeverity(paymentMethod)}
-        style={{
-          fontSize: "0.8em",
-          display: "flex",
-          justifyContent: "center",
-          alignContent: "center",
-          textAlign: "center",
-          width: "100px",
-        }}
-      />
+      <>
+        {rowData.invoiceStatus !== "Not_Paid" ? (
+          <Tag
+            value={paymentMethod}
+            severity={getPaymentMethodSeverity(paymentMethod)}
+            style={{
+              fontSize: "0.8em",
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              textAlign: "center",
+              width: "100px",
+            }}
+          />
+        ) : (
+          <Tag
+            value="To Be Confirmed"
+            severity="danger"
+            style={{
+              fontSize: "0.8em",
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              textAlign: "center",
+              width: "100px",
+            }}
+          />
+        )}
+      </>
     );
   };
 
