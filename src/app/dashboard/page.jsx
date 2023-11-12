@@ -11,6 +11,7 @@ import JobAssignmentModal from "@/components/JobAssignmentModal/JobAssignmentMod
 import JobApplicationModal from "@/components/JobApplicationModal/JobApplicationModal";
 import InvoiceAdminModal from "@/components/InvoiceAdminModal/InvoiceAdminModal";
 import CommissionAdminModal from "@/components/CommissionAdminModal/CommissionAdminModal";
+import CommissionStatisticsModal from "@/components/CommissionStatisticsModal/CommissionStatisticsModal";
 
 
 const Dashboard = () => {
@@ -60,6 +61,7 @@ const Dashboard = () => {
             <>
               <JobAssignmentModal accessToken={accessToken} userId={userId} />
               <JobApplicationModal accessToken={accessToken} userId={userId} />
+              <CommissionStatisticsModal accessToken={accessToken} userId={userId} />
             </>
           )}
         </div>

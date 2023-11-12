@@ -9,6 +9,7 @@
     height: 40rem;
     overflow: auto;
     background-color: #e4f1f6;
+    transform: scale(1);
 }
 
 .layout {

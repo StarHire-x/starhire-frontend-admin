@@ -96,6 +96,11 @@ const UserStatisticsModal = ({ accessToken }) => {
           },
           scales: {
             x: {
+              title: {
+                display: true,
+                text: "Time Period", // your actual x-axis label
+                color: textColorSecondary,
+              },
               ticks: {
                 color: textColorSecondary,
               },
@@ -104,6 +109,11 @@ const UserStatisticsModal = ({ accessToken }) => {
               },
             },
             y: {
+              title: {
+                display: true,
+                text: "Commission Amount ($)", // your actual y-axis label
+                color: textColorSecondary,
+              },
               ticks: {
                 stepSize: 1,
                 color: textColorSecondary,
