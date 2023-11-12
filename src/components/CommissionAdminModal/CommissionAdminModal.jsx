@@ -245,8 +245,7 @@ const CommissionAdminModal = ({ accessToken }) => {
                   </h1>
                   <br />
                   <p style={{ color: "orange" }}>
-                    {overallStats.indicatedPaidCount} Commission Pending
-                    Confirmation
+                    {overallStats.indicatedPaidCount} Commission Indicated Paid
                   </p>
                 </div>
               </Card>
@@ -257,7 +256,7 @@ const CommissionAdminModal = ({ accessToken }) => {
                   </h1>
                   <br />
                   <p style={{ color: "green" }}>
-                    {overallStats.confirmedPaidCount} Commission Paid
+                    {overallStats.confirmedPaidCount} Commission Confirm Paid
                   </p>
                 </div>
               </Card>

@@ -238,3 +238,28 @@ export const updateCommissionStatus = async (
     throw error;
   }
 };
+
+export const getARecruiterCommissionStats = async (userId, accessToken) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/commission/oneRecruiter/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        cache: "no-store",
+      }
+    );
+    const response = await res.json();
+    if (response.statusCode === 200) {
+      return response.data;
+    } else {
+      throw error;
+    }
+  } catch (error) {
+    console.log("There was a problem updating the job application", error);
+    throw error;
+  }
+};

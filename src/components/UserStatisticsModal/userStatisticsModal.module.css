@@ -44,6 +44,7 @@
 .customCardGraph {
     width: 74rem;
     height: 40rem;
+    transform: scale(1); 
     overflow: auto;
     background-color: #87CEEB;
 }
