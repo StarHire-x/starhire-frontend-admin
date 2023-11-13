@@ -242,7 +242,7 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 </h1>
                 <br />
                 <p style={{ color: "orange" }}>
-                  {overallStats.indicatedPaidCount} Invoice Pending Confirmation
+                  {overallStats.indicatedPaidCount} Invoice Indicated Paid
                 </p>
               </div>
             </Card>
@@ -253,7 +253,7 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 </h1>
                 <br />
                 <p style={{ color: "green" }}>
-                  {overallStats.confirmedPaidCount} Invoice Paid
+                  {overallStats.confirmedPaidCount} Invoice Confirm Paid
                 </p>
               </div>
             </Card>

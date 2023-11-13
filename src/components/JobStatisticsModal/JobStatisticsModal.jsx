@@ -70,6 +70,11 @@ const JobStatisticsModal = ({ accessToken }) => {
         },
         scales: {
           x: {
+            title: {
+              display: true,
+              text: "Number of job listings", // your actual x-axis label
+              color: textColorSecondary,
+            },
             ticks: {
               color: textColorSecondary,
               font: {

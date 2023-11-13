@@ -17,6 +17,7 @@
     width: 74rem;
     height: 40rem;
     overflow: auto;
+    transform: scale(1);
     background-color: #87CEEB;
 }
 
