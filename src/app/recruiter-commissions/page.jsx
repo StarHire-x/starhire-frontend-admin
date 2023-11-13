@@ -95,7 +95,7 @@ const ViewRecruiterCommissions = () => {
 
   const downloadInvoice = async (rowData) => {
     // window.location.assign(rowData?.paymentDocumentURL);
-    window.open(rowData?.paymentDocumentURL, '_blank');
+    window.open(rowData?.paymentDocumentURL, "_blank");
   };
 
   useEffect(() => {
@@ -300,7 +300,7 @@ const ViewRecruiterCommissions = () => {
           />
           <Column
             field="jobListingId"
-            header="Job Listing ID"
+            header="Title"
             sortable
             body={bodyJobListingTitle}
           />
