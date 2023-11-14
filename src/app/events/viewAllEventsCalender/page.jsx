@@ -15,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { getAllEventListings } from "@/app/api/events/route"
+import { Card } from 'primereact/card';
 
 export default function CalendarPage() {
   const session = useSession();
@@ -68,12 +69,20 @@ if (session.status === "unauthenticated") {
     const eventListingStatus = eventInfo.event.extendedProps.eventListingStatus;
     const eventTime = eventInfo.event.extendedProps.eventTime;
 
+    let textColor = "inherit"; 
+
+    if (eventListingStatus === "Upcoming") {
+      textColor = "green";
+    } else if (eventListingStatus === "Cancelled") {
+      textColor = "red";
+    } 
+
     return (
       <div
         style={{
           padding: "2px",
           borderRadius: "4px",
-          //color: eventListingStatus === "Upcoming" ? "green" : "red",
+          color: textColor,
           whiteSpace: "normal",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -82,7 +91,7 @@ if (session.status === "unauthenticated") {
       >
         <b className="fc-event-title-container">
           {formattedStartTime}-{formattedEndTime}
-          <br /> 
+          <br />
           {eventInfo.event.title}
         </b>
       </div>
@@ -163,7 +172,7 @@ if (session.status === "unauthenticated") {
         modal
         footer={
           <div>
-            <Button label="OK" onClick={redirectToEvent}  />
+            <Button label="OK" onClick={redirectToEvent} />
           </div>
         }
       >
