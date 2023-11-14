@@ -1,21 +1,19 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { Badge } from "primereact/badge";
-import { Button } from "primereact/button";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { Dialog } from "primereact/dialog";
-import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { Tag } from "primereact/tag";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { viewAllPremiumUsers } from "@/app/api/subscriptions/route";
-import { getCorporateNextBillingCycleBySubID } from "@/app/api/subscriptions/route";
-import Enums from "@/common/enums/enums";
-import styles from "./subscriptions.module.css";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { Badge } from 'primereact/badge';
+import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { InputText } from 'primereact/inputtext';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Tag } from 'primereact/tag';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { viewAllPremiumUsers } from '@/app/api/subscriptions/route';
+import { getCorporateNextBillingCycleBySubID } from '@/app/api/subscriptions/route';
+import Enums from '@/common/enums/enums';
+import styles from './subscriptions.module.css';
 
 export default function Subscriptions() {
   const session = useSession();
@@ -23,22 +21,19 @@ export default function Subscriptions() {
   const router = useRouter();
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
   const currentUserId =
-    session.status === "authenticated" && session.data.user.userId;
+    session.status === 'authenticated' && session.data.user.userId;
 
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
+  if (session.status === 'unauthenticated') {
+    router?.push('/login');
   }
 
-  //const [refreshData, setRefreshData] = useState(false);
-  //const [jobListings, setJobListings] = useState([]);
   const [premiumUsers, setPremiumUsers] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
-  const [selectedRowData, setSelectedRowData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
@@ -50,12 +45,12 @@ export default function Subscriptions() {
     },
   });
 
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const getStatus = (status) => {
     switch (status) {
-      case "Premium":
-        return "success";
+      case 'Premium':
+        return 'success';
     }
   };
 
@@ -63,37 +58,10 @@ export default function Subscriptions() {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters["global"].value = value;
+    _filters['global'].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
-  };
-
-  const showUserDialog = (rowData) => {
-    setUserDialog(true);
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData.corporatePromotionStatus}
-        severity={getStatus(rowData.corporatePromotionStatus)}
-      />
-    );
-  };
-
-  const statusFilterTemplate = (options) => {
-    return (
-      <Dropdown
-        value={options.value}
-        options={jobListingStatuses}
-        onChange={(e) => options.filterCallback(e.value, options.index)}
-        itemTemplate={statusItemTemplate}
-        placeholder="Select One"
-        className="p-column-filter"
-        showClear
-      />
-    );
   };
 
   const statusItemTemplate = (option) => {
@@ -127,7 +95,7 @@ export default function Subscriptions() {
 
   const saveStatusChange = async (rowData) => {
     const id = rowData.userId;
-    const subId = rowData.stripeSubId
+    const subId = rowData.stripeSubId;
     let link = createLink(id, subId);
     router.push(link);
   };
@@ -136,9 +104,9 @@ export default function Subscriptions() {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <h2 className="m-0">Premium Users</h2>
@@ -156,7 +124,7 @@ export default function Subscriptions() {
 
   // Function to format date in "day-month-year" format
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "numeric", day: "numeric" };
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -171,16 +139,16 @@ export default function Subscriptions() {
     if (accessToken) {
       viewAllPremiumUsers(accessToken)
         .then((data) => {
-            if (Array.isArray(data)) {
-              setPremiumUsers(data)
-            } else {
-              console.error("Data is not an array:", data);
-              setPremiumUsers(data.data)
-            }
-            setIsLoading(false);
-          })
+          if (Array.isArray(data)) {
+            setPremiumUsers(data);
+          } else {
+            console.error('Data is not an array:', data);
+            setPremiumUsers(data.data);
+          }
+          setIsLoading(false);
+        })
         .catch((error) => {
-          console.error("Error fetching Promotion Request:", error);
+          console.error('Error fetching Promotion Request:', error);
           setIsLoading(false);
         });
     }
@@ -189,15 +157,15 @@ export default function Subscriptions() {
   const header = renderHeader();
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data.user.role !== Enums.ADMIN &&
     session.data.user.role !== Enums.RECRUITER
   ) {
-    router?.push("/dashboard");
+    router?.push('/dashboard');
   }
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     (session.data.user.role === Enums.ADMIN ||
       session.data.user.role === Enums.RECRUITER)
   ) {
@@ -206,10 +174,10 @@ export default function Subscriptions() {
         {isLoading ? (
           <ProgressSpinner
             style={{
-              display: "flex",
-              height: "100vh",
-              "justify-content": "center",
-              "align-items": "center",
+              display: 'flex',
+              height: '100vh',
+              'justify-content': 'center',
+              'align-items': 'center',
             }}
           />
         ) : (
@@ -227,7 +195,7 @@ export default function Subscriptions() {
               onSelectionChange={(e) => setSelectedUsers(e.value)}
               filters={filters}
               filterDisplay="menu"
-              globalFilterFields={["corporate.userName"]}
+              globalFilterFields={['corporate.userName']}
               emptyMessage="No Promotion Request found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
@@ -237,8 +205,16 @@ export default function Subscriptions() {
                 sortable
               ></Column>
               <Column field="userName" header="Corporate Name" sortable />
-              <Column field="stripeCustId" header="Stripe Customer ID" sortable />
-              <Column field="stripeSubId" header="Stripe Subscription ID" sortable />
+              <Column
+                field="stripeCustId"
+                header="Stripe Customer ID"
+                sortable
+              />
+              <Column
+                field="stripeSubId"
+                header="Stripe Subscription ID"
+                sortable
+              />
               {session.data.user.role === Enums.ADMIN ? (
                 <Column body={actionAdminBodyTemplate} />
               ) : (
