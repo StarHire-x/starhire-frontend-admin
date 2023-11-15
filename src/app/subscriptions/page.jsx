@@ -14,6 +14,7 @@ import { viewAllPremiumUsers } from '@/app/api/subscriptions/route';
 import { getCorporateNextBillingCycleBySubID } from '@/app/api/subscriptions/route';
 import Enums from '@/common/enums/enums';
 import styles from './subscriptions.module.css';
+import Image from "next/image";
 
 export default function Subscriptions() {
   const session = useSession();
@@ -135,6 +136,30 @@ export default function Subscriptions() {
     </React.Fragment>
   );
 
+  const usernameBodyTemplate = (rowData) => {
+    const userName = rowData.userName;
+    const avatar = rowData.profilePictureUrl;
+
+    return (
+      <div className={styles.imageContainer}>
+        {avatar !== "" ? (
+          <img
+            alt={avatar}
+            src={avatar}
+            className={styles.avatarImageContainer}
+          />
+        ) : (
+          <Image
+            src={HumanIcon}
+            alt="Icon"
+            className={styles.avatarImageContainer}
+          />
+        )}
+        <span>{userName}</span>
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (accessToken) {
       viewAllPremiumUsers(accessToken)
@@ -174,10 +199,10 @@ export default function Subscriptions() {
         {isLoading ? (
           <ProgressSpinner
             style={{
-              display: 'flex',
-              height: '100vh',
-              'justify-content': 'center',
-              'align-items': 'center',
+              display: "flex",
+              height: "100vh",
+              "justify-content": "center",
+              "align-items": "center",
             }}
           />
         ) : (
@@ -195,16 +220,17 @@ export default function Subscriptions() {
               onSelectionChange={(e) => setSelectedUsers(e.value)}
               filters={filters}
               filterDisplay="menu"
-              globalFilterFields={['corporate.userName']}
-              emptyMessage="No Promotion Request found."
+              globalFilterFields={["corporate.userName"]}
+              emptyMessage="No Premium Users found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
               <Column
-                field="userId"
-                header="Corporate User ID"
+                field="userName"
+                header="User Name"
                 sortable
+                body={usernameBodyTemplate}
               ></Column>
-              <Column field="userName" header="Corporate Name" sortable />
+
               <Column
                 field="stripeCustId"
                 header="Stripe Customer ID"
