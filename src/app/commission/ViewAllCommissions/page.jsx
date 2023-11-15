@@ -331,7 +331,7 @@ const ViewAllCommissions = () => {
             </Dialog>
             <Dialog
               visible={commissionDetailDialog}
-              style={{ width: "40vw", height: "50vh" }}
+              style={{ width: "50vw", height: "90vh" }}
               breakpoints={{ "960px": "75vw", "641px": "90vw" }}
               header={
                 "Details for Commission " + selectedCommission.commissionId
