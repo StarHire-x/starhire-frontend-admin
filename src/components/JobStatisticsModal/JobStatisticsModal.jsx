@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import HumanIcon from '../../../public/icon.png';
+import React, { useState, useEffect } from 'react';
 import styles from './jobStatisticsModal.module.css';
 import { Card } from 'primereact/card';
 import { Chart } from 'primereact/chart';
@@ -235,7 +233,9 @@ const JobStatisticsModal = ({ accessToken }) => {
           <div className={styles.filterContainer1}>
             {chartDataIsEmpty ? (
               <>
-                <h1 style={{ textAlign: "justify", marginBottom: "200px"}}>No data available</h1>
+                <h1 style={{ textAlign: 'justify', marginBottom: '200px' }}>
+                  No data available
+                </h1>
               </>
             ) : (
               <Chart
