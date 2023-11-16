@@ -233,9 +233,9 @@ const JobStatisticsModal = ({ accessToken }) => {
           <div className={styles.filterContainer1}>
             {chartDataIsEmpty ? (
               <>
-                <h1 style={{ textAlign: 'justify', marginBottom: '200px' }}>
+                <h2 style={{ textAlign: 'justify', marginBottom: '200px' }}>
                   No data available
-                </h1>
+                </h2>
               </>
             ) : (
               <Chart
