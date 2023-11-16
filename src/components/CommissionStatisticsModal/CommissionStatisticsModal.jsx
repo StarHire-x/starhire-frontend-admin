@@ -1,20 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import HumanIcon from "../../../public/icon.png";
+import React, { useState, useEffect } from "react";
 import styles from "./CommissionStatisticsModal.module.css";
 import { Card } from "primereact/card";
-import { Button } from "primereact/button";
-import Enums from "@/common/enums/enums";
-import { Tag } from "primereact/tag";
 import { Chart } from "primereact/chart";
 import { Dropdown } from "primereact/dropdown";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { fetchData } from "next-auth/client/_utils";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { InputText } from "primereact/inputtext";
-import { useRouter } from "next/navigation";
-import { TabMenu } from "primereact/tabmenu";
 import { getARecruiterCommissionStats } from "@/app/api/commission/route";
 
 const CommissionStatisticsModal = ({ accessToken, userId }) => {
@@ -100,7 +88,7 @@ const CommissionStatisticsModal = ({ accessToken, userId }) => {
               stacked: true, // Enable stacking for the x-axis
               title: {
                 display: true,
-                text: "Time Period", // your actual x-axis label
+                text: "Time Period", // actual x-axis label
                 color: textColorSecondary,
               },
               ticks: {
@@ -114,7 +102,7 @@ const CommissionStatisticsModal = ({ accessToken, userId }) => {
               stacked: true, // Enable stacking for the y-axis
               title: {
                 display: true,
-                text: "Commission Amount ($)", // your actual y-axis label
+                text: "Commission Amount ($)", // actual y-axis label
                 color: textColorSecondary,
                 position: "left",
               },

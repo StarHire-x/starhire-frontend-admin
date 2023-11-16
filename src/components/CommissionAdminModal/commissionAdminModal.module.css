@@ -1,15 +1,15 @@
 .mainContainer {
-    flex-direction: column;
-    margin-bottom: 10px;
-    gap: 10px;
+  flex-direction: column;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
 .customCardGraph {
-    width: 78rem;
-    height: 40rem;
-    overflow: auto;
-    background-color: #e4f1f6;
-    transform: scale(1);
+  width: 78rem;
+  height: 40rem;
+  overflow: auto;
+  background-color: #e4f1f6;
+  transform: scale(1);
 }
 
 .layout {
@@ -21,30 +21,30 @@
 }
 
 .cardColumnLeft {
-    display: flex;
-    flex-direction: row;
-    gap: 75px;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    flex: 0.75;
+  display: flex;
+  flex-direction: row;
+  gap: 75px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex: 0.75;
 }
 
 .cardColumnRight {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    flex: 3.25;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex: 3.25;
 }
 
 .customCard {
   width: 20rem;
   height: 11rem;
   overflow: auto;
-  background-color: #87CEEB;
+  background-color: white;
 }
 
 .cardLayout {
@@ -67,12 +67,12 @@
   height: 40px;
   border-radius: 50%; /* To make it circular */
   object-fit: cover; /* To ensure the image maintains its aspect ratio */
-  margin-bottom: 0px; /* Add some spacing below the image */
+  margin-bottom: 0px;
 }
 
 .buttonContainer {
-  display: flex; /* Use flexbox to arrange buttons horizontally */
-  align-items: center; /* Align buttons vertically in the center */
+  display: flex;
+  align-items: center;
 }
 
 .tabMenu {

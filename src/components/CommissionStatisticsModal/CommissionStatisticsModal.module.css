@@ -7,9 +7,7 @@
   width: 75rem;
   height: 650px;
   background-color: #e4f1f6;
-  box-shadow: 
-  0 -2px 4px rgba(0, 0, 0, 0.1), /* Top shadow */
-  0 2px 4px rgba(0, 0, 0, 0.1);  /* Bottom shadow */
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
 
@@ -44,9 +42,9 @@
 .customCard {
   width: 200px !important;
   height: 150px !important;
-  background-color: #eaeaea;
+  background-color: white;
   border-radius: 10px;
-  border: 1px solid #fefbf6
+  border: 1px solid white;
 }
 
 .cardLayout {
@@ -56,7 +54,7 @@
 }
 
 .cardColumnRightHeader {
-  font-family: "Source Sans 3";
+  font-family: 'Source Sans 3';
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -66,23 +64,23 @@
 
 .imageContainer {
   display: flex;
-  flex-direction: column; /* To ensure children are stacked vertically */
-  align-items: center; /* Horizontally center the children */
-  justify-content: center; /* Vertically center the children (though it's optional here) */
-  gap: 1px; /* Gives a little space between the image and the h6 */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
 }
 
 .avatarImageContainer {
   width: 40px;
   height: 40px;
-  border-radius: 50%; /* To make it circular */
-  object-fit: cover; /* To ensure the image maintains its aspect ratio */
-  margin-bottom: 0px; /* Add some spacing below the image */
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0px;
 }
 
 .buttonContainer {
-  display: flex; /* Use flexbox to arrange buttons horizontally */
-  align-items: center; /* Align buttons vertically in the center */
+  display: flex;
+  align-items: center;
 }
 
 .tabMenu {

@@ -1,14 +1,14 @@
 .mainContainer {
-    flex-direction: column;
-    margin-bottom: 10px;
-    gap: 10px;
+  flex-direction: column;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
 .customCardGraph {
-    width: 78rem;
-    height: 40rem;
-    overflow: auto;
-    background-color: #e4f1f6;
+  width: 78rem;
+  height: 40rem;
+  overflow: auto;
+  background-color: #e4f1f6;
 }
 
 .layout {
@@ -20,30 +20,30 @@
 }
 
 .cardColumnLeft {
-    display: flex;
-    flex-direction: row;
-    gap: 75px;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    flex: 0.75;
+  display: flex;
+  flex-direction: row;
+  gap: 75px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex: 0.75;
 }
 
 .cardColumnRight {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    flex: 3.25;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  flex: 3.25;
 }
 
 .customCard {
   width: 20rem;
   height: 11rem;
   overflow: auto;
-  background-color: #87CEEB;
+  background-color: white;
 }
 
 .cardLayout {

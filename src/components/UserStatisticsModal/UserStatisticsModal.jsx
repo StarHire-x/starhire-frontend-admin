@@ -1,13 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import HumanIcon from "../../../public/icon.png";
-import styles from "./userStatisticsModal.module.css";
-import { Card } from "primereact/card";
-import { Button } from "primereact/button";
-import Enums from "@/common/enums/enums";
-import { Chart } from "primereact/chart";
-import { Dropdown } from "primereact/dropdown";
-import { getUserBreakdown, getUserStatistics } from "@/app/api/auth/user/route";
+import React, { useState, useEffect, useRef } from 'react';
+import styles from './userStatisticsModal.module.css';
+import { Card } from 'primereact/card';
+import { Chart } from 'primereact/chart';
+import { Dropdown } from 'primereact/dropdown';
+import { getUserBreakdown, getUserStatistics } from '@/app/api/auth/user/route';
 
 const UserStatisticsModal = ({ accessToken }) => {
   const [chartData, setChartData] = useState({});
@@ -18,21 +14,21 @@ const UserStatisticsModal = ({ accessToken }) => {
   const [chartData1, setChartData1] = useState({});
   const [chartOptions1, setChartOptions1] = useState({});
 
-  const [selectedFilter, setSelectedFilter] = useState("total");
+  const [selectedFilter, setSelectedFilter] = useState('total');
   const [userPercentage, setUserPercentage] = useState({});
   const filterOptions = [
-    { label: "All users", value: "total" },
-    { label: "Job Seeker", value: "jobSeeker" },
-    { label: "Corporate", value: "corporate" },
-    { label: "Recrutier", value: "recruiter" },
-    { label: "Administrator", value: "administrator" },
+    { label: 'All users', value: 'total' },
+    { label: 'Job Seeker', value: 'jobSeeker' },
+    { label: 'Corporate', value: 'corporate' },
+    { label: 'Recrutier', value: 'recruiter' },
+    { label: 'Administrator', value: 'administrator' },
   ];
 
-  const [selectedFilter1, setSelectedFilter1] = useState("week");
+  const [selectedFilter1, setSelectedFilter1] = useState('week');
   const filterOptions1 = [
-    { label: "Month", value: "month" },
-    { label: "Week", value: "week" },
-    { label: "Day", value: "day" },
+    { label: 'Month', value: 'month' },
+    { label: 'Week', value: 'week' },
+    { label: 'Day', value: 'day' },
   ];
 
   useEffect(() => {
@@ -40,12 +36,12 @@ const UserStatisticsModal = ({ accessToken }) => {
       const documentStyle = getComputedStyle(document.documentElement);
 
       const fetchBreakdown = async () => {
-        const textColor = documentStyle.getPropertyValue("--text-color");
+        const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue(
-          "--text-color-secondary"
+          '--text-color-secondary'
         );
         const surfaceBorder =
-          documentStyle.getPropertyValue("--surface-border");
+          documentStyle.getPropertyValue('--surface-border');
 
         const information = await getUserStatistics(accessToken);
         setOverallStats(information.overall);
@@ -54,29 +50,29 @@ const UserStatisticsModal = ({ accessToken }) => {
           labels: information[selectedFilter1].labels,
           datasets: [
             {
-              label: "Job Seeker",
-              borderColor: documentStyle.getPropertyValue("--blue-500"),
+              label: 'Job Seeker',
+              borderColor: documentStyle.getPropertyValue('--blue-500'),
               tension: 0.4,
               fill: false,
               data: information[selectedFilter1].dataJobSeeker,
             },
             {
-              label: "Corporate",
-              borderColor: documentStyle.getPropertyValue("--orange-500"),
+              label: 'Corporate',
+              borderColor: documentStyle.getPropertyValue('--orange-500'),
               tension: 0.4,
               fill: false,
               data: information[selectedFilter1].dataCorporate,
             },
             {
-              label: "Recruiter",
-              backgroundColor: documentStyle.getPropertyValue("--pink-500"),
+              label: 'Recruiter',
+              backgroundColor: documentStyle.getPropertyValue('--pink-500'),
               tension: 0.4,
               fill: false,
               data: information[selectedFilter1].dataRecruiter,
             },
             {
-              label: "Administrator",
-              backgroundColor: documentStyle.getPropertyValue("--gray-500"),
+              label: 'Administrator',
+              backgroundColor: documentStyle.getPropertyValue('--gray-500'),
               tension: 0.4,
               fill: false,
               data: information[selectedFilter1].dataAdmin,
@@ -98,7 +94,7 @@ const UserStatisticsModal = ({ accessToken }) => {
             x: {
               title: {
                 display: true,
-                text: "Time Period", // your actual x-axis label
+                text: 'Time Period', // your actual x-axis label
                 color: textColorSecondary,
               },
               ticks: {
@@ -111,7 +107,7 @@ const UserStatisticsModal = ({ accessToken }) => {
             y: {
               title: {
                 display: true,
-                text: "Commission Amount ($)", // your actual y-axis label
+                text: 'Commission Amount ($)', // your actual y-axis label
                 color: textColorSecondary,
               },
               ticks: {
@@ -140,18 +136,18 @@ const UserStatisticsModal = ({ accessToken }) => {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
-        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+        <h2 className="montserrat" style={{ margin: '10px 10px 10px 10px' }}>
           Account Creation Analysis by {selectedFilter1}
         </h2>
         <Dropdown
           value={selectedFilter1}
           options={filterOptions1}
-          style={{ margin: "10px 10px 10px 10px" }}
+          style={{ margin: '10px 10px 10px 10px' }}
           onChange={(e) => setSelectedFilter1(e.value)}
           placeholder="Select time span"
         />
@@ -163,21 +159,21 @@ const UserStatisticsModal = ({ accessToken }) => {
     return (
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-between",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+        <h2 className="montserrat" style={{ margin: '10px 10px 10px 10px' }}>
           {selectedFilter.charAt(0).toUpperCase() +
-            selectedFilter.slice(1).toLowerCase()}{" "}
+            selectedFilter.slice(1).toLowerCase()}{' '}
           Status Breakdown
         </h2>
         <Dropdown
           value={selectedFilter}
           options={filterOptions}
-          style={{ margin: "10px 10px 10px 10px" }}
+          style={{ margin: '10px 10px 10px 10px' }}
           onChange={(e) => setSelectedFilter(e.value)}
           placeholder="Select a role"
         />
@@ -196,7 +192,7 @@ const UserStatisticsModal = ({ accessToken }) => {
 
       const sum = inactiveData + activeData;
       const total =
-        breakdownInfo.active["total"] + breakdownInfo.inactive["total"];
+        breakdownInfo.active['total'] + breakdownInfo.inactive['total'];
 
       const activePercentage = Number(((activeData / sum) * 100).toFixed(2));
       const inactivePercentage = Number(
@@ -209,17 +205,17 @@ const UserStatisticsModal = ({ accessToken }) => {
         proportion: proportion,
       });
       const data = {
-        labels: ["Active", "Inactive"],
+        labels: ['Active', 'Inactive'],
         datasets: [
           {
             data: [activeData, inactiveData],
             backgroundColor: [
-              documentStyle.getPropertyValue("--blue-500"),
-              documentStyle.getPropertyValue("--red-500"),
+              documentStyle.getPropertyValue('--blue-500'),
+              documentStyle.getPropertyValue('--red-500'),
             ],
             hoverBackgroundColor: [
-              documentStyle.getPropertyValue("--blue-400"),
-              documentStyle.getPropertyValue("--red-400"),
+              documentStyle.getPropertyValue('--blue-400'),
+              documentStyle.getPropertyValue('--red-400'),
             ],
           },
         ],
@@ -247,7 +243,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+              <h1 className="montserrat" style={{ fontSize: '3em' }}>
                 {overallStats.jobSeeker}
               </h1>
               <p className="montserrat">Job Seeker</p>
@@ -255,7 +251,7 @@ const UserStatisticsModal = ({ accessToken }) => {
             <div className={styles.statisticsColumn}>
               <i
                 className="pi pi-user"
-                style={{ fontSize: "5rem", alignItems: "center" }}
+                style={{ fontSize: '5rem', alignItems: 'center' }}
               ></i>
             </div>
           </div>
@@ -263,7 +259,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+              <h1 className="montserrat" style={{ fontSize: '3em' }}>
                 {overallStats.recruiter}
               </h1>
               <p className="montserrat">Recruiter</p>
@@ -271,7 +267,7 @@ const UserStatisticsModal = ({ accessToken }) => {
             <div className={styles.statisticsColumn}>
               <i
                 className="pi pi-briefcase"
-                style={{ fontSize: "5rem", alignItems: "center" }}
+                style={{ fontSize: '5rem', alignItems: 'center' }}
               ></i>
             </div>
           </div>
@@ -279,7 +275,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+              <h1 className="montserrat" style={{ fontSize: '3em' }}>
                 {overallStats.corporate}
               </h1>
               <p className="montserrat">Corporate</p>
@@ -287,7 +283,7 @@ const UserStatisticsModal = ({ accessToken }) => {
             <div className={styles.statisticsColumn}>
               <i
                 className="pi pi-building"
-                style={{ fontSize: "5rem", alignItems: "center" }}
+                style={{ fontSize: '5rem', alignItems: 'center' }}
               ></i>
             </div>
           </div>
@@ -295,7 +291,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCard}>
           <div className={styles.cardLayout}>
             <div className={styles.statisticsColumn}>
-              <h1 className="montserrat" style={{ fontSize: "3em" }}>
+              <h1 className="montserrat" style={{ fontSize: '3em' }}>
                 {overallStats.administrator}
               </h1>
               <p className="montserrat">Administrator</p>
@@ -303,7 +299,7 @@ const UserStatisticsModal = ({ accessToken }) => {
             <div className={styles.statisticsColumn}>
               <i
                 className="pi pi-eye"
-                style={{ fontSize: "5rem", alignItems: "center" }}
+                style={{ fontSize: '5rem', alignItems: 'center' }}
               ></i>
             </div>
           </div>
@@ -313,7 +309,7 @@ const UserStatisticsModal = ({ accessToken }) => {
         <Card className={styles.customCardGraph} header={bigCardHeader}>
           <Chart type="line" data={chartData} options={chartOptions} />
         </Card>
-        <Card className={styles.customCardGraph1} header={smallCardHeader} >
+        <Card className={styles.customCardGraph1} header={smallCardHeader}>
           {/* <div className={styles.headerGraph1}>
             <h3 className="montserrat">
               {selectedFilter.charAt(0).toUpperCase() +
@@ -338,17 +334,17 @@ const UserStatisticsModal = ({ accessToken }) => {
             <br />
             <br />
             <div className={styles.filterColumn}>
-              <p className="montserrat">
+              <strong className={styles.line}>
                 User Ratio: {userPercentage.proportion}%
-              </p>
+              </strong>
               <br />
-              <p className="montserrat">
+              <strong className={styles.line}>
                 Active users: {userPercentage.active}%
-              </p>
+              </strong>
               <br />
-              <p className="montserrat">
+              <strong className={styles.line}>
                 Inactive users: {userPercentage.inactive}%
-              </p>
+              </strong>
             </div>
           </div>
         </Card>
