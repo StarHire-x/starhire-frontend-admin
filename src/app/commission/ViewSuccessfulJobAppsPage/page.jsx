@@ -366,7 +366,7 @@ const ViewSuccessfulJobAppsPage = () => {
 
           <Dialog
             visible={commissionDialog}
-            style={{ width: "60vw", height: "80vh" }}
+            // style={{ width: "60vw", height: "80vh" }}
             breakpoints={{ "960px": "75vw", "641px": "90vw" }}
             header={"Create Commission for Recruiter User " + recruiterUserName}
             className="p-fluid"
