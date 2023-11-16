@@ -13,7 +13,7 @@ import {
 const JobStatisticsModal = ({ accessToken }) => {
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
-
+  const [chartDataIsEmpty, setChartDataIsEmpty] = useState(false);
   const [chartData1, setChartData1] = useState({});
   const [chartOptions1, setChartOptions1] = useState({});
   const [selectedFilter1, setSelectedFilter1] = useState('total');
@@ -116,6 +116,12 @@ const JobStatisticsModal = ({ accessToken }) => {
       const rejectedData = breakdownInfo[selectedFilter1].rejected;
       const unverifiedData = breakdownInfo[selectedFilter1].unverified;
       const archivedData = breakdownInfo[selectedFilter1].archived;
+      const isChartDataEmpty =
+        approvedData === 0 &&
+        rejectedData === 0 &&
+        unverifiedData === 0 &&
+        archivedData === 0;
+      setChartDataIsEmpty(isChartDataEmpty);
 
       const sum = approvedData + rejectedData + unverifiedData + archivedData;
       const total =
@@ -227,12 +233,18 @@ const JobStatisticsModal = ({ accessToken }) => {
         </Card>
         <Card className={styles.customCardGraph1} header={smallCardHeader}>
           <div className={styles.filterContainer1}>
-            <Chart
-              type="pie"
-              data={chartData1}
-              options={chartOptions1}
-              className={styles.doughnutChart}
-            />
+            {chartDataIsEmpty ? (
+              <>
+                <h1 style={{ textAlign: "justify", marginBottom: "200px"}}>No data available</h1>
+              </>
+            ) : (
+              <Chart
+                type="pie"
+                data={chartData1}
+                options={chartOptions1}
+                className={styles.doughnutChart}
+              />
+            )}
             <div className={styles.filterColumn}>
               <strong className={styles.line}>
                 Proportion: {corporatePercentage.proportion}%

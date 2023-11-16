@@ -228,6 +228,120 @@ const JobApplicationModal = ({ accessToken, userId }) => {
           <div className={styles.cardColumnLeft}>
             <Card className={styles.customCard}>
               <div className={styles.cardLayout}>
+                <h3>{overallStats.Offer_Accepted}</h3>
+                <p>Accepted Offer</p>
+              </div>
+            </Card>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
+                <h3>{overallStats.Offered}</h3>
+                <p>Offered</p>
+              </div>
+            </Card>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
+                <h3>{overallStats.Waiting_For_Interview}</h3>
+                <p>Waiting for Interview</p>
+              </div>
+            </Card>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
+                <h3>{overallStats.Processing}</h3>
+                <p>Processing</p>
+              </div>
+            </Card>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
+                <h3>{overallStats.Submitted}</h3>
+                <p>Submitted</p>
+              </div>
+            </Card>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
+                <h3>{overallStats.To_Be_Submitted}</h3>
+                <p>To be Submitted</p>
+              </div>
+            </Card>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
+                <h3>{overallStats.Offer_Rejected + overallStats.Rejected}</h3>
+                <p>Rejected</p>
+              </div>
+            </Card>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
+                <h3>{overallStats.Total}</h3>
+                <p>Total Application</p>
+              </div>
+            </Card>
+          </div>
+          <div className={styles.cardColumnRight}>
+            <DataTable
+              header={header}
+              value={jobApplications}
+              showGridlines
+              filters={filters}
+              globalFilterFields={[
+                'jobApplicationId',
+                'jobSeekerName',
+                'corporateName',
+                'jobListingTitle',
+              ]}
+              tableStyle={{ minWidth: '60rem' }}
+              rows={4}
+              paginator
+              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+              emptyMessage="No job assignments found."
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            >
+              <Column
+                field="jobApplicationId"
+                header="Id"
+                style={{ textAlign: 'center', verticalAlign: 'middle' }}
+                sortable
+              ></Column>
+              <Column
+                field="jobSeekerName"
+                header="Job Seeker"
+                sortable
+                body={jobSeekerBodyTemplate}
+              ></Column>
+              <Column
+                field="corporateName"
+                header="Corporate"
+                sortable
+                body={corporateBodyTemplate}
+              ></Column>
+              <Column
+                field="jobListingTitle"
+                header="Job Listing"
+                sortable
+              ></Column>
+              <Column
+                field="jobApplicationStatus"
+                header="Status"
+                sortable
+                body={statusBodyTemplate}
+              ></Column>
+              <Column
+                exportable={false}
+                style={{ minWidth: '1rem' }}
+                header="Actions"
+                body={viewDetailsBodyTemplate}
+              ></Column>
+            </DataTable>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+  return (
+    <div className={styles.mainContainer}>
+      <Card className={styles.customCardGraph} header={cardHeader}>
+        <div className={styles.layout}>
+          <div className={styles.cardColumnLeft}>
+            <Card className={styles.customCard}>
+              <div className={styles.cardLayout}>
                 <h1>{overallStats.Total}</h1>
                 <p>Total Application</p>
               </div>
