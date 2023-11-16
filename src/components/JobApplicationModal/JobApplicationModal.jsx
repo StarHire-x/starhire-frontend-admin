@@ -234,38 +234,54 @@ const JobApplicationModal = ({ accessToken, userId }) => {
             <div className={styles.cardColumnLeft}>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
-                  <h1>{overallStats.Total}</h1>
-                  <p>Total Application</p>
+                  <h3>{overallStats.Offer_Accepted}</h3>
+                  <p>Accepted Offer</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
-                  <h1>{overallStats.Submitted}</h1>
-                  <p>Submitted</p>
+                  <h3>{overallStats.Offered}</h3>
+                  <p>Offered</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
-                  <h1>{overallStats.To_Be_Submitted}</h1>
-                  <p>To be Submitted</p>
+                  <h3>{overallStats.Waiting_For_Interview}</h3>
+                  <p>Waiting for Interview</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
-                  <h1>{overallStats.Processing}</h1>
+                  <h3>{overallStats.Processing}</h3>
                   <p>Processing</p>
                 </div>
               </Card>
               <Card className={styles.customCard}>
                 <div className={styles.cardLayout}>
-                  <h1>{overallStats.Waiting_For_Interview}</h1>
-                  <p>Waiting for Interview</p>
+                  <h3>{overallStats.Submitted}</h3>
+                  <p>Submitted</p>
+                </div>
+              </Card>
+              <Card className={styles.customCard}>
+                <div className={styles.cardLayout}>
+                  <h3>{overallStats.To_Be_Submitted}</h3>
+                  <p>To be Submitted</p>
+                </div>
+              </Card>
+              <Card className={styles.customCard}>
+                <div className={styles.cardLayout}>
+                  <h3>{overallStats.Offer_Rejected + overallStats.Rejected}</h3>
+                  <p>Rejected</p>
+                </div>
+              </Card>
+              <Card className={styles.customCard}>
+                <div className={styles.cardLayout}>
+                  <h3>{overallStats.Total}</h3>
+                  <p>Total Application</p>
                 </div>
               </Card>
             </div>
-            <div
-              className={styles.cardColumnRight}
-            >
+            <div className={styles.cardColumnRight}>
               <DataTable
                 header={header}
                 value={jobApplications}
