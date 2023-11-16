@@ -161,6 +161,17 @@ if (session.status === "unauthenticated") {
           ]}
           events={events}
           eventContent={renderEventContent}
+          views={{
+            timeGridWeek: {
+              columnHeaderFormat: { weekday: "short" },
+              textColor: "black",
+              eventContent: function (arg) {
+                return {
+                  html: `<div style="background-color: ${arg.event.backgroundColor}; padding: 2px; border-radius: 4px;">${arg.event.title}</div>`,
+                };
+              },
+            },
+          }}
         />
       </div>
 
