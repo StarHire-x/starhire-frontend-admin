@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { getAllEventListings } from "@/app/api/events/route"
 import { Card } from 'primereact/card';
+import styles from '../viewAllEventsCalender/globals.css'
 
 export default function CalendarPage() {
   const session = useSession();
@@ -70,9 +71,11 @@ if (session.status === "unauthenticated") {
     const eventTime = eventInfo.event.extendedProps.eventTime;
 
     let textColor = "inherit"; 
+    let backgroundColor = "inherit"
 
     if (eventListingStatus === "Upcoming") {
       textColor = "green";
+      backgroundColor="red"
     } else if (eventListingStatus === "Cancelled") {
       textColor = "red";
     } 
@@ -87,6 +90,7 @@ if (session.status === "unauthenticated") {
           overflow: "hidden",
           textOverflow: "ellipsis",
           fontSize: "15px",
+          display: "red"
         }}
       >
         <b className="fc-event-title-container">
@@ -108,7 +112,7 @@ if (session.status === "unauthenticated") {
               start: event.eventStartDateAndTime,
               end: event.eventEndDateAndTime,
               eventListingStatus: event.eventListingStatus,
-              eventId: event.eventListingId
+              eventId: event.eventListingId,
             };
           });
   
@@ -164,11 +168,28 @@ if (session.status === "unauthenticated") {
           views={{
             timeGridWeek: {
               columnHeaderFormat: { weekday: "short" },
-              textColor: "black",
-              eventContent: function (arg) {
-                return {
-                  html: `<div style="background-color: ${arg.event.backgroundColor}; padding: 2px; border-radius: 4px;">${arg.event.title}</div>`,
-                };
+              slotLabelFormat: {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              },
+              eventContent: (arg) => {
+                const eventStatus = arg.event.extendedProps.eventListingStatus;
+                let textColor = "inherit"; 
+                let backgroundColor = "inherit"; 
+
+                if (eventStatus === "Cancelled") {
+                  textColor = "inherit";
+                  backgroundColor = "red";
+                  return {
+                    html: `<div style="background-color: ${backgroundColor}; padding: 10px; border-radius: 20px;">CANCELLED ${arg.timeText} - ${arg.event.title}</div>`,
+                  };
+                } else if (eventStatus === "Upcoming") {
+                  textColor = "inherit";
+                  return {
+                    html: `<div style="color: ${textColor};">${arg.timeText} - ${arg.event.title}</div>`,
+                  };
+                }
               },
             },
           }}
