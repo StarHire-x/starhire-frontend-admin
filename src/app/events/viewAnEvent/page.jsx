@@ -1,26 +1,17 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Card } from 'primereact/card';
-import styles from './viewAnEvent.module.css';
-import Image from 'next/image';
-import { ProgressSpinner } from 'primereact/progressspinner';
 import { Button } from 'primereact/button';
-import { Tag } from 'primereact/tag';
+import { Card } from 'primereact/card';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { useRouter } from 'next/navigation';
-import { Dropdown } from '@/components/Dropdown/Dropdown';
-import { Checkbox } from 'primereact/checkbox';
+import { getAEventListing } from '@/app/api/events/route';
 import moment from 'moment';
 import HumanIcon from '../../../../public/icon.png';
-import { Dialog } from 'primereact/dialog';
-import { Calendar } from 'primereact/calendar';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Message } from 'primereact/message'; 
-import { getAEventListing } from "@/app/api/events/route";
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import styles from './viewAnEvent.module.css';
+import Image from 'next/image';
 
 const ViewAnEvent = () => {
   const session = useSession();
@@ -35,13 +26,6 @@ const ViewAnEvent = () => {
     session.data &&
     session.data.user.accessToken;
 
-  const currentUserId =
-    session.status === 'authenticated' && session.data.user.userId;
-
-  const currentUserName =
-    session.status === 'authenticated' && session.data.user.name;
-  console.log(session);
-
   const params = useSearchParams();
   const eventId = params.get('id');
 
@@ -50,13 +34,15 @@ const ViewAnEvent = () => {
   const [eventRegistrations, setEventRegistrations] = useState(null);
   const [corporate, setCorporate] = useState(null);
 
-  const numberOfEventRegistrations = eventRegistrations ? eventRegistrations.length : 0;
+  const numberOfEventRegistrations = eventRegistrations
+    ? eventRegistrations.length
+    : 0;
 
   const convertTimestampToDate = (dateTimeString) => {
-    const formattedDateTime = moment(dateTimeString).format('DD MMM YYYY HH:mm');
+    const formattedDateTime =
+      moment(dateTimeString).format('DD MMM YYYY HH:mm');
     return formattedDateTime;
   };
-  
 
   const handleOnBackClick = () => {
     router.back();
@@ -64,11 +50,11 @@ const ViewAnEvent = () => {
 
   useEffect(() => {
     if (accessToken) {
-        getAEventListing(eventId, accessToken)
+      getAEventListing(eventId, accessToken)
         .then((details) => {
           setEvent(details);
-          setCorporate(details.corporate)
-          setEventRegistrations(details.eventRegistrations)
+          setCorporate(details.corporate);
+          setEventRegistrations(details.eventRegistrations);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -84,10 +70,10 @@ const ViewAnEvent = () => {
         <div className="card flex justify-content-center">
           <ProgressSpinner
             style={{
-              display: "flex",
-              height: "100vh",
-              "justify-content": "center",
-              "align-items": "center",
+              display: 'flex',
+              height: '100vh',
+              'justify-content': 'center',
+              'align-items': 'center',
             }}
           />
         </div>
@@ -95,7 +81,7 @@ const ViewAnEvent = () => {
       {!isLoading && (
         <div className={styles.container}>
           <div className={styles.jobSeekerDetails}>
-            {event && event.profilePictureUrl != "" ? (
+            {event && event.profilePictureUrl != '' ? (
               <img src={event.image} alt="user" className={styles.avatar} />
             ) : (
               <Image
@@ -141,15 +127,19 @@ const ViewAnEvent = () => {
             </Card>
 
             <Card className={styles.jobSeekerCard} title="Event Details">
-            {corporate && corporate.profilePictureUrl != "" ? (
-              <img src={corporate.profilePictureUrl} alt="user" className={styles.avatar} />
-            ) : (
-              <Image
-                src={HumanIcon}
-                alt="Profile Picture"
-                className={styles.avatar}
-              />
-            )}
+              {corporate && corporate.profilePictureUrl != '' ? (
+                <img
+                  src={corporate.profilePictureUrl}
+                  alt="user"
+                  className={styles.avatar}
+                />
+              ) : (
+                <Image
+                  src={HumanIcon}
+                  alt="Profile Picture"
+                  className={styles.avatar}
+                />
+              )}
               <p className={styles.text}>
                 <b>Corporate User ID: </b>
                 {corporate?.userId}
@@ -165,7 +155,7 @@ const ViewAnEvent = () => {
 
               <p
                 className={`${styles.text} ${
-                  corporate?.status === "Active"
+                  corporate?.status === 'Active'
                     ? styles.greenText
                     : styles.redText
                 }`}
@@ -176,7 +166,7 @@ const ViewAnEvent = () => {
 
               <p
                 className={`${styles.text} ${
-                  corporate?.corporatePromotionStatus === "Premium"
+                  corporate?.corporatePromotionStatus === 'Premium'
                     ? styles.goldText
                     : styles.redText
                 }`}
