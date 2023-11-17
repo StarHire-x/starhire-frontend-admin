@@ -64,7 +64,7 @@ const JobExperiencePanel = ({ jobExperience }) => {
       <Card className={styles.card}>
         <div className={styles.cardHeader}>
           <div className={styles.cardHeaderLeft}>
-            <h4>{jobExperience.jobTitle}</h4>
+            <h4>{jobExperience.description}</h4>
             <h4 className={styles.hideOnMobile}>|</h4>
             <h4>{jobExperience.employerName}</h4>
           </div>
