@@ -7,13 +7,39 @@ import JobExperiencePanel from "@/components/JobExperiencePanel/JobExperiencePan
 import JobPreferencePanel from "@/components/JobPreferencePanel/JobPreferencePanel";
 import { Button } from "primereact/button";
 import Enums from "@/common/enums/enums";
+import { getReviews } from "@/app/api/review/route";
+import ReviewPanel from "../reviewPanel/ReviewPanel";
 
 const formatDate = (dateString) => {
   const options = { year: "numeric", month: "numeric", day: "numeric" };
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-const UserProfileModal = ({ selectedUser, currentUserRole }) => {
+const UserProfileModal = ({ selectedUser, currentUserRole, accessToken }) => {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    const retrieveReviews = async () => {
+      try {
+        const response = await getReviews(
+          selectedUser.userId,
+          "Job_Seeker",
+          accessToken
+        );
+        if (response.statusCode === 200) {
+          const jobSeekerReviews = response.data.filter(
+            (review) => review.reviewType === "Job_Seeker"
+          );
+          setReviews(jobSeekerReviews);
+          console.log("Reviews retrieved", jobSeekerReviews);
+        }
+      } catch (error) {
+        console.log("Error fetching reviews", error.message);
+      }
+    };
+    retrieveReviews();
+  }, []);
+
   return (
     <div className={styles.container}>
       <>
@@ -137,41 +163,9 @@ const UserProfileModal = ({ selectedUser, currentUserRole }) => {
         <div className={styles.jobExperienceSection}>
           <JobExperiencePanel jobExperience={selectedUser?.jobExperiences} />
         </div>
-        {/* <div className={styles.footerButtonsContainer}>
-          <div className={styles.backButtonContainer}>
-            <Button
-              label="Back"
-              icon="pi pi-chevron-left"
-              rounded
-              className={styles.backButton}
-              onClick={() => handleOnBackClick()}
-            />
-          </div>
-          {currentUserRole && currentUserRole === Enums.RECRUITER && (
-            <div className={styles.assignButtonContainer}>
-              <Button
-                label="Assign"
-                rounded
-                className={styles.assignButton}
-                onClick={() => setAssignDialog(true)}
-              />
-              <Dialog
-                visible={assignDialog}
-                style={{ width: "32rem" }}
-                breakpoints={{ "960px": "75vw", "641px": "90vw" }}
-                header="Assign Job Listing"
-                className="p-fluid"
-                footer={recruiterAssignDialogFooter}
-                onHide={hideAssignDialog}
-              >
-                <h3>
-                  Do you wish to assign Job Listing {selectedJobListingId} to{" "}
-                  {selectedUser && selectedUser?.userName}?
-                </h3>
-            </div>
-          )}
-        </div> */}
-        {/* </Dialog> */}
+        <div className={styles.jobExperienceSection}>
+          <ReviewPanel reviews={reviews} />
+        </div>
       </>
     </div>
   );

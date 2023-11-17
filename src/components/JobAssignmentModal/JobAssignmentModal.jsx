@@ -1,31 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import HumanIcon from "../../../public/icon.png";
-import styles from "./jobAssignmentModal.module.css";
-import { Card } from "primereact/card";
-import { Button } from "primereact/button";
-import Enums from "@/common/enums/enums";
-import { Chart } from "primereact/chart";
-import { Dropdown } from "primereact/dropdown";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { getRecrutierJobListingMatchingStatictics } from "@/app/api/auth/user/route";
-import { fetchData } from "next-auth/client/_utils";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { InputText } from "primereact/inputtext";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import HumanIcon from '../../../public/icon.png';
+import styles from './jobAssignmentModal.module.css';
+import { Card } from 'primereact/card';
+import { Button } from 'primereact/button';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { getRecrutierJobListingMatchingStatictics } from '@/app/api/auth/user/route';
+import { fetchData } from 'next-auth/client/_utils';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { InputText } from 'primereact/inputtext';
+import { useRouter } from 'next/navigation';
 import {
   createNewChatByRecruiter,
   getAllUserChats,
-} from "@/app/api/chat/route";
+} from '@/app/api/chat/route';
 
-const JobAssignmentModal = ({ accessToken, userId}) => {
-
+const JobAssignmentModal = ({ accessToken, userId }) => {
   const [overallStats, setOverallStats] = useState({});
 
   const [assignments, setAssignments] = useState([]);
 
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
   const router = useRouter();
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -35,7 +31,7 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters["global"].value = value;
+    _filters['global'].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -60,7 +56,7 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
 
     return (
       <div className={styles.imageContainer}>
-        {avatar !== "" ? (
+        {avatar !== '' ? (
           <img
             alt={avatar}
             src={avatar}
@@ -84,7 +80,7 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
 
     return (
       <div className={styles.imageContainer}>
-        {avatar !== "" ? (
+        {avatar !== '' ? (
           <img
             alt={avatar}
             src={avatar}
@@ -157,9 +153,9 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <h2 className="m-0">Pending Response from Job Seeker</h2>
@@ -206,12 +202,12 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
               showGridlines
               filters={filters}
               globalFilterFields={[
-                "jobAssignmentId",
-                "jobSeekerName",
-                "corporateName",
-                "jobListingTitle",
+                'jobAssignmentId',
+                'jobSeekerName',
+                'corporateName',
+                'jobListingTitle',
               ]}
-              tableStyle={{ minWidth: "55rem" }}
+              tableStyle={{ minWidth: '55rem' }}
               rows={4}
               paginator
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -221,7 +217,7 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
               <Column
                 field="jobAssignmentId"
                 header="Assignment Id"
-                style={{ textAlign: "center", verticalAlign: "middle" }}
+                style={{ textAlign: 'center', verticalAlign: 'middle' }}
                 sortable
               ></Column>
               <Column
@@ -244,7 +240,7 @@ const JobAssignmentModal = ({ accessToken, userId}) => {
               <Column
                 body={actionBodyTemplate}
                 exportable={false}
-                style={{ minWidth: "1rem" }}
+                style={{ minWidth: '1rem' }}
                 header="Chat"
               ></Column>
             </DataTable>

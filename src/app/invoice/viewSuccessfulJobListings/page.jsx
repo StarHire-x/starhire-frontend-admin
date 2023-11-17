@@ -48,6 +48,7 @@ export default function ViewSuccessfulJobListings() {
   const dt = useRef(null);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false); // only used for sending actions (e.g. create invoice)
   const [jobListings, setJobListings] = useState([]);
   const [corporate, setCorporate] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -91,10 +92,17 @@ export default function ViewSuccessfulJobListings() {
           const allJobListings = corporate.data.jobListings;
           allJobListings?.map((jobListing) => {
             let updatedJobListing = jobListing;
-            updatedJobListing.pendingInvoicesLength = updatedJobListing?.jobApplications.filter((jobApp) => jobApp.jobApplicationStatus === "Offer_Accepted" && !jobApp.invoice).length;
+            updatedJobListing.pendingInvoicesLength =
+              updatedJobListing?.jobApplications.filter(
+                (jobApp) =>
+                  jobApp.jobApplicationStatus === "Offer_Accepted" &&
+                  !jobApp.invoice
+              ).length;
             return updatedJobListing;
           });
-          const sortedJobListingsByPendingInvoicesLength = allJobListings?.sort((x,y) => y?.pendingInvoicesLength - x?.pendingInvoicesLength);
+          const sortedJobListingsByPendingInvoicesLength = allJobListings?.sort(
+            (x, y) => y?.pendingInvoicesLength - x?.pendingInvoicesLength
+          );
           setJobListings(sortedJobListingsByPendingInvoicesLength);
         } catch (error) {
           console.log("There was a problem fetching the corporate user", error);
@@ -192,6 +200,7 @@ export default function ViewSuccessfulJobListings() {
     }
 
     try {
+      setIsProcessing(true);
       const response = await createInvoice(request, accessToken);
       console.log("Invoice has been created successfully!" + response);
       setRefreshData((prev) => !prev);
@@ -204,6 +213,7 @@ export default function ViewSuccessfulJobListings() {
         detail: "Invoice created and sent to Corporate successfully!",
         life: 5000,
       });
+      setIsProcessing(false);
     } catch (error) {
       console.error("Error creating invoice:", error);
       toast.current.show({
@@ -234,7 +244,12 @@ export default function ViewSuccessfulJobListings() {
   const userDialogFooter = (
     <React.Fragment>
       <Button label="No" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Yes" icon="pi pi-check" onClick={handleCreateClick} />
+      <Button
+        label="Yes"
+        loading={isProcessing}
+        icon="pi pi-check"
+        onClick={handleCreateClick}
+      />
     </React.Fragment>
   );
 
@@ -271,7 +286,7 @@ export default function ViewSuccessfulJobListings() {
           ></Column>
           <Column
             field="averageSalary"
-            header="Commission"
+            header="Amount"
             sortable
             body={`$${averageSalary}`}
           ></Column>
@@ -282,14 +297,19 @@ export default function ViewSuccessfulJobListings() {
 
   const jobListingIdBodyTemplate = (rowData) => {
     const jobListingId = rowData.jobListingId;
-    const pendingNumOfSuccessfulJobAppsToInvoice = rowData?.pendingInvoicesLength;
+    const pendingNumOfSuccessfulJobAppsToInvoice =
+      rowData?.pendingInvoicesLength;
     return (
       <div>
-      {jobListingId} 
-      <Badge style={{marginLeft: '15%'}} value={`${pendingNumOfSuccessfulJobAppsToInvoice} Job App(s) Pending`} severity="danger"></Badge>
+        {jobListingId}
+        <Badge
+          style={{ marginLeft: "15%" }}
+          value={`${pendingNumOfSuccessfulJobAppsToInvoice} Job App(s) Pending`}
+          severity="danger"
+        ></Badge>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div>

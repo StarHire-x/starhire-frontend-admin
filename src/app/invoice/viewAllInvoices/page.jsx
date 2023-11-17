@@ -209,6 +209,16 @@ export default function ViewAllInvoicesPage() {
     }
   };
 
+  const getPaymentMethodSeverity = (paymentMethod) => {
+    if (paymentMethod === "Others") {
+      // using manual payment
+      return "info";
+    } else if (paymentMethod === "Stripe") {
+      // using stripe payment
+      return "warning";
+    }
+  };
+
   const paidBodyTemplate = (rowData) => {
     return (
       <Tag
@@ -216,6 +226,34 @@ export default function ViewAllInvoicesPage() {
         severity={getSeverity(rowData.invoiceStatus)}
         style={{ fontSize: "0.8em" }}
       />
+    );
+  };
+
+  const paymentMethodBodyTemplate = (rowData) => {
+    const paymentMethod =
+      rowData.stripePaymentLink == null || rowData.stripePaymentLink === ""
+        ? "Others"
+        : "Stripe";
+    //this column will be showing which payment method did the corporate use.
+    return (
+      <>
+        {rowData.invoiceStatus !== "Not_Paid" ? (
+          <Tag
+            value={paymentMethod}
+            severity={getPaymentMethodSeverity(paymentMethod)}
+            style={{
+              fontSize: "0.8em",
+              display: "flex",
+              justifyContent: "center",
+              alignContent: "center",
+              textAlign: "center",
+              width: "100px",
+            }}
+          />
+        ) : (
+          <p style={{marginLeft: "45px"}}>-</p>
+        )}
+      </>
     );
   };
 
@@ -271,6 +309,17 @@ export default function ViewAllInvoicesPage() {
               }}
             />
           )}
+          {rowData.invoiceStatus !== "Not_Paid" && (
+            <Button
+              className="p-button-help"
+              label="View Proof of Payment"
+              rounded
+              size="small"
+              onClick={() => {
+                downloadProofOfPayment(rowData);
+              }}
+            />
+          )}
         </div>
       </React.Fragment>
     );
@@ -298,6 +347,15 @@ export default function ViewAllInvoicesPage() {
 
   const hideDetailDialog = (rowData) => {
     setDetailDialog(false);
+  };
+
+  const downloadProofOfPayment = (rowData) => {
+    if (rowData?.proofOfPaymentLink) {
+      window.open(rowData?.proofOfPaymentLink, "_blank");
+    } else if (rowData.stripePaymentLink) {
+      window.open(rowData.stripePaymentLink, "_blank");
+    }
+    return;
   };
 
   const userDialogFooter = (
@@ -379,10 +437,15 @@ export default function ViewAllInvoicesPage() {
                 body={(rowData) => `$${rowData.totalAmount}`}
               ></Column>
               <Column
-                field="isPaid"
+                field="invoiceStatus"
                 header="Payment Status"
                 sortable
                 body={paidBodyTemplate}
+              ></Column>
+              <Column
+                header="Payment Method"
+                sortable
+                body={paymentMethodBodyTemplate}
               ></Column>
               <Column
                 body={actionBodyTemplate}
@@ -439,13 +502,13 @@ export default function ViewAllInvoicesPage() {
                   ></Column>
                   <Column
                     field="jobListing.averageSalary"
-                    header="Commission"
+                    header="Amount"
                     body={(rowData) => `$${rowData.jobListing.averageSalary}`}
                   ></Column>
                 </DataTable>
                 <div className={styles.dialogTotalAmountContainer}>
                   <span style={{ fontWeight: "bold", marginRight: "0.5rem" }}>
-                    Total Commission:
+                    Total Amount:
                   </span>
                   <span style={{ fontWeight: "bold" }}>
                     ${selectedRow.totalAmount}

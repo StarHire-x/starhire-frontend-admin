@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import HumanIcon from '../../../public/icon.png';
-import styles from './invoiceAdminModal.module.css';
+import styles from './commissionAdminModal.module.css';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { Tag } from 'primereact/tag';
@@ -11,38 +11,40 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { getRecrutierJobApplicationStatistics } from '@/app/api/auth/user/route';
 import { fetchData } from 'next-auth/client/_utils';
-import { getCorporatesInvoicesStatistics } from '@/app/api/invoice/route';
+import { getRecruiterCommissionsStatistics } from '@/app/api/commission/route';
 
-const InvoiceAdminModal = ({ accessToken }) => {
+const CommissionAdminModal = ({ accessToken }) => {
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
 
   const [overallStats, setOverallStats] = useState({});
-  const [invoices, setInvoices] = useState([]);
-  const [selectedFilter, setSelectedFilter] = useState('All Corporates');
+  const [commissions, setCommissions] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState('All Recruiters');
   const [filterOptions, setFilterOptions] = useState([
     {
-      label: 'All Corporates',
-      value: 'All Corporates',
+      label: 'All Recruiters',
+      value: 'All Recruiters',
     },
   ]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const information = await getCorporatesInvoicesStatistics(accessToken);
+        const information = await getRecruiterCommissionsStatistics(
+          accessToken
+        );
 
-        let corporateOptions = information.formattedResponse.map((label) => ({
-          label: label.companyName,
-          value: label.corporateId,
+        let recruiterOptions = information.formattedResponse.map((label) => ({
+          label: label.recruiterName,
+          value: label.recruiterId,
         }));
 
         setFilterOptions([
           {
-            label: 'All Corporates',
-            value: 'All Corporates',
+            label: 'All Recruiters',
+            value: 'All Recruiters',
           },
-          ...corporateOptions,
+          ...recruiterOptions,
         ]);
 
         if (selectedFilter) {
@@ -53,22 +55,24 @@ const InvoiceAdminModal = ({ accessToken }) => {
       }
     };
     const filterData = async (information) => {
-      if (selectedFilter === 'All Corporates') {
-        // Flatten the array of invoice arrays
+      if (selectedFilter === 'All Recruiters') {
+        // Flatten the array of commissions arrays
         const allData = information.formattedResponse.flatMap(
-          (item) => item.invoices
+          (item) => item.commissions
         );
-        setInvoices(allData);
+        setCommissions(allData);
         setOverallStats(information.overallStatistics);
       } else {
-        // Use the filter to find the right corporate data
+        // Use the filter to find the right recruiter data
         const filteredData = information.formattedResponse.find(
-          (item) => item.corporateId === selectedFilter
+          (item) => item.recruiterId === selectedFilter
         );
+
+        console.log(filteredData);
 
         // Make sure filteredData exists before trying to access its properties
         if (filteredData) {
-          setInvoices(filteredData.invoices || []);
+          setCommissions(filteredData.commissions || []);
           setOverallStats(filteredData.statistics);
         }
       }
@@ -124,20 +128,20 @@ const InvoiceAdminModal = ({ accessToken }) => {
           alignItems: 'center',
         }}
       >
-        <h2 style={{ margin: '10px 10px 10px 10px' }}>Invoice Analytics</h2>
+        <h2 style={{ margin: '10px 10px 10px 10px' }}>Commission Analytics</h2>
         <Dropdown
           style={{ margin: '10px 10px 10px 10px' }}
           value={selectedFilter}
           options={filterOptions}
           onChange={(e) => setSelectedFilter(e.value)}
-          placeholder="Select Corporate"
+          placeholder="Select Recruiter"
         />
       </div>
     );
   };
 
-  const corporateBodyTemplate = (rowData) => {
-    const userName = rowData.companyName;
+  const recruiterBodyTemplate = (rowData) => {
+    const userName = rowData.recruiterName;
     const avatar = rowData.profilePictureUrl;
 
     return (
@@ -165,12 +169,12 @@ const InvoiceAdminModal = ({ accessToken }) => {
     return new Date(dateString).toLocaleDateString('en-GB', options);
   };
 
-  const invoiceDateBodyTemplate = (rowData) => {
-    return formatDate(rowData.invoiceDate);
+  const commissionDateBodyTemplate = (rowData) => {
+    return formatDate(rowData.commissionDate);
   };
 
-  const dueDateBodyTemplate = (rowData) => {
-    return formatDate(rowData.dueDate);
+  const amountTemplate = (rowData) => {
+    return `$${rowData.commissionAmount.toFixed(2)}`;
   };
 
   const fileButtonTemplate = (rowData) => {
@@ -180,7 +184,7 @@ const InvoiceAdminModal = ({ accessToken }) => {
         icon="pi pi-file-pdf"
         onClick={(e) => {
           e.stopPropagation();
-          window.open(rowData.invoiceLink, '_blank');
+          window.open(rowData.paymentDocumentURL, '_blank');
         }}
         className="p-button-rounded p-button-danger"
         aria-label="Open PDF"
@@ -202,8 +206,8 @@ const InvoiceAdminModal = ({ accessToken }) => {
   const statusBodyTemplate = (rowData) => {
     return (
       <Tag
-        value={rowData.invoiceStatus}
-        severity={getStatus(rowData.invoiceStatus)}
+        value={rowData.commissionStatus}
+        severity={getStatus(rowData.commissionStatus)}
       />
     );
   };
@@ -224,7 +228,7 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 <h1 style={{ color: 'red' }}>${overallStats.notPaidSum}</h1>
                 <br />
                 <p style={{ color: 'red' }}>
-                  {overallStats.notPaidCount} Invoice Not Paid
+                  {overallStats.notPaidCount} Commission Not Paid
                 </p>
               </div>
             </Card>
@@ -235,7 +239,7 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 </h1>
                 <br />
                 <p style={{ color: 'orange' }}>
-                  {overallStats.indicatedPaidCount} Invoice Indicated Paid
+                  {overallStats.indicatedPaidCount} Commission Indicated Paid
                 </p>
               </div>
             </Card>
@@ -246,7 +250,7 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 </h1>
                 <br />
                 <p style={{ color: 'green' }}>
-                  {overallStats.confirmedPaidCount} Invoice Confirm Paid
+                  {overallStats.confirmedPaidCount} Commission Confirm Paid
                 </p>
               </div>
             </Card>
@@ -266,17 +270,17 @@ const InvoiceAdminModal = ({ accessToken }) => {
               )}
             </div>
             <DataTable
-              value={invoices}
+              value={commissions}
               showGridlines
               tableStyle={{ minWidth: '50rem' }}
               rows={5}
               paginator
               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-              emptyMessage="No invoice found."
+              emptyMessage="No commission found."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
               <Column
-                field="invoiceId"
+                field="commissionId"
                 header="Id"
                 style={{
                   textAlign: 'center',
@@ -286,40 +290,50 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 sortable
               ></Column>
               <Column
-                field="corporateId"
-                header="Company"
+                field="recruiterId"
+                header="Recruiter"
                 sortable
                 style={{
                   textAlign: 'center',
                   verticalAlign: 'middle',
                   width: '200px',
                 }}
-                body={corporateBodyTemplate}
+                body={recruiterBodyTemplate}
               ></Column>
               <Column
-                field="invoiceDate"
-                header="Invoice Date"
+                field="commissionDate"
+                header="Date"
                 style={{
                   textAlign: 'center',
                   verticalAlign: 'middle',
-                  width: '120px',
+                  width: '100px',
                 }}
-                body={invoiceDateBodyTemplate}
+                body={commissionDateBodyTemplate}
                 sortable
               ></Column>
               <Column
-                field="dueDate"
-                header="Due Date"
+                field="commissionAmount"
+                header="Amount"
                 style={{
                   textAlign: 'center',
                   verticalAlign: 'middle',
-                  width: '120px',
+                  width: '100px',
                 }}
-                body={dueDateBodyTemplate}
+                body={amountTemplate}
                 sortable
               ></Column>
               <Column
-                field="invoiceStatus"
+                field="commissionRate"
+                header="Rate (%)"
+                style={{
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  width: '10px',
+                }}
+                sortable
+              ></Column>
+              <Column
+                field="commissionStatus"
                 header="Status"
                 style={{
                   textAlign: 'center',
@@ -330,7 +344,7 @@ const InvoiceAdminModal = ({ accessToken }) => {
                 body={statusBodyTemplate}
               ></Column>
               <Column
-                field="invoiceLink"
+                field="paymentDocumentURL"
                 header="File"
                 style={{
                   textAlign: 'center',
@@ -347,4 +361,4 @@ const InvoiceAdminModal = ({ accessToken }) => {
   );
 };
 
-export default InvoiceAdminModal;
+export default CommissionAdminModal;

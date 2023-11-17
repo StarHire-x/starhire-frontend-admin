@@ -1,24 +1,23 @@
-import React, { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import HumanIcon from "../../../public/icon.png";
-import styles from "./jobStatisticsModal.module.css";
-import { Card } from "primereact/card";
-import { Button } from "primereact/button";
-import Enums from "@/common/enums/enums";
-import { Chart } from "primereact/chart";
-import { Dropdown } from "primereact/dropdown";
-import { getCorporateJobListingBreakdown, getCorporateJobListingStatistics } from "@/app/api/auth/user/route";
+import React, { useState, useEffect } from 'react';
+import styles from './jobStatisticsModal.module.css';
+import { Card } from 'primereact/card';
+import { Chart } from 'primereact/chart';
+import { Dropdown } from 'primereact/dropdown';
+import {
+  getCorporateJobListingBreakdown,
+  getCorporateJobListingStatistics,
+} from '@/app/api/auth/user/route';
 
 const JobStatisticsModal = ({ accessToken }) => {
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
-
+  const [chartDataIsEmpty, setChartDataIsEmpty] = useState(false);
   const [chartData1, setChartData1] = useState({});
   const [chartOptions1, setChartOptions1] = useState({});
-  const [selectedFilter1, setSelectedFilter1] = useState("total");
+  const [selectedFilter1, setSelectedFilter1] = useState('total');
   const [corporatePercentage, setCorporatePercentage] = useState({});
   const [filterOptions1, setFilterOptions1] = useState([
-    { label: "All corporates", value: "total" },
+    { label: 'All corporates', value: 'total' },
   ]);
 
   useEffect(() => {
@@ -27,9 +26,9 @@ const JobStatisticsModal = ({ accessToken }) => {
     const fetchBreakdown = async () => {
       const breakdownInfo = await getCorporateJobListingStatistics(accessToken);
 
-      const textColor = documentStyle.getPropertyValue("--text-color");
+      const textColor = documentStyle.getPropertyValue('--text-color');
       const textColorSecondary = documentStyle.getPropertyValue(
-        "--text-color-secondary"
+        '--text-color-secondary'
       );
 
       console.log(breakdownInfo);
@@ -41,24 +40,24 @@ const JobStatisticsModal = ({ accessToken }) => {
 
       // Update the filter options.
       setFilterOptions1([
-        { label: "All corporates", value: "total" },
+        { label: 'All corporates', value: 'total' },
         ...corporateOptions,
       ]);
 
-      const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+      const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
       const data = {
         labels: breakdownInfo.labels,
         datasets: [
           {
-            label: "Number of job listing",
-            backgroundColor: documentStyle.getPropertyValue("--pink-500"),
-            borderColor: documentStyle.getPropertyValue("--pink-500"),
+            label: 'Number of job listing',
+            backgroundColor: documentStyle.getPropertyValue('--pink-500'),
+            borderColor: documentStyle.getPropertyValue('--pink-500'),
             data: breakdownInfo.values,
           },
         ],
       };
       const options = {
-        indexAxis: "y",
+        indexAxis: 'y',
         maintainAspectRatio: false,
         aspectRatio: 0.8,
         plugins: {
@@ -70,6 +69,11 @@ const JobStatisticsModal = ({ accessToken }) => {
         },
         scales: {
           x: {
+            title: {
+              display: true,
+              text: 'Number of job listings', // your actual x-axis label
+              color: textColorSecondary,
+            },
             ticks: {
               color: textColorSecondary,
               font: {
@@ -110,9 +114,19 @@ const JobStatisticsModal = ({ accessToken }) => {
       const rejectedData = breakdownInfo[selectedFilter1].rejected;
       const unverifiedData = breakdownInfo[selectedFilter1].unverified;
       const archivedData = breakdownInfo[selectedFilter1].archived;
+      const isChartDataEmpty =
+        approvedData === 0 &&
+        rejectedData === 0 &&
+        unverifiedData === 0 &&
+        archivedData === 0;
+      setChartDataIsEmpty(isChartDataEmpty);
 
       const sum = approvedData + rejectedData + unverifiedData + archivedData;
-      const total = breakdownInfo["total"].approved + breakdownInfo["total"].rejected + breakdownInfo["total"].unverified + breakdownInfo["total"].archived;
+      const total =
+        breakdownInfo['total'].approved +
+        breakdownInfo['total'].rejected +
+        breakdownInfo['total'].unverified +
+        breakdownInfo['total'].archived;
 
       const approvedDataPercentage =
         sum > 0 ? Number(((approvedData / sum) * 100).toFixed(2)) : 0;
@@ -133,21 +147,21 @@ const JobStatisticsModal = ({ accessToken }) => {
         proportion: proportion,
       });
       const data = {
-        labels: ["Approved", "Rejected", "Unverified", "Archived"],
+        labels: ['Approved', 'Rejected', 'Unverified', 'Archived'],
         datasets: [
           {
             data: [approvedData, rejectedData, unverifiedData, archivedData],
             backgroundColor: [
-              documentStyle.getPropertyValue("--blue-500"),
-              documentStyle.getPropertyValue("--red-500"),
-              documentStyle.getPropertyValue("--orange-500"),
-              documentStyle.getPropertyValue("--gray-500"),
+              documentStyle.getPropertyValue('--blue-500'),
+              documentStyle.getPropertyValue('--red-500'),
+              documentStyle.getPropertyValue('--orange-500'),
+              documentStyle.getPropertyValue('--gray-500'),
             ],
             hoverBackgroundColor: [
-              documentStyle.getPropertyValue("--blue-400"),
-              documentStyle.getPropertyValue("--red-400"),
-              documentStyle.getPropertyValue("--orange-400"),
-              documentStyle.getPropertyValue("--gray-400"),
+              documentStyle.getPropertyValue('--blue-400'),
+              documentStyle.getPropertyValue('--red-400'),
+              documentStyle.getPropertyValue('--orange-400'),
+              documentStyle.getPropertyValue('--gray-400'),
             ],
           },
         ],
@@ -173,12 +187,12 @@ const JobStatisticsModal = ({ accessToken }) => {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
-        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+        <h2 className="montserrat" style={{ margin: '10px 10px 10px 10px' }}>
           Total Job Listing Analysis
         </h2>
       </div>
@@ -189,18 +203,18 @@ const JobStatisticsModal = ({ accessToken }) => {
     return (
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "space-between",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <h2 className="montserrat" style={{ margin: "10px 10px 10px 10px" }}>
+        <h2 className="montserrat" style={{ margin: '10px 10px 10px 10px' }}>
           Job Listings Status
         </h2>
         <Dropdown
           value={selectedFilter1}
-          style={{ margin: "10px 10px 10px 10px" }}
+          style={{ margin: '10px 10px 10px 10px' }}
           options={filterOptions1}
           onChange={(e) => setSelectedFilter1(e.value)}
           placeholder="Select a corporate"
@@ -217,32 +231,40 @@ const JobStatisticsModal = ({ accessToken }) => {
         </Card>
         <Card className={styles.customCardGraph1} header={smallCardHeader}>
           <div className={styles.filterContainer1}>
-            <Chart
-              type="pie"
-              data={chartData1}
-              options={chartOptions1}
-              className={styles.doughnutChart}
-            />
+            {chartDataIsEmpty ? (
+              <>
+                <h2 style={{ textAlign: 'justify', marginBottom: '200px' }}>
+                  No data available
+                </h2>
+              </>
+            ) : (
+              <Chart
+                type="pie"
+                data={chartData1}
+                options={chartOptions1}
+                className={styles.doughnutChart}
+              />
+            )}
             <div className={styles.filterColumn}>
-              <p className="montserrat">
+              <strong className={styles.line}>
                 Proportion: {corporatePercentage.proportion}%
-              </p>
+              </strong>
               <br />
-              <p className="montserrat">
+              <strong className={styles.line}>
                 Approved: {corporatePercentage.approved}%
-              </p>
+              </strong>
               <br />
-              <p className="montserrat">
+              <strong className={styles.line}>
                 Rejected: {corporatePercentage.rejected}%
-              </p>
+              </strong>
               <br />
-              <p className="montserrat">
+              <strong className={styles.line}>
                 Unverified: {corporatePercentage.unverified}%
-              </p>
+              </strong>
               <br />
-              <p className="montserrat">
+              <strong className={styles.line}>
                 Archived: {corporatePercentage.archived}%
-              </p>
+              </strong>
             </div>
           </div>
         </Card>

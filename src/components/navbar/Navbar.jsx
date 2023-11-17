@@ -1,98 +1,103 @@
-'use client';
-import Link from 'next/link';
-import Image from 'next/image';
-import React from 'react';
-import styles from './Navbar.module.css';
-import DarkModeToggle from '../DarkModeToggle/DarkModeToggle';
-import { signOut, useSession } from 'next-auth/react';
-import { useState, useEffect, useContext } from 'react';
-import { getUserByUserId } from '@/app/api/auth/user/route';
-import HumanIcon from '../../../public/icon.png';
-import { UserContext } from '@/context/UserContext';
-import Enums from '@/common/enums/enums';
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import React from "react";
+import styles from "./Navbar.module.css";
+import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
+import { signOut, useSession } from "next-auth/react";
+import { useState, useEffect, useContext } from "react";
+import { getUserByUserId } from "@/app/api/auth/user/route";
+import HumanIcon from "../../../public/icon.png";
+import { UserContext } from "@/context/UserContext";
+import Enums from "@/common/enums/enums";
 
 const adminLinks = [
   {
     id: 1,
-    title: 'Job Listings',
-    url: '/jobListings',
+    title: "Job Listings",
+    url: "/jobListings",
   },
   {
     id: 2,
-    title: 'User Management',
-    url: '',
+    title: "User Management",
+    url: "",
     submenu: [
       {
         id: 1,
-        title: 'Manage Users',
-        url: '/userManagement',
+        title: "Manage Users",
+        url: "/userManagement",
       },
       {
         id: 2,
-        title: 'View all Premium Users',
-        url: '/subscriptions',
+        title: "View all Premium Users",
+        url: "/subscriptions",
       },
     ],
   },
   {
     id: 3,
-    title: 'Dashboard',
-    url: '/dashboard',
+    title: "Dashboard",
+    url: "/dashboard",
   },
   {
     id: 4,
-    title: 'Events',
-    url: '/events',
+    title: "Events",
+    url: "/events",
   },
   {
     id: 5,
-    title: 'Forum',
-    url: '/forum',
+    title: "Forum",
+    url: "/forum",
   },
   {
     id: 6,
-    title: 'Ticket Management',
-    url: '/ticketManagement',
+    title: "Ticket Management",
+    url: "/ticketManagement",
   },
   {
     id: 7,
-    title: 'Invoice',
-    url: '/invoice',
+    title: "Invoice",
+    url: "/invoice",
   },
   {
     id: 8,
-    title: 'Commission',
-    url: '/commission',
+    title: "Commission",
+    url: "/commission",
   },
 ];
 
 const recruiterLinks = [
   {
     id: 1,
-    title: 'Dashboard',
-    url: '/dashboard',
+    title: "Dashboard",
+    url: "/dashboard",
   },
   {
     id: 2,
-    title: 'Job Listings',
-    url: '/jobListings',
+    title: "Job Listings",
+    url: "/jobListings",
   },
   {
     id: 3,
-    title: 'Chat',
-    url: '',
+    title: "Chat",
+    url: "",
     submenu: [
       {
         id: 1,
-        title: 'New Chat',
-        url: '/create-chat',
+        title: "New Chat",
+        url: "/create-chat",
       },
       {
         id: 2,
-        title: 'Manage Chats',
-        url: '/chat',
+        title: "Manage Chats",
+        url: "/chat",
       },
     ],
+  },
+  {
+    id: 4,
+    title: "Commissions",
+    url: "/recruiter-commissions",
   },
 ];
 
@@ -129,7 +134,7 @@ const Navbar = () => {
 
       <div className={styles.links}>
         <DarkModeToggle />
-        {session.status === 'authenticated' &&
+        {session.status === "authenticated" &&
           session.data.user.role === Enums.ADMIN &&
           adminLinks.map((link) => (
             <div
@@ -156,7 +161,7 @@ const Navbar = () => {
               )}
             </div>
           ))}
-        {session.status === 'authenticated' &&
+        {session.status === "authenticated" &&
           session.data.user.role === Enums.RECRUITER &&
           recruiterLinks.map((link) => (
             <div
@@ -183,7 +188,7 @@ const Navbar = () => {
               )}
             </div>
           ))}
-        {session.status === 'authenticated' && (
+        {session.status === "authenticated" && (
           <>
             <div className={styles.imageContainer}>
               {userData?.profilePictureUrl ? (
@@ -210,10 +215,10 @@ const Navbar = () => {
             </button>
           </>
         )}
-        {session.status === 'unauthenticated' && (
+        {session.status === "unauthenticated" && (
           <button
             className={styles.login}
-            onClick={() => (window.location.href = '/login')}
+            onClick={() => (window.location.href = "/login")}
           >
             Login
           </button>

@@ -17,15 +17,15 @@
 }
 
 .mainContainer {
-    flex-direction: column;
-    margin-bottom: 10px;
-    gap: 10px;
+  flex-direction: column;
+  margin-bottom: 10px;
+  gap: 10px;
 }
 
 .statisticsColumn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .cardLayout {
@@ -38,39 +38,44 @@
 .customCard {
   width: 25rem;
   overflow: auto;
-  background-color: #87CEEB;
+  background-color: white;
 }
 
 .customCardGraph {
-    width: 74rem;
-    height: 40rem;
-    overflow: auto;
-    background-color: #87CEEB;
+  width: 74rem;
+  height: 40rem;
+  transform: scale(1);
+  overflow: auto;
+  background-color: white;
 }
 
 .customCardGraph1 {
-    width: 24rem;
-    height: 40rem;
-    overflow: auto;
-    background-color: #87CEEB;
+  width: 24rem;
+  height: 40rem;
+  overflow: auto;
+  background-color: white;
 }
 
 .doughnutChart {
-  width: 250px; /* Adjust as needed */
-  height: 250px; 
+  width: 250px;
+  height: 250px;
 }
 
 .filterContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .filterColumn {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.line {
+  font-family: 'Montserrat', sans-serif;
+  margin-bottom: 10px;
 }
 
 .headerGraph {
@@ -85,7 +90,7 @@
 }
 
 .filterContainer1 {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }

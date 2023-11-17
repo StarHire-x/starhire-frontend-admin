@@ -5,46 +5,46 @@
 }
 
 .customCardGraph {
-  width: 75rem;
+  width: 78rem;
   height: 40rem;
   overflow: auto;
   background-color: #e4f1f6;
+  transform: scale(1);
 }
 
 .layout {
   display: flex;
-  align-items: flex-start;
-  flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   gap: 10px;
 }
 
 .cardColumnLeft {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  gap: 75px;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 10px;
   flex: 0.75;
 }
 
 .cardColumnRight {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 10px;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   margin-bottom: 10px;
   flex: 3.25;
 }
 
 .customCard {
-  width: 200px !important;
-  height: 150px !important;
+  width: 20rem;
+  height: 11rem;
+  overflow: auto;
   background-color: white;
-  border-radius: 10px;
-  border: 1px solid white;
 }
 
 .cardLayout {
@@ -56,32 +56,23 @@
 
 .imageContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
+  flex-direction: column; /* To ensure children are stacked vertically */
+  align-items: center; /* Horizontally center the children */
+  justify-content: center; /* Vertically center the children (though it's optional here) */
+  gap: 1px; /* Gives a little space between the image and the h6 */
 }
 
 .avatarImageContainer {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
+  border-radius: 50%; /* To make it circular */
+  object-fit: cover; /* To ensure the image maintains its aspect ratio */
   margin-bottom: 0px;
 }
 
 .buttonContainer {
   display: flex;
   align-items: center;
-}
-
-.recruiter-header {
-  display: flex;
-  flex-direction: column;
-}
-
-.searchContainer {
-  position: relative;
 }
 
 .tabMenu {
