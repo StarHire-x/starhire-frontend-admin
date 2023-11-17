@@ -1,45 +1,36 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { FilterMatchMode, FilterOperator } from "primereact/api";
-import { Badge } from "primereact/badge";
-import { Button } from "primereact/button";
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { Dialog } from "primereact/dialog";
-import { Dropdown } from "primereact/dropdown";
-import { InputText } from "primereact/inputtext";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { Tag } from "primereact/tag";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { viewAllPremiumUsers } from "@/app/api/subscriptions/route";
-import { getAllEventListings } from "@/app/api/events/route";
-import Enums from "@/common/enums/enums";
-import styles from "./events.module.css";
+import React, { useState, useEffect } from 'react';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
+import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { Dropdown } from 'primereact/dropdown';
+import { InputText } from 'primereact/inputtext';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Tag } from 'primereact/tag';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { getAllEventListings } from '@/app/api/events/route';
+import Enums from '@/common/enums/enums';
+import styles from './events.module.css';
 import moment from 'moment';
 
-
 export default function Events() {
-
   const session = useSession();
   const router = useRouter();
 
   const accessToken =
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data &&
     session.data.user.accessToken;
 
-  const currentUserId =
-    session.status === "authenticated" && session.data.user.userId;
-
-  if (session.status === "unauthenticated") {
-    router?.push("/login");
+  if (session.status === 'unauthenticated') {
+    router?.push('/login');
   }
 
   const [events, setEvents] = useState([]);
   const [userDialog, setUserDialog] = useState(false);
-  const [selectedRowData, setSelectedRowData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
@@ -51,14 +42,16 @@ export default function Events() {
     },
   });
 
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const getStatus = (status) => {
     switch (status) {
-      case "Upcoming":
-        return "success";
-      case "Expired":
-        return "danger";
+      case 'Upcoming':
+        return 'success';
+      case 'Expired':
+        return 'danger';
+      case 'Cancelled':
+        return 'danger';
     }
   };
 
@@ -66,7 +59,7 @@ export default function Events() {
     const value = e.target.value;
     let _filters = { ...filters };
 
-    _filters["global"].value = value;
+    _filters['global'].value = value;
 
     setFilters(_filters);
     setGlobalFilterValue(value);
@@ -86,7 +79,7 @@ export default function Events() {
   };
 
   const navigateToCalender = () => {
-    router.push('/events/viewAllEventsCalender'); 
+    router.push('/events/viewAllEventsCalender');
   };
 
   const statusFilterTemplate = (options) => {
@@ -142,9 +135,9 @@ export default function Events() {
     return (
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <h2 className="m-0">All Events</h2>
@@ -167,17 +160,11 @@ export default function Events() {
     );
   };
 
-  const formatDate = (rowData) => {
-    //const date = new Date(rowData.eventDate);
-    //return date.toLocaleDateString(); 
-    
-  };
-
   const formatDateTime = (dateTimeString) => {
-    const formattedDateTime = moment(dateTimeString).format('DD MMM YYYY HH:mm');
+    const formattedDateTime =
+      moment(dateTimeString).format('DD MMM YYYY HH:mm');
     return formattedDateTime;
   };
-  
 
   const userDialogFooter = (
     <React.Fragment>
@@ -190,16 +177,16 @@ export default function Events() {
     if (accessToken) {
       getAllEventListings(accessToken)
         .then((data) => {
-            if (Array.isArray(data)) {
-                setEvents(data)
-            } else {
-              console.error("Data is not an array:", data);
-              setEvents(data.data)
-            }
-            setIsLoading(false);
-          })
+          if (Array.isArray(data)) {
+            setEvents(data);
+          } else {
+            console.error('Data is not an array:', data);
+            setEvents(data.data);
+          }
+          setIsLoading(false);
+        })
         .catch((error) => {
-          console.error("Error fetching Promotion Request:", error);
+          console.error('Error fetching Promotion Request:', error);
           setIsLoading(false);
         });
     }
@@ -208,15 +195,15 @@ export default function Events() {
   const header = renderHeader();
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     session.data.user.role !== Enums.ADMIN &&
     session.data.user.role !== Enums.RECRUITER
   ) {
-    router?.push("/dashboard");
+    router?.push('/dashboard');
   }
 
   if (
-    session.status === "authenticated" &&
+    session.status === 'authenticated' &&
     (session.data.user.role === Enums.ADMIN ||
       session.data.user.role === Enums.RECRUITER)
   ) {
@@ -225,10 +212,10 @@ export default function Events() {
         {isLoading ? (
           <ProgressSpinner
             style={{
-              display: "flex",
-              height: "100vh",
-              "justify-content": "center",
-              "align-items": "center",
+              display: 'flex',
+              height: '100vh',
+              'justify-content': 'center',
+              'align-items': 'center',
             }}
           />
         ) : (
@@ -246,7 +233,7 @@ export default function Events() {
               onSelectionChange={(e) => setSelectedUsers(e.value)}
               filters={filters}
               filterDisplay="menu"
-              globalFilterFields={["corporate.userName"]}
+              globalFilterFields={['corporate.userName']}
               emptyMessage="There are no Event hosted on Starhire Currently."
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
@@ -273,9 +260,7 @@ export default function Events() {
               <Column
                 field="eventEndDateAndTime"
                 header="Event End Details"
-                body={(rowData) =>
-                  formatDateTime(rowData.eventEndDateAndTime)
-                }
+                body={(rowData) => formatDateTime(rowData.eventEndDateAndTime)}
               ></Column>
 
               {session.data.user.role === Enums.ADMIN ? (
