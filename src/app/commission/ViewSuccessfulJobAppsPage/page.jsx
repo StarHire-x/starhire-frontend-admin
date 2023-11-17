@@ -314,12 +314,12 @@ const ViewSuccessfulJobAppsPage = () => {
               selectionMode="multiple"
               headerStyle={{ width: "3rem" }}
             ></Column>
-            <Column field="jobApplicationId" header="jobApplicationId"></Column>
+            <Column field="jobApplicationId" header="Job Application ID"></Column>
             <Column
               field="jobListing.jobListingId"
-              header="JobListingId"
+              header="Job Listing ID"
             ></Column>
-            <Column field="jobListing.title" header="JobListing Title"></Column>
+            <Column field="jobListing.title" header="Job Listing Title"></Column>
             <Column
               field="submissionDate"
               header="Job Application Submitted On"
