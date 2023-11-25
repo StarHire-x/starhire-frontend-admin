@@ -27,6 +27,12 @@
   margin-top: 30px;
 }
 
+.infoButton {
+  background-color: inherit !important;
+  color: black;
+  border-color: black !important;
+}
+
 .back-button {
   border: none !important;
   color: white !important;

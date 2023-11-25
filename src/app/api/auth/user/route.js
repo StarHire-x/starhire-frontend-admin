@@ -398,6 +398,8 @@ export const getRecrutierJobListingMatchingStatictics = async (
       }
     );
     const response = await res.json();
+    console.log("Response")
+    console.log(res)
     if (response.statusCode === 200) {
       return response.data;
     } else {

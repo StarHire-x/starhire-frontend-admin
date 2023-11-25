@@ -14,7 +14,11 @@ import { Dialog } from "primereact/dialog";
 import { useSession } from "next-auth/react";
 import { viewOneJobListing } from "@/app/api/jobListings/route";
 import { updateJobListing } from "@/app/api/jobListings/route";
-import { getAllJobSeekersWithSimilarityScore, getCorporateDetails, getUsers } from "../../api/auth/user/route";
+import {
+  getAllJobSeekersWithSimilarityScore,
+  getCorporateDetails,
+  getUsers,
+} from "../../api/auth/user/route";
 import { assignJobListing } from "@/app/api/jobListings/route";
 import HumanIcon from "../../../../public/icon.png";
 import { DataTable } from "primereact/datatable";
@@ -54,6 +58,8 @@ export default function ViewJobListingRecruiter() {
   const [jobListing, setJobListing] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [assignDialog, setAssignDialog] = useState(false);
+  const [notesDialog, setNotesDialog] = useState(false);
+  const [notesDialogContent, setNotesDialogContent] = useState("");
   const [refreshData, setRefreshData] = useState(false);
   const [user, setUser] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -94,7 +100,7 @@ export default function ViewJobListingRecruiter() {
           //     console.error("Error fetching corporate:", error);
           //     setIsLoading(false);
           //   });
-          
+
           // console.log("Corporate Job Preference", selectedCorporateJP);
           // getUsers(accessToken)
           //   .then((user) => {
@@ -144,6 +150,8 @@ export default function ViewJobListingRecruiter() {
               console.error("Error fetching user:", error);
               setIsLoading(false);
             });
+          console.log("User object");
+          console.log(user);
         })
         .catch((error) => {
           console.error("Error fetching job listings:", error);
@@ -221,6 +229,10 @@ export default function ViewJobListingRecruiter() {
     setAssignDialog(false);
   };
 
+  const hideNotesDialog = () => {
+    setNotesDialog(false);
+  };
+
   const handleOnAssignClick = async () => {
     // This part should take in jobSeekerId, jobListingId, and pass it to backend to do the job listing assigning part.
     const jobListingId = jobListing.jobListingId;
@@ -265,8 +277,10 @@ export default function ViewJobListingRecruiter() {
   };
 
   const handleViewAssignedJobSeekersClick = () => {
-    router.push(`/jobListings/viewJobListingRecruiter/viewAssignedJobSeekers?id=${id}&title=${jobListing.title}`)
-  }
+    router.push(
+      `/jobListings/viewJobListingRecruiter/viewAssignedJobSeekers?id=${id}&title=${jobListing.title}`
+    );
+  };
 
   const actionRecruiterBodyTemplate = (rowData) => {
     return (
@@ -345,6 +359,21 @@ export default function ViewJobListingRecruiter() {
     );
   };
 
+  const candidateNotesBodyTemplate = (rowData) => {
+    return (
+      <Button
+        // label="Edit"
+        icon="pi pi-info"
+        rounded
+        className={styles.infoButton}
+        onClick={() => {
+          setNotesDialogContent(rowData.candidateNotes);
+          setNotesDialog(true);
+        }}
+      />
+    );
+  };
+
   const renderRecruiterHeader = () => {
     return (
       <div
@@ -407,61 +436,61 @@ export default function ViewJobListingRecruiter() {
               </div>
 
               <strong>Job Description</strong>
-                <p>{jobListing.description}</p>
+              <p>{jobListing.description}</p>
 
-                <strong>Experience Required</strong>
-                <p>{jobListing.experienceRequired}</p>
+              <strong>Experience Required</strong>
+              <p>{jobListing.experienceRequired}</p>
 
-                <strong>Address</strong>
-                <p>{jobListing.address}</p>
+              <strong>Address</strong>
+              <p>{jobListing.address}</p>
 
-                <strong>Postal Code</strong>
-                <p>{jobListing.postalCode}</p>
+              <strong>Postal Code</strong>
+              <p>{jobListing.postalCode}</p>
 
-                <strong>Job Listing Date</strong>
-                <p>{formatDate(jobListing.listingDate)}</p>
+              <strong>Job Listing Date</strong>
+              <p>{formatDate(jobListing.listingDate)}</p>
 
-                <strong>Job Start Date</strong>
-                <p>{formatDate(jobListing.jobStartDate)}</p>
+              <strong>Job Start Date</strong>
+              <p>{formatDate(jobListing.jobStartDate)}</p>
 
-                <strong>Pay Range</strong>
-                <p>{jobListing.payRange + " SGD"}</p>
+              <strong>Pay Range</strong>
+              <p>{jobListing.payRange + " SGD"}</p>
 
-                <strong>Job Type</strong>
-                <p>{jobListing.jobType}</p>
+              <strong>Job Type</strong>
+              <p>{jobListing.jobType}</p>
 
-                <strong>Schedule</strong>
-                <p>{jobListing.schedule}</p>
+              <strong>Schedule</strong>
+              <p>{jobListing.schedule}</p>
 
-                <strong>Supplemental Pay</strong>
-                <p>{jobListing.supplementalPay}</p>
+              <strong>Supplemental Pay</strong>
+              <p>{jobListing.supplementalPay}</p>
 
-                <strong>Other Benefits</strong>
-                <p>{jobListing.otherBenefits}</p>
+              <strong>Other Benefits</strong>
+              <p>{jobListing.otherBenefits}</p>
 
-                <strong>Certifications Required</strong>
-                <p>{jobListing.certificationsRequired}</p>
+              <strong>Certifications Required</strong>
+              <p>{jobListing.certificationsRequired}</p>
 
-                <strong>Type Of Workers</strong>
-                <p>{jobListing.typeOfWorkers}</p>
+              <strong>Type Of Workers</strong>
+              <p>{jobListing.typeOfWorkers}</p>
 
-                <strong>Required Languages</strong>
-                <p>{jobListing.requiredLanguages}</p>
+              <strong>Required Languages</strong>
+              <p>{jobListing.requiredLanguages}</p>
 
-                <strong>Other Considerations</strong>
-                <p>{jobListing.otherConsiderations}</p>
+              <strong>Other Considerations</strong>
+              <p>{jobListing.otherConsiderations}</p>
 
-                <strong>Current Status of Job</strong>
-                <p
-                  style={{
-                    color:
-                      jobListing.jobListingStatus === "Approved"
-                        ? "green"
-                        : "red",
-                  }}
-                >
-                  {jobListing.jobListingStatus}
-                </p>
+              <strong>Current Status of Job</strong>
+              <p
+                style={{
+                  color:
+                    jobListing.jobListingStatus === "Approved"
+                      ? "green"
+                      : "red",
+                }}
+              >
+                {jobListing.jobListingStatus}
+              </p>
             </div>
           </Card>
           <div>
@@ -494,12 +523,7 @@ export default function ViewJobListingRecruiter() {
               ></Column>
               <Column field="email" header="Email" sortable></Column>
               <Column field="contactNo" header="Contact No" sortable></Column>
-              {/* <Column
-                field="role"
-                header="Role"
-                body={statusRoleTemplate}
-                sortable
-              ></Column> */}
+
               <Column
                 field="similarity"
                 header="Match Rate (%)"
@@ -507,12 +531,16 @@ export default function ViewJobListingRecruiter() {
                 body={(rowData) => parseFloat(rowData.similarity).toFixed(2)}
               ></Column>
               <Column
+                field="Notes"
+                header="notes"
+                body={candidateNotesBodyTemplate}
+              ></Column>
+              <Column
                 body={actionRecruiterBodyTemplate}
                 exportable={false}
                 style={{ minWidth: "12rem" }}
               ></Column>
             </DataTable>
-
             <div className={styles.bottomButtonContainer}>
               <Button
                 label="Back"
@@ -564,6 +592,21 @@ export default function ViewJobListingRecruiter() {
               Do you wish to assign Job Listing {jobListing.jobListingId} to{" "}
               {selectedRowData && selectedRowData.userName}?
             </h3>
+          </Dialog>
+
+          <Dialog
+            visible={notesDialog}
+            style={{ width: "32rem" }}
+            breakpoints={{ "960px": "75vw", "641px": "90vw" }}
+            header="CandidateNotes"
+            className="p-fluid"
+            onHide={hideNotesDialog}
+          >
+            {notesDialogContent ? (
+              <p>{notesDialogContent}</p>
+            ) : (
+              <p>The following candidate has not been interviewed before.</p>
+            )}
           </Dialog>
         </div>
       )}
