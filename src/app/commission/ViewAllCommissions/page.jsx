@@ -344,7 +344,7 @@ const ViewAllCommissions = () => {
                 <DataTable
                   value={selectedCommission.jobApplications}
                   showGridlines
-                  tableStyle={{ width: "35vw", marginTop: "10px" }}
+                  tableStyle={{ marginTop: "10px" }}
                 >
                   <Column
                     field="jobApplicationId"
